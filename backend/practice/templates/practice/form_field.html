@@ -1,0 +1,7 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS="is-invalid" %}
+<span class="control-wrap control-{{ field|widget_type }}{% if field.errors %} has-error{% endif %}">
+{% render_field field class+="form-control" %}
+{% if field.errors %}<span class="field-errors" id="{{ field.auto_id }}_error" role="alert">{% for error in field.errors %}<span>{{ error }}</span>{% endfor %}</span>{% endif %}
+</span>
+{% endwith %}

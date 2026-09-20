@@ -1,0 +1,1456 @@
+[
+  {
+    "number": "1a",
+    "source_page": 49,
+    "title": "Gebäude und Wohnformen",
+    "instruction": "Schreiben Sie die Wörter mit Artikel und Plural.",
+    "questions": [
+      {
+        "prompt": "Beispiel: ALT + BAU → der Altbau / die Altbauten",
+        "accepted_answers": [
+          "der Altbau / die Altbauten"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Schreiben Sie die acht übrigen Wörter mit Artikel und Plural: der … / die … . Trennen Sie die acht Wortpaare durch Semikolon.",
+        "accepted_answers": [
+          "der Bauernhof / die Bauernhöfe",
+          "die Ferienwohnung / die Ferienwohnungen",
+          "das Hausboot / die Hausboote",
+          "das Hochhaus / die Hochhäuser",
+          "das Apartment / die Apartments",
+          "die Wagenburg / die Wagenburgen",
+          "die Wohnung / die Wohnungen",
+          "das Wohnheim / die Wohnheime"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "wordset",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Ghép âm tiết thành dạng nhà ở, xác định giống và số nhiều.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 73,
+    "reviewed": true,
+    "context": "ALT · BAU · FERIEN · HAUS · HOCH · APART · WA · WOH · WOHN · ERN · GEN · WOH · BAU · BOOT · BURG · HAUS · HOF · MENT · NUNG · NUNG · HEIM",
+    "allow_review": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "1b",
+    "source_page": 49,
+    "title": "Rund ums Haus",
+    "instruction": "Ergänzen Sie. Wie heißt das Lösungswort? A: Die Wörter helfen. B: Ohne Hilfe.",
+    "questions": [
+      {
+        "prompt": "Vor dem {{1}} von unserem Haus darf man keine Fahrräder abstellen. (Buchstabe 3)",
+        "blanks": [
+          {
+            "answers": [
+              "Eingang"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Fahrräder und unser Auto stehen in der {{1}}. (Buchstabe 4)",
+        "blanks": [
+          {
+            "answers": [
+              "Garage"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Pias Zimmer ist ganz oben im Haus, unter dem {{1}}. (Buchstaben 3 und 4)",
+        "blanks": [
+          {
+            "answers": [
+              "Dach"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich wohne im Hochhaus und habe keine Terrasse, aber einen großen {{1}}. (Buchstabe 1)",
+        "blanks": [
+          {
+            "answers": [
+              "Balkon"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wir wohnen im Erdgeschoss und haben vor dem Haus einen kleinen {{1}}. (Buchstabe 2)",
+        "blanks": [
+          {
+            "answers": [
+              "Garten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Früher hatte ich Angst, wenn ich allein in den {{1}} gehen musste. (Buchstabe 6)",
+        "blanks": [
+          {
+            "answers": [
+              "Keller"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Unsere Wohnung ist schön und hell, wir haben große {{1}}. (Buchstabe 3)",
+        "blanks": [
+          {
+            "answers": [
+              "Fenster"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das Lösungswort heißt {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Nachbarn"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Từ vựng các bộ phận ngôi nhà; giải từ khóa từ ký tự đã chỉ định.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 73,
+    "reviewed": true,
+    "hints": "Balkon · Dach · Eingang · Fenster · Garage · Garten · Keller",
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "2",
+    "source_page": 49,
+    "title": "So wohnen wir",
+    "instruction": "Ergänzen Sie die Berichte. Schreiben Sie das vollständige Wort.",
+    "questions": [
+      {
+        "prompt": "Katharina Hansson {{1}} (wo…) mit Freunden zusammen. Sie {{2}} (fi…) ihr Hausboot einfach {{3}} (gem…).",
+        "blanks": [
+          {
+            "answers": [
+              "wohnt"
+            ]
+          },
+          {
+            "answers": [
+              "findet"
+            ]
+          },
+          {
+            "answers": [
+              "gemütlich"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Räume sind nicht {{1}} (ho…) und auch nicht besonders {{2}} (gr…), aber alle haben ein eigenes {{3}} (Zi…).",
+        "blanks": [
+          {
+            "answers": [
+              "hoch"
+            ]
+          },
+          {
+            "answers": [
+              "groß"
+            ]
+          },
+          {
+            "answers": [
+              "Zimmer"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Küche und das {{1}} (B…) teilen sie. „Die Atmosphäre ist {{2}} (ei…) toll“, erzählt sie, „auch {{3}} (w…) es im Winter etwas {{4}} (k…) ist.“",
+        "blanks": [
+          {
+            "answers": [
+              "Bad"
+            ]
+          },
+          {
+            "answers": [
+              "einfach"
+            ]
+          },
+          {
+            "answers": [
+              "wenn"
+            ]
+          },
+          {
+            "answers": [
+              "kalt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Alois Kraxner lebt mit seiner {{1}} (Fa…) auf einem alten {{2}} (Bau…), weit weg vom {{3}} (Do…).",
+        "blanks": [
+          {
+            "answers": [
+              "Familie"
+            ]
+          },
+          {
+            "answers": [
+              "Bauernhof"
+            ]
+          },
+          {
+            "answers": [
+              "Dorf"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "„Viele Leute denken, dass das {{1}} (L…) hier langweilig ist“, sagt er. „{{2}} (A…) ich habe den ganzen Tag {{3}} (Ar…), da wird mir nicht {{4}} (la…).",
+        "blanks": [
+          {
+            "answers": [
+              "Leben"
+            ]
+          },
+          {
+            "answers": [
+              "Aber"
+            ]
+          },
+          {
+            "answers": [
+              "Arbeit"
+            ]
+          },
+          {
+            "answers": [
+              "langweilig"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Gute Nachbarn sind {{1}} (wi…), wenn man so weit {{2}} (w…) vom Dorf lebt. Jeder hilft dem anderen, wenn er {{3}} (H…) braucht.“",
+        "blanks": [
+          {
+            "answers": [
+              "wichtig"
+            ]
+          },
+          {
+            "answers": [
+              "weg"
+            ]
+          },
+          {
+            "answers": [
+              "Hilfe"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Đọc và hoàn thành báo cáo về các cách sống chung.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 73,
+    "reviewed": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "3",
+    "source_page": 50,
+    "title": "Im Wohnhaus",
+    "instruction": "Was macht Lara? Streichen Sie das falsche Wort. Korrigieren Sie.",
+    "questions": [
+      {
+        "prompt": "Wenn Frau Moreno Geburtstag hat, dann legt sie ihr. → legt",
+        "accepted_answers": [
+          "gratuliert"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Wenn sie ihre Nachbarn sieht, gratuliert sie freundlich.",
+        "accepted_answers": [
+          "grüßt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wenn ihre Nachbarin nicht da ist, hilft sie die Post in die Wohnung.",
+        "accepted_answers": [
+          "legt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wenn Sie zu laut war, dann gießt sie sich bei den Nachbarn.",
+        "accepted_answers": [
+          "entschuldigt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wenn Herr Olsen in Urlaub fährt, grüßt sie seine Blumen.",
+        "accepted_answers": [
+          "gießt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wenn jemand ein Problem hat, dann entschuldigt sie ihm.",
+        "accepted_answers": [
+          "hilft"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Sửa động từ mô tả ứng xử với hàng xóm.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 73,
+    "reviewed": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "medium"
+  },
+  {
+    "number": "4a",
+    "source_page": 50,
+    "title": "Welche Reaktion passt?",
+    "instruction": "Wählen Sie.",
+    "questions": [
+      {
+        "prompt": "Ihre Nachbarin bittet Sie, dass Sie ihre Blumen gießen.",
+        "accepted_answers": [
+          "Schade, das geht leider nicht. Ich bin nicht da."
+        ],
+        "example": false,
+        "options": [
+          "Schade, das geht leider nicht. Ich bin nicht da.",
+          "Das geht wirklich nicht."
+        ]
+      },
+      {
+        "prompt": "Ihr Nachbar beschwert sich, dass Sie die Haustür nicht geschlossen haben.",
+        "accepted_answers": [
+          "Das kommt nicht mehr vor."
+        ],
+        "example": false,
+        "options": [
+          "Das ist doch kein Problem.",
+          "Das kommt nicht mehr vor."
+        ]
+      },
+      {
+        "prompt": "Sie haben Ihren Müll vor der Türe vergessen. Ihr Nachbar sagt es Ihnen.",
+        "accepted_answers": [
+          "Verzeihung, das tut mir leid."
+        ],
+        "example": false,
+        "options": [
+          "Verzeihung, das tut mir leid.",
+          "Entschuldigung, das habe ich nicht gewusst."
+        ]
+      },
+      {
+        "prompt": "Ein Nachbar bittet Sie, dass Sie für ihn ein Paket annehmen.",
+        "accepted_answers": [
+          "Natürlich, das mache ich gern."
+        ],
+        "example": false,
+        "options": [
+          "Schade, ich habe leider keine Zeit.",
+          "Natürlich, das mache ich gern."
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Chọn lời đáp lịch sự cho lời nhờ và phàn nàn.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "4b",
+    "source_page": 50,
+    "title": "So geht das nicht!",
+    "instruction": "Wählen Sie Ausdrücke. Schreiben Sie zu jeder Situation drei Sätze.",
+    "questions": [
+      {
+        "prompt": "Bild links. Schreiben Sie drei Sätze. Beginnen Sie: Sie können das Fahrrad …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Bild rechts. Schreiben Sie drei Sätze. Beginnen Sie: Es stört mich, wenn ihr …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Viết lời phàn nàn phù hợp với hai tình huống minh họa.",
+    "rationale": "Giữ nhiệm vụ diễn đạt cá nhân hoặc ngữ âm; lưu bài viết để giáo viên xem và chấm, không ép một đáp án duy nhất.",
+    "answer_page": 73,
+    "reviewed": true,
+    "check_mode": "manual_check",
+    "image_path": "practice/ch10_4b.png",
+    "image_description": "Zwei Situationen im Wohnhaus aus Aufgabe 4b.",
+    "context": "Es stört mich, wenn … · Sie können … (doch) nicht … · … geht wirklich nicht. · Das ist … · Ihr solltet dringend …\nlaut · die Unordnung · Eingang muss frei sein · verboten · aufräumen · abstellen",
+    "cefr": "A2",
+    "difficulty": "medium"
+  },
+  {
+    "number": "4c",
+    "source_page": 50,
+    "title": "Höflich um etwas bitten",
+    "instruction": "Schreiben Sie Fragen mit könnte.",
+    "questions": [
+      {
+        "prompt": "mir / Ihr Werkzeug / leihen / kurz / Sie / ? (Anfang: Könnten Sie mir kurz …)",
+        "accepted_answers": [
+          "Könnten Sie mir kurz Ihr Werkzeug leihen?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "du / die Fische / morgen / füttern / ?",
+        "accepted_answers": [
+          "Könntest du morgen die Fische füttern?",
+          "Könntest du die Fische morgen füttern?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "ihr / bitte / etwas leiser / sein / ?",
+        "accepted_answers": [
+          "Könntet ihr bitte etwas leiser sein?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "einen Kaffee / machen / du / ?",
+        "accepted_answers": [
+          "Könntest du einen Kaffee machen?",
+          "Könntest du mir einen Kaffee machen?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Frau Raich / Sie / anrufen / ?",
+        "accepted_answers": [
+          "Könnten Sie Frau Raich anrufen?"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Tạo câu hỏi nhờ vả với Konjunktiv II.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "medium"
+  },
+  {
+    "number": "5a",
+    "source_page": 51,
+    "title": "Wo ist das?",
+    "instruction": "Ergänzen Sie die Präposition.",
+    "questions": [
+      {
+        "prompt": "Öl: … der Flasche",
+        "accepted_answers": [
+          "in"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Kalender: {{1}} der Wand",
+        "blanks": [
+          {
+            "answers": [
+              "an"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Frau: {{1}} dem Sofa",
+        "blanks": [
+          {
+            "answers": [
+              "auf"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Teppich: {{1}} dem Tisch",
+        "blanks": [
+          {
+            "answers": [
+              "unter"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Uhr: {{1}} der Tür",
+        "blanks": [
+          {
+            "answers": [
+              "über"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Hund: {{1}} dem Stuhl und der Tür",
+        "blanks": [
+          {
+            "answers": [
+              "zwischen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Schlüssel: {{1}} dem Schrank",
+        "blanks": [
+          {
+            "answers": [
+              "neben"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Pflanze: {{1}} dem Regal",
+        "blanks": [
+          {
+            "answers": [
+              "vor"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Foto: {{1}} dem Bild",
+        "blanks": [
+          {
+            "answers": [
+              "hinter"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Xác định giới từ vị trí qua hình minh họa.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "image_path": "practice/ch10_5a.png",
+    "image_description": "Neun kleine Bilder zur Lage von Gegenständen und Personen.",
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "5b",
+    "source_page": 51,
+    "title": "Chaos in der Küche",
+    "instruction": "Wo ist das? Ergänzen Sie das Verb und die Präposition mit Artikel.",
+    "questions": [
+      {
+        "prompt": "Die Kochbücher … Boden.",
+        "accepted_answers": [
+          "liegen auf dem"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Der Stuhl {{1}} Herd.",
+        "blanks": [
+          {
+            "answers": [
+              "steht vor dem"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der Teppich {{1}} Tür.",
+        "blanks": [
+          {
+            "answers": [
+              "hängt an der"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Katze {{1}} Schrank.",
+        "blanks": [
+          {
+            "answers": [
+              "sitzt auf dem"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Blumen {{1}} Tisch.",
+        "blanks": [
+          {
+            "answers": [
+              "liegen auf dem"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der Hund {{1}} Stuhl.",
+        "blanks": [
+          {
+            "answers": [
+              "sitzt auf dem"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Pfanne {{1}} Kühlschrank.",
+        "blanks": [
+          {
+            "answers": [
+              "steht auf dem"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Phân biệt liegen, stehen, hängen, sitzen và Dativ theo vị trí.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "image_path": "practice/ch10_5b.png",
+    "image_description": "Die unaufgeräumte Küche aus Aufgabe 5b.",
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "5c",
+    "source_page": 51,
+    "title": "Aufgeräumt!",
+    "instruction": "Ergänzen Sie das Verb und die Präposition mit Artikel.",
+    "questions": [
+      {
+        "prompt": "Niklas hat den Teppich … Boden … . (Präposition mit Artikel / Verb)",
+        "accepted_answers": [
+          "auf den / gelegt"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Den Stuhl hat er {{1}} Wand {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "an die"
+            ]
+          },
+          {
+            "answers": [
+              "gestellt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Kochbücher hat er {{1}} Regal {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "ins",
+              "in das"
+            ]
+          },
+          {
+            "answers": [
+              "gestellt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Pfanne hat er {{1}} Herd {{2}},",
+        "blanks": [
+          {
+            "answers": [
+              "über den"
+            ]
+          },
+          {
+            "answers": [
+              "gehängt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "die Blumen hat er {{1}} Regal {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "aufs",
+              "auf das"
+            ]
+          },
+          {
+            "answers": [
+              "gestellt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der Hund hat sich {{1}} Tisch {{2}} Teppich {{3}}.",
+        "blanks": [
+          {
+            "answers": [
+              "unter den"
+            ]
+          },
+          {
+            "answers": [
+              "auf den"
+            ]
+          },
+          {
+            "answers": [
+              "gelegt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Und die Katze hat sich {{1}} Hund {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "neben den"
+            ]
+          },
+          {
+            "answers": [
+              "gelegt"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Động từ chuyển vị trí và giới từ với Akkusativ trong Perfekt.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "image_path": "practice/ch10_5c.png",
+    "image_description": "Die aufgeräumte Küche aus Aufgabe 5c.",
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "6",
+    "source_page": 52,
+    "title": "Mein Umzug von Hamburg nach Salzburg",
+    "instruction": "Ergänzen Sie die Verben in der richtigen Form.",
+    "questions": [
+      {
+        "prompt": "Zuerst habe ich in Hamburg alle Sachen … .",
+        "accepted_answers": [
+          "gepackt"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Dann habe ich den Umzugswagen {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "bestellt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich habe mich auch auf dem Amt in Hamburg {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "abgemeldet"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Am letzten Abend habe ich meine Freunde eingeladen und mich {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "verabschiedet"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Zwei Tage später bin ich in der neuen Wohnung {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "eingezogen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "In Salzburg habe ich mich gleich auf dem Meldeamt {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "angemeldet"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Động từ về chuyển nhà ở Perfekt.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "context": "abmelden · anmelden · bestellen · einziehen · packen · verabschieden",
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "7",
+    "source_page": 52,
+    "title": "Erfahrung sammeln",
+    "instruction": "Ergänzen Sie wenn oder als.",
+    "questions": [
+      {
+        "prompt": "Serkan hatte große Probleme, {{1}} er die Schule besucht hat.",
+        "blanks": [
+          {
+            "answers": [
+              "als"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Er war immer sehr nervös, {{1}} er eine Prüfung hatte.",
+        "blanks": [
+          {
+            "answers": [
+              "wenn"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} er mit der Schule fertig war, wurde er Koch in einem Hotel.",
+        "blanks": [
+          {
+            "answers": [
+              "Als"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} die Gäste zufrieden waren, hatte er am meisten Spaß bei seiner Arbeit.",
+        "blanks": [
+          {
+            "answers": [
+              "Wenn"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} er Gabriella kennengelernt hat, wollte er in Italien arbeiten.",
+        "blanks": [
+          {
+            "answers": [
+              "Als"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Einige Jahre später, {{1}} sie zwei Kinder hatten, sind sie nach Berlin gezogen.",
+        "blanks": [
+          {
+            "answers": [
+              "als"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Phân biệt sự kiện quá khứ một lần và lặp lại với als/wenn.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "8",
+    "source_page": 52,
+    "title": "Eine Stadt präsentieren",
+    "instruction": "Ordnen Sie die Begriffe zu.",
+    "questions": [
+      {
+        "prompt": "die Lage · die Größe · die Einwohner",
+        "accepted_answers": [
+          "die Daten/Angaben"
+        ],
+        "example": false,
+        "options": [
+          "die Arbeitsorte",
+          "die Architektur",
+          "die Daten/Angaben",
+          "die Gebäude",
+          "die Kulturangebote"
+        ]
+      },
+      {
+        "prompt": "der Architekt · planen · das Gebäude",
+        "accepted_answers": [
+          "die Architektur"
+        ],
+        "example": false,
+        "options": [
+          "die Arbeitsorte",
+          "die Architektur",
+          "die Daten/Angaben",
+          "die Gebäude",
+          "die Kulturangebote"
+        ]
+      },
+      {
+        "prompt": "das Opernhaus · die Kirche · die Synagoge",
+        "accepted_answers": [
+          "die Gebäude"
+        ],
+        "example": false,
+        "options": [
+          "die Arbeitsorte",
+          "die Architektur",
+          "die Daten/Angaben",
+          "die Gebäude",
+          "die Kulturangebote"
+        ]
+      },
+      {
+        "prompt": "das Theater · das Konzert · das Festival",
+        "accepted_answers": [
+          "die Kulturangebote"
+        ],
+        "example": false,
+        "options": [
+          "die Arbeitsorte",
+          "die Architektur",
+          "die Daten/Angaben",
+          "die Gebäude",
+          "die Kulturangebote"
+        ]
+      },
+      {
+        "prompt": "das Geschäft · die Werkstatt · das Büro",
+        "accepted_answers": [
+          "die Arbeitsorte"
+        ],
+        "example": false,
+        "options": [
+          "die Arbeitsorte",
+          "die Architektur",
+          "die Daten/Angaben",
+          "die Gebäude",
+          "die Kulturangebote"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Phân loại từ vựng dùng giới thiệu thành phố.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 73,
+    "reviewed": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "9",
+    "source_page": 52,
+    "title": "Wortgrenzen, Pausen und Satzakzente",
+    "instruction": "Markieren Sie die Wortgrenzen |, eine Pause || und zwei Satzakzente. Lesen Sie laut.",
+    "questions": [
+      {
+        "prompt": "in|dresden|gibt|es|viele|alte|gebäude||aber|auchinteressanteneuearchitektur.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "derarchitektgottfriedsemperhatdasopernhausgeplantdeshalbheißtdasgebäude„semperoper“.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "dieneuesynagogeisteinmodernesgebäudeeshat2002denpreisfürdiebestearchitekturbekommen.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "inderkunsthofpassagegibtesvielecafésundgeschäftedieatmosphäreistkreativundbunt.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Phân chia từ, ngắt câu và xác định trọng âm câu.",
+    "rationale": "Giữ nhiệm vụ diễn đạt cá nhân hoặc ngữ âm; lưu bài viết để giáo viên xem và chấm, không ép một đáp án duy nhất.",
+    "answer_page": 73,
+    "reviewed": true,
+    "check_mode": "manual_check",
+    "context": "Schreiben Sie die Zeichen | und || in den Text. Kennzeichnen Sie die zwei betonten Wörter mit *Sternchen*. Lesen Sie anschließend selbst laut; die Aussprache wird hier nicht automatisch bewertet.",
+    "cefr": "A2",
+    "difficulty": "medium"
+  },
+  {
+    "number": "10",
+    "source_page": 52,
+    "title": "Haustiere. Was denken Sie?",
+    "instruction": "Ergänzen Sie.",
+    "questions": [
+      {
+        "prompt": "Dieses Tier finde ich am schönsten:",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Vor diesem Tier habe ich Angst:",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Dieses Haustier wollte ich als Kind haben:",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Das ist für mich heute das ideale Haustier:",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Diễn đạt sở thích và trải nghiệm với thú nuôi.",
+    "rationale": "Giữ nhiệm vụ diễn đạt cá nhân hoặc ngữ âm; lưu bài viết để giáo viên xem và chấm, không ép một đáp án duy nhất.",
+    "answer_page": null,
+    "reviewed": true,
+    "check_mode": "manual_check",
+    "cefr": "A2",
+    "difficulty": "medium"
+  },
+  {
+    "number": "11",
+    "source_page": 53,
+    "title": "Haustiere in Deutschland",
+    "instruction": "Schreiben Sie die Sätze.",
+    "questions": [
+      {
+        "prompt": "Ilhan findet es interessant, … (dass / eine Ratte / manche Leute / haben; Anfang: dass manche Leute …)",
+        "accepted_answers": [
+          "dass manche Leute eine Ratte haben."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Nora hat überrascht, … (wie viel Geld / für Haustiere / ausgeben / man)",
+        "accepted_answers": [
+          "wie viel Geld man für Haustiere ausgibt."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Mehmet hat gehört, … (dass / sogar Schweine / als Haustier / es / geben)",
+        "accepted_answers": [
+          "dass es sogar Schweine als Haustier gibt."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Pilar hat nicht gewusst, … (dass / bei Stress / helfen / Haustiere)",
+        "accepted_answers": [
+          "dass Haustiere bei Stress helfen."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Für Mira ist nicht neu, … (dass / mehr Frauen / Haustiere / als Männer / haben)",
+        "accepted_answers": [
+          "dass mehr Frauen als Männer Haustiere haben.",
+          "dass mehr Frauen Haustiere als Männer haben."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Hast du gewusst, … (wie viele / einen Hund / Menschen / haben)",
+        "accepted_answers": [
+          "wie viele Menschen einen Hund haben?"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Viết mệnh đề phụ với dass và từ nghi vấn; động từ cuối câu.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "medium"
+  },
+  {
+    "number": "12",
+    "source_page": 53,
+    "title": "Eine Tiergeschichte",
+    "instruction": "Was ist richtig? Kreuzen Sie an.",
+    "questions": [
+      {
+        "prompt": "Eine Ente wollte mit ihren Küken … gehen.",
+        "accepted_answers": [
+          "zum Fluss"
+        ],
+        "example": false,
+        "options": [
+          "zum Fluss",
+          "über den Fluss"
+        ]
+      },
+      {
+        "prompt": "Auf dem Weg musste sie … überqueren.",
+        "accepted_answers": [
+          "eine Straße"
+        ],
+        "example": false,
+        "options": [
+          "eine Straße",
+          "einen Park"
+        ]
+      },
+      {
+        "prompt": "Eine Polizistin hat die Ente mit ihren Jungen … .",
+        "accepted_answers": [
+          "gesehen"
+        ],
+        "example": false,
+        "options": [
+          "getroffen",
+          "gesehen"
+        ]
+      },
+      {
+        "prompt": "Die Autos mussten stehen bleiben und … ist nichts passiert.",
+        "accepted_answers": [
+          "der Ente"
+        ],
+        "example": false,
+        "options": [
+          "der Ente",
+          "den Fahrern"
+        ]
+      },
+      {
+        "prompt": "Ein Kollege hat Fotos gemacht und die Fotos an eine Zeitung … .",
+        "accepted_answers": [
+          "geschickt"
+        ],
+        "example": false,
+        "options": [
+          "geholt",
+          "geschickt"
+        ]
+      },
+      {
+        "prompt": "Jetzt ist die Geschichte ziemlich … .",
+        "accepted_answers": [
+          "bekannt"
+        ],
+        "example": false,
+        "options": [
+          "gut",
+          "bekannt"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Chọn từ/cụm từ phù hợp trong câu chuyện về động vật.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "Wa",
+    "source_page": 53,
+    "title": "Wortbildung · Nomen mit -chen und -lein",
+    "instruction": "Ergänzen Sie das passende Wort. Was ist links anders? Markieren Sie.",
+    "questions": [
+      {
+        "prompt": "Hast du das Hündchen von Vea gesehen? – Ja, aber mir gefällt ein großer … besser.",
+        "accepted_answers": [
+          "Hund"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Schau mal, so ein süßes Häschen. – Oh ja, der kleine {{1}} ist echt süß.",
+        "blanks": [
+          {
+            "answers": [
+              "Hase"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Anna nennt ihren Freund Bärchen. – Wie bitte? Jonas sieht doch nicht aus wie ein {{1}}!",
+        "blanks": [
+          {
+            "answers": [
+              "Bär"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Murli war ein ganz kleines Kätzlein! – Stimmt, und jetzt ist sie eine große {{1}}!",
+        "blanks": [
+          {
+            "answers": [
+              "Katze"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Häschen: Schreiben Sie den veränderten Vokal und die Endung. {{1}} / {{2}}",
+        "blanks": [
+          {
+            "answers": [
+              "ä"
+            ]
+          },
+          {
+            "answers": [
+              "chen",
+              "-chen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bärchen: Schreiben Sie die Endung. {{1}}",
+        "blanks": [
+          {
+            "answers": [
+              "chen",
+              "-chen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Kätzlein: Schreiben Sie den veränderten Vokal und die Endung. {{1}} / {{2}}",
+        "blanks": [
+          {
+            "answers": [
+              "ä"
+            ]
+          },
+          {
+            "answers": [
+              "lein",
+              "-lein"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Nhận diện danh từ gốc, Umlaut và hậu tố giảm nhẹ -chen/-lein.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 73,
+    "reviewed": true,
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  },
+  {
+    "number": "Wb",
+    "source_page": 53,
+    "title": "Wortbildung · Nomen mit -chen",
+    "instruction": "Bilden Sie das Nomen mit -chen. Kontrollieren Sie mit dem Wörterbuch.",
+    "questions": [
+      {
+        "prompt": "Rattenberg ist ein kleines {{1}} (Stadt).",
+        "blanks": [
+          {
+            "answers": [
+              "Städtchen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Für den Urlaub sucht Eva ein {{1}} (Haus) am Strand.",
+        "blanks": [
+          {
+            "answers": [
+              "Häuschen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Vor dem Haus ist ein kleines {{1}} (Garten).",
+        "blanks": [
+          {
+            "answers": [
+              "Gärtchen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der Preis steht auf dem kleinen {{1}} (Schild).",
+        "blanks": [
+          {
+            "answers": [
+              "Schildchen"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Tạo danh từ giảm nhẹ bằng -chen với Umlaut phù hợp.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 73,
+    "reviewed": true,
+    "context": "-chen und -lein machen alles klein. Der Artikel ist immer das. Oft gibt es einen Umlaut. Man verwendet meistens -chen. die Katze → das Kätzchen",
+    "cefr": "A2",
+    "check_mode": "auto_check",
+    "difficulty": "low"
+  }
+]

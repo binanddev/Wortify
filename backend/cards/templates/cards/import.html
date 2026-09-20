@@ -1,0 +1,9 @@
+{% extends 'cards/base.html' %}{% block content %}
+<a href="{% url 'deck' deck.pk %}">← {{ deck.title }}</a><h1>Nhập nhiều thẻ cùng lúc</h1>
+<p>Dán nội dung hoặc nhập trực tiếp. Mỗi dòng là một thẻ, không cần dòng tiêu đề.</p>
+<section class="panel"><h2>Thứ tự các cột</h2><p><strong>Từ tiếng Đức · Nghĩa tiếng Việt · Ví dụ tiếng Đức</strong></p><p>Các cột tiếp theo không bắt buộc: nghĩa ví dụ · loại từ · ghi chú · cách sử dụng · mạo từ · số nhiều. Chỉ hai cột đầu là bắt buộc.</p><pre class="import-sample">der Alltag, cuộc sống hằng ngày, Mein Alltag beginnt um sieben Uhr.
+die Wohnung, căn hộ, Unsere Wohnung hat zwei Zimmer.</pre><p class="muted">Nếu câu có dấu phẩy, đặt câu trong ngoặc kép: <code>"Ich denke, dass das gut ist."</code> Hoặc chọn dấu Tab / gạch đứng để nhập thuận tiện hơn.</p></section>
+<form method="post" class="panel import-form">{% csrf_token %}{% include "cards/fields.html" %}<button class="primary">Xem trước các thẻ</button></form>
+{% if batch %}<section class="panel"><h2>Xem trước · {{ batch.rows|length }} thẻ</h2><p>Chưa có thẻ nào được thêm. Kiểm tra nội dung rồi chọn Lưu.</p><div class="table-scroll"><table><thead><tr><th>Từ tiếng Đức</th><th>Nghĩa tiếng Việt</th><th>Ví dụ tiếng Đức</th><th>Loại từ</th><th>Ghi chú / cách dùng</th></tr></thead><tbody>{% for row in batch.rows %}<tr><td lang="de">{{ row.german_text }}</td><td>{{ row.vietnamese_meaning }}</td><td lang="de">{{ row.example_german }}</td><td>{{ row.part_of_speech }}</td><td>{{ row.notes }}<br>{{ row.usage }}</td></tr>{% endfor %}</tbody></table></div><form method="post">{% csrf_token %}<input type="hidden" name="token" value="{{ batch.token }}"><button class="primary">Lưu {{ batch.rows|length }} thẻ vào bộ</button></form></section>{% endif %}
+{% endblock %}
+

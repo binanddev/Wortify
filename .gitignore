@@ -1,0 +1,22 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.sqlite3
+*.sqlite3-*
+backend/private_media/
+staticfiles/
+.env
+*.log
+
+# React workspace
+node_modules/
+frontend-react/dist/
+frontend-react/.vite/
+.env.local
+.env.*.local
+
+.npm-cache/
+
+# Source digitization files are staging material, not deployment assets.
+book/

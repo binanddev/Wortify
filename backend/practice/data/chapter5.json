@@ -1,0 +1,1558 @@
+[
+  {
+    "number": "1a",
+    "source_page": 24,
+    "title": "Was gibt es in einer Stadt?",
+    "instruction": "Was gibt es in einer Stadt? Markieren Sie 15 Wörter.",
+    "questions": [
+      {
+        "prompt": "Notieren Sie die 15 Wörter aus dem Suchrätsel, getrennt durch Kommas.",
+        "accepted_answers": [
+          "Museum",
+          "Straßenreinigung",
+          "Müllabfuhr",
+          "Theater",
+          "Behörde",
+          "Bahnhof",
+          "Notarzt",
+          "Amt",
+          "Universität",
+          "Krankenhaus",
+          "Verkehrsmittel",
+          "Rathaus",
+          "Feuerwehr",
+          "Kino",
+          "Polizei"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "wordset",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Nhận diện 15 danh từ về địa điểm và dịch vụ đô thị trong ô chữ.",
+    "rationale": "Giữ ảnh ô chữ nguyên gốc không kèm lời giải; nhập 15 từ tìm được, đối chiếu theo tập hợp không phụ thuộc thứ tự.",
+    "answer_page": 68,
+    "reviewed": true,
+    "image_path": "practice/ch5_1a.png",
+    "image_description": "Buchstabenraster mit 15 versteckten Stadtwörtern."
+  },
+  {
+    "number": "1b",
+    "source_page": 24,
+    "title": "Städtische Einrichtungen",
+    "instruction": "Was passt? Ergänzen Sie das passende Wort aus 1a mit Artikel.",
+    "questions": [
+      {
+        "prompt": "Sie räumt auf und macht Straßen und Plätze sauber.",
+        "accepted_answers": [
+          "die Straßenreinigung"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Sie leert die Mülltonnen und bringt den Müll weg.",
+        "accepted_answers": [
+          "die Müllabfuhr"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie kümmert sich um die Sicherheit in der Stadt.",
+        "accepted_answers": [
+          "die Polizei"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie transportieren Personen durch die Stadt.",
+        "accepted_answers": [
+          "die Verkehrsmittel"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wenn man Dokumente braucht, geht man da hin.",
+        "accepted_answers": [
+          "die Behörde",
+          "das Amt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Dort arbeiten Pfleger/innen und Ärzte/Ärztinnen.",
+        "accepted_answers": [
+          "das Krankenhaus"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie kommt schnell, wenn es ein Feuer gibt, und hilft Personen.",
+        "accepted_answers": [
+          "die Feuerwehr"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Er hilft bei einem Unfall und bringt Patientinnen und Patienten schnell ins Krankenhaus.",
+        "accepted_answers": [
+          "der Notarzt"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Ghép mô tả chức năng với cơ quan, dịch vụ đô thị và dùng đúng mạo từ.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 68,
+    "reviewed": true
+  },
+  {
+    "number": "1c",
+    "source_page": 24,
+    "title": "Arbeit im Bürgeramt",
+    "instruction": "Was passt? Ergänzen Sie.",
+    "questions": [
+      {
+        "prompt": "Viele Menschen denken, {{1}} (d…) mein Beruf langweilig {{2}} (i…). Das stimmt aber {{3}} (ni…).",
+        "blanks": [
+          {
+            "answers": [
+              "dass"
+            ]
+          },
+          {
+            "answers": [
+              "ist"
+            ]
+          },
+          {
+            "answers": [
+              "nicht"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Mir gefällt meine {{1}} (Ar…) hier im Bürgeramt: {{2}} (I…) habe viel Kontakt {{3}} (m…) Menschen und erlebe {{4}} (je…) Tag Überraschungen.",
+        "blanks": [
+          {
+            "answers": [
+              "Arbeit"
+            ]
+          },
+          {
+            "answers": [
+              "Ich"
+            ]
+          },
+          {
+            "answers": [
+              "mit"
+            ]
+          },
+          {
+            "answers": [
+              "jeden"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die {{1}} (L…) kommen, weil sie {{2}} (Dok…) brauchen, und ich {{3}} (ber…) sie.",
+        "blanks": [
+          {
+            "answers": [
+              "Leute"
+            ]
+          },
+          {
+            "answers": [
+              "Dokumente"
+            ]
+          },
+          {
+            "answers": [
+              "berate"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Letzte Woche {{1}} (h…) ich einer Frau {{2}} (geh…), wir haben die {{3}} (For…) für ihren Pass gemeinsam {{4}} (ausge…).",
+        "blanks": [
+          {
+            "answers": [
+              "habe"
+            ]
+          },
+          {
+            "answers": [
+              "geholfen"
+            ]
+          },
+          {
+            "answers": [
+              "Formulare"
+            ]
+          },
+          {
+            "answers": [
+              "ausgefüllt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Sie war sehr {{1}} (fr…), dass sie es nicht {{2}} (a…) machen musste. Heute {{3}} (h…) sie ihren neuen {{4}} (P…) abgeholt.",
+        "blanks": [
+          {
+            "answers": [
+              "froh"
+            ]
+          },
+          {
+            "answers": [
+              "allein"
+            ]
+          },
+          {
+            "answers": [
+              "hat"
+            ]
+          },
+          {
+            "answers": [
+              "Pass"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Hoàn thiện lời kể về công việc ở Bürgeramt bằng từ vựng và cấu trúc phù hợp.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 68,
+    "reviewed": true
+  },
+  {
+    "number": "1d",
+    "source_page": 25,
+    "title": "Was muss es in einer Stadt geben?",
+    "instruction": "Was muss es in einer Stadt geben? Was finden Sie wichtig? Schreiben Sie.",
+    "questions": [
+      {
+        "prompt": "Ich finde wichtig, dass es … gibt.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich finde, eine Stadt muss … haben.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich denke, dass … wichtig ist.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich möchte, dass es … gibt.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Nêu quan điểm về tiện ích cần có ở thành phố bằng câu dass.",
+    "rationale": "Giữ toàn bộ câu hỏi viết mở; câu trả lời phụ thuộc trải nghiệm hoặc tiếng mẹ đẻ nên giáo viên đánh giá, không áp một đáp án cố định.",
+    "answer_page": 68,
+    "reviewed": true,
+    "check_mode": "manual_check"
+  },
+  {
+    "number": "2",
+    "source_page": 25,
+    "title": "Valentina in Wien",
+    "instruction": "Ordnen Sie zu.",
+    "questions": [
+      {
+        "prompt": "Valentina ist nach Wien gekommen,",
+        "accepted_answers": [
+          "E: weil sie hier studieren und arbeiten möchte."
+        ],
+        "example": false,
+        "options": [
+          "A: weil sie neben dem Studium arbeiten möchte.",
+          "B: dass sie einen Termin für ein Vorstellungsgespräch bekommen hat.",
+          "C: weil sie ein Konto eröffnen möchte.",
+          "D: und hat dort den Stephansdom angesehen.",
+          "E: weil sie hier studieren und arbeiten möchte.",
+          "F: und Valentina hofft, dass sie den Job bekommt."
+        ]
+      },
+      {
+        "prompt": "Sie hat schon einen Spaziergang im Zentrum gemacht",
+        "accepted_answers": [
+          "D: und hat dort den Stephansdom angesehen."
+        ],
+        "example": false,
+        "options": [
+          "A: weil sie neben dem Studium arbeiten möchte.",
+          "B: dass sie einen Termin für ein Vorstellungsgespräch bekommen hat.",
+          "C: weil sie ein Konto eröffnen möchte.",
+          "D: und hat dort den Stephansdom angesehen.",
+          "E: weil sie hier studieren und arbeiten möchte.",
+          "F: und Valentina hofft, dass sie den Job bekommt."
+        ]
+      },
+      {
+        "prompt": "Sie hat in Cafés und Restaurants nach einem Job gefragt,",
+        "accepted_answers": [
+          "A: weil sie neben dem Studium arbeiten möchte."
+        ],
+        "example": false,
+        "options": [
+          "A: weil sie neben dem Studium arbeiten möchte.",
+          "B: dass sie einen Termin für ein Vorstellungsgespräch bekommen hat.",
+          "C: weil sie ein Konto eröffnen möchte.",
+          "D: und hat dort den Stephansdom angesehen.",
+          "E: weil sie hier studieren und arbeiten möchte.",
+          "F: und Valentina hofft, dass sie den Job bekommt."
+        ]
+      },
+      {
+        "prompt": "Valentina hatte Glück und ist froh,",
+        "accepted_answers": [
+          "B: dass sie einen Termin für ein Vorstellungsgespräch bekommen hat."
+        ],
+        "example": false,
+        "options": [
+          "A: weil sie neben dem Studium arbeiten möchte.",
+          "B: dass sie einen Termin für ein Vorstellungsgespräch bekommen hat.",
+          "C: weil sie ein Konto eröffnen möchte.",
+          "D: und hat dort den Stephansdom angesehen.",
+          "E: weil sie hier studieren und arbeiten möchte.",
+          "F: und Valentina hofft, dass sie den Job bekommt."
+        ]
+      },
+      {
+        "prompt": "Die Leute in diesem Restaurant waren sehr freundlich",
+        "accepted_answers": [
+          "F: und Valentina hofft, dass sie den Job bekommt."
+        ],
+        "example": false,
+        "options": [
+          "A: weil sie neben dem Studium arbeiten möchte.",
+          "B: dass sie einen Termin für ein Vorstellungsgespräch bekommen hat.",
+          "C: weil sie ein Konto eröffnen möchte.",
+          "D: und hat dort den Stephansdom angesehen.",
+          "E: weil sie hier studieren und arbeiten möchte.",
+          "F: und Valentina hofft, dass sie den Job bekommt."
+        ]
+      },
+      {
+        "prompt": "Morgen muss sie zur Bank gehen,",
+        "accepted_answers": [
+          "C: weil sie ein Konto eröffnen möchte."
+        ],
+        "example": false,
+        "options": [
+          "A: weil sie neben dem Studium arbeiten möchte.",
+          "B: dass sie einen Termin für ein Vorstellungsgespräch bekommen hat.",
+          "C: weil sie ein Konto eröffnen möchte.",
+          "D: und hat dort den Stephansdom angesehen.",
+          "E: weil sie hier studieren und arbeiten möchte.",
+          "F: und Valentina hofft, dass sie den Job bekommt."
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Ghép các mệnh đề und, weil, dass trong câu chuyện đến Vienna học tập và tìm việc.",
+    "rationale": "Đổi nối hai vế thành chọn vế sau trong danh sách; giữ đủ sáu lựa chọn và quan hệ ngữ pháp.",
+    "answer_page": 68,
+    "reviewed": true
+  },
+  {
+    "number": "3",
+    "source_page": 25,
+    "title": "Fragen beim Vorstellungsgespräch",
+    "instruction": "Wählen Sie. A: Ergänzen Sie. Die Wörter unten helfen. B: Ergänzen Sie.",
+    "questions": [
+      {
+        "prompt": "Haben Sie schon in Cafés oder Restaurants {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "gearbeitet"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wie viel {{1}} haben sie mit der Arbeit als Kellnerin?",
+        "blanks": [
+          {
+            "answers": [
+              "Erfahrung"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Können Sie auch {{1}} arbeiten, wenn wir viele Reservierungen haben?",
+        "blanks": [
+          {
+            "answers": [
+              "spontan"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Sie studieren ja auch. An wie viel Tagen pro Woche {{1}} Sie arbeiten.",
+        "blanks": [
+          {
+            "answers": [
+              "können"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wie ist das mit der Kleidung? Was muss ich bei der Arbeit {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "tragen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wie ist es mit der Bezahlung? Wie viel {{1}} ich?",
+        "blanks": [
+          {
+            "answers": [
+              "verdiene"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Muss ich am Wochenende immer arbeiten oder habe ich da auch mal {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "frei"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Hoàn thiện câu hỏi phỏng vấn việc làm với động từ và từ vựng thích hợp.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 68,
+    "reviewed": true,
+    "hints": "arbeiten | Erfahrung | frei | können | spontan | tragen | verdienen"
+  },
+  {
+    "number": "4a",
+    "source_page": 25,
+    "title": "Valentinas Probetag",
+    "instruction": "Was ist richtig? Kreuzen Sie an.",
+    "questions": [
+      {
+        "prompt": "Valentina zieht die {{1}} (weiße / weißen) Bluse und den {{2}} (schwarze / schwarzen) Rock an.",
+        "blanks": [
+          {
+            "answers": [
+              "weiße"
+            ]
+          },
+          {
+            "answers": [
+              "schwarzen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Sie packt das {{1}} (weiße / weißen) T-Shirt und noch einen Rock ein.",
+        "blanks": [
+          {
+            "answers": [
+              "weiße"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Sie nimmt die {{1}} (bequeme / bequemen) Schuhe aus dem {{2}} (kleine / kleinen) Schrank.",
+        "blanks": [
+          {
+            "answers": [
+              "bequemen"
+            ]
+          },
+          {
+            "answers": [
+              "kleinen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "In der {{1}} (große / großen) Tasche hat sie auch die {{2}} (neue / neuen) Speisekarte.",
+        "blanks": [
+          {
+            "answers": [
+              "großen"
+            ]
+          },
+          {
+            "answers": [
+              "neue"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der Chef stellt Valentina den {{1}} (nette / netten) Kolleginnen und Kollegen vor.",
+        "blanks": [
+          {
+            "answers": [
+              "netten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der {{1}} (junge / jungen) Koch zeigt ihr die {{2}} (moderne / modernen) Küche.",
+        "blanks": [
+          {
+            "answers": [
+              "junge"
+            ]
+          },
+          {
+            "answers": [
+              "moderne"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Chọn đuôi tính từ sau mạo từ xác định theo cách, giống và số.",
+    "rationale": "Đổi ô đánh dấu thành điền lựa chọn vào từng vị trí; giữ cả hai phương án gốc và từng chỗ cần chấm.",
+    "answer_page": 68,
+    "reviewed": true
+  },
+  {
+    "number": "4b",
+    "source_page": 26,
+    "title": "Ein Café, zwei Meinungen",
+    "instruction": "Ergänzen Sie die Adjektivendungen.",
+    "questions": [
+      {
+        "prompt": "Das gefällt Sirin sehr gut: der schwarze Boden",
+        "accepted_answers": [
+          "e"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Das gefällt Sirin sehr gut: die modern{{1}} Lampe, das alt{{2}} Sofa, die hoh{{3}} Stühle, der groß{{4}} Tisch.",
+        "blanks": [
+          {
+            "answers": [
+              "e"
+            ]
+          },
+          {
+            "answers": [
+              "e"
+            ]
+          },
+          {
+            "answers": [
+              "en"
+            ]
+          },
+          {
+            "answers": [
+              "e"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das findet Alex schrecklich: den schwarzen Boden",
+        "accepted_answers": [
+          "en"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Das findet Alex schrecklich: die modern{{1}} Lampe, das alt{{2}} Sofa, die hoh{{3}} Stühle, den groß{{4}} Tisch.",
+        "blanks": [
+          {
+            "answers": [
+              "e"
+            ]
+          },
+          {
+            "answers": [
+              "e"
+            ]
+          },
+          {
+            "answers": [
+              "en"
+            ]
+          },
+          {
+            "answers": [
+              "en"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Đối chiếu đuôi tính từ sau mạo từ xác định ở Nominativ và Akkusativ.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 68,
+    "reviewed": true
+  },
+  {
+    "number": "4c",
+    "source_page": 26,
+    "title": "Was findet Sirin gut, was nicht?",
+    "instruction": "Ergänzen Sie die Adjektive in der richtigen Form.",
+    "questions": [
+      {
+        "prompt": "Sirin mag besonders gern das {{1}} (lecker) Essen zu Hause. Sie liebt das Schwimmen im {{2}} (warm) See und hört oft die {{3}} (toll) Lieder von Björk.",
+        "blanks": [
+          {
+            "answers": [
+              "leckere"
+            ]
+          },
+          {
+            "answers": [
+              "warmen"
+            ]
+          },
+          {
+            "answers": [
+              "tollen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wenn das Wetter gut ist, joggt sie gern im {{1}} (groß) Park in ihrer Nähe. Aber Sirin findet das Aufstehen am {{2}} (früh) Morgen überhaupt nicht gut.",
+        "blanks": [
+          {
+            "answers": [
+              "großen"
+            ]
+          },
+          {
+            "answers": [
+              "frühen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Sie hasst das {{1}} (lang) Warten auf den Bus. Mittags isst sie nicht gern in der {{2}} (voll) Kantine. Nach dem {{3}} (anstrengend) Tag im Büro ist sie müde.",
+        "blanks": [
+          {
+            "answers": [
+              "lange"
+            ]
+          },
+          {
+            "answers": [
+              "vollen"
+            ]
+          },
+          {
+            "answers": [
+              "anstrengenden"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Chia tính từ trong các cụm danh từ ở Akkusativ và Dativ.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 68,
+    "reviewed": true
+  },
+  {
+    "number": "4d",
+    "source_page": 26,
+    "title": "Ein Festival in Scheeßel",
+    "instruction": "Was passt? Ergänzen Sie Artikel, Adjektiv und Nomen in der richtigen Form.",
+    "questions": [
+      {
+        "prompt": "Letztes Jahr bin ich mit Freunden zu dem großen Festival in Scheeßel gefahren.",
+        "accepted_answers": [
+          "dem großen Festival"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Vier Personen, Zelt, Gepäck und Essen: {{1}} war total voll.",
+        "blanks": [
+          {
+            "answers": [
+              "Das kleine Auto"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Besonders {{1}} „M83“ war echt super.",
+        "blanks": [
+          {
+            "answers": [
+              "die französische Band"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Und dann gab es noch {{1}} mit den „Broilers“.",
+        "blanks": [
+          {
+            "answers": [
+              "das coole Konzert"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich habe auf {{1}} im Zelt geschlafen. Aber nicht viel!",
+        "blanks": [
+          {
+            "answers": [
+              "dem vollen Campingplatz"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich war nach {{1}} total müde. Aber das ist egal.",
+        "blanks": [
+          {
+            "answers": [
+              "den tollen Tagen"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Kết hợp mạo từ, tính từ và danh từ đúng cách trong lời kể về lễ hội.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 68,
+    "reviewed": true,
+    "hints": "das Auto, klein | das Festival, groß | das Konzert, cool | der Campingplatz, voll | die Band, französisch | die Tage, toll"
+  },
+  {
+    "number": "5a",
+    "source_page": 26,
+    "title": "Auf dem Amt",
+    "instruction": "Was ist falsch? Streichen Sie durch und korrigieren Sie.",
+    "questions": [
+      {
+        "prompt": "Frau Nowak hat einen neuen Personalausweis überwiesen.",
+        "accepted_answers": [
+          "beantragt"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Auf dem Amt hat sie ein Formular geprüft.",
+        "accepted_answers": [
+          "ausgefüllt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Frau Nowak hat der Beamtin ihre Dokumente beantragt.",
+        "accepted_answers": [
+          "gezeigt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Die Beamtin hat ihre Angaben und das Foto gezeigt.",
+        "accepted_answers": [
+          "geprüft"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie hat auf der Bank den Betrag für den Ausweis bekommen.",
+        "accepted_answers": [
+          "überwiesen"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Eine Woche später hat sie den neuen Ausweis ausgefüllt.",
+        "accepted_answers": [
+          "bekommen"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Sửa động từ phân từ để mô tả đúng các bước xin giấy tờ tùy thân.",
+    "rationale": "Giữ câu sai gốc; nhập phân từ đúng để thay từ không phù hợp thay vì gạch trên trang giấy.",
+    "answer_page": 68,
+    "reviewed": true
+  },
+  {
+    "number": "5b",
+    "source_page": 27,
+    "title": "Was ist passiert?",
+    "instruction": "Schreiben Sie einen kurzen Text.",
+    "questions": [
+      {
+        "prompt": "Herr Ziegler … (zur Polizei gehen)",
+        "accepted_answers": [
+          "ist zur Polizei gegangen"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Bei der Polizei … (einen Diebstahl melden)",
+        "accepted_answers": [
+          "hat er einen Diebstahl gemeldet"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Die Polizistin … (viele Fragen stellen)",
+        "accepted_answers": [
+          "hat viele Fragen gestellt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie … (alle Angaben aufschreiben)",
+        "accepted_answers": [
+          "hat alle Angaben aufgeschrieben"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Herr Ziegler … (den Bericht unterschreiben)",
+        "accepted_answers": [
+          "hat den Bericht unterschrieben"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Viết câu ở Perfekt kể lại việc trình báo mất cắp.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống. Cho phép giáo viên xem lại cách diễn đạt tương đương ngoài đáp án mẫu.",
+    "answer_page": 68,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "5c",
+    "source_page": 27,
+    "title": "Wie arbeitet Frau Lingen heute?",
+    "instruction": "Ergänzen Sie mit oder ohne und die Endung.",
+    "questions": [
+      {
+        "prompt": "mit vielen Kunden",
+        "accepted_answers": [
+          "mit vielen Kunden"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "{{1}} ihr{{2}} Kollegin",
+        "blanks": [
+          {
+            "answers": [
+              "mit"
+            ]
+          },
+          {
+            "answers": [
+              "er"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} ein{{2}} Mittagspause",
+        "blanks": [
+          {
+            "answers": [
+              "ohne"
+            ]
+          },
+          {
+            "answers": [
+              "e"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} ein{{2}} Computer",
+        "blanks": [
+          {
+            "answers": [
+              "mit"
+            ]
+          },
+          {
+            "answers": [
+              "em"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} ihr{{2}} Chef",
+        "blanks": [
+          {
+            "answers": [
+              "ohne"
+            ]
+          },
+          {
+            "answers": [
+              "en"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} viel Stress",
+        "blanks": [
+          {
+            "answers": [
+              "mit"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Đọc tranh về ngày làm việc và dùng mit + Dativ hoặc ohne + Akkusativ.",
+    "rationale": "Giữ tranh nhỏ làm dữ liệu quan sát; nhập giới từ và đuôi từ, đối chiếu đáp án sách; cho phép yêu cầu giáo viên xem lại khi diễn giải tranh khác.",
+    "answer_page": 68,
+    "reviewed": true,
+    "image_path": "practice/ch5_5c.png",
+    "image_description": "Illustration von Frau Lingens Arbeitstag in der Bank.",
+    "allow_review": true
+  },
+  {
+    "number": "6",
+    "source_page": 27,
+    "title": "Höflich um etwas bitten",
+    "instruction": "Schreiben Sie Fragen mit könnte.",
+    "questions": [
+      {
+        "prompt": "die Tür / bitte / schließen / Sie",
+        "accepted_answers": [
+          "Könnten Sie bitte die Tür schließen?",
+          "Könnten Sie die Tür bitte schließen?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "du / heute / einkaufen",
+        "accepted_answers": [
+          "Könntest du heute einkaufen?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "ihr / etwas leiser / sein",
+        "accepted_answers": [
+          "Könntet ihr etwas leiser sein?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "einen Kaffee / holen / du",
+        "accepted_answers": [
+          "Könntest du einen Kaffee holen?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Frau Raich / anrufen / Sie",
+        "accepted_answers": [
+          "Könnten Sie Frau Raich anrufen?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "mir / helfen / ihr",
+        "accepted_answers": [
+          "Könntet ihr mir helfen?"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Viết yêu cầu lịch sự với Konjunktiv II của können.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống. Cho phép giáo viên xem lại cách diễn đạt tương đương ngoài đáp án mẫu.",
+    "answer_page": 68,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "7",
+    "source_page": 27,
+    "title": "Höflich oder unhöflich?",
+    "instruction": "Was ist unhöflich, höflich oder sehr höflich? Sprechen Sie die höflichen Sätze laut.",
+    "questions": [
+      {
+        "prompt": "Komm mal zu mir!",
+        "accepted_answers": [
+          "unhöflich"
+        ],
+        "example": true,
+        "options": [
+          "unhöflich",
+          "höflich",
+          "sehr höflich"
+        ]
+      },
+      {
+        "prompt": "Könntest du mich morgen anrufen?",
+        "accepted_answers": [
+          "sehr höflich"
+        ],
+        "example": false,
+        "options": [
+          "unhöflich",
+          "höflich",
+          "sehr höflich"
+        ]
+      },
+      {
+        "prompt": "Drucken Sie das für mich aus.",
+        "accepted_answers": [
+          "unhöflich"
+        ],
+        "example": false,
+        "options": [
+          "unhöflich",
+          "höflich",
+          "sehr höflich"
+        ]
+      },
+      {
+        "prompt": "Kann ich einen Kaffee haben?",
+        "accepted_answers": [
+          "höflich"
+        ],
+        "example": false,
+        "options": [
+          "unhöflich",
+          "höflich",
+          "sehr höflich"
+        ]
+      },
+      {
+        "prompt": "Bitte gib mir ein Blatt Papier.",
+        "accepted_answers": [
+          "höflich"
+        ],
+        "example": false,
+        "options": [
+          "unhöflich",
+          "höflich",
+          "sehr höflich"
+        ]
+      },
+      {
+        "prompt": "Könnten Sie mir bitte Zucker geben?",
+        "accepted_answers": [
+          "sehr höflich"
+        ],
+        "example": false,
+        "options": [
+          "unhöflich",
+          "höflich",
+          "sehr höflich"
+        ]
+      },
+      {
+        "prompt": "Ich brauche das Buch.",
+        "accepted_answers": [
+          "unhöflich"
+        ],
+        "example": false,
+        "options": [
+          "unhöflich",
+          "höflich",
+          "sehr höflich"
+        ]
+      },
+      {
+        "prompt": "Kannst du mir einen Stift geben?",
+        "accepted_answers": [
+          "höflich"
+        ],
+        "example": false,
+        "options": [
+          "unhöflich",
+          "höflich",
+          "sehr höflich"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Phân biệt ba mức độ lịch sự trong lời yêu cầu và luyện nói.",
+    "rationale": "Đổi ký hiệu mặt cười thành ba lựa chọn bằng chữ; giữ phần luyện nói, chỉ tự chấm phần phân loại.",
+    "answer_page": 68,
+    "reviewed": true
+  },
+  {
+    "number": "8",
+    "source_page": 27,
+    "title": "Wien: Was gehört zusammen?",
+    "instruction": "Was gehört zusammen? Verbinden Sie.",
+    "questions": [
+      {
+        "prompt": "Im Museumsquartier sieht man die Bilder von vielen österreichischen Malern.",
+        "accepted_answers": [
+          "sieht man die Bilder von vielen österreichischen Malern"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Im Parlament {{1}} {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "machen"
+            ]
+          },
+          {
+            "answers": [
+              "die Politiker die neuen Gesetze"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Im Volksgarten, einem Park, {{1}} {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "kann man"
+            ]
+          },
+          {
+            "answers": [
+              "Ruhe und Entspannung finden"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Im Wiener Burgtheater {{1}} {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "kann man"
+            ]
+          },
+          {
+            "answers": [
+              "viele Dramen und Komödien sehen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Im Wiener Rathaus {{1}} {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "arbeiten"
+            ]
+          },
+          {
+            "answers": [
+              "viele Beamtinnen und Beamte"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "In der Clubdisco im Volksgarten {{1}} {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "kann man"
+            ]
+          },
+          {
+            "answers": [
+              "die ganze Nacht lang feiern und tanzen"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Ghép địa danh, động từ và hoạt động thành câu hoàn chỉnh về Vienna.",
+    "rationale": "Đổi đường nối ba cột thành hai trường trả lời cho mỗi câu; giữ đủ ngân hàng động từ và hoạt động. Cho phép giáo viên xem lại cách diễn đạt tương đương ngoài đáp án mẫu.",
+    "answer_page": 68,
+    "reviewed": true,
+    "hints": "Mitte: arbeiten | kann man | sieht man | machen. Ende: die ganze Nacht lang feiern und tanzen | die Bilder von vielen österreichischen Malern | die Politiker die neuen Gesetze | Ruhe und Entspannung finden | viele Beamtinnen und Beamte | viele Dramen und Komödien sehen",
+    "allow_review": true
+  },
+  {
+    "number": "9a",
+    "source_page": 28,
+    "title": "Was sagt Mara über Wien?",
+    "instruction": "Wählen Sie. A: Ergänzen Sie. Die Wörter unten helfen. B: Ergänzen Sie.",
+    "questions": [
+      {
+        "prompt": "Man hört und liest, dass man in Wien besonders gut leben kann. Finden Sie das auch?",
+        "accepted_answers": [
+          "Finden"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Das kann ich nicht {{1}}. Ich habe schon immer in Wien {{2}} und nie in einer anderen Großstadt. Vieles ist wirklich gut.",
+        "blanks": [
+          {
+            "answers": [
+              "sagen"
+            ]
+          },
+          {
+            "answers": [
+              "gelebt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das Wasser ist sehr {{1}}, ich muss nie Wasser in Flaschen {{2}}. Die Stadt ist sauber. U-Bahn, Straßenbahnen und {{3}} sind meistens pünktlich.",
+        "blanks": [
+          {
+            "answers": [
+              "gut"
+            ]
+          },
+          {
+            "answers": [
+              "kaufen"
+            ]
+          },
+          {
+            "answers": [
+              "Busse"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Was finden Sie {{1}} so gut? Was ist nicht so schön?",
+        "blanks": [
+          {
+            "answers": [
+              "nicht"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Hm, im Zentrum {{1}} es zu viele Touristen, fast 8 Millionen pro Jahr. Viele Leute {{2}} deshalb ihre Wohnung an Besucher und die Mieten {{3}} immer teurer.",
+        "blanks": [
+          {
+            "answers": [
+              "gibt"
+            ]
+          },
+          {
+            "answers": [
+              "vermieten"
+            ]
+          },
+          {
+            "answers": [
+              "werden"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Und im Winter ist das {{1}} nicht so angenehm: Es gibt viel Wind und Nebel. Aber ich bin {{2}} Wienerin!",
+        "blanks": [
+          {
+            "answers": [
+              "Wetter"
+            ]
+          },
+          {
+            "answers": [
+              "gern"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Hoàn thiện phỏng vấn về ưu và nhược điểm của cuộc sống ở Vienna.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 68,
+    "reviewed": true,
+    "hints": "Busse | finden | gelebt | gern | gibt | gut | kaufen | nicht | sagen | vermieten | werden | Wetter"
+  },
+  {
+    "number": "9b",
+    "source_page": 28,
+    "title": "Und Ihre Meinung?",
+    "instruction": "Suchen Sie vier Ausdrücke. Markieren und schreiben Sie.",
+    "questions": [
+      {
+        "prompt": "Das finde ich nicht so gut, weil …",
+        "accepted_answers": [
+          "Das finde ich nicht so gut, weil"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Notieren Sie die drei weiteren Ausdrücke, getrennt durch Semikolons.",
+        "accepted_answers": [
+          "Ich finde es schön dass",
+          "Mir gefällt nicht so gut dass",
+          "Mir ist wichtig dass"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "wordset",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Nhận diện và tách từ trong bốn mẫu câu nêu ý kiến.",
+    "rationale": "Giữ chuỗi chữ và mẫu câu đầu đã làm; nhập ba mẫu câu còn lại theo danh sách không phụ thuộc thứ tự.",
+    "answer_page": 68,
+    "reviewed": true,
+    "context": "SCHRÖDASFINDEICHNICHTSOGUTWEIL SEROICHFINDESSCHÖNDASSHUH ZEMIRGEFÄLLTNICHTSOGUTDASSNOSTEMIRISTWICHTIGDASSRERAS",
+    "ignore_punctuation": true
+  },
+  {
+    "number": "W-a",
+    "source_page": 28,
+    "title": "Wortbildung – Komposita (1)",
+    "instruction": "Lesen Sie die Wörter und ergänzen Sie den Artikel. Welches Wort gibt den Artikel? Markieren Sie wie im Beispiel.",
+    "questions": [
+      {
+        "prompt": "die Kunst + das Museum → das Kunstmuseum; Grundwort: Museum",
+        "accepted_answers": [
+          "Museum"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "{{1}} Speise + die Karte → {{2}} Speisekarte. Welches Wort gibt den Artikel? {{3}}",
+        "blanks": [
+          {
+            "answers": [
+              "die"
+            ]
+          },
+          {
+            "answers": [
+              "die"
+            ]
+          },
+          {
+            "answers": [
+              "Karte"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} Augen (Pl.) + der Arzt → {{2}} Augenarzt. Welches Wort gibt den Artikel? {{3}}",
+        "blanks": [
+          {
+            "answers": [
+              "die"
+            ]
+          },
+          {
+            "answers": [
+              "der"
+            ]
+          },
+          {
+            "answers": [
+              "Arzt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} Kopf + {{2}} Schmerzen (Pl.) → {{3}} Kopfschmerzen. Welches Wort gibt den Artikel? {{4}}",
+        "blanks": [
+          {
+            "answers": [
+              "der"
+            ]
+          },
+          {
+            "answers": [
+              "die"
+            ]
+          },
+          {
+            "answers": [
+              "die"
+            ]
+          },
+          {
+            "answers": [
+              "Schmerzen"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Xác định danh từ gốc quyết định mạo từ của danh từ ghép.",
+    "rationale": "Đổi tô phần từ gốc thành một trường nhập riêng; vẫn chấm cả mạo từ và từ quyết định mạo từ.",
+    "answer_page": 68,
+    "reviewed": true,
+    "context": "Man kann aus zwei Nomen ein neues Nomen bilden. Das zweite Nomen (Grundwort) bestimmt den Artikel: der Zahn + der Schmerz → der Zahnschmerz; der Zahn + die Ärztin → die Zahnärztin."
+  },
+  {
+    "number": "W-b",
+    "source_page": 28,
+    "title": "Berufe als Komposita",
+    "instruction": "Wie nennt man diese Personen? Bilden Sie Komposita.",
+    "questions": [
+      {
+        "prompt": "Sie ist eine Kauffrau in der Bank:",
+        "accepted_answers": [
+          "die Bankkauffrau"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Er ist der Chef von einem Hotel:",
+        "accepted_answers": [
+          "der Hotelchef"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie arbeitet als Pflegerin für die Kranken:",
+        "accepted_answers": [
+          "die Krankenpflegerin"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie ist eine Designerin für Mode:",
+        "accepted_answers": [
+          "die Modedesignerin"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Er ist Lehrer und unterrichtet Deutsch:",
+        "accepted_answers": [
+          "der Deutschlehrer"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Tạo danh từ ghép chỉ nghề nghiệp và dùng đúng mạo từ.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 68,
+    "reviewed": true
+  }
+]

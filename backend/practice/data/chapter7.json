@@ -1,0 +1,1207 @@
+[
+  {
+    "number": "1",
+    "source_page": 34,
+    "title": "Mit dem Auto und öffentlich unterwegs",
+    "instruction": "Ergänzen Sie die Lücken.",
+    "questions": [
+      {
+        "prompt": "Ich komm’ nicht {{1}}, da vorne war ein {{2}} und ich steh’ im {{3}}. Da hilft auch das {{4}} nichts!",
+        "blanks": [
+          {
+            "answers": [
+              "weiter"
+            ]
+          },
+          {
+            "answers": [
+              "Unfall"
+            ]
+          },
+          {
+            "answers": [
+              "Stau"
+            ]
+          },
+          {
+            "answers": [
+              "Navi"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Straßenbahn hat {{1}}, und dann ist meine S-Bahn weg. Das kann doch nicht wahr sein! Die nächste {{2}} erst in einer halben {{3}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Verspätung"
+            ]
+          },
+          {
+            "answers": [
+              "fährt"
+            ]
+          },
+          {
+            "answers": [
+              "Stunde"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Natürlich sind alle {{1}} rot, wenn ich keine {{2}} habe. Und dann macht die Polizei auch noch eine {{3}}. Das gibt’s doch nicht! Hoffentlich finde ich wenigstens gleich einen {{4}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Ampeln"
+            ]
+          },
+          {
+            "answers": [
+              "Zeit"
+            ]
+          },
+          {
+            "answers": [
+              "Kontrolle"
+            ]
+          },
+          {
+            "answers": [
+              "Parkplatz"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Puh, ist der Bus heute {{1}}! Ich hätte so gern einen {{2}}. Zum Glück muss ich gleich {{3}}. Hoffentlich ist dann mehr Platz.",
+        "blanks": [
+          {
+            "answers": [
+              "voll"
+            ]
+          },
+          {
+            "answers": [
+              "Sitzplatz"
+            ]
+          },
+          {
+            "answers": [
+              "umsteigen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ist das {{1}}! Letzte Woche war ein Reifen {{2}}, heute macht der {{3}} Probleme. Mein {{4}} ist mehr in der {{5}} als auf der Straße.",
+        "blanks": [
+          {
+            "answers": [
+              "ärgerlich"
+            ]
+          },
+          {
+            "answers": [
+              "kaputt"
+            ]
+          },
+          {
+            "answers": [
+              "Motor"
+            ]
+          },
+          {
+            "answers": [
+              "Auto"
+            ]
+          },
+          {
+            "answers": [
+              "Werkstatt"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Từ vựng A2 về sự cố giao thông và đi lại.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 70,
+    "reviewed": true,
+    "hints": "Wortanfänge: w…, Un…, St…, Na…, Vers…, f…, St…, Am…, Z…, Kon…, Pa…, v…, Si…, um…, ärg…, k…, M…, Au…, We…"
+  },
+  {
+    "number": "2",
+    "source_page": 34,
+    "title": "Verspätung: Wann können Sie das sagen?",
+    "instruction": "Ordnen Sie die Aussagen den Situationen zu.",
+    "questions": [
+      {
+        "prompt": "Entschuldige bitte, es tut mir leid.",
+        "accepted_answers": [
+          "Sie sind zu spät"
+        ],
+        "example": false,
+        "options": [
+          "Sie warten",
+          "Sie sind zu spät"
+        ]
+      },
+      {
+        "prompt": "Hoffentlich bist du gleich da!",
+        "accepted_answers": [
+          "Sie warten"
+        ],
+        "example": false,
+        "options": [
+          "Sie warten",
+          "Sie sind zu spät"
+        ]
+      },
+      {
+        "prompt": "Ich bin gleich da.",
+        "accepted_answers": [
+          "Sie sind zu spät"
+        ],
+        "example": false,
+        "options": [
+          "Sie warten",
+          "Sie sind zu spät"
+        ]
+      },
+      {
+        "prompt": "Ich warte schon eine Viertelstunde.",
+        "accepted_answers": [
+          "Sie warten"
+        ],
+        "example": false,
+        "options": [
+          "Sie warten",
+          "Sie sind zu spät"
+        ]
+      },
+      {
+        "prompt": "Ich weiß, ich bin zu spät. Aber …",
+        "accepted_answers": [
+          "Sie sind zu spät"
+        ],
+        "example": false,
+        "options": [
+          "Sie warten",
+          "Sie sind zu spät"
+        ]
+      },
+      {
+        "prompt": "In fünf Minuten bin ich bei dir.",
+        "accepted_answers": [
+          "Sie sind zu spät"
+        ],
+        "example": false,
+        "options": [
+          "Sie warten",
+          "Sie sind zu spät"
+        ]
+      },
+      {
+        "prompt": "Mensch, wo bleibst du denn?",
+        "accepted_answers": [
+          "Sie warten"
+        ],
+        "example": false,
+        "options": [
+          "Sie warten",
+          "Sie sind zu spät"
+        ]
+      },
+      {
+        "prompt": "Wo bist du denn?",
+        "accepted_answers": [
+          "Sie warten"
+        ],
+        "example": false,
+        "options": [
+          "Sie warten",
+          "Sie sind zu spät"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Phân biệt lời xin lỗi khi đến muộn và phản hồi của người đang chờ.",
+    "rationale": "Chọn đáp án trên web thay thao tác đánh dấu/nối trên giấy; giữ nguyên các phương án và chấm theo đáp án sách.",
+    "answer_page": 70,
+    "reviewed": true,
+    "context": "Sie warten auf einen Freund / eine Freundin. Er/Sie kommt nicht. ODER: Ein Freund / Eine Freundin wartet auf Sie. Sie sind zu spät und rufen ihn/sie an."
+  },
+  {
+    "number": "3a",
+    "source_page": 34,
+    "title": "Welches Wort passt nicht?",
+    "instruction": "Wählen Sie das unpassende Wort.",
+    "questions": [
+      {
+        "prompt": "das Flugzeug / die Baustelle / die Autobahn / der Stau",
+        "accepted_answers": [
+          "das Flugzeug"
+        ],
+        "example": false,
+        "options": [
+          "das Flugzeug",
+          "die Baustelle",
+          "die Autobahn",
+          "der Stau"
+        ]
+      },
+      {
+        "prompt": "die Reparatur / kaputt sein / die Werkstatt / die Tankstelle",
+        "accepted_answers": [
+          "die Tankstelle"
+        ],
+        "example": false,
+        "options": [
+          "die Reparatur",
+          "kaputt sein",
+          "die Werkstatt",
+          "die Tankstelle"
+        ]
+      },
+      {
+        "prompt": "die Polizei / das Kennzeichen / der Abflug / die Kontrolle",
+        "accepted_answers": [
+          "der Abflug"
+        ],
+        "example": false,
+        "options": [
+          "die Polizei",
+          "das Kennzeichen",
+          "der Abflug",
+          "die Kontrolle"
+        ]
+      },
+      {
+        "prompt": "der Flughafen / abfliegen / rückwärts fahren / landen",
+        "accepted_answers": [
+          "rückwärts fahren"
+        ],
+        "example": false,
+        "options": [
+          "der Flughafen",
+          "abfliegen",
+          "rückwärts fahren",
+          "landen"
+        ]
+      },
+      {
+        "prompt": "das Kfz / der Pkw / die S-Bahn / der Lkw",
+        "accepted_answers": [
+          "die S-Bahn"
+        ],
+        "example": false,
+        "options": [
+          "das Kfz",
+          "der Pkw",
+          "die S-Bahn",
+          "der Lkw"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Nhận diện nhóm nghĩa từ vựng giao thông.",
+    "rationale": "Chọn đáp án trên web thay thao tác đánh dấu/nối trên giấy; giữ nguyên các phương án và chấm theo đáp án sách.",
+    "answer_page": 70,
+    "reviewed": true
+  },
+  {
+    "number": "3b",
+    "source_page": 35,
+    "title": "Wörter zum Thema Auto fahren",
+    "instruction": "Finden Sie 17 Wörter im Buchstabengitter. Beispiel: das Navi.",
+    "questions": [
+      {
+        "prompt": "Finden Sie die übrigen 16 Wörter. Schreiben Sie Nomen mit Artikel, getrennt durch Kommas.",
+        "accepted_answers": [
+          "das Kennzeichen",
+          "der Pkw",
+          "das Kfz",
+          "kaputt",
+          "die Bremse",
+          "der Lkw",
+          "die Versicherung",
+          "rückwärts",
+          "der Reifen",
+          "die Reparatur",
+          "die Ampel",
+          "der Verkehr",
+          "der Motor",
+          "tanken",
+          "der Stau",
+          "die Baustelle"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "wordset",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Tìm và viết từ về ô tô, kèm giống danh từ.",
+    "rationale": "Giữ lưới chữ; nhập các từ tìm được thành danh sách không phụ thuộc thứ tự thay việc tô ô.",
+    "answer_page": 70,
+    "reviewed": true,
+    "context": "R R I R U N A V I M E L K B\nÜ E K E N N Z E I C H E N A\nC I O P K W A R W I A B S U\nK F Z A L A J K A P U T T S\nW E B R E M S E J M Y A A T\nÄ N T A V P T H C O D N U E\nR O A T U E R R H T R K O L\nT P I U P L K W T O E E N L\nS V E R S I C H E R U N G E"
+  },
+  {
+    "number": "4",
+    "source_page": 35,
+    "title": "Was möchten die Leute wissen?",
+    "instruction": "Was ist richtig? Wählen Sie.",
+    "questions": [
+      {
+        "prompt": "Eine Frau möchte wissen,",
+        "accepted_answers": [
+          "wann der Zug in Stuttgart ankommt."
+        ],
+        "example": false,
+        "options": [
+          "wann der Zug in Stuttgart ankommt.",
+          "wann der Zug kommt in Stuttgart an."
+        ]
+      },
+      {
+        "prompt": "Der Schaffner weiß auch nicht,",
+        "accepted_answers": [
+          "warum der Zug hier stehen bleibt."
+        ],
+        "example": false,
+        "options": [
+          "warum der Zug hier stehen bleibt.",
+          "warum stehen bleibt der Zug hier."
+        ]
+      },
+      {
+        "prompt": "Ein Mann fragt den Schaffner,",
+        "accepted_answers": [
+          "wohin er sein Gepäck stellen kann."
+        ],
+        "example": false,
+        "options": [
+          "wohin er sein Gepäck kann stellen.",
+          "wohin er sein Gepäck stellen kann."
+        ]
+      },
+      {
+        "prompt": "Ein Kind möchte gern wissen,",
+        "accepted_answers": [
+          "wann der Zug weiterfährt."
+        ],
+        "example": false,
+        "options": [
+          "wann der Zug weiterfährt.",
+          "wann weiterfährt der Zug."
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Nhận biết trật tự động từ trong câu hỏi gián tiếp.",
+    "rationale": "Chọn đáp án trên web thay thao tác đánh dấu/nối trên giấy; giữ nguyên các phương án và chấm theo đáp án sách.",
+    "answer_page": 70,
+    "reviewed": true
+  },
+  {
+    "number": "5",
+    "source_page": 35,
+    "title": "Indirekte Fragesätze",
+    "instruction": "Ergänzen Sie den indirekten Fragesatz. Schreiben Sie nur den fehlenden Satzteil.",
+    "questions": [
+      {
+        "prompt": "Darf ich Sie fragen, …? — zum Hauptplatz / welche U-Bahn / fahren",
+        "accepted_answers": [
+          "welche U-Bahn zum Hauptplatz fährt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Könnten Sie mir sagen, …? — der Bus Linie 19 / abfahren / wo",
+        "accepted_answers": [
+          "wo der Bus Linie 19 abfährt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Entschuldigung, wissen Sie, …? — wo / einen Parkplatz / ich / finden",
+        "accepted_answers": [
+          "wo ich einen Parkplatz finde"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Können Sie mir bitte sagen, …? — wann / ankommen / in Bonn / wir",
+        "accepted_answers": [
+          "wann wir in Bonn ankommen"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Viết câu hỏi gián tiếp với từ để hỏi.",
+    "rationale": "Giữ yêu cầu tự viết câu; tự kiểm tra các đáp án chuẩn và cho phép giáo viên xem biến thể hợp lệ ngoài đáp án mẫu.",
+    "answer_page": 70,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "6a",
+    "source_page": 35,
+    "title": "Fragen mit ob",
+    "instruction": "Ergänzen Sie die Fragen in der richtigen Form.",
+    "questions": [
+      {
+        "prompt": "Weißt du, ob man in Ulm Fahrräder leihen kann? — Ja, mit dieser App.",
+        "accepted_answers": [
+          "ob man in Ulm Fahrräder leihen kann"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Wissen Sie, …? — Nein, muss man nicht.",
+        "accepted_answers": [
+          "ob man einen Helm tragen muss"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Können Sie mir sagen, …? — Ja, es ist nicht weit.",
+        "accepted_answers": [
+          "ob man zu Fuß gehen kann"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich wollte noch fragen, …? — Nein, leider nicht.",
+        "accepted_answers": [
+          "ob es im Bus WLAN gibt"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Chuyển câu hỏi có/không sang mệnh đề ob.",
+    "rationale": "Giữ yêu cầu tự viết câu; tự kiểm tra các đáp án chuẩn và cho phép giáo viên xem biến thể hợp lệ ngoài đáp án mẫu.",
+    "answer_page": 70,
+    "reviewed": true,
+    "context": "Kann man in Ulm Fahrräder leihen? / Gibt es im Bus WLAN? / Kann man zu Fuß gehen? / Muss man einen Helm tragen?",
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "6b",
+    "source_page": 36,
+    "title": "Flexibel in der Stadt",
+    "instruction": "Ergänzen Sie die Lücken.",
+    "questions": [
+      {
+        "prompt": "Jenny: Wir machen ein langes Wochenende und wollen ein Auto leihen. Muss man das vorher {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "reservieren"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Chris: Ich habe mir die App {{1}} und nun will ich mich {{2}}. Was ist aber mit meinen Daten? Sind die auch {{3}}?",
+        "blanks": [
+          {
+            "answers": [
+              "heruntergeladen"
+            ]
+          },
+          {
+            "answers": [
+              "registrieren"
+            ]
+          },
+          {
+            "answers": [
+              "sicher"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Liz: Was ist, wenn ich mit dem Auto einen {{1}} habe? Ist man dann gut {{2}}?",
+        "blanks": [
+          {
+            "answers": [
+              "Unfall"
+            ]
+          },
+          {
+            "answers": [
+              "versichert"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ayleen: Ich bin 15 und habe noch keinen {{1}}. Darf ich mit einem E-Scooter fahren?",
+        "blanks": [
+          {
+            "answers": [
+              "Führerschein"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Dùng từ vựng thuê xe và dạng động từ phù hợp.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 70,
+    "reviewed": true,
+    "hints": "Führerschein / herunterladen / leihen (Beispiel) / registrieren / reservieren / sicher / Unfall / versichert"
+  },
+  {
+    "number": "7",
+    "source_page": 36,
+    "title": "Was möchten Sie über D-A-CH wissen?",
+    "instruction": "Schreiben Sie indirekte Fragesätze. Verwenden Sie die Fragen und eine eigene Frage.",
+    "questions": [
+      {
+        "prompt": "Mich interessiert, …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich weiß nicht, …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich bin nicht sicher, …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich möchte wissen, …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Viết câu hỏi gián tiếp theo mối quan tâm cá nhân.",
+    "rationale": "Bài có lựa chọn cá nhân; giữ câu dẫn và ô viết tự do, giáo viên đánh giá nội dung và ngữ pháp, không áp một đáp án mẫu duy nhất.",
+    "answer_page": 70,
+    "reviewed": true,
+    "context": "Warum lieben viele Deutsche ihr Auto? / Sind die Schweizer Züge pünktlich? / Wie schnell darf man in Österreich fahren?",
+    "check_mode": "manual_check"
+  },
+  {
+    "number": "8",
+    "source_page": 36,
+    "title": "Mit dem Fahrrad ans Ziel",
+    "instruction": "Ergänzen Sie mithilfe der Karte. A: mit Worthilfe; B: ohne Worthilfe.",
+    "questions": [
+      {
+        "prompt": "Moritz fährt bis zum Frankenweg, dort biegt er rechts ab, fährt {{1}} Krankenhaus {{2}} und dann links {{3}} die Brücke. Er fährt {{4}} den Stadtpark. Da ist die Mehnertstraße und die Mehnertschule. {{5}} der Schule, an der Tucholskystraße, ist sein Büro.",
+        "blanks": [
+          {
+            "answers": [
+              "am"
+            ]
+          },
+          {
+            "answers": [
+              "vorbei"
+            ]
+          },
+          {
+            "answers": [
+              "über"
+            ]
+          },
+          {
+            "answers": [
+              "durch"
+            ]
+          },
+          {
+            "answers": [
+              "Hinter"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Lara nimmt zuerst den Uferweg, dann fährt sie {{1}} die Brücke und weiter {{2}} Soyfertstraße. Dort fährt sie links und nimmt den Badweg {{3}} Museum. Der Weg geht beim Museum nach links. Die Praxis Dr. Giner ist {{4}} Schwimmbad.",
+        "blanks": [
+          {
+            "answers": [
+              "über"
+            ]
+          },
+          {
+            "answers": [
+              "bis zur"
+            ]
+          },
+          {
+            "answers": [
+              "bis zum"
+            ]
+          },
+          {
+            "answers": [
+              "gegenüber vom"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Đọc bản đồ và dùng giới từ chỉ đường.",
+    "rationale": "Giữ bản đồ gốc dưới dạng hình minh họa; học viên tự đọc đường đi và nhập giới từ, không cần kéo thả hình học.",
+    "answer_page": 70,
+    "reviewed": true,
+    "hints": "Moritz: an … vorbei / bis zu (Beispiel) / durch / hinter / über. Lara: bis zu / bis zu / gegenüber von / über.",
+    "image_path": "practice/ch7_map.png",
+    "image_description": "Straßenkarte mit Startpunkten Moritz und Lara, Krankenhaus, Stadtpark, Schule, Büro, Museum, Praxis und Schwimmbad."
+  },
+  {
+    "number": "9",
+    "source_page": 37,
+    "title": "Zusammengesetzte Wörter",
+    "instruction": "Was gehört zusammen? Schreiben Sie die Wörter mit Artikel und sprechen Sie sie laut.",
+    "questions": [
+      {
+        "prompt": "Bord + … (mit Artikel)",
+        "accepted_answers": [
+          "das Bordbistro"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Groß + … (mit Artikel)",
+        "accepted_answers": [
+          "die Großstadt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Kenn + … (mit Artikel)",
+        "accepted_answers": [
+          "das Kennzeichen"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Konzert + … (mit Artikel)",
+        "accepted_answers": [
+          "der Konzertsaal"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Monats + … (mit Artikel)",
+        "accepted_answers": [
+          "die Monatskarte"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Rad + … (mit Artikel)",
+        "accepted_answers": [
+          "der Radfahrer"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Stadt + … (mit Artikel)",
+        "accepted_answers": [
+          "das Stadtzentrum"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Tank + … (mit Artikel)",
+        "accepted_answers": [
+          "die Tankstelle"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Bahn + … (mit Artikel)",
+        "accepted_answers": [
+          "der Bahnhof"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Ghép danh từ và xác định mạo từ của từ ghép.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 70,
+    "reviewed": true,
+    "hints": "BISTRO / FAHRER / HOF / KARTE / SAAL / STADT / STELLE / ZEICHEN / ZENTRUM"
+  },
+  {
+    "number": "10a",
+    "source_page": 37,
+    "title": "Verkehrsprobleme lösen, aber wie?",
+    "instruction": "Wer sagt das, der Ja-Sager (J) oder der Nein-Sager (N)?",
+    "questions": [
+      {
+        "prompt": "Die U-Bahn ist immer so voll.",
+        "accepted_answers": [
+          "N"
+        ],
+        "example": false,
+        "options": [
+          "J",
+          "N"
+        ]
+      },
+      {
+        "prompt": "In der Innenstadt gehe ich zu Fuß.",
+        "accepted_answers": [
+          "J"
+        ],
+        "example": false,
+        "options": [
+          "J",
+          "N"
+        ]
+      },
+      {
+        "prompt": "Wenn ich ein Auto brauche, dann leihe ich es aus.",
+        "accepted_answers": [
+          "J"
+        ],
+        "example": false,
+        "options": [
+          "J",
+          "N"
+        ]
+      },
+      {
+        "prompt": "Ich fahre mit dem Rad. Da habe ich auch Bewegung!",
+        "accepted_answers": [
+          "J"
+        ],
+        "example": false,
+        "options": [
+          "J",
+          "N"
+        ]
+      },
+      {
+        "prompt": "Breite Radwege – Wer braucht das?",
+        "accepted_answers": [
+          "N"
+        ],
+        "example": false,
+        "options": [
+          "J",
+          "N"
+        ]
+      },
+      {
+        "prompt": "Bezahlen, wenn man in die Innenstadt fährt? Wahnsinn!",
+        "accepted_answers": [
+          "N"
+        ],
+        "example": false,
+        "options": [
+          "J",
+          "N"
+        ]
+      },
+      {
+        "prompt": "In der Straßenbahn kann ich lesen.",
+        "accepted_answers": [
+          "J"
+        ],
+        "example": false,
+        "options": [
+          "J",
+          "N"
+        ]
+      },
+      {
+        "prompt": "Seilbahnen in der Stadt? Das funktioniert nicht.",
+        "accepted_answers": [
+          "N"
+        ],
+        "example": false,
+        "options": [
+          "J",
+          "N"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Phân biệt quan điểm đồng tình và phản đối giao thông đô thị.",
+    "rationale": "Chọn đáp án trên web thay thao tác đánh dấu/nối trên giấy; giữ nguyên các phương án và chấm theo đáp án sách.",
+    "answer_page": 70,
+    "reviewed": true
+  },
+  {
+    "number": "10b",
+    "source_page": 37,
+    "title": "Die eigene Meinung ausdrücken",
+    "instruction": "Wählen Sie fünf Aussagen aus 10a und ergänzen Sie die Sätze.",
+    "questions": [
+      {
+        "prompt": "Ich bin der Meinung, dass …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Für mich ist es gut, wenn …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich bin dagegen, dass …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich finde es schlecht, wenn …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Für mich ist es sinnvoll, wenn …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Diễn đạt ý kiến với dass và wenn.",
+    "rationale": "Bài có lựa chọn cá nhân; giữ câu dẫn và ô viết tự do, giáo viên đánh giá nội dung và ngữ pháp, không áp một đáp án mẫu duy nhất.",
+    "answer_page": 70,
+    "reviewed": true,
+    "context": "Die U-Bahn ist immer so voll.\nIn der Innenstadt gehe ich zu Fuß.\nWenn ich ein Auto brauche, dann leihe ich es aus.\nIch fahre mit dem Rad. Da habe ich auch Bewegung!\nBreite Radwege – Wer braucht das?\nBezahlen, wenn man in die Innenstadt fährt? Wahnsinn!\nIn der Straßenbahn kann ich lesen.\nSeilbahnen in der Stadt? Das funktioniert nicht.",
+    "check_mode": "manual_check"
+  },
+  {
+    "number": "11",
+    "source_page": 37,
+    "title": "Wie fahren die Personen zur Arbeit?",
+    "instruction": "Ergänzen Sie die Lücken.",
+    "questions": [
+      {
+        "prompt": "Anna Franze fährt immer mit dem Fahrrad. So ist sie schneller als mit dem Bus oder der U-Bahn, weil sie nie {{1}} muss. Sie {{2}} nur eine halbe Stunde für ihren Weg. Felix Pinto wohnt auf dem Land und {{3}} jeden Tag mit dem Zug in die Stadt. Milan Jurić {{4}} den Bus, und dann muss er in die Straßenbahn {{5}}. Manchmal {{6}} die Fahrt bis zur Uni eine Stunde.",
+        "blanks": [
+          {
+            "answers": [
+              "warten"
+            ]
+          },
+          {
+            "answers": [
+              "braucht"
+            ]
+          },
+          {
+            "answers": [
+              "pendelt"
+            ]
+          },
+          {
+            "answers": [
+              "nimmt"
+            ]
+          },
+          {
+            "answers": [
+              "umsteigen"
+            ]
+          },
+          {
+            "answers": [
+              "dauert"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Chia động từ mô tả hành trình đi làm.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 70,
+    "reviewed": true,
+    "hints": "brauchen / dauern / fahren (Beispiel) / nehmen / warten / pendeln / umsteigen"
+  },
+  {
+    "number": "12",
+    "source_page": 38,
+    "title": "Wie kann man auch sagen?",
+    "instruction": "Wählen Sie die passende Aussage.",
+    "questions": [
+      {
+        "prompt": "In Deutschland fahren 68 Prozent mit dem Pkw zur Arbeit.",
+        "accepted_answers": [
+          "Die meisten fahren mit dem Auto zur Arbeit."
+        ],
+        "example": false,
+        "options": [
+          "Über 70 Prozent benützen für den Arbeitsweg das Auto.",
+          "Die meisten fahren mit dem Auto zur Arbeit."
+        ]
+      },
+      {
+        "prompt": "Wenn der Arbeitsweg maximal 20 Minuten dauert, finden das nur 9 Prozent stressig.",
+        "accepted_answers": [
+          "Nur wenige finden einen Arbeitsweg bis zu 20 Minuten stressig."
+        ],
+        "example": false,
+        "options": [
+          "Nur wenige finden einen Arbeitsweg bis zu 20 Minuten stressig.",
+          "Nur 9 Prozent brauchen mehr als 20 Minuten für den Weg zur Arbeit."
+        ]
+      },
+      {
+        "prompt": "Auch wenn der Arbeitsweg länger als 40 Minuten ist, genießen das 43 Prozent.",
+        "accepted_answers": [
+          "43 Prozent finden über 40 Minuten für ihren Arbeitsweg gut."
+        ],
+        "example": false,
+        "options": [
+          "43 Prozent finden über 40 Minuten für ihren Arbeitsweg gut.",
+          "Mehr als die Hälfte finden auch einen Arbeitsweg von 40 Minuten okay."
+        ]
+      },
+      {
+        "prompt": "8 Prozent brauchen für ihren Arbeitsweg kein Fahrzeug. Sie gehen zu Fuß.",
+        "accepted_answers": [
+          "Nur wenige Leute gehen zu Fuß zur Arbeit."
+        ],
+        "example": false,
+        "options": [
+          "Nur wenige Leute gehen zu Fuß zur Arbeit.",
+          "Nur 8 Prozent gehen zu Fuß oder nehmen das Fahrrad."
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Đọc hiểu các tỷ lệ phần trăm và diễn đạt tương đương.",
+    "rationale": "Chọn đáp án trên web thay thao tác đánh dấu/nối trên giấy; giữ nguyên các phương án và chấm theo đáp án sách.",
+    "answer_page": 70,
+    "reviewed": true
+  },
+  {
+    "number": "13",
+    "source_page": 38,
+    "title": "Eine Zug-Geschichte",
+    "instruction": "Schreiben Sie die Geschichte in der Vergangenheit. Beginnen Sie mit dem angegebenen Teil.",
+    "questions": [
+      {
+        "prompt": "ich / wie jeden Morgen / mit dem Zug / zur Arbeit fahren — Anfang: Wie jeden Morgen",
+        "accepted_answers": [
+          "Wie jeden Morgen bin ich mit dem Zug zur Arbeit gefahren."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "spät / ich / dran sein / und / sehr schnell / laufen — Anfang: Ich",
+        "accepted_answers": [
+          "Ich war spät dran und bin sehr schnell gelaufen."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "sofort / der Zug / abfahren / und / lesen / ich — Anfang: Der Zug",
+        "accepted_answers": [
+          "Der Zug ist sofort abgefahren und ich habe gelesen."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "nach 20 Minuten / ich / sehen / aus dem Fenster — Anfang: Nach 20 Minuten",
+        "accepted_answers": [
+          "Nach 20 Minuten habe ich aus dem Fenster gesehen."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "nicht / den Ort / kennen / ich — Anfang: Den Ort",
+        "accepted_answers": [
+          "Den Ort habe ich nicht gekannt."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "viel zu spät / ich / in die Firma / kommen — Anfang: Ich",
+        "accepted_answers": [
+          "Ich bin viel zu spät in die Firma gekommen."
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Viết chuyện quá khứ và giữ vị trí động từ khi đổi đầu câu.",
+    "rationale": "Giữ yêu cầu tự viết câu; tự kiểm tra các đáp án chuẩn và cho phép giáo viên xem biến thể hợp lệ ngoài đáp án mẫu.",
+    "answer_page": 70,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "W-a",
+    "source_page": 38,
+    "title": "Wortbildung: Nomen mit -ung",
+    "instruction": "Wie heißt das Nomen?",
+    "questions": [
+      {
+        "prompt": "Ich habe mich heute verspätet. — die Verspätung",
+        "accepted_answers": [
+          "Verspätung"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Hast du einen Platz reserviert? — die {{1}}",
+        "blanks": [
+          {
+            "answers": [
+              "Reservierung"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich habe das Rätsel gelöst. — die {{1}}",
+        "blanks": [
+          {
+            "answers": [
+              "Lösung"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich beschreibe dir den Weg. — die {{1}}",
+        "blanks": [
+          {
+            "answers": [
+              "Beschreibung"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Tạo danh từ đuôi -ung từ động từ.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 70,
+    "reviewed": true
+  },
+  {
+    "number": "W-b",
+    "source_page": 38,
+    "title": "Nomen mit -ung im Kontext",
+    "instruction": "Wie heißt das Nomen? Schreiben Sie und kontrollieren Sie mit dem Wörterbuch.",
+    "questions": [
+      {
+        "prompt": "Die Jacke habe ich im Internet bestellt. Nach zwei Tagen war die {{1}} da.",
+        "blanks": [
+          {
+            "answers": [
+              "Bestellung"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ist das eine gute Idee? Was meinst du? Mich interessiert deine {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Meinung"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Meine Firma bezahlt nicht gut. Die {{1}} ist wirklich schlecht.",
+        "blanks": [
+          {
+            "answers": [
+              "Bezahlung"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Kannst du dich noch erinnern? — Ja, das sind schöne {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Erinnerungen"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Dùng danh từ đuôi -ung trong ngữ cảnh.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 70,
+    "reviewed": true
+  }
+]

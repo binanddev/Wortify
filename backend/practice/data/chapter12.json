@@ -1,0 +1,1402 @@
+[
+  {
+    "number": "1a",
+    "source_page": 59,
+    "title": "Superlative in Kunst und Kultur",
+    "instruction": "Welches Adjektiv passt? Ergänzen Sie in der richtigen Form.",
+    "questions": [
+      {
+        "prompt": "Michael Ende ist der … deutsche Kinderbuch-Autor.",
+        "accepted_answers": [
+          "erfolgreichste"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "„Die unendliche Geschichte“ von ihm war am {{1}} die Nummer 1 in den Bestseller-Listen.",
+        "blanks": [
+          {
+            "answers": [
+              "längsten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Serie „Babylon Berlin“ ist sehr erfolgreich, aber auch die {{1}} deutsche Serie (ca. 2,5 Millionen Euro pro Film). Viele sagen, dass die Serie die {{2}} Zeit in Berlin zeigt: Das Berlin der wilden 20-er Jahre.",
+        "blanks": [
+          {
+            "answers": [
+              "teuerste"
+            ]
+          },
+          {
+            "answers": [
+              "interessanteste"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Viele kennen Schloss Sanssouci in Potsdam oder das Heidelberger Schloss, aber Schloss Neuschwanstein in Bayern ist am {{1}}. Und es hat die {{2}} Besucher: 1,4 Millionen jedes Jahr.",
+        "blanks": [
+          {
+            "answers": [
+              "bekanntesten"
+            ]
+          },
+          {
+            "answers": [
+              "meisten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Hamburger Kunsthalle ist das {{1}} Kunstmuseum in Norddeutschland. Man kann 700 Werke dort sehen.",
+        "blanks": [
+          {
+            "answers": [
+              "größte"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "So sánh nhất với biến cách tính từ.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true,
+    "context": "bekannt · erfolgreich · groß · interessant · lang · teuer · viel"
+  },
+  {
+    "number": "1b",
+    "source_page": 59,
+    "title": "Kultur erleben",
+    "instruction": "Lesen und ergänzen Sie jeweils das vollständige Wort.",
+    "questions": [
+      {
+        "prompt": "In Schloss Neuschwanstein war ich {{1}} (le…) Jahr. Das war {{2}} (t…), ich habe eine interessante {{3}} (Füh…) mitgemacht und habe {{4}} (v…) gesehen. Aber es waren so viele {{5}} (L…) dort, es war {{6}} (einf…) viel zu voll. Das war ein bisschen {{7}} (str…). Man konnte fast keine {{8}} (Fo…) machen.",
+        "blanks": [
+          {
+            "answers": [
+              "letztes"
+            ]
+          },
+          {
+            "answers": [
+              "toll"
+            ]
+          },
+          {
+            "answers": [
+              "Führung"
+            ]
+          },
+          {
+            "answers": [
+              "viel"
+            ]
+          },
+          {
+            "answers": [
+              "Leute"
+            ]
+          },
+          {
+            "answers": [
+              "einfach"
+            ]
+          },
+          {
+            "answers": [
+              "stressig"
+            ]
+          },
+          {
+            "answers": [
+              "Fotos"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Gestern habe ich „Babylon Berlin“ {{1}} (ange…), meine Lieblingsserie. Es ist {{2}} (spa…) und interessant, wie {{3}} (e…) in Berlin vor hundert {{4}} (Ja…) war. Die Schauspieler {{5}} (s…) sehr gut, aber am {{6}} (to…) finde ich die Musik.",
+        "blanks": [
+          {
+            "answers": [
+              "angesehen"
+            ]
+          },
+          {
+            "answers": [
+              "spannend"
+            ]
+          },
+          {
+            "answers": [
+              "es"
+            ]
+          },
+          {
+            "answers": [
+              "Jahren"
+            ]
+          },
+          {
+            "answers": [
+              "sind"
+            ]
+          },
+          {
+            "answers": [
+              "tollsten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Kennst du das {{1}} (B…) „Die unendliche Geschichte“? Ich {{2}} (h…) es als Kind drei Mal {{3}} (gel…). Ich habe die {{4}} (Ge…) geliebt. Das Buch musst du {{5}} (au…) lesen.",
+        "blanks": [
+          {
+            "answers": [
+              "Buch"
+            ]
+          },
+          {
+            "answers": [
+              "habe"
+            ]
+          },
+          {
+            "answers": [
+              "gelesen"
+            ]
+          },
+          {
+            "answers": [
+              "Geschichte"
+            ]
+          },
+          {
+            "answers": [
+              "auch"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Kultur erleben",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 75,
+    "reviewed": true
+  },
+  {
+    "number": "2",
+    "source_page": 59,
+    "title": "Wie ist Ihre Meinung?",
+    "instruction": "Ergänzen Sie. Sie können auch mehrere Beispiele nennen.",
+    "questions": [
+      {
+        "prompt": "Welcher Film gefällt Ihnen überhaupt nicht?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Welches Buch fanden Sie total langweilig?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Welche Musik finden Sie am schrecklichsten?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Welches berühmte Gebäude finden Sie wirklich hässlich? Wo steht es?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Wie ist Ihre Meinung?",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": null,
+    "reviewed": true,
+    "check_mode": "manual_check"
+  },
+  {
+    "number": "3a",
+    "source_page": 60,
+    "title": "Ein Festival besuchen",
+    "instruction": "Ordnen Sie das Gespräch.",
+    "questions": [
+      {
+        "prompt": "Ich habe echt mal wieder Lust auf ein Festival. Du auch?",
+        "accepted_answers": [
+          "E · Total. Ich würde gern mal nach Wacken fahren."
+        ],
+        "example": false,
+        "options": [
+          "A · Wacken ist Anfang August, drei Tage.",
+          "B · Tja, vielleicht wird das zu teuer. Was gibt es denn sonst noch?",
+          "C · Das geht gerade noch für drei Tage. Gibt es nicht noch ein kleineres Festival, ein billigeres?",
+          "D · Ach, stimmt. Wo ist das noch mal genau? Bei Frankfurt?",
+          "E · Total. Ich würde gern mal nach Wacken fahren.",
+          "F · Upps. Das Drei-Tages-Ticket kostet 220!",
+          "G · Genau, und Hardrock, meine Musik. Ich mag es, wenn es laut ist. Das ist einfach cool."
+        ]
+      },
+      {
+        "prompt": "Nach Wacken? Ich weiß nicht. Da spielen sie doch Metal.",
+        "accepted_answers": [
+          "G · Genau, und Hardrock, meine Musik. Ich mag es, wenn es laut ist. Das ist einfach cool."
+        ],
+        "example": false,
+        "options": [
+          "A · Wacken ist Anfang August, drei Tage.",
+          "B · Tja, vielleicht wird das zu teuer. Was gibt es denn sonst noch?",
+          "C · Das geht gerade noch für drei Tage. Gibt es nicht noch ein kleineres Festival, ein billigeres?",
+          "D · Ach, stimmt. Wo ist das noch mal genau? Bei Frankfurt?",
+          "E · Total. Ich würde gern mal nach Wacken fahren.",
+          "F · Upps. Das Drei-Tages-Ticket kostet 220!",
+          "G · Genau, und Hardrock, meine Musik. Ich mag es, wenn es laut ist. Das ist einfach cool."
+        ]
+      },
+      {
+        "prompt": "Na ja, die Stimmung ist doch auf Festivals immer super. Wann ist das?",
+        "accepted_answers": [
+          "A · Wacken ist Anfang August, drei Tage."
+        ],
+        "example": false,
+        "options": [
+          "A · Wacken ist Anfang August, drei Tage.",
+          "B · Tja, vielleicht wird das zu teuer. Was gibt es denn sonst noch?",
+          "C · Das geht gerade noch für drei Tage. Gibt es nicht noch ein kleineres Festival, ein billigeres?",
+          "D · Ach, stimmt. Wo ist das noch mal genau? Bei Frankfurt?",
+          "E · Total. Ich würde gern mal nach Wacken fahren.",
+          "F · Upps. Das Drei-Tages-Ticket kostet 220!",
+          "G · Genau, und Hardrock, meine Musik. Ich mag es, wenn es laut ist. Das ist einfach cool."
+        ]
+      },
+      {
+        "prompt": "Und was kosten die Karten?",
+        "accepted_answers": [
+          "F · Upps. Das Drei-Tages-Ticket kostet 220!"
+        ],
+        "example": false,
+        "options": [
+          "A · Wacken ist Anfang August, drei Tage.",
+          "B · Tja, vielleicht wird das zu teuer. Was gibt es denn sonst noch?",
+          "C · Das geht gerade noch für drei Tage. Gibt es nicht noch ein kleineres Festival, ein billigeres?",
+          "D · Ach, stimmt. Wo ist das noch mal genau? Bei Frankfurt?",
+          "E · Total. Ich würde gern mal nach Wacken fahren.",
+          "F · Upps. Das Drei-Tages-Ticket kostet 220!",
+          "G · Genau, und Hardrock, meine Musik. Ich mag es, wenn es laut ist. Das ist einfach cool."
+        ]
+      },
+      {
+        "prompt": "Das wird ein teurer Spaß. Dazu die Fahrt und der Campingplatz. Und die Getränke.",
+        "accepted_answers": [
+          "B · Tja, vielleicht wird das zu teuer. Was gibt es denn sonst noch?"
+        ],
+        "example": false,
+        "options": [
+          "A · Wacken ist Anfang August, drei Tage.",
+          "B · Tja, vielleicht wird das zu teuer. Was gibt es denn sonst noch?",
+          "C · Das geht gerade noch für drei Tage. Gibt es nicht noch ein kleineres Festival, ein billigeres?",
+          "D · Ach, stimmt. Wo ist das noch mal genau? Bei Frankfurt?",
+          "E · Total. Ich würde gern mal nach Wacken fahren.",
+          "F · Upps. Das Drei-Tages-Ticket kostet 220!",
+          "G · Genau, und Hardrock, meine Musik. Ich mag es, wenn es laut ist. Das ist einfach cool."
+        ]
+      },
+      {
+        "prompt": "Rock im Park. Da war ich vor ein paar Jahren.",
+        "accepted_answers": [
+          "D · Ach, stimmt. Wo ist das noch mal genau? Bei Frankfurt?"
+        ],
+        "example": false,
+        "options": [
+          "A · Wacken ist Anfang August, drei Tage.",
+          "B · Tja, vielleicht wird das zu teuer. Was gibt es denn sonst noch?",
+          "C · Das geht gerade noch für drei Tage. Gibt es nicht noch ein kleineres Festival, ein billigeres?",
+          "D · Ach, stimmt. Wo ist das noch mal genau? Bei Frankfurt?",
+          "E · Total. Ich würde gern mal nach Wacken fahren.",
+          "F · Upps. Das Drei-Tages-Ticket kostet 220!",
+          "G · Genau, und Hardrock, meine Musik. Ich mag es, wenn es laut ist. Das ist einfach cool."
+        ]
+      },
+      {
+        "prompt": "Nein, in Nürnberg. Da wohnen auch Freunde von mir. Und die Tickets, Moment! 149 Euro.",
+        "accepted_answers": [
+          "C · Das geht gerade noch für drei Tage. Gibt es nicht noch ein kleineres Festival, ein billigeres?"
+        ],
+        "example": false,
+        "options": [
+          "A · Wacken ist Anfang August, drei Tage.",
+          "B · Tja, vielleicht wird das zu teuer. Was gibt es denn sonst noch?",
+          "C · Das geht gerade noch für drei Tage. Gibt es nicht noch ein kleineres Festival, ein billigeres?",
+          "D · Ach, stimmt. Wo ist das noch mal genau? Bei Frankfurt?",
+          "E · Total. Ich würde gern mal nach Wacken fahren.",
+          "F · Upps. Das Drei-Tages-Ticket kostet 220!",
+          "G · Genau, und Hardrock, meine Musik. Ich mag es, wenn es laut ist. Das ist einfach cool."
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Ein Festival besuchen",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 75,
+    "reviewed": true
+  },
+  {
+    "number": "3b",
+    "source_page": 60,
+    "title": "Tickets online kaufen",
+    "instruction": "Welches Wort fehlt? Ergänzen Sie.",
+    "questions": [
+      {
+        "prompt": "Sie können die Rechnung per Überweisung oder mit {{1}} bezahlen.",
+        "blanks": [
+          {
+            "answers": [
+              "Kreditkarte"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wir schicken die Tickets zu. Der {{1}} per Post kostet 4,90 Euro.",
+        "blanks": [
+          {
+            "answers": [
+              "Versand"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der Preis für die Tickets ist inklusive 19 {{1}} Mehrwertsteuer.",
+        "blanks": [
+          {
+            "answers": [
+              "Prozent"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bitte füllen Sie Ihre {{1}} (Name, E-Mail-Adresse, Telefon) aus.",
+        "blanks": [
+          {
+            "answers": [
+              "Kontaktdaten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Kontrollieren Sie Ihre Bestellung im {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Warenkorb"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Zum Schluss müssen Sie noch den AGB {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "zustimmen"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Tickets online kaufen",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true,
+    "hints": "Kontaktdaten · Kreditkarte · Prozent · Versand · Warenkorb · zustimmen"
+  },
+  {
+    "number": "4a",
+    "source_page": 60,
+    "title": "Bei einem Konzert",
+    "instruction": "Was ist richtig: man, jemand oder niemand?",
+    "questions": [
+      {
+        "prompt": "Wo kann … hier Taschen und Mäntel abgeben?",
+        "accepted_answers": [
+          "man"
+        ],
+        "example": false,
+        "options": [
+          "man",
+          "jemand",
+          "niemand"
+        ]
+      },
+      {
+        "prompt": "Kann mir bitte … den Rucksack halten?",
+        "accepted_answers": [
+          "jemand"
+        ],
+        "example": false,
+        "options": [
+          "man",
+          "jemand",
+          "niemand"
+        ]
+      },
+      {
+        "prompt": "Hörst du dein Handy nicht? … ruft dich an.",
+        "accepted_answers": [
+          "Jemand"
+        ],
+        "example": false,
+        "options": [
+          "Man",
+          "Jemand",
+          "Niemand"
+        ]
+      },
+      {
+        "prompt": "Ich gehe nach oben. Hier unten kann … gar nichts sehen.",
+        "accepted_answers": [
+          "man"
+        ],
+        "example": false,
+        "options": [
+          "man",
+          "jemand",
+          "niemand"
+        ]
+      },
+      {
+        "prompt": "Ich war allein im Konzert. … wollte mitkommen.",
+        "accepted_answers": [
+          "Niemand"
+        ],
+        "example": false,
+        "options": [
+          "Man",
+          "Jemand",
+          "Niemand"
+        ]
+      },
+      {
+        "prompt": "Ich habe kein Auto. Kann mich bitte … mitnehmen?",
+        "accepted_answers": [
+          "jemand"
+        ],
+        "example": false,
+        "options": [
+          "man",
+          "jemand",
+          "niemand"
+        ]
+      },
+      {
+        "prompt": "Die Kontrollen waren sehr genau, … musste lange warten.",
+        "accepted_answers": [
+          "man"
+        ],
+        "example": false,
+        "options": [
+          "man",
+          "jemand",
+          "niemand"
+        ]
+      },
+      {
+        "prompt": "Am Eingang waren alle so ungeduldig. … wollte in der Schlange stehen.",
+        "accepted_answers": [
+          "Niemand"
+        ],
+        "example": false,
+        "options": [
+          "Man",
+          "Jemand",
+          "Niemand"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Bei einem Konzert",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true
+  },
+  {
+    "number": "4b",
+    "source_page": 61,
+    "title": "alles, etwas oder nichts?",
+    "instruction": "Verbinden Sie: Wählen Sie das passende Wort.",
+    "questions": [
+      {
+        "prompt": "André mag den Sänger Herbert Grönemeyer nicht, er hört … von ihm an. Nie!",
+        "accepted_answers": [
+          "nichts"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Alisa ist Fan von Tom Waits, sie hat … von ihm gekauft und hört es sehr oft.",
+        "accepted_answers": [
+          "alles"
+        ],
+        "example": false,
+        "options": [
+          "alles",
+          "etwas",
+          "nichts"
+        ]
+      },
+      {
+        "prompt": "Hast du … gesagt? Es ist so laut hier.",
+        "accepted_answers": [
+          "etwas"
+        ],
+        "example": false,
+        "options": [
+          "alles",
+          "etwas",
+          "nichts"
+        ]
+      },
+      {
+        "prompt": "Ich habe mich total geärgert, ich habe … gesehen. Die Plätze waren schlecht.",
+        "accepted_answers": [
+          "nichts"
+        ],
+        "example": false,
+        "options": [
+          "alles",
+          "etwas",
+          "nichts"
+        ]
+      },
+      {
+        "prompt": "Das Konzert war einfach super, … war bestens! Es hat echt Spaß gemacht!",
+        "accepted_answers": [
+          "alles"
+        ],
+        "example": false,
+        "options": [
+          "alles",
+          "etwas",
+          "nichts"
+        ]
+      },
+      {
+        "prompt": "Schau mal, ich habe dir vom Festival … mitgebracht. Ein T-Shirt!",
+        "accepted_answers": [
+          "etwas"
+        ],
+        "example": false,
+        "options": [
+          "alles",
+          "etwas",
+          "nichts"
+        ]
+      },
+      {
+        "prompt": "Was haben sie gesagt? Hast du … verstanden?",
+        "accepted_answers": [
+          "alles",
+          "etwas"
+        ],
+        "example": false,
+        "options": [
+          "alles",
+          "etwas",
+          "nichts"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "alles, etwas oder nichts?",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 75,
+    "reviewed": true
+  },
+  {
+    "number": "5a",
+    "source_page": 61,
+    "title": "Welche Information wurde nicht verstanden?",
+    "instruction": "Schreiben Sie die nicht verstandene Information ab. Lesen Sie die Rückfragen dann laut.",
+    "questions": [
+      {
+        "prompt": "Auf dem Festival in Wacken spielen Sie Hardrock und Metal. — Was spielen Sie da?",
+        "accepted_answers": [
+          "Hardrock und Metal"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Ein drei-Tages-Ticket für Wacken kostet 220 Euro. — Was kostet 220 Euro?",
+        "accepted_answers": [
+          "Ein drei-Tages-Ticket"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "In Diepholz gibt es auch ein Festival, da wohnt mein Bruder. — Wer wohnt da?",
+        "accepted_answers": [
+          "mein Bruder"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Das Festival in Diepholz ist dieses Jahr vom 1.–4. August. — Wann genau ist das?",
+        "accepted_answers": [
+          "vom 1.–4. August",
+          "vom 1.-4. August",
+          "vom 1. bis 4. August"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Für „Rock im Park“ gibt es noch Tickets. — Wofür gibt es noch Tickets?",
+        "accepted_answers": [
+          "Für „Rock im Park“",
+          "für Rock im Park"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Letztes Jahr habe ich dort „Die Ärzte“ gehört. — Wen hast du da gehört?",
+        "accepted_answers": [
+          "„Die Ärzte“",
+          "Die Ärzte"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Xác định thông tin được hỏi lại; phát âm tự luyện.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 75,
+    "reviewed": true,
+    "ignore_punctuation": true,
+    "allow_review": true
+  },
+  {
+    "number": "5b",
+    "source_page": 61,
+    "title": "Rückfragen schreiben",
+    "instruction": "Sie verstehen die Information in eckigen Klammern nicht. Schreiben Sie Rückfragen.",
+    "questions": [
+      {
+        "prompt": "Ich war letzte Woche [in Wacken].",
+        "accepted_answers": [
+          "Wo warst du?"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "So cool, ich habe [mehr als 20] Bands gesehen.",
+        "accepted_answers": [
+          "Wie viele Bands hast du gesehen?",
+          "Wie viele Bands?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich finde, [Russkaja] war am besten.",
+        "accepted_answers": [
+          "Wer war am besten?",
+          "Wer?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich war [mit Nina] dort, es war super.",
+        "accepted_answers": [
+          "Mit wem warst du dort?",
+          "Mit wem?"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Rückfragen schreiben",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "6",
+    "source_page": 61,
+    "title": "Ein Konzert besuchen",
+    "instruction": "Ergänzen Sie.",
+    "questions": [
+      {
+        "prompt": "Am Freitag war ich mit meinem Freund auf einem … von „Glasperlenspiel“.",
+        "accepted_answers": [
+          "Konzert"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Die {{1}} besteht aus der Sängerin Carolin Niemczyk und dem Keyboarder und Sänger Daniel Grunenberg, für Konzerte kommen vier weitere {{2}} dazu.",
+        "blanks": [
+          {
+            "answers": [
+              "Band"
+            ]
+          },
+          {
+            "answers": [
+              "Musiker"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich mag besonders die {{1}} von ihren Liedern. Ich finde, dass „Ich wünsch dir noch ein geiles Leben“ überhaupt das beste {{2}} von ihnen ist.",
+        "blanks": [
+          {
+            "answers": [
+              "Texte"
+            ]
+          },
+          {
+            "answers": [
+              "Lied"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Glasperlenspiel produzieren keine Nummer eins {{1}}, aber das ist mir egal. Man muss sie live sehen, denn ihre Show auf der {{2}} ist super. Ich habe mich gefreut, dass mein Freund mitgekommen ist. Er hört sonst andere {{3}} als ich.",
+        "blanks": [
+          {
+            "answers": [
+              "Hits"
+            ]
+          },
+          {
+            "answers": [
+              "Bühne"
+            ]
+          },
+          {
+            "answers": [
+              "Musik"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Ein Konzert besuchen",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true,
+    "hints": "Band · Bühne · Hits · Konzert · Lied · Musik · Musiker · Texte"
+  },
+  {
+    "number": "7",
+    "source_page": 62,
+    "title": "Was ist passiert?",
+    "instruction": "Ergänzen Sie der, das oder die.",
+    "questions": [
+      {
+        "prompt": "Peter Veit war die ganze Nacht bei seiner Tochter, … sehr krank war.",
+        "accepted_answers": [
+          "die"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Die Radiohörer mussten auf die Nachrichten warten, {{1}} immer um 7 Uhr beginnen.",
+        "blanks": [
+          {
+            "answers": [
+              "die"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ein Sammler hat auf einem Flohmarkt ein paar Bilder gekauft, {{1}} ihm gefallen haben.",
+        "blanks": [
+          {
+            "answers": [
+              "die"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Er hat auch ein kleines Bild von einem See gekauft, {{1}} nur 8 Euro gekostet hat.",
+        "blanks": [
+          {
+            "answers": [
+              "das"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Band „Gedankensprung“ hat ein Konzert gespielt, {{1}} schnell zu Ende war.",
+        "blanks": [
+          {
+            "answers": [
+              "das"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der Grund war ihre Sängerin, {{1}} plötzlich keine Stimme mehr hatte.",
+        "blanks": [
+          {
+            "answers": [
+              "die"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Đại từ quan hệ làm chủ ngữ.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true
+  },
+  {
+    "number": "8a",
+    "source_page": 62,
+    "title": "Relativpronomen",
+    "instruction": "Was ist richtig? Kreuzen Sie an.",
+    "questions": [
+      {
+        "prompt": "Ein Freund, … in der Schweiz lebt, hat mich gestern besucht.",
+        "accepted_answers": [
+          "der"
+        ],
+        "example": false,
+        "options": [
+          "der",
+          "den",
+          "die"
+        ]
+      },
+      {
+        "prompt": "Wir sind in ein Restaurant gegangen, … er besonders gern mag.",
+        "accepted_answers": [
+          "das"
+        ],
+        "example": false,
+        "options": [
+          "der",
+          "das",
+          "die"
+        ]
+      },
+      {
+        "prompt": "Am Abend gehe ich in einen Film, … ich schon lange sehen wollte.",
+        "accepted_answers": [
+          "den"
+        ],
+        "example": false,
+        "options": [
+          "der",
+          "das",
+          "den"
+        ]
+      },
+      {
+        "prompt": "Sie zeigen ihn in dem Kino, … ich am liebsten mag.",
+        "accepted_answers": [
+          "das"
+        ],
+        "example": false,
+        "options": [
+          "den",
+          "das",
+          "die"
+        ]
+      },
+      {
+        "prompt": "Nico kocht gern mit den leckeren Sachen, … er auf dem Markt gekauft hat.",
+        "accepted_answers": [
+          "die"
+        ],
+        "example": false,
+        "options": [
+          "den",
+          "das",
+          "die"
+        ]
+      },
+      {
+        "prompt": "Das Essen, … Nico gekocht hat, war einfach super.",
+        "accepted_answers": [
+          "das"
+        ],
+        "example": false,
+        "options": [
+          "den",
+          "das",
+          "die"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Relativpronomen",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true
+  },
+  {
+    "number": "8b",
+    "source_page": 62,
+    "title": "Relativsätze schreiben",
+    "instruction": "Schreiben Sie nur den Relativsatz.",
+    "questions": [
+      {
+        "prompt": "Wie heißt der Kollege, …? (Du hast ihn gerade gegrüßt.)",
+        "accepted_answers": [
+          "den du gerade gegrüßt hast"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Wo wohnen die Leute, …? (Du willst sie besuchen.)",
+        "accepted_answers": [
+          "die du besuchen willst"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Das ist eine Kollegin, … . (Ich treffe sie oft im Zug.)",
+        "accepted_answers": [
+          "die ich oft im Zug treffe"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wie heißt das Kind, …? (Es steht da vorne.)",
+        "accepted_answers": [
+          "das da vorne steht"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ist das die Chefin, …? (Sie telefoniert so laut.)",
+        "accepted_answers": [
+          "die so laut telefoniert"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wie heißt der Zahnarzt, …? (Du kennst ihn gut.)",
+        "accepted_answers": [
+          "den du gut kennst"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Relativsätze schreiben",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "9",
+    "source_page": 62,
+    "title": "Quizfragen",
+    "instruction": "Welche Information passt? Schreiben Sie Relativsätze.",
+    "questions": [
+      {
+        "prompt": "Wie heißt der Film, …?",
+        "accepted_answers": [
+          "der den Oscar gewonnen hat"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Wie heißt die Autorin, …?",
+        "accepted_answers": [
+          "die „Harry Potter“ geschrieben hat"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wie heißt das Lied in „Titanic“, …?",
+        "accepted_answers": [
+          "das Celine Dion gesungen hat"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wer war die Sängerin, …?",
+        "accepted_answers": [
+          "die „Back to Black“ gesungen hat"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wie heißt der Schauspieler, …?",
+        "accepted_answers": [
+          "der so gut in „Babylon Berlin“ spielt",
+          "der in „Babylon Berlin“ so gut spielt"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wer ist der Sportler, …?",
+        "accepted_answers": [
+          "den die Fans so sehr lieben"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Quizfragen",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true,
+    "context": "Celine Dion hat es gesungen. · Die Fans lieben ihn so sehr. · Er hat den Oscar gewonnen. · Er spielt so gut in „Babylon Berlin“. · Sie hat „Back to Black“ gesungen. · Sie hat „Harry Potter“ geschrieben.",
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "10",
+    "source_page": 63,
+    "title": "Gemalte Bilder",
+    "instruction": "Welches Adjektiv passt? Kreuzen Sie an.",
+    "questions": [
+      {
+        "prompt": "Auf dem Bild gibt es alle Farben, es ist sehr …",
+        "accepted_answers": [
+          "bunt"
+        ],
+        "example": false,
+        "options": [
+          "exakt",
+          "bunt",
+          "langweilig"
+        ]
+      },
+      {
+        "prompt": "Die Tiere sehen fast wie auf einem Foto aus, sie sind …",
+        "accepted_answers": [
+          "realistisch"
+        ],
+        "example": false,
+        "options": [
+          "realistisch",
+          "lustig",
+          "komisch"
+        ]
+      },
+      {
+        "prompt": "Die Malerin hat viele neue Ideen, sie malt sehr … Bilder.",
+        "accepted_answers": [
+          "originelle"
+        ],
+        "example": false,
+        "options": [
+          "natürliche",
+          "bunte",
+          "originelle"
+        ]
+      },
+      {
+        "prompt": "Man kann keine Dinge erkennen, das Bild ist … gemalt.",
+        "accepted_answers": [
+          "abstrakt"
+        ],
+        "example": false,
+        "options": [
+          "abstrakt",
+          "realistisch",
+          "bunt"
+        ]
+      },
+      {
+        "prompt": "Der Maler macht Bilder, die man noch nie gesehen hat. Er ist …",
+        "accepted_answers": [
+          "kreativ"
+        ],
+        "example": false,
+        "options": [
+          "genau",
+          "kreativ",
+          "bunt"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Gemalte Bilder",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true
+  },
+  {
+    "number": "11",
+    "source_page": 63,
+    "title": "Ein Bild beschreiben",
+    "instruction": "Wo ist das? Ergänzen Sie.",
+    "questions": [
+      {
+        "prompt": "… sitzen zwei junge Frauen auf einer Mauer vor einem großen See.",
+        "accepted_answers": [
+          "Im Vordergrund"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Hinter ihnen ist {{1}} je ein Baum. (zwei Richtungen mit und)",
+        "blanks": [
+          {
+            "answers": [
+              "links und rechts",
+              "rechts und links"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}} sieht man den See und einen Wald. {{2}} See fahren zwei Boote.",
+        "blanks": [
+          {
+            "answers": [
+              "Im Hintergrund"
+            ]
+          },
+          {
+            "answers": [
+              "Auf dem"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Links {{1}} sieht man die Sonne. Links {{2}} steht ein Fahrrad. Ganz {{3}} liegt ein großer Stein.",
+        "blanks": [
+          {
+            "answers": [
+              "oben"
+            ]
+          },
+          {
+            "answers": [
+              "unten"
+            ]
+          },
+          {
+            "answers": [
+              "vorne"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Mô tả vị trí trên tranh; chấp nhận cả hai thứ tự trái/phải.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 75,
+    "reviewed": true,
+    "hints": "auf dem · im Hintergrund · im Vordergrund · links · oben · rechts · unten · vorne",
+    "image_path": "practice/ch12_11.png",
+    "image_description": "Zwei Frauen sitzen an einem See; Landschaft und Gegenstände um sie herum."
+  },
+  {
+    "number": "Wa",
+    "source_page": 63,
+    "title": "Wortbildung · Adjektiv + Adjektiv",
+    "instruction": "Notieren Sie die beiden Wörter.",
+    "questions": [
+      {
+        "prompt": "Das Wetter war schön, der Himmel hellblau. → {{1}} + {{2}}",
+        "blanks": [
+          {
+            "answers": [
+              "hell"
+            ]
+          },
+          {
+            "answers": [
+              "blau"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Um den See war dichter Wald, alles war dunkelgrün. → {{1}} + {{2}}",
+        "blanks": [
+          {
+            "answers": [
+              "dunkel"
+            ]
+          },
+          {
+            "answers": [
+              "grün"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Aber das Wasser hatte eine andere Farbe: blaugrün. → {{1}} + {{2}}",
+        "blanks": [
+          {
+            "answers": [
+              "blau"
+            ]
+          },
+          {
+            "answers": [
+              "grün"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Wortbildung · Adjektiv + Adjektiv",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true
+  },
+  {
+    "number": "Wb",
+    "source_page": 63,
+    "title": "Wie kann man das sagen?",
+    "instruction": "Bilden Sie ein Adjektiv. Achten Sie auf die Endung.",
+    "questions": [
+      {
+        "prompt": "Am Abend war die Sonne (dunkel + rot) {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "dunkelrot"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Kennst du die Frau mit den {{1}} (dunkel + braun) Haaren?",
+        "blanks": [
+          {
+            "answers": [
+              "dunkelbraunen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Huskys sind ganz tolle Hunde. Ihre Augen sind {{1}} (hell + blau).",
+        "blanks": [
+          {
+            "answers": [
+              "hellblau"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Auf diesem Foto hat Maria noch {{1}} (hell + blond) Haare.",
+        "blanks": [
+          {
+            "answers": [
+              "hellblonde"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wo ist der Wohnungsschlüssel? — In der {{1}} (gelb + grün) Tasche.",
+        "blanks": [
+          {
+            "answers": [
+              "gelbgrünen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das ist ein ganz altes Foto. Es sieht ganz {{1}} (grau + braun) aus.",
+        "blanks": [
+          {
+            "answers": [
+              "graubraun"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Wie kann man das sagen?",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 75,
+    "reviewed": true
+  }
+]

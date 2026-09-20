@@ -1,0 +1,120 @@
+"""Provider boundary: bounded synchronous HTTP, no secrets or raw errors in UI/logs."""
+import hashlib
+import json
+import socket
+import uuid
+from urllib import request, error
+from django.conf import settings
+from django.core.files.base import ContentFile
+from django.utils.module_loading import import_string
+from cards.models import CardAudio
+
+
+class SpeechError(Exception):
+    pass
+
+
+def call_api(endpoint, body, content_type):
+    req = request.Request('https://api.openai.com/v1/audio/' + endpoint, data=body, headers={
+        'Authorization': 'Bearer ' + settings.SPEECH_API_KEY, 'Content-Type': content_type})
+    try:
+        with request.urlopen(req, timeout=settings.SPEECH_TIMEOUT) as response:
+            data = response.read(20 * 1024 * 1024 + 1)
+            if len(data) > 20 * 1024 * 1024:
+                raise SpeechError('Phản hồi âm thanh quá lớn. Vui lòng thử lại.')
+            return data
+    except (TimeoutError, socket.timeout):
+        raise SpeechError('Dịch vụ mất quá nhiều thời gian. Vui lòng thử lại.') from None
+    except error.URLError:
+        raise SpeechError('Không kết nối được dịch vụ âm thanh. Vui lòng thử lại sau.') from None
+
+
+class OpenAISpeechProvider:
+    def transcribe(self, data, filename, mime, language='de'):
+        boundary = uuid.uuid4().hex
+        parts = []
+        for key, value in {'model': settings.STT_MODEL, 'response_format': 'verbose_json', 'language': language}.items():
+            parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n{value}\r\n'.encode())
+        parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{filename}"\r\nContent-Type: {mime}\r\n\r\n'.encode() + data + f'\r\n--{boundary}--\r\n'.encode())
+        try:
+            result = json.loads(call_api('transcriptions', b''.join(parts), f'multipart/form-data; boundary={boundary}'))
+            text = result.get('text', '').strip()
+            if not text:
+                raise SpeechError('Không phát hiện giọng nói hoặc bản chép lời trống. Hãy thu lại rõ hơn.')
+            if result.get('language', '').lower() not in ({'de': ('de', 'german', 'deutsch'), 'en': ('en', 'english')}[language]):
+                raise SpeechError('Hệ thống chưa nhận dạng đúng ngôn ngữ của bộ thẻ. Hãy thu lại.')
+            segments = result.get('segments', [])
+            uncertain = any(s.get('no_speech_prob', 0) > .6 or s.get('avg_logprob', 0) < -1 for s in segments)
+            if len(text) > 4000:
+                raise SpeechError('Nội dung nhận dạng quá dài. Hãy thu một đoạn ngắn hơn.')
+            return {'transcript': text, 'confidence': None, 'uncertain': uncertain}
+        except (ValueError, TypeError, AttributeError):
+            raise SpeechError('Dịch vụ trả về dữ liệu không hợp lệ. Vui lòng thử lại.') from None
+
+    def synthesize(self, text, voice, speed):
+        data = call_api('speech', json.dumps({'model': settings.TTS_MODEL, 'input': text, 'voice': voice, 'speed': speed, 'response_format': 'mp3'}).encode(), 'application/json')
+        if not data or not (data.startswith(b'ID3') or (data[0] == 255 and len(data) > 1 and data[1] & 224 == 224)):
+            raise SpeechError('Không tạo được âm thanh. Vui lòng thử giọng trình duyệt.')
+        return data
+
+
+def provider(name):
+    if not name:
+        raise SpeechError('Chưa cấu hình dịch vụ âm thanh. Vui lòng liên hệ người quản lý.')
+    if name == 'openai':
+        if not settings.SPEECH_API_KEY:
+            raise SpeechError('Chưa cấu hình khóa dịch vụ âm thanh.')
+        return OpenAISpeechProvider()
+    try:
+        return import_string(name)()
+    except (ImportError, AttributeError, TypeError):
+        raise SpeechError('Cấu hình dịch vụ âm thanh chưa hợp lệ. Vui lòng liên hệ người quản lý.') from None
+
+
+class SpeechToTextService:
+    def transcribe(self, data, filename, mime, language='de'):
+        adapter = provider(settings.STT_PROVIDER)
+        if language == 'de':
+            return adapter.transcribe(data, filename, mime)
+        return adapter.transcribe(data, filename, mime, language=language)
+
+
+class TextToSpeechService:
+    def audio(self, card, audio_type, text, speed):
+        try:
+            return self._audio(card, audio_type, text, speed)
+        except SpeechError:
+            raise
+        except Exception:
+            raise SpeechError('Không tạo hoặc lưu được âm thanh. Vui lòng thử lại sau.') from None
+
+    def _audio(self, card, audio_type, text, speed):
+        voice = settings.TTS_VOICE
+        key = hashlib.sha256(json.dumps([card.pk, card.deck.language, text, settings.TTS_PROVIDER, settings.TTS_MODEL, voice, speed], ensure_ascii=False).encode()).hexdigest()
+        cached = CardAudio.objects.filter(content_hash=key).first()
+        if cached and cached.audio_file.storage.exists(cached.audio_file.name):
+            return cached
+        try:
+            data = provider(settings.TTS_PROVIDER).synthesize(text, voice, speed)
+        except SpeechError:
+            raise
+        except Exception:
+            raise SpeechError('Không tạo được âm thanh. Vui lòng thử lại sau.') from None
+        if not data:
+            raise SpeechError('Không tạo được âm thanh. Vui lòng thử lại sau.')
+        obj = cached or CardAudio(card=card, audio_type=audio_type, provider=settings.TTS_PROVIDER, voice=voice, content_hash=key)
+        obj.audio_file.save(key + '.mp3', ContentFile(data), save=False)
+        if cached:
+            obj.save()
+            return obj
+        # Another request may finish the same cache key while the provider is working.
+        try:
+            stored, created = CardAudio.objects.get_or_create(content_hash=key, defaults={
+                'card': card, 'audio_type': audio_type, 'provider': settings.TTS_PROVIDER,
+                'voice': voice, 'audio_file': obj.audio_file.name})
+        except Exception:
+            obj.audio_file.delete(save=False)
+            raise
+        if not created:
+            obj.audio_file.delete(save=False)
+        return stored

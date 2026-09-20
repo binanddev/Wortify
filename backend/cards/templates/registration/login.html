@@ -1,0 +1,2 @@
+{% extends 'cards/base.html' %}{% block content %}<section class="panel form-panel"><p class="eyebrow">CHÀO BẠN TRỞ LẠI</p><h1>Tiếp tục hành trình<br>tiếng Đức.</h1><form method="post">{% csrf_token %}{% include "cards/fields.html" %}<input type="hidden" name="next" value="{{ next }}"><button class="primary">Đăng nhập</button></form><p>Chưa có tài khoản? <a href="{% url 'signup' %}">Tạo tài khoản</a></p></section>{% endblock %}
+

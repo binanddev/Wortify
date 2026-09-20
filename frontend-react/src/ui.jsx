@@ -1,0 +1,481 @@
+import { useEffect, useRef, useState, useId } from "react";
+import {
+  Button,
+  Card,
+  CardBody,
+  Input,
+  Textarea,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/react";
+import { motion } from "framer-motion";
+import { navigate, useAction } from "./core";
+export function Icon({ name = "cards", size = 20 }) {
+  const paths = {
+    cards: "M8 4h12v14H8z M4 8v13h12",
+    book: "M12 5C8 2 3 3 3 3v16s5-1 9 2c4-3 9-2 9-2V3s-5-1-9 2v16",
+    folder: "M3 6h7l2 3h9v11H3z",
+    home: "m3 11 9-8 9 8 M5 10v11h14V10 M10 21v-7h4v7",
+    user: "M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0 M4 21v-3c0-6 16-6 16 0v3",
+    settings: "M4 6h16 M4 12h16 M4 18h16 M8 3v6 M16 9v6 M10 15v6",
+    plus: "M12 4v16 M4 12h16",
+    arrow: "M5 12h14 m-6-6 6 6-6 6",
+    search: "M17 17l5 5 M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0",
+    sound: "M4 9h4l5-4v14l-5-4H4z M17 8q5 4 0 8 M20 4q8 8 0 16",
+    spark: "m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z",
+    check: "m5 12 4 4L20 5",
+    class: "M4 3h16v13H4z M8 21l4-5 4 5",
+    logout: "M10 3H3v18h7 M8 12h13 m-5-5 5 5-5 5",
+    shuffle:
+      "M3 5h3c5 0 7 14 12 14h3 m-4-4 4 4-4 4 M3 19h3c2 0 3-2 4-4 M14 9c1-2 2-4 4-4h3 m-4-4 4 4-4 4",
+    flip: "M3 8a9 9 0 0 1 16-3l2 3 M21 3v5h-5 M21 16a9 9 0 0 1-16 3l-2-3 M3 21v-5h5",
+    star: "m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z",
+  };
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d={paths[name] || paths.cards} />
+    </svg>
+  );
+}
+export function Btn({ children, primary = false, onClick, ...props }) {
+  return (
+    <Button
+      className={primary ? "btn primary" : "btn"}
+      color={primary ? "primary" : "default"}
+      variant={primary ? "solid" : "light"}
+      onPress={onClick}
+      {...props}
+    >
+      {children}
+    </Button>
+  );
+}
+export function Link({ to, children, className = "", ...props }) {
+  return (
+    <a
+      href={to}
+      className={className}
+      onClick={(e) => {
+        if (!e.ctrlKey && !e.metaKey && !e.shiftKey && e.button === 0) {
+          e.preventDefault();
+          navigate(to);
+        }
+      }}
+      {...props}
+    >
+      {children}
+    </a>
+  );
+}
+export function Glass({ children, className = "", ...props }) {
+  return (
+    <Card isBlurred shadow="none" className={`glass ${className}`} {...props}>
+      <CardBody className="glass-body">{children}</CardBody>
+    </Card>
+  );
+}
+export function Page({ children }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28 }}
+      className="page"
+    >
+      {children}
+    </motion.div>
+  );
+}
+export function Heading({ eyebrow, title, description, actions }) {
+  return (
+    <div className="heading">
+      <div>
+        {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+        <h1>{title}</h1>
+        {description && <p>{description}</p>}
+      </div>
+      <div className="toolbar">{actions}</div>
+    </div>
+  );
+}
+export function Status({ error, children }) {
+  return error ? (
+    <div className="feedback error" role="alert">
+      {error}
+    </div>
+  ) : children ? (
+    <div className="feedback" role="status">
+      {children}
+    </div>
+  ) : null;
+}
+export function Loading({ resource, children }) {
+  if (resource.loading)
+    return (
+      <div className="loading" role="status">
+        <span className="loader" />
+        Đang mở không gian học…
+      </div>
+    );
+  if (resource.error)
+    return (
+      <Glass>
+        <Status error={resource.error} />
+        <Btn onClick={resource.reload}>Thử lại</Btn>
+      </Glass>
+    );
+  return children(resource.data);
+}
+export function Field({ label, value, onChange, multiline = false, ...props }) {
+  const Component = multiline ? Textarea : Input;
+  return (
+    <Component
+      label={label}
+      labelPlacement="outside"
+      variant="bordered"
+      value={String(value ?? "")}
+      onValueChange={onChange}
+      classNames={{
+        base: "field",
+        inputWrapper: "field-wrap",
+        label: "field-label",
+      }}
+      {...props}
+    />
+  );
+}
+export function Select({ label, value, onChange, children, ...props }) {
+  return (
+    <label className="select-field">
+      <span>{label}</span>
+      <select
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value)}
+        {...props}
+      >
+        {children}
+      </select>
+    </label>
+  );
+}
+export function Editor({
+  title,
+  fields,
+  initial = {},
+  onSave,
+  onClose,
+  children,
+}) {
+  const [values, set] = useState(initial),
+    action = useAction();
+  const input = (field) => (
+    <Field
+      key={field.name}
+      {...field}
+      value={values[field.name]}
+      onChange={(v) => set({ ...values, [field.name]: v })}
+    />
+  );
+  return (
+    <Modal
+      isOpen
+      onClose={onClose}
+      size="2xl"
+      scrollBehavior="inside"
+      classNames={{ base: "glass dialog" }}
+    >
+      <ModalContent>
+        <ModalHeader>{title}</ModalHeader>
+        <ModalBody>
+          <form
+            id="editor-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              action.run(async (signal) => {
+                const close = await onSave(values, signal);
+                if (close !== false) onClose();
+              });
+            }}
+          >
+            {fields.filter((f) => !f.advanced).map(input)}
+            {fields.some((f) => f.advanced) && (
+              <details>
+                <summary>Thông tin bổ sung</summary>
+                {fields.filter((f) => f.advanced).map(input)}
+              </details>
+            )}
+            {typeof children === "function" ? children(values, set) : children}
+            <Status error={action.error} />
+          </form>
+        </ModalBody>
+        <ModalFooter>
+          <Btn onClick={onClose} isDisabled={action.pending}>
+            Hủy
+          </Btn>
+          <Btn
+            primary
+            type="submit"
+            form="editor-form"
+            isLoading={action.pending}
+          >
+            Lưu thay đổi
+          </Btn>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
+export function Confirm({ title, description, onConfirm, onClose }) {
+  const action = useAction();
+  return (
+    <Modal isOpen onClose={onClose} classNames={{ base: "glass dialog" }}>
+      <ModalContent>
+        <ModalHeader>{title}</ModalHeader>
+        <ModalBody>
+          <p>{description}</p>
+          <Status error={action.error} />
+        </ModalBody>
+        <ModalFooter>
+          <Btn onClick={onClose}>Giữ lại</Btn>
+          <Btn
+            primary
+            isLoading={action.pending}
+            onClick={() =>
+              action.run(async (signal) => {
+                await onConfirm(signal);
+                onClose();
+              })
+            }
+          >
+            Xác nhận xóa
+          </Btn>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
+export function useSound(enabled, language) {
+  const audio = useRef(null);
+  useEffect(
+    () => () => {
+      audio.current?.close();
+      window.speechSynthesis?.cancel();
+    },
+    [],
+  );
+  return {
+    tick: () => {
+      if (!enabled) return;
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        audio.current ??= new Ctx();
+        const c = audio.current;
+        c.resume();
+        const o = c.createOscillator(),
+          g = c.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(620, c.currentTime);
+        o.frequency.exponentialRampToValueAtTime(440, c.currentTime + 0.07);
+        g.gain.setValueAtTime(0.035, c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.1);
+        o.connect(g);
+        g.connect(c.destination);
+        o.start();
+        o.stop(c.currentTime + 0.11);
+      } catch {}
+    },
+    speak: (text) => {
+      if (!window.speechSynthesis)
+        throw new Error("Trình duyệt không hỗ trợ giọng đọc.");
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = language === "de" ? "de-DE" : "en-US";
+      u.rate = 0.85;
+      window.speechSynthesis.speak(u);
+    },
+  };
+}
+export function FlipCard({ front, back, example, flipped, setFlipped }) {
+  return (
+    <button
+      type="button"
+      className="flip-stage"
+      onClick={() => setFlipped(!flipped)}
+      aria-label={flipped ? "Lật về từ vựng" : "Lật thẻ xem nghĩa"}
+      aria-pressed={flipped}
+    >
+      <span className={`flip-inner ${flipped ? "flipped" : ""}`}>
+        <span className="flip-face" aria-hidden={flipped}>
+          <span className="eyebrow">TỪ VỰNG</span>
+          <strong>{front}</strong>
+          <span className="flip-hint">
+            Chạm để khám phá nghĩa <Icon name="flip" size={16} />
+          </span>
+        </span>
+        <span className="flip-face flip-back" aria-hidden={!flipped}>
+          <span className="eyebrow">Ý NGHĨA</span>
+          <strong>{back}</strong>
+          {example && <span className="example">{example}</span>}
+          <span className="flip-hint">Chạm để quay lại</span>
+        </span>
+      </span>
+    </button>
+  );
+}
+export function Choice({
+  options,
+  value,
+  onChange,
+  multiple = false,
+  disabled = false,
+  label = "Chọn đáp án",
+}) {
+  const group = useId();
+  return (
+    <fieldset className="choices" disabled={disabled}>
+      <legend className="sr-only">{label}</legend>
+      {options.map((text, i) => (
+        <label
+          className={`choice ${(multiple ? value?.includes(text) : value === text) ? "selected" : ""}`}
+          key={text}
+        >
+          <input
+            type={multiple ? "checkbox" : "radio"}
+            name={group}
+            checked={multiple ? !!value?.includes(text) : value === text}
+            onChange={() =>
+              onChange(
+                multiple
+                  ? value?.includes(text)
+                    ? value.filter((v) => v !== text)
+                    : [...(value || []), text]
+                  : text,
+              )
+            }
+          />
+          <span className="choice-index">{String.fromCharCode(65 + i)}</span>
+          <span>{text}</span>
+        </label>
+      ))}
+    </fieldset>
+  );
+}
+export function WordOrder({ items, value = [], onChange, disabled }) {
+  return (
+    <div>
+      <div className="word-answer" aria-label="Câu đã sắp xếp">
+        {value.length ? (
+          value.map((id, i) => (
+            <Btn
+              key={id}
+              isDisabled={disabled}
+              onClick={() => onChange(value.filter((v) => v !== id))}
+            >
+              {i + 1}. {items.find((w) => w.id === id)?.text} ×
+            </Btn>
+          ))
+        ) : (
+          <span>Chọn các từ bên dưới theo thứ tự…</span>
+        )}
+      </div>
+      <div className="toolbar">
+        {items
+          .filter((w) => !value.includes(w.id))
+          .map((w) => (
+            <Btn
+              key={w.id}
+              isDisabled={disabled}
+              onClick={() => onChange([...value, w.id])}
+            >
+              {w.text}
+            </Btn>
+          ))}
+      </div>
+    </div>
+  );
+}
+export function Matching({ left, right, value = {}, onChange, disabled }) {
+  const [selected, set] = useState(null);
+  return (
+    <div className="matching">
+      <div>
+        {left.map((w, i) => (
+          <Btn
+            key={w.id}
+            isDisabled={disabled}
+            className={`match-item ${selected === w.id ? "selected" : ""}`}
+            onClick={() => set(w.id)}
+          >
+            {i + 1}. {w.text}
+            {value[w.id] !== undefined ? " ✓" : ""}
+          </Btn>
+        ))}
+      </div>
+      <div>
+        {right.map((w) => {
+          const paired = left.findIndex((l) => value[l.id] === w.id);
+          return (
+            <Btn
+              key={w.id}
+              isDisabled={disabled || selected === null}
+              className="match-item"
+              onClick={() => {
+                const next = Object.fromEntries(
+                  Object.entries(value).filter(
+                    ([k, v]) => k !== selected && v !== w.id,
+                  ),
+                );
+                onChange({ ...next, [selected]: w.id });
+                set(null);
+              }}
+            >
+              {paired >= 0 ? `${paired + 1}. ` : ""}
+              {w.text}
+            </Btn>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+export function Feedback({ row }) {
+  return row ? (
+    <Status>
+      {row.is_correct === undefined
+        ? row.correct === null
+          ? "Đã lưu • Chờ người chấm"
+          : row.correct
+            ? "✓ Chính xác"
+            : "↻ Cần luyện thêm"
+        : row.is_correct
+          ? "✓ Đã ghi nhớ"
+          : "↻ Cần luyện thêm"}
+      {row.target && (
+        <>
+          <br />
+          {row.target} — {row.card?.vietnamese_meaning}
+        </>
+      )}
+      {row.expected?.length > 0 && (
+        <>
+          <br />
+          Đáp án: {row.expected.join(" / ")}
+        </>
+      )}
+    </Status>
+  ) : null;
+}

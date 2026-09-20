@@ -1,0 +1,1340 @@
+[
+  {
+    "number": "1a",
+    "source_page": 19,
+    "title": "Warum feiern die Personen?",
+    "instruction": "Ergänzen Sie die passenden Wörter.",
+    "questions": [
+      {
+        "prompt": "Anke hat eine Prüfung gemacht. Jetzt darf sie selbst mit dem Auto fahren, denn sie hat …",
+        "accepted_answers": [
+          "den Führerschein"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Verwandte oder Freunde hängen Babykleidung und einen Storch an das Haus. Sie freuen sich über …",
+        "accepted_answers": [
+          "die Geburt von einem Kind"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Frau Schwob hat eine neue Stelle. Sie feiert mit den Kolleginnen und Kollegen, denn sie ist …",
+        "accepted_answers": [
+          "neu in der Firma"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Zwei Erwachsene wollen das Leben gemeinsam verbringen, sie sagen „ja“ und tragen einen Ring. Heute ist …",
+        "accepted_answers": [
+          "die Hochzeit"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Thomas liebt Sport, er läuft jeden Tag. Heute war er bei einem Lauf am schnellsten. Er freut sich, es ist …",
+        "accepted_answers": [
+          "der erste Platz"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Die Zeit im Kindergarten ist vorbei. Luca geht jetzt in die Grundschule. Er bekommt eine Schultüte. Für ihn ist es …",
+        "accepted_answers": [
+          "der erste Schultag"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Nhận biết từ vựng về các dịp ăn mừng và sự kiện trong đời sống.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true,
+    "hints": "der erste Platz | der Führerschein | der erste Schultag | die Geburt von einem Kind | die Hochzeit | neu in der Firma"
+  },
+  {
+    "number": "1b",
+    "source_page": 19,
+    "title": "Herzlich willkommen!",
+    "instruction": "Ergänzen Sie die Lücken.",
+    "questions": [
+      {
+        "prompt": "Schau mal, was {{1}} (i…) das?",
+        "blanks": [
+          {
+            "answers": [
+              "ist"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die haben ein {{1}} (B…) bekommen. Freunde {{2}} (sch…) dann das Haus von den {{3}} (El…) mit einem Storch.",
+        "blanks": [
+          {
+            "answers": [
+              "Baby"
+            ]
+          },
+          {
+            "answers": [
+              "schmücken"
+            ]
+          },
+          {
+            "answers": [
+              "Eltern"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das finde ich toll. Die {{1}} (Babyk…) ist ja so süß! Alles ist so {{2}} (kl…)! Bei uns gibt es das nicht, da {{3}} (gra…) man nur und bringt ein kleines {{4}} (Ge…).",
+        "blanks": [
+          {
+            "answers": [
+              "Babykleidung"
+            ]
+          },
+          {
+            "answers": [
+              "klein"
+            ]
+          },
+          {
+            "answers": [
+              "gratuliert"
+            ]
+          },
+          {
+            "answers": [
+              "Geschenk"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Was hast du am Wochenende {{1}} (ge…)?",
+        "blanks": [
+          {
+            "answers": [
+              "gemacht"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ines und Marc {{1}} (h…) geheiratet. Ich war in Köln.",
+        "blanks": [
+          {
+            "answers": [
+              "haben"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ach ja! Und wie war die {{1}} (Ho…)?",
+        "blanks": [
+          {
+            "answers": [
+              "Hochzeit"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Es war ein schönes {{1}} (F…). Die beiden waren total {{2}} (gl…), sie sind ein tolles {{3}} (P…).",
+        "blanks": [
+          {
+            "answers": [
+              "Fest"
+            ]
+          },
+          {
+            "answers": [
+              "glücklich"
+            ]
+          },
+          {
+            "answers": [
+              "Paar"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Hoàn thiện hội thoại về sinh con, chúc mừng và đám cưới bằng từ đúng ngữ cảnh.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true
+  },
+  {
+    "number": "2",
+    "source_page": 19,
+    "title": "Feste bei Ihnen",
+    "instruction": "Was feiert man bei Ihnen besonders? Notieren Sie.",
+    "questions": [
+      {
+        "prompt": "Was feiert man?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wer lädt ein?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wo feiert man?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Was macht man?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wichtig ist:",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Viết ghi chú về phong tục tổ chức lễ tại nơi mình sống.",
+    "rationale": "Giữ toàn bộ câu hỏi viết mở; câu trả lời phụ thuộc trải nghiệm hoặc tiếng mẹ đẻ nên giáo viên đánh giá, không áp một đáp án cố định.",
+    "answer_page": 67,
+    "reviewed": true,
+    "check_mode": "manual_check"
+  },
+  {
+    "number": "3a",
+    "source_page": 20,
+    "title": "Was ist mit den Leuten, wenn …?",
+    "instruction": "Schreiben Sie die Sätze fertig.",
+    "questions": [
+      {
+        "prompt": "Wenn Ben zum Zahnarzt geht, … (dann / er / Angst / ein bisschen / haben)",
+        "accepted_answers": [
+          "dann hat er ein bisschen Angst"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wenn Veronika mit Freunden feiert, … (sie / haben / viel Spaß / und / lachen)",
+        "accepted_answers": [
+          "hat sie viel Spaß und lacht",
+          "dann hat sie viel Spaß und lacht",
+          "haben sie viel Spaß und lachen"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wenn Lea eine Prüfung bestanden hat, … (sie / glücklich sein / und / feiern)",
+        "accepted_answers": [
+          "ist sie glücklich und feiert",
+          "dann ist sie glücklich und feiert"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wenn Pia einen Horrorfilm ansieht, … (sie / danach / schlecht / schlafen)",
+        "accepted_answers": [
+          "schläft sie danach schlecht",
+          "dann schläft sie danach schlecht",
+          "schläft sie schlecht danach"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wenn Mirko lang warten muss, … (dann / sehr / er / sein / genervt)",
+        "accepted_answers": [
+          "dann ist er sehr genervt"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Đặt động từ đúng vị trí ở mệnh đề chính sau mệnh đề wenn.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống. Cho phép giáo viên xem lại cách diễn đạt tương đương ngoài đáp án mẫu.",
+    "answer_page": 67,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "3b",
+    "source_page": 20,
+    "title": "Wenn-Sätze",
+    "instruction": "Was passt zum Satzanfang? Ordnen Sie zu und schreiben Sie wenn-Sätze.",
+    "questions": [
+      {
+        "prompt": "Kinder sind meistens aufgeregt, …",
+        "accepted_answers": [
+          "wenn sie zum ersten Mal in die Schule gehen"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Studenten sind oft nervös, …",
+        "accepted_answers": [
+          "wenn sie eine Prüfung schreiben müssen"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Kinder bekommen meistens ein Geschenk, …",
+        "accepted_answers": [
+          "wenn sie Geburtstag haben"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Mein Freund hat schlechte Laune, …",
+        "accepted_answers": [
+          "wenn er Kopfschmerzen hat"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Viele Familien fahren von zu Hause weg, …",
+        "accepted_answers": [
+          "wenn sie Urlaub haben"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wir machen einen Ausflug ans Meer, …",
+        "accepted_answers": [
+          "wenn das Wetter morgen schön ist"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Ghép điều kiện phù hợp và tạo mệnh đề wenn với động từ cuối câu.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống. Cho phép giáo viên xem lại cách diễn đạt tương đương ngoài đáp án mẫu.",
+    "answer_page": 67,
+    "reviewed": true,
+    "hints": "das Wetter morgen schön sein | eine Prüfung schreiben müssen | Geburtstag haben | Kopfschmerzen haben | Urlaub haben | zum ersten Mal in die Schule gehen",
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "4a",
+    "source_page": 20,
+    "title": "Was schreibt Caroline?",
+    "instruction": "Schreiben Sie Sätze.",
+    "questions": [
+      {
+        "prompt": "Schreiben Sie die Nachricht mit Wortgrenzen und Satzzeichen.",
+        "accepted_answers": [
+          "Lieber Philipp, liebe Lena, herzlichen Glückwunsch zur Geburt von eurem Sohn Jakob. Ich wünsche euch für die Zukunft alles Gute. Ich besuche euch, wenn ich in München bin. Herzliche Grüße Caroline"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Tách từ và viết một lời chúc mừng sinh con hoàn chỉnh.",
+    "rationale": "Đổi chữ in liền thành ô nhập toàn bộ lời chúc; giữ đủ thông điệp, cho phép kiểm tra thủ công khi khác cách ngắt câu.",
+    "answer_page": 67,
+    "reviewed": true,
+    "context": "LIEBERPHILIPPLIEBELENAHERZLICHENGLÜCKWUNSCHZURGEBURTVONEUREMSOHNJAKOBICHWÜNSCHEEUCHFÜRDIEZUKUNFTALLESGUTEICHBESUCHEEUCHWENNICHINMÜNCHENBINHERZLICHEGRÜSSECAROLINE",
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "4b",
+    "source_page": 20,
+    "title": "Was können Sie in dieser Situation sagen?",
+    "instruction": "Was können Sie in dieser Situation sagen? Kreuzen Sie an.",
+    "questions": [
+      {
+        "prompt": "Freunde von Ihnen haben geheiratet. Sie gratulieren.",
+        "accepted_answers": [
+          "Herzlichen Glückwunsch zur Hochzeit."
+        ],
+        "example": false,
+        "options": [
+          "Herzlichen Glückwunsch zur Hochzeit.",
+          "Tausend Dank für das Geschenk."
+        ]
+      },
+      {
+        "prompt": "Sie haben den Führerschein bekommen. Ein Freund gratuliert.",
+        "accepted_answers": [
+          "Vielen Dank. Das ist sehr nett von dir."
+        ],
+        "example": false,
+        "options": [
+          "Ich gratuliere dir sehr herzlich.",
+          "Vielen Dank. Das ist sehr nett von dir."
+        ]
+      },
+      {
+        "prompt": "Sie haben zum Geburtstag ein Geschenk bekommen.",
+        "accepted_answers": [
+          "Oh, das ist so schön. Tausend Dank."
+        ],
+        "example": false,
+        "options": [
+          "Oh, das ist so schön. Tausend Dank.",
+          "Ich wünsche dir alles Gute."
+        ]
+      },
+      {
+        "prompt": "Eine Freundin hat eine Prüfung bestanden.",
+        "accepted_answers": [
+          "Herzlichen Glückwunsch. Das hast du super gemacht."
+        ],
+        "example": false,
+        "options": [
+          "Ich wünsche dir alles Gute.",
+          "Herzlichen Glückwunsch. Das hast du super gemacht."
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "A2: Chọn lời chúc mừng hoặc lời cảm ơn phù hợp với tình huống.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true
+  },
+  {
+    "number": "5",
+    "source_page": 21,
+    "title": "Die Geburtstagsparty",
+    "instruction": "Die Geburtstagsparty. Wählen Sie. A: Ergänzen Sie die Lücken. Die Wörter unten helfen. B: Ergänzen Sie die Lücken.",
+    "questions": [
+      {
+        "prompt": "Sag mal, Tim, du hast doch bald Geburtstag. Willst du eine Party machen oder nicht?",
+        "accepted_answers": [
+          "machen"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Hm, ich weiß nicht, ich habe mich noch nicht {{1}}. Vielleicht.",
+        "blanks": [
+          {
+            "answers": [
+              "entschieden"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Kannst du dich nicht an letztes Jahr {{1}}? Das war doch cool.",
+        "blanks": [
+          {
+            "answers": [
+              "erinnern"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Du hast ja recht, Alia. Aber zu Hause kann ich nicht {{1}}. Mein Nachbar mag das nicht! Das gibt nur Ärger, wenn wir {{2}} haben und tanzen.",
+        "blanks": [
+          {
+            "answers": [
+              "feiern"
+            ]
+          },
+          {
+            "answers": [
+              "Spaß"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Du kannst doch in einer Bar feiern. Wie viele Leute möchtest du {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "einladen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ach, so 30 Personen. Aber dann muss ich so viel {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "planen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich helfe dir. Wir können uns am Abend {{1}} und die Party planen.",
+        "blanks": [
+          {
+            "answers": [
+              "treffen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das ist eine gute {{1}}. So machen wir das.",
+        "blanks": [
+          {
+            "answers": [
+              "Idee"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Dùng từ vựng lập kế hoạch tiệc và động từ phản thân trong hội thoại.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true,
+    "hints": "A: einladen | entschieden | erinnern | feiern | Idee | machen | planen | Spaß | treffen. B: ohne Wortliste."
+  },
+  {
+    "number": "6",
+    "source_page": 21,
+    "title": "Welches Reflexivpronomen passt?",
+    "instruction": "Welches Reflexivpronomen passt? Wählen Sie.",
+    "questions": [
+      {
+        "prompt": "Ich kann … nicht entscheiden.",
+        "accepted_answers": [
+          "mich"
+        ],
+        "example": false,
+        "options": [
+          "mich",
+          "sich"
+        ]
+      },
+      {
+        "prompt": "Kein Problem! Du musst … nicht entschuldigen.",
+        "accepted_answers": [
+          "dich"
+        ],
+        "example": false,
+        "options": [
+          "sich",
+          "dich"
+        ]
+      },
+      {
+        "prompt": "Ben will … mit seinen Freunden treffen.",
+        "accepted_answers": [
+          "sich"
+        ],
+        "example": false,
+        "options": [
+          "sich",
+          "euch"
+        ]
+      },
+      {
+        "prompt": "Eva erinnert … nicht gern an die Schule.",
+        "accepted_answers": [
+          "sich"
+        ],
+        "example": false,
+        "options": [
+          "uns",
+          "sich"
+        ]
+      },
+      {
+        "prompt": "Wir haben … sehr auf den Urlaub gefreut.",
+        "accepted_answers": [
+          "uns"
+        ],
+        "example": false,
+        "options": [
+          "uns",
+          "sich"
+        ]
+      },
+      {
+        "prompt": "Was ist los? Warum habt ihr … geärgert?",
+        "accepted_answers": [
+          "euch"
+        ],
+        "example": false,
+        "options": [
+          "sich",
+          "euch"
+        ]
+      },
+      {
+        "prompt": "Die Gäste haben … gut unterhalten.",
+        "accepted_answers": [
+          "sich"
+        ],
+        "example": false,
+        "options": [
+          "sich",
+          "euch"
+        ]
+      },
+      {
+        "prompt": "Was nehmen Sie? Haben Sie … entschieden.",
+        "accepted_answers": [
+          "sich"
+        ],
+        "example": false,
+        "options": [
+          "sich",
+          "euch"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "A2: Chọn đại từ phản thân tương ứng với chủ ngữ.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true
+  },
+  {
+    "number": "7a",
+    "source_page": 21,
+    "title": "Im Gespräch",
+    "instruction": "Ergänzen Sie die Antworten.",
+    "questions": [
+      {
+        "prompt": "Der Film war nicht spannend, ich habe mich total gelangweilt.",
+        "accepted_answers": [
+          "mich gelangweilt"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Dieses Wochenende habe ich nicht viel gemacht. Ich musste {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "mich ausruhen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Gestern habe ich Aylin gesehen. Wir haben {{1}} lange {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "uns"
+            ]
+          },
+          {
+            "answers": [
+              "unterhalten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich möchte {{1}} für die Einladung zur Party {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "mich"
+            ]
+          },
+          {
+            "answers": [
+              "bedanken"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das ist ja blöd, dass {{1}} die beiden Kollegen immer {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "sich"
+            ]
+          },
+          {
+            "answers": [
+              "streiten"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Chia động từ phản thân và đại từ trong các câu giao tiếp.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true,
+    "hints": "sich ausruhen | sich bedanken | sich langweilen | sich streiten | sich unterhalten"
+  },
+  {
+    "number": "7b",
+    "source_page": 21,
+    "title": "In Ihrer Sprache",
+    "instruction": "Wie sagt man das in Ihrer Sprache?",
+    "questions": [
+      {
+        "prompt": "Ich möchte mich bedanken.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Er hat sich gelangweilt.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wir haben uns gestritten.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Hiểu nghĩa và đối chiếu động từ phản thân với tiếng mẹ đẻ.",
+    "rationale": "Giữ toàn bộ câu hỏi viết mở; câu trả lời phụ thuộc trải nghiệm hoặc tiếng mẹ đẻ nên giáo viên đánh giá, không áp một đáp án cố định.",
+    "answer_page": 67,
+    "reviewed": true,
+    "check_mode": "manual_check"
+  },
+  {
+    "number": "8",
+    "source_page": 22,
+    "title": "Was kann man da sagen?",
+    "instruction": "Was kann man da sagen? Wählen Sie. A: Ergänzen Sie die Lücken. Die Wörter unten helfen. B: Ergänzen Sie die Lücken.",
+    "questions": [
+      {
+        "prompt": "Ich habe die Prüfung geschafft! – Das ist ja toll, da {{1}} ich mich riesig.",
+        "blanks": [
+          {
+            "answers": [
+              "freue"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich war auf einem Festival, drei Tage Regen! – Ach {{1}}! So ein {{2}}!",
+        "blanks": [
+          {
+            "answers": [
+              "schade"
+            ]
+          },
+          {
+            "answers": [
+              "Pech"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Meine Freundin ist im Krankenhaus. – Das tut mir wirklich {{1}}!",
+        "blanks": [
+          {
+            "answers": [
+              "leid"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich habe eine Reise nach Berlin gewonnen. – Na, da hast du aber {{1}} gehabt!",
+        "blanks": [
+          {
+            "answers": [
+              "Glück"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bist du zu Hause? Dann besuche ich dich. – Was? Das {{1}} doch nicht!",
+        "blanks": [
+          {
+            "answers": [
+              "gibt's",
+              "gibt es"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Entschuldige bitte, das habe ich ganz vergessen! – Das {{1}} doch nichts!",
+        "blanks": [
+          {
+            "answers": [
+              "macht"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Dùng lời phản hồi biểu lộ vui mừng, tiếc nuối và cảm thông.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true,
+    "hints": "A: freue | gibt's | Glück | leid | macht | Pech | schade | toll. B: ohne Wortliste."
+  },
+  {
+    "number": "9",
+    "source_page": 22,
+    "title": "Emotionen: Was passt nicht?",
+    "instruction": "Wählen Sie den unpassenden Satz. Sprechen Sie dann die passenden Sätze laut.",
+    "questions": [
+      {
+        "prompt": "gestresst",
+        "accepted_answers": [
+          "Das hat noch Zeit."
+        ],
+        "example": true,
+        "options": [
+          "Das ist zu viel!",
+          "Das hat noch Zeit.",
+          "Ich schaff’s nicht."
+        ]
+      },
+      {
+        "prompt": "fröhlich",
+        "accepted_answers": [
+          "Mann, tut das weh!"
+        ],
+        "example": false,
+        "options": [
+          "Ach, wie schön!",
+          "Das freut mich sehr!",
+          "Mann, tut das weh!"
+        ]
+      },
+      {
+        "prompt": "traurig",
+        "accepted_answers": [
+          "So ein Glück!"
+        ],
+        "example": false,
+        "options": [
+          "So ein Glück!",
+          "Das tut mir leid.",
+          "Ach, das ist so schade."
+        ]
+      },
+      {
+        "prompt": "ärgerlich",
+        "accepted_answers": [
+          "Ich freue mich sehr!"
+        ],
+        "example": false,
+        "options": [
+          "Das gibt’s doch nicht.",
+          "Ich freue mich sehr!",
+          "Oh, ist das peinlich!"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Phân biệt lời nói theo cảm xúc và luyện nói câu có ngữ điệu phù hợp.",
+    "rationale": "Đổi gạch câu sai thành chọn một câu không hợp cảm xúc; vẫn giữ yêu cầu đọc to các câu phù hợp, không tự động chấm giọng nói.",
+    "answer_page": 67,
+    "reviewed": true
+  },
+  {
+    "number": "10",
+    "source_page": 22,
+    "title": "Ein Stadtfest",
+    "instruction": "Welche Wörter und Ausdrücke passen? Es kann mehrere Möglichkeiten geben. Kreuzen Sie an.",
+    "questions": [
+      {
+        "prompt": "Das Fest ist … (Im Buch ist „bekannt“ als erstes Beispiel angekreuzt; wählen Sie alle passenden Antworten.)",
+        "accepted_answers": [
+          "bekannt.",
+          "berühmt."
+        ],
+        "example": false,
+        "options": [
+          "bekannt.",
+          "genervt.",
+          "berühmt."
+        ]
+      },
+      {
+        "prompt": "Man kann dort …",
+        "accepted_answers": [
+          "Spezialitäten essen."
+        ],
+        "example": false,
+        "options": [
+          "Getränke anbieten.",
+          "Spezialitäten essen.",
+          "Hunger haben."
+        ]
+      },
+      {
+        "prompt": "Es gibt dort …",
+        "accepted_answers": [
+          "viele Konzerte.",
+          "ein Feuerwerk."
+        ],
+        "example": false,
+        "options": [
+          "viele Konzerte.",
+          "ein Feuerwerk.",
+          "eine Hochzeit."
+        ]
+      },
+      {
+        "prompt": "Das Fest macht …",
+        "accepted_answers": [
+          "viel Spaß.",
+          "gute Laune."
+        ],
+        "example": false,
+        "options": [
+          "viele Probleme.",
+          "viel Spaß.",
+          "gute Laune."
+        ]
+      },
+      {
+        "prompt": "Viele Menschen …",
+        "accepted_answers": [
+          "besuchen das Fest.",
+          "arbeiten dort."
+        ],
+        "example": false,
+        "options": [
+          "besuchen das Fest.",
+          "arbeiten dort.",
+          "ärgern sich."
+        ]
+      }
+    ],
+    "kind": "multi",
+    "decision": "DIGITIZE",
+    "objective": "A2: Nhận biết các kết hợp từ phù hợp khi mô tả lễ hội thành phố.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true
+  },
+  {
+    "number": "11a",
+    "source_page": 22,
+    "title": "Die Erfahrungen von Chandan",
+    "instruction": "Ergänzen Sie die Verbindungswörter.",
+    "questions": [
+      {
+        "prompt": "Chandan war bei seiner Ankunft in Deutschland überrascht, dass die Anmeldung an der Uni und im Wohnheim so einfach war.",
+        "accepted_answers": [
+          "dass"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Die Mitarbeiter waren freundlich {{1}} nirgends musste er lange warten. Er hat oft gehört, {{2}} die Deutschen so genau und ordentlich sind.",
+        "blanks": [
+          {
+            "answers": [
+              "und"
+            ]
+          },
+          {
+            "answers": [
+              "dass"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Im Verkehr und auf den Straßen ist es meistens auch so: {{1}} der Bus um 9:12 Uhr abfahren soll, dann fährt er fast immer um 9:12 Uhr ab.",
+        "blanks": [
+          {
+            "answers": [
+              "Wenn"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Chandan findet, {{1}} diese Pünktlichkeit das Leben weniger stressig macht. {{2}} jetzt fehlt ihm ein Grund für eine Entschuldigung, {{3}} er zu spät kommt.",
+        "blanks": [
+          {
+            "answers": [
+              "dass"
+            ]
+          },
+          {
+            "answers": [
+              "Aber"
+            ]
+          },
+          {
+            "answers": [
+              "wenn"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Chandan hat im Wohnheim schnell neue Freunde gefunden, {{1}} die anderen Studenten nett sind. Sie finden es auch nicht schlimm, {{2}} er etwas nicht versteht.",
+        "blanks": [
+          {
+            "answers": [
+              "weil"
+            ]
+          },
+          {
+            "answers": [
+              "wenn"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Phân biệt dass, und, wenn, aber, weil theo quan hệ ý nghĩa giữa các mệnh đề.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true,
+    "hints": "aber | dass | dass | dass | und | weil | wenn | wenn | wenn"
+  },
+  {
+    "number": "11b",
+    "source_page": 23,
+    "title": "Julia erinnert sich",
+    "instruction": "Julia erinnert sich. Wo passen diese Wörter? Notieren Sie.",
+    "questions": [
+      {
+        "prompt": "Die ersten 14 Jahre hat Julia Berger in Kanada gelebt. „Meine … war sehr glücklich“, sagt sie.",
+        "accepted_answers": [
+          "Kindheit"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Dann ist sie nach Österreich gekommen und hat sich schnell wohlgefühlt in ihrer neuen …",
+        "accepted_answers": [
+          "Heimat"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Julia Berger ist Ärztin. Da lernt sie die … von anderen Menschen kennen.",
+        "accepted_answers": [
+          "Probleme"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "„In meinem Beruf mache ich viele …“, sagt sie. „Manche sind gut und andere weniger gut.“",
+        "accepted_answers": [
+          "Erfahrungen"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie hat immer noch viele gute … an ihre Zeit in Kanada.",
+        "accepted_answers": [
+          "Erinnerungen"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie hat auch noch Kontakt zu Lillian. Die … mit ihr ist sehr alt, sie kennen sich seit dem Kindergarten.",
+        "accepted_answers": [
+          "Freundschaft"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Ghép âm tiết thành từ vựng về quê hương, tuổi thơ và ký ức theo ngữ cảnh.",
+    "rationale": "Giữ toàn bộ các âm tiết làm ngân hàng gợi ý; nhập từ hoàn chỉnh vào từng ngữ cảnh thay cho viết trên giấy.",
+    "answer_page": 67,
+    "reviewed": true,
+    "hints": "ER | ER | FREUND | FAH | INNE | GEN | GEN | MAT | HEI | KIND | PRO | RUN | BLE | RUN | SCHAFT | ME | HEIT"
+  },
+  {
+    "number": "12",
+    "source_page": 23,
+    "title": "Das falsche Verb",
+    "instruction": "Streichen Sie in jedem Satz das falsche Verb. Notieren Sie es dann zum richtigen Satz.",
+    "questions": [
+      {
+        "prompt": "Ich bin in Tunesien geboren und denke jetzt in Basel.",
+        "accepted_answers": [
+          "studiere"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Ich vermisse mich, dass mein Deutsch jetzt viel besser ist.",
+        "accepted_answers": [
+          "freue"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "An der Uni koche ich jetzt auch alles, nein, fast alles.",
+        "accepted_answers": [
+          "verstehe"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Manchmal freue ich meine Familie und meine Stadt Gafsa.",
+        "accepted_answers": [
+          "vermisse"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich studiere besonders an Gafsa, wenn es hier kalt ist und regnet.",
+        "accepted_answers": [
+          "denke"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Dann verstehe ich wie zu Hause und höre meine Musik.",
+        "accepted_answers": [
+          "koche"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "A2: Phát hiện và sửa động từ sai ngữ nghĩa trong câu nói về cuộc sống ở nước ngoài.",
+    "rationale": "Nhập động từ sửa đúng thay cho gạch và chép lại; tất cả câu sai ban đầu được giữ để người học tự phát hiện.",
+    "answer_page": 67,
+    "reviewed": true
+  },
+  {
+    "number": "W-a",
+    "source_page": 23,
+    "title": "Wortbildung – Verneinung mit un-",
+    "instruction": "Welches Wort bedeutet das Gegenteil? Ordnen Sie zu.",
+    "questions": [
+      {
+        "prompt": "leicht",
+        "accepted_answers": [
+          "schwer"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "praktisch",
+        "accepted_answers": [
+          "unpraktisch"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "langsam",
+        "accepted_answers": [
+          "schnell"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "leer",
+        "accepted_answers": [
+          "voll"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "möglich",
+        "accepted_answers": [
+          "unmöglich"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "gefährlich",
+        "accepted_answers": [
+          "ungefährlich"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "alt",
+        "accepted_answers": [
+          "jung"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "geduldig",
+        "accepted_answers": [
+          "ungeduldig"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "schön",
+        "accepted_answers": [
+          "hässlich"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "A2: Ghép cặp tính từ trái nghĩa, gồm các từ có tiền tố un-.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true,
+    "hints": "hässlich | jung | schnell | schwer | ungeduldig | ungefährlich | unmöglich | unpraktisch | voll"
+  },
+  {
+    "number": "W-b",
+    "source_page": 23,
+    "title": "Adjektive mit un-",
+    "instruction": "Schreiben Sie Adjektive mit un-.",
+    "questions": [
+      {
+        "prompt": "Die alten Handys waren (nicht praktisch) {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "unpraktisch"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Züge sind oft (nicht pünktlich) {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "unpünktlich"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der Verkäufer war (nicht freundlich) {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "unfreundlich"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das Buch ist nicht gut, ich finde es (nicht interessant) {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "uninteressant"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich hatte den Termin vergessen, das war mir sehr (nicht angenehm) {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "unangenehm"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Viele wichtige Verben im Deutschen sind (nicht regelmäßig) {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "unregelmäßig"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "A2: Tạo tính từ phủ định với tiền tố un-.",
+    "rationale": "Các chỗ trống hoặc lựa chọn có đáp án rõ ở cuối sách; giữ đủ dữ liệu và ví dụ gốc để tự chấm theo từng câu hoặc từng chỗ trống.",
+    "answer_page": 67,
+    "reviewed": true,
+    "context": "Mit un- kann man viele Adjektive und auch einige Nomen verneinen: gesund – ungesund; das Glück – das Unglück."
+  }
+]

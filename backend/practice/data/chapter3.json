@@ -1,0 +1,1429 @@
+[
+  {
+    "number": "1",
+    "source_page": 14,
+    "title": "Medien und Geräte",
+    "instruction": "Was ist das? Schreiben Sie die Wörter mit Artikel und Plural.",
+    "questions": [
+      {
+        "prompt": "Bild 1",
+        "accepted_answers": [
+          "die Zeitschrift, -en"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Bild 2: Singular mit Artikel {{1}}; Plural ohne Artikel {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "das Radio"
+            ]
+          },
+          {
+            "answers": [
+              "Radios"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bild 3: Singular mit Artikel {{1}}; Plural ohne Artikel {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "der Laptop"
+            ]
+          },
+          {
+            "answers": [
+              "Laptops"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bild 4: Singular mit Artikel {{1}}; Plural ohne Artikel {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "der Fernseher"
+            ]
+          },
+          {
+            "answers": [
+              "Fernseher"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bild 5: Singular mit Artikel {{1}}; Plural ohne Artikel {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "die Zeitung"
+            ]
+          },
+          {
+            "answers": [
+              "Zeitungen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bild 6: Singular mit Artikel {{1}}; Plural ohne Artikel {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "das Tablet"
+            ]
+          },
+          {
+            "answers": [
+              "Tablets"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bild 7: Singular mit Artikel {{1}}; Plural ohne Artikel {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "die Smartwatch"
+            ]
+          },
+          {
+            "answers": [
+              "Smartwatches"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bild 8: Singular mit Artikel {{1}}; Plural ohne Artikel {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "das Handy"
+            ]
+          },
+          {
+            "answers": [
+              "Handys"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bild 9: Singular mit Artikel {{1}}; Plural ohne Artikel {{2}}.",
+        "blanks": [
+          {
+            "answers": [
+              "die VR-Brille"
+            ]
+          },
+          {
+            "answers": [
+              "VR-Brillen"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Gọi tên thiết bị, mạo từ và số nhiều.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 66,
+    "reviewed": true,
+    "image_path": "practice/ch3_devices.png",
+    "image_description": "Neun nummerierte Bilder von Medien und Geräten. Verwenden Sie die Bildnummern.",
+    "context": "Silben: FERN · HAN · LAP · RA · BRIL · DIO · DY · HER · LE · LET · SMART · TAB · VR · ZEI · ZEIT · SE · SCHRIFT · TOP · TUNG · WATCH"
+  },
+  {
+    "number": "2",
+    "source_page": 14,
+    "title": "Was machen die Personen online?",
+    "instruction": "Ergänzen Sie die Verben in der richtigen Form.",
+    "questions": [
+      {
+        "prompt": "Warum hast du nicht gewartet? Ich habe dir doch eine Nachricht …",
+        "accepted_answers": [
+          "geschickt"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Die Webseite ist total gut. Ich {{1}} dir den Link.",
+        "blanks": [
+          {
+            "answers": [
+              "kopiere"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Whow, das ist cool. Möchtest du die VR-Brille auch einmal {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "ausprobieren"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich studiere. Deshalb muss ich oft auf Webseiten Informationen {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "recherchieren"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Nora {{1}} beim Frühstück immer online die Zeitung.",
+        "blanks": [
+          {
+            "answers": [
+              "liest"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich komme sofort, ich muss nur noch meine E-Mails {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "checken"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Veras Bruder lebt in Australien. Sie {{1}} über Internet mit ihm.",
+        "blanks": [
+          {
+            "answers": [
+              "telefoniert"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Sven hört Musik fast immer online, aber gestern hat er ein paar Songs {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "heruntergeladen",
+              "runtergeladen"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Was machen die Personen online?",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true,
+    "context": "(he)runterladen · ausprobieren · checken · kopieren · lesen · recherchieren · schicken · telefonieren"
+  },
+  {
+    "number": "3",
+    "source_page": 14,
+    "title": "Welche Form ist richtig?",
+    "instruction": "Wählen Sie die richtige Verbform.",
+    "questions": [
+      {
+        "prompt": "Was ist los? Du hast schon ein paar Tage keine Fotos …",
+        "accepted_answers": [
+          "gepostet"
+        ],
+        "example": false,
+        "options": [
+          "posten",
+          "gepostet"
+        ]
+      },
+      {
+        "prompt": "Jan macht eine Reise. Er möchte jeden Tag …",
+        "accepted_answers": [
+          "bloggen"
+        ],
+        "example": false,
+        "options": [
+          "bloggen",
+          "gebloggt"
+        ]
+      },
+      {
+        "prompt": "Du musst das Dokument haben. Ich habe es dir …",
+        "accepted_answers": [
+          "gemailt"
+        ],
+        "example": false,
+        "options": [
+          "mailt",
+          "gemailt"
+        ]
+      },
+      {
+        "prompt": "Irgendwas stimmt nicht, ich kann die Datei nicht …",
+        "accepted_answers": [
+          "downloaden"
+        ],
+        "example": false,
+        "options": [
+          "downloaden",
+          "gedownloadet"
+        ]
+      },
+      {
+        "prompt": "Nora schreibt fast keine Mails mehr, sie … lieber.",
+        "accepted_answers": [
+          "chattet"
+        ],
+        "example": false,
+        "options": [
+          "chattet",
+          "chatten"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Welche Form ist richtig?",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true
+  },
+  {
+    "number": "4",
+    "source_page": 15,
+    "title": "Dinge vergleichen",
+    "instruction": "Ergänzen Sie den Komparativ.",
+    "questions": [
+      {
+        "prompt": "Das Tablet kostet ziemlich viel. Aber der Laptop kostet noch …",
+        "accepted_answers": [
+          "mehr"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Mona liest gern Blogs. Aber sie liest noch {{1}} Bücher.",
+        "blanks": [
+          {
+            "answers": [
+              "lieber"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Bens Laptop ist sehr groß. Aber sein Computer ist noch {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "größer"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Der Fernseher ist ziemlich alt. Aber das Radio ist noch viel {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "älter"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Die Spielekonsole ist teuer. Aber die VR-Brille ist {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "teurer"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das Telefon war sehr praktisch. Aber Handys sind viel {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "praktischer"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Inas Computer ist ziemlich gut. Aber ihr Tablet ist {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "besser"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "So sánh hơn, gồm các dạng bất quy tắc.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true,
+    "hints": "älter · besser · größer · lieber · mehr · praktischer · teurer"
+  },
+  {
+    "number": "5a",
+    "source_page": 15,
+    "title": "als oder wie?",
+    "instruction": "Was ist richtig: als oder wie?",
+    "questions": [
+      {
+        "prompt": "Über Internet bekommt man Informationen viel schneller … in Zeitungen.",
+        "accepted_answers": [
+          "als"
+        ],
+        "example": false,
+        "options": [
+          "als",
+          "wie"
+        ]
+      },
+      {
+        "prompt": "Im Kaufhaus einkaufen ist nicht so bequem … online einkaufen.",
+        "accepted_answers": [
+          "wie"
+        ],
+        "example": false,
+        "options": [
+          "als",
+          "wie"
+        ]
+      },
+      {
+        "prompt": "Eva sieht seltener Filme im Kino … zu Hause.",
+        "accepted_answers": [
+          "als"
+        ],
+        "example": false,
+        "options": [
+          "als",
+          "wie"
+        ]
+      },
+      {
+        "prompt": "Philipp spielt lieber mit dem Computer … mit seiner Spielekonsole.",
+        "accepted_answers": [
+          "als"
+        ],
+        "example": false,
+        "options": [
+          "als",
+          "wie"
+        ]
+      },
+      {
+        "prompt": "Telefonieren kostet mehr … chatten.",
+        "accepted_answers": [
+          "als"
+        ],
+        "example": false,
+        "options": [
+          "als",
+          "wie"
+        ]
+      },
+      {
+        "prompt": "Vera liest E-Books nicht so gern … Bücher aus Papier.",
+        "accepted_answers": [
+          "wie"
+        ],
+        "example": false,
+        "options": [
+          "als",
+          "wie"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "als oder wie?",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true
+  },
+  {
+    "number": "5b",
+    "source_page": 15,
+    "title": "Vergleich mit als oder wie?",
+    "instruction": "Schreiben Sie vollständige Sätze.",
+    "questions": [
+      {
+        "prompt": "Das Telefon ist ca. 100 Jahre alt, das Fernsehen 60 Jahre.",
+        "accepted_answers": [
+          "Das Telefon ist älter als das Fernsehen."
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Das Smartphone kostet ca. 400 €, das Tablet auch. Beginnen Sie mit Das Tablet kostet …",
+        "accepted_answers": [
+          "Das Tablet kostet genauso viel wie das Smartphone.",
+          "Das Tablet kostet so viel wie das Smartphone."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Das Tablet kostet ca. 400 €, der Laptop ca. 700 €. Beginnen Sie mit Der Laptop …",
+        "accepted_answers": [
+          "Der Laptop kostet mehr als das Tablet."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Bücher brauchen viel Platz, ein E-Book wenig. Beginnen Sie mit Ein E-Book …",
+        "accepted_answers": [
+          "Ein E-Book braucht weniger Platz als Bücher."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Alex schreibt wenig E-Mails, aber viele Nachrichten. Beginnen Sie mit Alex schreibt nicht so …",
+        "accepted_answers": [
+          "Alex schreibt nicht so viele E-Mails wie Nachrichten."
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Vergleich mit als oder wie?",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "5c",
+    "source_page": 15,
+    "title": "Was ist besser?",
+    "instruction": "Was denken Sie? Schreiben Sie Vergleiche.",
+    "questions": [
+      {
+        "prompt": "schön finden: Winter / Sommer. Ich finde den … schöner als den …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "viel lesen: Bücher / Blogs",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "gern essen: Brot / Kuchen",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "wichtig finden: Wählen Sie selbst zwei Dinge.",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Was ist besser?",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": null,
+    "reviewed": true,
+    "check_mode": "manual_check"
+  },
+  {
+    "number": "6a",
+    "source_page": 16,
+    "title": "Superlative suchen",
+    "instruction": "Ergänzen Sie die Fragen mit dem passenden Superlativ.",
+    "questions": [
+      {
+        "prompt": "Welcher Turm ist {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "am höchsten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Welches Haus ist {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "am kleinsten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Welcher Hund ist {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "am größten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Welche Bilder sind {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "am ältesten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Welche Uhr kostet {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "am meisten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Welches Restaurant ist {{1}}?",
+        "blanks": [
+          {
+            "answers": [
+              "am besten"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Tạo dạng so sánh nhất theo ngữ cảnh hình.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true,
+    "context": "alt · groß · gut · hoch · klein · viel",
+    "image_path": "practice/ch3_superlatives.png",
+    "image_description": "Sechs nummerierte Bildgruppen passend zu den sechs Fragen."
+  },
+  {
+    "number": "6b",
+    "source_page": 16,
+    "title": "Vergleiche",
+    "instruction": "Ergänzen Sie die Lücken.",
+    "questions": [
+      {
+        "prompt": "Elias arbeitet … Ines.",
+        "accepted_answers": [
+          "genauso lang wie"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Ines und Elias arbeiten {{1}} Mike.",
+        "blanks": [
+          {
+            "answers": [
+              "länger als"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Eva arbeitet {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "am längsten"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Eva ist {{1}} Ines.",
+        "blanks": [
+          {
+            "answers": [
+              "älter als"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ines ist {{1}} Mike.",
+        "blanks": [
+          {
+            "answers": [
+              "genauso alt wie",
+              "so alt wie"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Elias ist {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "am ältesten"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "So sánh bằng, hơn và nhất từ dữ liệu số.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true,
+    "context": "Arbeitszeit: Ines 8 Stunden, Elias 8 Stunden, Eva 10 Stunden, Mike 5 Stunden.\nAlter: Ines 22 Jahre, Eva 29 Jahre, Elias 33 Jahre, Mike 22 Jahre."
+  },
+  {
+    "number": "7",
+    "source_page": 16,
+    "title": "Fragen mit welch-",
+    "instruction": "Schreiben Sie Fragen mit welch-. Verwenden Sie Superlative.",
+    "questions": [
+      {
+        "prompt": "Film / gut gefallen / Ihnen / ?",
+        "accepted_answers": [
+          "Welcher Film gefällt Ihnen am besten?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Musik / Sie / gern / hören / ?",
+        "accepted_answers": [
+          "Welche Musik hören Sie am liebsten?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Bild / Sie / finden / schön / ?",
+        "accepted_answers": [
+          "Welches Bild finden Sie am schönsten?"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sport / Sie / blöd / finden / ?",
+        "accepted_answers": [
+          "Welchen Sport finden Sie am blödesten?"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Fragen mit welch-",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "8",
+    "source_page": 16,
+    "title": "Vier Leute, vier Meinungen",
+    "instruction": "Was passt zusammen? Ordnen Sie zu.",
+    "questions": [
+      {
+        "prompt": "Manche Freunde schreiben immer und schicken Fotos. Das nervt!",
+        "accepted_answers": [
+          "C · Carla Riemer findet es blöd, dass manche Freunde jede Aktivität mitteilen."
+        ],
+        "example": false,
+        "options": [
+          "A · Konstantin Bührer mag es, dass er alles sofort mit seinen Freunden teilen kann.",
+          "B · Ferdinand Weisensee sagt, dass die Eltern vorsichtiger sein sollen.",
+          "C · Carla Riemer findet es blöd, dass manche Freunde jede Aktivität mitteilen.",
+          "D · Nadica Horvat erzählt, dass ein Kollege Fotos von einer Party gepostet hat."
+        ]
+      },
+      {
+        "prompt": "Ich will immer Kontakt mit Freunden haben.",
+        "accepted_answers": [
+          "A · Konstantin Bührer mag es, dass er alles sofort mit seinen Freunden teilen kann."
+        ],
+        "example": false,
+        "options": [
+          "A · Konstantin Bührer mag es, dass er alles sofort mit seinen Freunden teilen kann.",
+          "B · Ferdinand Weisensee sagt, dass die Eltern vorsichtiger sein sollen.",
+          "C · Carla Riemer findet es blöd, dass manche Freunde jede Aktivität mitteilen.",
+          "D · Nadica Horvat erzählt, dass ein Kollege Fotos von einer Party gepostet hat."
+        ]
+      },
+      {
+        "prompt": "Man kann Freunde und Bekannte einfach informieren! Aber manchmal schicken Leute peinliche Bilder.",
+        "accepted_answers": [
+          "D · Nadica Horvat erzählt, dass ein Kollege Fotos von einer Party gepostet hat."
+        ],
+        "example": false,
+        "options": [
+          "A · Konstantin Bührer mag es, dass er alles sofort mit seinen Freunden teilen kann.",
+          "B · Ferdinand Weisensee sagt, dass die Eltern vorsichtiger sein sollen.",
+          "C · Carla Riemer findet es blöd, dass manche Freunde jede Aktivität mitteilen.",
+          "D · Nadica Horvat erzählt, dass ein Kollege Fotos von einer Party gepostet hat."
+        ]
+      },
+      {
+        "prompt": "Viele Leute posten Fotos von ihren Kindern! Schrecklich.",
+        "accepted_answers": [
+          "B · Ferdinand Weisensee sagt, dass die Eltern vorsichtiger sein sollen."
+        ],
+        "example": false,
+        "options": [
+          "A · Konstantin Bührer mag es, dass er alles sofort mit seinen Freunden teilen kann.",
+          "B · Ferdinand Weisensee sagt, dass die Eltern vorsichtiger sein sollen.",
+          "C · Carla Riemer findet es blöd, dass manche Freunde jede Aktivität mitteilen.",
+          "D · Nadica Horvat erzählt, dass ein Kollege Fotos von einer Party gepostet hat."
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Vier Leute, vier Meinungen",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 66,
+    "reviewed": true
+  },
+  {
+    "number": "9a",
+    "source_page": 17,
+    "title": "dass-Sätze und Pronomen",
+    "instruction": "Ergänzen Sie die Pronomen. Wählen Sie anschließend die Position des Verbs.",
+    "questions": [
+      {
+        "prompt": "Ich kann zu Hause für meine Firma arbeiten. → Frau Weber sagt, dass …",
+        "accepted_answers": [
+          "sie zu Hause für ihre Firma arbeiten kann."
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "„Ich achte im Internet gut auf meine Daten.“ Herr Weber sagt, dass {{1}} im Internet gut auf {{2}} Daten achtet.",
+        "blanks": [
+          {
+            "answers": [
+              "er"
+            ]
+          },
+          {
+            "answers": [
+              "seine"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "„Ich telefoniere mit meiner Freundin über Internet.“ Julia sagt, dass {{1}} mit {{2}} Freundin über Internet telefoniert.",
+        "blanks": [
+          {
+            "answers": [
+              "sie"
+            ]
+          },
+          {
+            "answers": [
+              "ihrer"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "„Ich muss immer meine E-Mails checken.“ Simon sagt, dass {{1}} immer {{2}} E-Mails checken muss.",
+        "blanks": [
+          {
+            "answers": [
+              "er"
+            ]
+          },
+          {
+            "answers": [
+              "seine"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wohin wandert das konjugierte Verb im dass-Satz?",
+        "accepted_answers": [
+          "ans Satzende"
+        ],
+        "example": false,
+        "options": [
+          "an die zweite Position",
+          "ans Satzende"
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Đổi đại từ và nhận diện động từ cuối mệnh đề dass.",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 66,
+    "reviewed": true
+  },
+  {
+    "number": "9b",
+    "source_page": 17,
+    "title": "Meinungen zum Internet",
+    "instruction": "Schreiben Sie jeweils den Nebensatz nach dass.",
+    "questions": [
+      {
+        "prompt": "Lena: „Ich kann überall Kontakt zu meinen Freunden haben.“ Lena findet gut, dass …",
+        "accepted_answers": [
+          "sie überall Kontakt zu ihren Freunden haben kann."
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Laura: „Ich brauche das Internet für meine Arbeit.“ Laura sagt, dass …",
+        "accepted_answers": [
+          "sie das Internet für ihre Arbeit braucht."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Cem: „Man kann immer schnell Informationen finden.“ Cem findet wichtig, dass …",
+        "accepted_answers": [
+          "man immer schnell Informationen finden kann."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Marco: „Ich kann Bücher und Musik herunterladen.“ Marco ist froh, dass …",
+        "accepted_answers": [
+          "er Bücher und Musik herunterladen kann."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Bastian: „Vieles ist einfach unwichtig und total uninteressant.“ Bastian denkt, dass …",
+        "accepted_answers": [
+          "vieles einfach unwichtig und total uninteressant ist."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "David: „Ich verbringe nicht viel Zeit im Internet.“ David glaubt, dass …",
+        "accepted_answers": [
+          "er nicht viel Zeit im Internet verbringt."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Julia: „Ich passe mit privaten Informationen sehr gut auf.“ Julia meint, dass …",
+        "accepted_answers": [
+          "sie mit privaten Informationen sehr gut aufpasst."
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Meinungen zum Internet",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "10",
+    "source_page": 17,
+    "title": "Und Ihre Meinung?",
+    "instruction": "Schreiben Sie Ihre Meinung zu Handys, E-Books und Internet.",
+    "questions": [
+      {
+        "prompt": "Ich finde es gut, dass …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich bin froh, dass …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Es ist schlecht, dass …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich denke, dass …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Und Ihre Meinung?",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": null,
+    "reviewed": true,
+    "check_mode": "manual_check"
+  },
+  {
+    "number": "11",
+    "source_page": 18,
+    "title": "b oder w?",
+    "instruction": "Ergänzen Sie b oder w. Lesen Sie dann laut. Die Aussprache wird nicht automatisch bewertet.",
+    "questions": [
+      {
+        "prompt": "Wirklich? Ist das {{1}}ahr?",
+        "blanks": [
+          {
+            "answers": [
+              "w"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Komm {{1}}ald! Ich {{2}}arte.",
+        "blanks": [
+          {
+            "answers": [
+              "b"
+            ]
+          },
+          {
+            "answers": [
+              "w"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}}ie heißt das {{2}}uch?",
+        "blanks": [
+          {
+            "answers": [
+              "W"
+            ]
+          },
+          {
+            "answers": [
+              "B"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}}er {{2}}raucht noch {{3}}as?",
+        "blanks": [
+          {
+            "answers": [
+              "W"
+            ]
+          },
+          {
+            "answers": [
+              "b"
+            ]
+          },
+          {
+            "answers": [
+              "w"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}}o ist {{2}}itte das {{3}}ad?",
+        "blanks": [
+          {
+            "answers": [
+              "W"
+            ]
+          },
+          {
+            "answers": [
+              "b"
+            ]
+          },
+          {
+            "answers": [
+              "B"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}}ann fährt der {{2}}us?",
+        "blanks": [
+          {
+            "answers": [
+              "W"
+            ]
+          },
+          {
+            "answers": [
+              "B"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Geht es {{1}}ieder {{2}}esser?",
+        "blanks": [
+          {
+            "answers": [
+              "w"
+            ]
+          },
+          {
+            "answers": [
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "{{1}}ann ist die {{2}}ank offen?",
+        "blanks": [
+          {
+            "answers": [
+              "W"
+            ]
+          },
+          {
+            "answers": [
+              "B"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Man muss {{1}}ar {{2}}ezahlen.",
+        "blanks": [
+          {
+            "answers": [
+              "b"
+            ]
+          },
+          {
+            "answers": [
+              "b"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Chính tả b/w và tự luyện đọc thành tiếng.",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true,
+    "context": "Beispiel: Wirklich?"
+  },
+  {
+    "number": "12",
+    "source_page": 18,
+    "title": "Über Filme reden",
+    "instruction": "Welche Ausdrücke finden Sie in der Buchstabenkette?",
+    "questions": [
+      {
+        "prompt": "Schreiben Sie die sechs weiteren Ausdrücke, durch Kommas getrennt.",
+        "accepted_answers": [
+          "ist nicht spannend",
+          "spielt in Berlin",
+          "ist aktuell",
+          "hat mir am wenigsten gefallen",
+          "macht echt Spaß",
+          "erzählt die Geschichte von"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "wordset",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Über Filme reden",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 66,
+    "reviewed": true,
+    "context": "Beispiel: Der Film ist wirklich lustig.\nASDFJKISTWIRKLICHLUSTIGQWORISTNICHTSPANNENDZUPOLSPIELTINBERLINHIWINISTAKTUELL SCHLVOHATMIRAMWENIGSTENGEFALLENFASDEMACHTECHTSPASSZOHERERZÄHLTDIEGESCHICHTEVONMRLSON"
+  },
+  {
+    "number": "13",
+    "source_page": 18,
+    "title": "Meinungen zu Filmen",
+    "instruction": "Was sagen die Leute? Ergänzen Sie jeweils das vollständige Wort.",
+    "questions": [
+      {
+        "prompt": "Den Film habe ich bestimmt {{1}} (sch…) fünf Mal {{2}} (ges…) und finde ihn {{3}} (i…) noch super, einfach {{4}} (kl…)! Manche sagen, dass die {{5}} (Schau…) nicht so {{6}} (t…) sind, aber mir {{7}} (gef…) alles: die Schauspieler, die {{8}} (Bi…), die Musik.",
+        "blanks": [
+          {
+            "answers": [
+              "schon"
+            ]
+          },
+          {
+            "answers": [
+              "gesehen"
+            ]
+          },
+          {
+            "answers": [
+              "immer"
+            ]
+          },
+          {
+            "answers": [
+              "klasse"
+            ]
+          },
+          {
+            "answers": [
+              "Schauspieler"
+            ]
+          },
+          {
+            "answers": [
+              "toll"
+            ]
+          },
+          {
+            "answers": [
+              "gefällt"
+            ]
+          },
+          {
+            "answers": [
+              "Bilder"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich hab’ den {{1}} (F…) mit meinem Freund im {{2}} (K…) gesehen. Er war {{3}} (la…). Ein, zwei Szenen waren ganz {{4}} (lu…), aber das ist zu {{5}} (w…).",
+        "blanks": [
+          {
+            "answers": [
+              "Film"
+            ]
+          },
+          {
+            "answers": [
+              "Kino"
+            ]
+          },
+          {
+            "answers": [
+              "langweilig"
+            ]
+          },
+          {
+            "answers": [
+              "lustig"
+            ]
+          },
+          {
+            "answers": [
+              "wenig"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Meinungen zu Filmen",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 66,
+    "reviewed": true
+  },
+  {
+    "number": "Wa",
+    "source_page": 18,
+    "title": "Wortbildung · Feminine Nomen",
+    "instruction": "Ordnen Sie die Wörter zu. Finden Sie dann das Lösungswort.",
+    "questions": [
+      {
+        "prompt": "Die … Allyson Felix hat den 100m-Lauf gewonnen. (Buchstabe 4 = F)",
+        "accepted_answers": [
+          "Läuferin"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Die Songs von der {{1}} Billie Eilish sind sehr bekannt. (Buchstabe 6)",
+        "blanks": [
+          {
+            "answers": [
+              "Sängerin"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Sophia Coppola war {{1}} im Film „Star Wars“. (Buchstabe 4)",
+        "blanks": [
+          {
+            "answers": [
+              "Schauspielerin"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Jetzt macht sie selbst Filme als {{1}}. (Buchstabe 8)",
+        "blanks": [
+          {
+            "answers": [
+              "Regisseurin"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Anke Engelke ist eine {{1}} aus Deutschland. (Buchstabe 4)",
+        "blanks": [
+          {
+            "answers": [
+              "Entertainerin"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Annie Leibovitz ist {{1}}, ihre Fotos sind berühmt. (Buchstabe 10)",
+        "blanks": [
+          {
+            "answers": [
+              "Fotografin"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wie heißt das Lösungswort aus den angegebenen Buchstaben?",
+        "accepted_answers": [
+          "Frauen",
+          "FRAUEN"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Wortbildung · Feminine Nomen",
+    "rationale": "Đổi thao tác đánh dấu hoặc nối trên giấy sang trường nhập/chọn; giữ dữ liệu và mục tiêu.",
+    "answer_page": 66,
+    "reviewed": true,
+    "context": "Entertainerin · Fotografin · Läuferin · Regisseurin · Sängerin · Schauspielerin"
+  },
+  {
+    "number": "Wb",
+    "source_page": 18,
+    "title": "Wer macht das?",
+    "instruction": "Ergänzen Sie die Nomen.",
+    "questions": [
+      {
+        "prompt": "Eine Frau tanzt. Sie ist eine …",
+        "accepted_answers": [
+          "Tänzerin"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Sie schaut gerne zu: die {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Zuschauerin"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Eine Frau fährt. Sie ist eine {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Fahrerin"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Sie bäckt Brot und Kuchen: die {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Bäckerin"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Wer macht das?",
+    "rationale": "Giữ nội dung và mục tiêu; nhập trực tiếp, đối chiếu đáp án cuối sách.",
+    "answer_page": 66,
+    "reviewed": true
+  }
+]

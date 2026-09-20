@@ -1,0 +1,1370 @@
+[
+  {
+    "number": "1a",
+    "source_page": 44,
+    "title": "Mein Lieblingssport",
+    "instruction": "Ergänzen Sie die Aussagen.",
+    "questions": [
+      {
+        "prompt": "Ich bin seit zwei Jahren ein großer Yoga-Fan. Fast jeden Tag {{1}} ich Yoga. Es tut so gut und ich brauche nur meine {{2}}. Einmal pro Woche gehe ich auch ins {{3}}.",
+        "blanks": [
+          {
+            "answers": [
+              "mache"
+            ]
+          },
+          {
+            "answers": [
+              "Matte"
+            ]
+          },
+          {
+            "answers": [
+              "Studio"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Reiten ist der ideale {{1}} für mich, denn ich bin gern in der Natur. Und ich liebe Tiere, besonders mein {{2}} Toli. Beim Reiten nach der Arbeit kann ich so gut {{3}}. Es gehört einfach zu meiner {{4}}.",
+        "blanks": [
+          {
+            "answers": [
+              "Sport"
+            ]
+          },
+          {
+            "answers": [
+              "Pferd"
+            ]
+          },
+          {
+            "answers": [
+              "entspannen"
+            ]
+          },
+          {
+            "answers": [
+              "Freizeit"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Meine Freundin taucht schon lange und ist {{1}} von diesem Sport. Dann habe ich es selbst ausprobiert. Diese andere Welt unter {{2}} ist wunderschön. Beim Tauchen muss man seine {{3}} kennen, sonst kann es {{4}} werden.",
+        "blanks": [
+          {
+            "answers": [
+              "begeistert"
+            ]
+          },
+          {
+            "answers": [
+              "Wasser"
+            ]
+          },
+          {
+            "answers": [
+              "Grenzen"
+            ]
+          },
+          {
+            "answers": [
+              "gefährlich"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Từ vựng sở thích và dụng cụ thể thao.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 72,
+    "reviewed": true,
+    "hints": "begeistert / entspannen / Fan (Beispiel) / Freizeit / gefährlich / Grenzen / mache / Matte / Pferd / Sport / Studio / Wasser"
+  },
+  {
+    "number": "1b",
+    "source_page": 44,
+    "title": "Mit dem Mountainbike in den Bergen",
+    "instruction": "Lesen Sie den Text und die Fragen. Notieren Sie die Antworten.",
+    "questions": [
+      {
+        "prompt": "Wann fährt Petra Nagel am liebsten Mountainbike?",
+        "accepted_answers": [
+          "Im Herbst.",
+          "Am liebsten im Herbst."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wann hat sie die Liebe zu den Bergen entdeckt?",
+        "accepted_answers": [
+          "Als Kind.",
+          "Sie war noch ein Kind."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Warum ist es ihr egal, dass der Weg nach oben anstrengend ist?",
+        "accepted_answers": [
+          "Der Weg nach unten macht Spaß.",
+          "Weil der Weg nach unten Spaß macht."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Was vergisst sie beim Mountainbiken?",
+        "accepted_answers": [
+          "Die Probleme in der Arbeit und zu Hause.",
+          "Sie vergisst die Probleme in der Arbeit und zu Hause."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Was braucht man für diesen Sport?",
+        "accepted_answers": [
+          "Ein Rad, Radkleidung und -schuhe, einen Helm, eine Trinkflasche, Kleidung für Regen, etwas zum Essen, wichtiges Werkzeug.",
+          "Ein Mountainbike, Radkleidung und Radschuhe, einen Helm, eine Trinkflasche, Kleidung für Regen und Kälte, etwas zum Essen und wichtiges Werkzeug."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Was mag sie am Mountainbiken in den Bergen besonders gern?",
+        "accepted_answers": [
+          "Die Ruhe.",
+          "Sie mag die Ruhe."
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Đọc hiểu chi tiết bài tường thuật về đi xe đạp địa hình.",
+    "rationale": "Giữ yêu cầu tự viết câu; tự kiểm tra các đáp án chuẩn và cho phép giáo viên xem biến thể hợp lệ ngoài đáp án mẫu.",
+    "answer_page": 72,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true,
+    "context": "„Ich bin gern in den Bergen. Skifahren im Winter und Mountainbiken im Sommer und besonders im Herbst“, erzählt Petra Nagel. „Ich war noch ein Kind, da bin ich schon mit meiner Mutter oft wandern gegangen. Die Liebe zu den Bergen habe ich von ihr, glaube ich.“\nMountainbiken kann ganz schön anstrengend sein: Oft geht es ein paar Stunden lang immer nur aufwärts, immer weiter nach oben. „Aber das macht mir nichts aus. Wenn man wandert, muss man den ganzen Weg zu Fuß zurückgehen. Mit dem Mountainbike macht der Weg nach unten aber richtig Spaß.“\nWenn Frau Nagel in den Bergen unterwegs ist, dann vergisst sie, dass in der Arbeit und zu Hause Probleme warten. „Ich genieße die Landschaft und die Farben zu jeder Jahreszeit.“\nEin gutes, leichtes Mountainbike ist nicht billig, aber sonst braucht man nicht viel: Radkleidung und -schuhe, einen Helm, eine große Trinkflasche. Kleidung für Regen und Kälte, etwas zum Essen und wichtiges Werkzeug ist immer in der Radtasche von Frau Nagel. „Am schönsten in den Bergen ist die Ruhe“, findet sie."
+  },
+  {
+    "number": "2",
+    "source_page": 45,
+    "title": "Mein (Sport-)Gegenstand",
+    "instruction": "Notieren Sie.",
+    "questions": [
+      {
+        "prompt": "Dieser Gegenstand ist typisch für mich: …",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Wann haben Sie das gekauft oder bekommen?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Was machen Sie damit?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Warum ist das wichtig für Sie?",
+        "accepted_answers": [],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Viết mô tả đồ dùng thể thao có ý nghĩa cá nhân.",
+    "rationale": "Bài có lựa chọn cá nhân; giữ câu dẫn và ô viết tự do, giáo viên đánh giá nội dung và ngữ pháp, không áp một đáp án mẫu duy nhất.",
+    "answer_page": 72,
+    "reviewed": true,
+    "check_mode": "manual_check"
+  },
+  {
+    "number": "3",
+    "source_page": 45,
+    "title": "Begeisterung, Hoffnung und Enttäuschung",
+    "instruction": "Schreiben Sie die Sätze richtig.",
+    "questions": [
+      {
+        "prompt": "HASTDUDASGESEHENDASWARGROßARTIGERISTEINFACHDERBESTEOHWIEISTDASSCHÖN — Zeichen: ? ! . ! ,",
+        "accepted_answers": [
+          "Hast du das gesehen? Das war großartig! Er ist einfach der Beste. Oh, wie ist das schön!"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "NEINBITTENICHTDASKANNDOCHNICHTWAHRSEINSOEINPECH — Zeichen: , ! ! !",
+        "accepted_answers": [
+          "Nein, bitte nicht! Das kann doch nicht wahr sein! So ein Pech!"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "HOFFENTLICHKLAPPTESDIESINDDOCHNICHTSOGUTICHHOFFEDASSWIRHEUTEGEWINNEN — Zeichen: . . , .",
+        "accepted_answers": [
+          "Hoffentlich klappt es. Die sind doch nicht so gut. Ich hoffe, dass wir heute gewinnen."
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Tách chuỗi chữ thành câu thể hiện cảm xúc, đặt dấu câu đúng.",
+    "rationale": "Giữ yêu cầu tự viết câu; tự kiểm tra các đáp án chuẩn và cho phép giáo viên xem biến thể hợp lệ ngoài đáp án mẫu.",
+    "answer_page": 72,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": false
+  },
+  {
+    "number": "4",
+    "source_page": 45,
+    "title": "Äußerungen und Situationen",
+    "instruction": "Ordnen Sie die Äußerungen A bis D den Situationen 1 bis 4 zu und ergänzen Sie die Lücken.",
+    "questions": [
+      {
+        "prompt": "1. Lea wollte heute mit Maja zum See schwimmen gehen, aber es regnet.",
+        "accepted_answers": [
+          "C"
+        ],
+        "example": false,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      {
+        "prompt": "2. Das Konzert von LGooney fällt aus. Es gibt einen neuen Termin in drei Monaten.",
+        "accepted_answers": [
+          "A"
+        ],
+        "example": false,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      {
+        "prompt": "3. Sie haben Ihr Handy verloren, aber Sie haben es wieder bekommen.",
+        "accepted_answers": [
+          "D"
+        ],
+        "example": false,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      {
+        "prompt": "4. Sie spielen Basketball in einem Verein. Ihre Mannschaft hat ein Spiel verloren.",
+        "accepted_answers": [
+          "B"
+        ],
+        "example": false,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      {
+        "prompt": "A: Ach, das ist {{1}}, ich habe {{2}} so gefreut. Ich {{3}}, dass ich dann {{4}} habe. Hoffentlich klappt es {{5}}.",
+        "blanks": [
+          {
+            "answers": [
+              "schade"
+            ]
+          },
+          {
+            "answers": [
+              "mich"
+            ]
+          },
+          {
+            "answers": [
+              "hoffe"
+            ]
+          },
+          {
+            "answers": [
+              "Zeit"
+            ]
+          },
+          {
+            "answers": [
+              "dann"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "B: Das kann doch {{1}} wahr sein? Die {{2}} so schlecht! Wir {{3}} gute Chancen, aber {{4}} haben nicht gewonnen. {{5}} blöd.",
+        "blanks": [
+          {
+            "answers": [
+              "nicht"
+            ]
+          },
+          {
+            "answers": [
+              "waren"
+            ]
+          },
+          {
+            "answers": [
+              "hatten"
+            ]
+          },
+          {
+            "answers": [
+              "wir"
+            ]
+          },
+          {
+            "answers": [
+              "Echt"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "C: Ach nee, so {{1}} Mist! Morgen ist es {{2}} schön, aber da {{3}} ich arbeiten. Echt {{4}}, dieses Wetter.",
+        "blanks": [
+          {
+            "answers": [
+              "ein"
+            ]
+          },
+          {
+            "answers": [
+              "bestimmt"
+            ]
+          },
+          {
+            "answers": [
+              "muss"
+            ]
+          },
+          {
+            "answers": [
+              "blöd"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "D: Es war {{1}} eine Katastrophe. Und {{2}} so ein Glück, {{3}}! Es war großartig, {{4}} der Finder gekommen ist. {{5}} mega.",
+        "blanks": [
+          {
+            "answers": [
+              "wirklich"
+            ]
+          },
+          {
+            "answers": [
+              "dann"
+            ]
+          },
+          {
+            "answers": [
+              "Wahnsinn"
+            ]
+          },
+          {
+            "answers": [
+              "als"
+            ]
+          },
+          {
+            "answers": [
+              "Einfach"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Ghép phản ứng cảm xúc với tình huống và hoàn thành từ.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 72,
+    "reviewed": true,
+    "hints": "Wortanfänge A: sch…, m…, ho…, Z…, d…; B: ni…, wa…, ha…, w…, E…; C: ei…, be…, m…, bl…; D: wir…, d…, Wa…, a…, Ein…"
+  },
+  {
+    "number": "5",
+    "source_page": 46,
+    "title": "deshalb oder trotzdem?",
+    "instruction": "Ergänzen Sie deshalb oder trotzdem.",
+    "questions": [
+      {
+        "prompt": "Frau Polgar hat sich über fünf Stunden konzentriert, {{1}} ist sie müde.",
+        "blanks": [
+          {
+            "answers": [
+              "deshalb"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Katrin hatte Schmerzen im Arm, {{1}} hat sie gewonnen.",
+        "blanks": [
+          {
+            "answers": [
+              "trotzdem"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Das Wetter war schrecklich, {{1}} ist Silvia zwei Stunden gelaufen.",
+        "blanks": [
+          {
+            "answers": [
+              "trotzdem"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Es liegt nur wenig Schnee, {{1}} fahren die Touristen Ski.",
+        "blanks": [
+          {
+            "answers": [
+              "trotzdem"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Faustino hat nicht aufgepasst, {{1}} hat er jetzt ein blaues Auge.",
+        "blanks": [
+          {
+            "answers": [
+              "deshalb"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Phân biệt quan hệ kết quả deshalb và nhượng bộ trotzdem.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 72,
+    "reviewed": true
+  },
+  {
+    "number": "6",
+    "source_page": 46,
+    "title": "Ein Kommentar für die Fanseite von Lena",
+    "instruction": "Schreiben Sie Sätze. Ergänzen Sie den fehlenden Satzteil.",
+    "questions": [
+      {
+        "prompt": "Es ist großartig, … — dass / dich / live / sehen / ich / nächste Woche",
+        "accepted_answers": [
+          "dass ich dich nächste Woche live sehe."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich wohne in Dresden, … — ich / in Köln / trotzdem / auf dein Konzert / gehen",
+        "accepted_answers": [
+          "trotzdem gehe ich in Köln auf dein Konzert.",
+          "trotzdem gehe ich auf dein Konzert in Köln."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Ich finde deine Lieder gut, … — weil / du / die Probleme / von Menschen / verstehen",
+        "accepted_answers": [
+          "weil du die Probleme von Menschen verstehst."
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Du bist so berühmt, … — aber / du / immer / Zeit für deine Fans / haben",
+        "accepted_answers": [
+          "aber du hast immer Zeit für deine Fans."
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Viết câu với dass, trotzdem, weil và aber.",
+    "rationale": "Giữ yêu cầu tự viết câu; tự kiểm tra các đáp án chuẩn và cho phép giáo viên xem biến thể hợp lệ ngoài đáp án mẫu.",
+    "answer_page": 72,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "7",
+    "source_page": 46,
+    "title": "l oder r: Was fehlt?",
+    "instruction": "Ergänzen Sie und lesen Sie dann laut.",
+    "questions": [
+      {
+        "prompt": "Welchen Spo{{1}}t findest du besse{{2}}, {{3}}adfah{{4}}en ode{{5}} Vo{{6}}eyba{{7}}?",
+        "blanks": [
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "R"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "ll"
+            ]
+          },
+          {
+            "answers": [
+              "ll"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Lara spie{{1}}t ge{{2}}n Fußba{{3}}, sie ist schon {{4}}ange in einem Spo{{5}}tve{{6}}ein aktiv.",
+        "blanks": [
+          {
+            "answers": [
+              "l"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "ll"
+            ]
+          },
+          {
+            "answers": [
+              "l"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Lars k{{1}}ette{{2}}t oft in den Be{{3}}gen ode{{4}} im Winte{{5}} auch in de{{6}} Spo{{7}}tha{{8}}e.",
+        "blanks": [
+          {
+            "answers": [
+              "l"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "r"
+            ]
+          },
+          {
+            "answers": [
+              "ll"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Phân biệt và viết đúng l/r trong từ về thể thao.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 72,
+    "reviewed": true,
+    "hints": "Ergänzen Sie l oder r; bei zwei fehlenden Buchstaben ll."
+  },
+  {
+    "number": "8",
+    "source_page": 46,
+    "title": "Kommst du mit?",
+    "instruction": "Ergänzen Sie das Gespräch. Achten Sie auf die richtige Form.",
+    "questions": [
+      {
+        "prompt": "○ Du, ich habe einen Vorschlag! Gehen wir doch in den Hochseilgarten. Das {{1}} total viel Spaß. Geht es bei dir am Samstag?\n● Nein, da habe ich leider keine {{2}}.\n○ Und am Sonntag? Komm mit, das {{3}} lustig!\n● Ach, ich weiß nicht. Das können wir doch {{4}} Wochenende machen. Wollen wir nicht {{5}} ins Kino gehen?\n○ So kommst du nie zum Sport! Ich habe eine {{6}}: Wir gehen zuerst in den Hochseilgarten und {{7}} sehen wir uns einen {{8}} an.\n● Okay, das machen wir. Bist du {{9}}, dass ich das schaffe?",
+        "blanks": [
+          {
+            "answers": [
+              "macht"
+            ]
+          },
+          {
+            "answers": [
+              "Zeit"
+            ]
+          },
+          {
+            "answers": [
+              "wird"
+            ]
+          },
+          {
+            "answers": [
+              "nächstes"
+            ]
+          },
+          {
+            "answers": [
+              "lieber"
+            ]
+          },
+          {
+            "answers": [
+              "Idee"
+            ]
+          },
+          {
+            "answers": [
+              "dann"
+            ]
+          },
+          {
+            "answers": [
+              "Film"
+            ]
+          },
+          {
+            "answers": [
+              "sicher"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Hoàn thành hội thoại rủ bạn tham gia hoạt động.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 72,
+    "reviewed": true,
+    "hints": "dann / Film / Idee / lieber / machen / nächstes / sicher / Vorschlag (Beispiel) / werden / Zeit"
+  },
+  {
+    "number": "9",
+    "source_page": 47,
+    "title": "Welche Aussagen passen zusammen?",
+    "instruction": "Ordnen Sie zu.",
+    "questions": [
+      {
+        "prompt": "Ich habe eine Idee: Wir können doch morgen Abend ins Kino gehen.",
+        "accepted_answers": [
+          "D — Ja, das ist eine gute Idee. Welche Filme gibt es denn?"
+        ],
+        "example": false,
+        "options": [
+          "A — Heute geht es leider nicht, aber morgen kann ich. Soll ich einen Film mitbringen?",
+          "B — Nein, ich habe keine Lust. Ich bin so müde und ich war erst gestern im Fitness-Studio.",
+          "C — Ich ruf’ ein paar Leute an und wir machen einen schönen Abend in der Kneipe. Einverstanden?",
+          "D — Ja, das ist eine gute Idee. Welche Filme gibt es denn?",
+          "E — Da hab’ ich leider keine Zeit. Ich muss morgen den ganzen Tag arbeiten.",
+          "F — Wollen wir nicht lieber selbst kochen? Ich habe eingekauft."
+        ]
+      },
+      {
+        "prompt": "Darf ich etwas vorschlagen? Wir können Pizza essen gehen.",
+        "accepted_answers": [
+          "F — Wollen wir nicht lieber selbst kochen? Ich habe eingekauft."
+        ],
+        "example": false,
+        "options": [
+          "A — Heute geht es leider nicht, aber morgen kann ich. Soll ich einen Film mitbringen?",
+          "B — Nein, ich habe keine Lust. Ich bin so müde und ich war erst gestern im Fitness-Studio.",
+          "C — Ich ruf’ ein paar Leute an und wir machen einen schönen Abend in der Kneipe. Einverstanden?",
+          "D — Ja, das ist eine gute Idee. Welche Filme gibt es denn?",
+          "E — Da hab’ ich leider keine Zeit. Ich muss morgen den ganzen Tag arbeiten.",
+          "F — Wollen wir nicht lieber selbst kochen? Ich habe eingekauft."
+        ]
+      },
+      {
+        "prompt": "Was hältst du von einem gemütlichen Filmabend bei mir, heute oder morgen?",
+        "accepted_answers": [
+          "A — Heute geht es leider nicht, aber morgen kann ich. Soll ich einen Film mitbringen?"
+        ],
+        "example": false,
+        "options": [
+          "A — Heute geht es leider nicht, aber morgen kann ich. Soll ich einen Film mitbringen?",
+          "B — Nein, ich habe keine Lust. Ich bin so müde und ich war erst gestern im Fitness-Studio.",
+          "C — Ich ruf’ ein paar Leute an und wir machen einen schönen Abend in der Kneipe. Einverstanden?",
+          "D — Ja, das ist eine gute Idee. Welche Filme gibt es denn?",
+          "E — Da hab’ ich leider keine Zeit. Ich muss morgen den ganzen Tag arbeiten.",
+          "F — Wollen wir nicht lieber selbst kochen? Ich habe eingekauft."
+        ]
+      },
+      {
+        "prompt": "Was denkst du, sollen wir heute Abend zum Sport gehen?",
+        "accepted_answers": [
+          "B — Nein, ich habe keine Lust. Ich bin so müde und ich war erst gestern im Fitness-Studio."
+        ],
+        "example": false,
+        "options": [
+          "A — Heute geht es leider nicht, aber morgen kann ich. Soll ich einen Film mitbringen?",
+          "B — Nein, ich habe keine Lust. Ich bin so müde und ich war erst gestern im Fitness-Studio.",
+          "C — Ich ruf’ ein paar Leute an und wir machen einen schönen Abend in der Kneipe. Einverstanden?",
+          "D — Ja, das ist eine gute Idee. Welche Filme gibt es denn?",
+          "E — Da hab’ ich leider keine Zeit. Ich muss morgen den ganzen Tag arbeiten.",
+          "F — Wollen wir nicht lieber selbst kochen? Ich habe eingekauft."
+        ]
+      },
+      {
+        "prompt": "Du möchtest heute ausgehen? Okay, dann schlag doch was vor.",
+        "accepted_answers": [
+          "C — Ich ruf’ ein paar Leute an und wir machen einen schönen Abend in der Kneipe. Einverstanden?"
+        ],
+        "example": false,
+        "options": [
+          "A — Heute geht es leider nicht, aber morgen kann ich. Soll ich einen Film mitbringen?",
+          "B — Nein, ich habe keine Lust. Ich bin so müde und ich war erst gestern im Fitness-Studio.",
+          "C — Ich ruf’ ein paar Leute an und wir machen einen schönen Abend in der Kneipe. Einverstanden?",
+          "D — Ja, das ist eine gute Idee. Welche Filme gibt es denn?",
+          "E — Da hab’ ich leider keine Zeit. Ich muss morgen den ganzen Tag arbeiten.",
+          "F — Wollen wir nicht lieber selbst kochen? Ich habe eingekauft."
+        ]
+      },
+      {
+        "prompt": "Ich gehe morgen Vormittag schwimmen. Willst du mitkommen?",
+        "accepted_answers": [
+          "E — Da hab’ ich leider keine Zeit. Ich muss morgen den ganzen Tag arbeiten."
+        ],
+        "example": false,
+        "options": [
+          "A — Heute geht es leider nicht, aber morgen kann ich. Soll ich einen Film mitbringen?",
+          "B — Nein, ich habe keine Lust. Ich bin so müde und ich war erst gestern im Fitness-Studio.",
+          "C — Ich ruf’ ein paar Leute an und wir machen einen schönen Abend in der Kneipe. Einverstanden?",
+          "D — Ja, das ist eine gute Idee. Welche Filme gibt es denn?",
+          "E — Da hab’ ich leider keine Zeit. Ich muss morgen den ganzen Tag arbeiten.",
+          "F — Wollen wir nicht lieber selbst kochen? Ich habe eingekauft."
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Ghép đề xuất với lời đáp phù hợp.",
+    "rationale": "Chọn đáp án trên web thay thao tác đánh dấu/nối trên giấy; giữ nguyên các phương án và chấm theo đáp án sách.",
+    "answer_page": 72,
+    "reviewed": true
+  },
+  {
+    "number": "10a",
+    "source_page": 47,
+    "title": "Dativ und Akkusativ erkennen",
+    "instruction": "Markieren Sie Dativ und Akkusativ in den Sätzen mit verschiedenen Farben.",
+    "questions": [
+      {
+        "prompt": "Beispiel: Sie gibt den Schülern Montag, Mittwoch und Freitag Deutschunterricht. Dativ: den Schülern; Akkusativ: Deutschunterricht.",
+        "accepted_answers": [
+          "den Schülern / Deutschunterricht"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Heute hat sie der Gruppe die neue Grammatik erklärt. — Dativ: {{1}}; Akkusativ: {{2}}",
+        "blanks": [
+          {
+            "answers": [
+              "der Gruppe"
+            ]
+          },
+          {
+            "answers": [
+              "die neue Grammatik"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Und sie hat ihren Schülern den Intensivtrainer empfohlen. — Dativ: {{1}}; Akkusativ: {{2}}",
+        "blanks": [
+          {
+            "answers": [
+              "ihren Schülern"
+            ]
+          },
+          {
+            "answers": [
+              "den Intensivtrainer"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Am Nachmittag schickt sie ihnen eine Mail, weil der Kurs am nächsten Freitag ausfällt. — Dativ: {{1}}; Akkusativ: {{2}}",
+        "blanks": [
+          {
+            "answers": [
+              "ihnen"
+            ]
+          },
+          {
+            "answers": [
+              "eine Mail"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Tự xác định và trích bổ ngữ Dativ/Akkusativ trong câu.",
+    "rationale": "Thay tô hai màu bằng hai ô nhập Dativ/Akkusativ; người học vẫn tự nhận diện và trích đúng thành phần câu.",
+    "answer_page": 72,
+    "reviewed": true,
+    "context": "Frau Bense ist Deutschlehrerin. Sie gibt den Schülern Montag, Mittwoch und Freitag Deutschunterricht. Heute hat sie der Gruppe die neue Grammatik erklärt. Und sie hat ihren Schülern den Intensivtrainer empfohlen. Am Nachmittag schickt sie ihnen eine Mail, weil der Kurs am nächsten Freitag ausfällt."
+  },
+  {
+    "number": "10b",
+    "source_page": 47,
+    "title": "Im Sprachkurs: Position der Ergänzungen",
+    "instruction": "Ergänzen Sie die Sätze. Achten Sie auf die Position der Ergänzungen im Satz.",
+    "questions": [
+      {
+        "prompt": "Heute hat die Lehrerin ihren Schülern ein Spiel mitgebracht.",
+        "accepted_answers": [
+          "ihren Schülern ein Spiel"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Sie erklärt … — die Regeln / ihnen",
+        "accepted_answers": [
+          "ihnen die Regeln"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Sie gibt … — einen Würfel / jeder Gruppe",
+        "accepted_answers": [
+          "jeder Gruppe einen Würfel"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Eine Schülerin leiht … — der Lehrerin / ihre Uhr",
+        "accepted_answers": [
+          "der Lehrerin ihre Uhr"
+        ],
+        "example": false,
+        "options": []
+      },
+      {
+        "prompt": "Die Lehrerin schenkt … — einen Kuchen / den Siegern",
+        "accepted_answers": [
+          "den Siegern einen Kuchen"
+        ],
+        "example": false,
+        "options": []
+      }
+    ],
+    "kind": "text",
+    "decision": "DIGITIZE",
+    "objective": "Sắp xếp bổ ngữ danh từ và đại từ theo Dativ/Akkusativ.",
+    "rationale": "Giữ yêu cầu tự viết câu; tự kiểm tra các đáp án chuẩn và cho phép giáo viên xem biến thể hợp lệ ngoài đáp án mẫu.",
+    "answer_page": 72,
+    "reviewed": true,
+    "allow_review": true,
+    "ignore_punctuation": true
+  },
+  {
+    "number": "11",
+    "source_page": 47,
+    "title": "Nomen durch Pronomen ersetzen",
+    "instruction": "Ersetzen Sie die markierten Nomen durch Pronomen. Achten Sie auf die Position.",
+    "questions": [
+      {
+        "prompt": "Die Lehrerin hat ihren Schülern ein Spiel mitgebracht. Sie erklärt es ihnen.",
+        "accepted_answers": [
+          "es ihnen"
+        ],
+        "example": true,
+        "options": []
+      },
+      {
+        "prompt": "Sandra zeigt ihrer Freundin eine Jacke. Sandra leiht {{1}}.",
+        "blanks": [
+          {
+            "answers": [
+              "sie ihr"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Mirko empfiehlt seinem Freund ein Restaurant. Er zeigt {{1}} nach der Arbeit.",
+        "blanks": [
+          {
+            "answers": [
+              "es ihm"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "„Ich hab’ dir einen Link geschickt. Ich kann {{1}} wirklich empfehlen.“",
+        "blanks": [
+          {
+            "answers": [
+              "ihn dir"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "„Kannst du mir einen Stift geben?“ — „Klar, ich schenke {{1}}.“",
+        "blanks": [
+          {
+            "answers": [
+              "ihn dir"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "„Können Sie dem Hund Wasser geben?“ — „Ja, ich bringe {{1}} sofort!“",
+        "blanks": [
+          {
+            "answers": [
+              "es ihm"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Thay hai bổ ngữ bằng đại từ và sắp đúng thứ tự.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 72,
+    "reviewed": true
+  },
+  {
+    "number": "12a",
+    "source_page": 47,
+    "title": "Welcher Ausdruck ist richtig?",
+    "instruction": "Kreuzen Sie an.",
+    "questions": [
+      {
+        "prompt": "Man kann die Orte gut mit öffentlichen Verkehrsmitteln … .",
+        "accepted_answers": [
+          "erreichen"
+        ],
+        "example": false,
+        "options": [
+          "erreichen",
+          "fahren"
+        ]
+      },
+      {
+        "prompt": "Man kann zur Höhle wandern oder die Seilbahn … .",
+        "accepted_answers": [
+          "nehmen"
+        ],
+        "example": false,
+        "options": [
+          "fliegen",
+          "nehmen"
+        ]
+      },
+      {
+        "prompt": "Für die Wanderung durch die Höhle … Sie feste Schuhe.",
+        "accepted_answers": [
+          "brauchen"
+        ],
+        "example": false,
+        "options": [
+          "brauchen",
+          "holen"
+        ]
+      },
+      {
+        "prompt": "Die Eishöhle kann man im Sommer (Mai bis Oktober) … .",
+        "accepted_answers": [
+          "besuchen"
+        ],
+        "example": false,
+        "options": [
+          "vergessen",
+          "besuchen"
+        ]
+      },
+      {
+        "prompt": "Das Grüne Band war früher … zwischen den deutschen Staaten.",
+        "accepted_answers": [
+          "die Grenze"
+        ],
+        "example": false,
+        "options": [
+          "die Grenze",
+          "die Strecke"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE",
+    "objective": "Chọn động từ và danh từ đúng kết hợp về du lịch.",
+    "rationale": "Chọn đáp án trên web thay thao tác đánh dấu/nối trên giấy; giữ nguyên các phương án và chấm theo đáp án sách.",
+    "answer_page": 72,
+    "reviewed": true
+  },
+  {
+    "number": "12b",
+    "source_page": 48,
+    "title": "Welches Wort passt nicht?",
+    "instruction": "Streichen Sie das unpassende Wort.",
+    "questions": [
+      {
+        "prompt": "die Wanderung / der Berg / der Weg / die Straße",
+        "accepted_answers": [
+          "die Straße"
+        ],
+        "example": false,
+        "options": [
+          "die Wanderung",
+          "der Berg",
+          "der Weg",
+          "die Straße"
+        ]
+      },
+      {
+        "prompt": "die Landschaft / das Gebiet / die Pause / die Natur",
+        "accepted_answers": [
+          "die Pause"
+        ],
+        "example": false,
+        "options": [
+          "die Landschaft",
+          "das Gebiet",
+          "die Pause",
+          "die Natur"
+        ]
+      },
+      {
+        "prompt": "das Eis / der Sommer / die Kälte / unter null Grad",
+        "accepted_answers": [
+          "der Sommer"
+        ],
+        "example": false,
+        "options": [
+          "das Eis",
+          "der Sommer",
+          "die Kälte",
+          "unter null Grad"
+        ]
+      },
+      {
+        "prompt": "der Staat / die Pflanze / das Tier / die Natur",
+        "accepted_answers": [
+          "der Staat"
+        ],
+        "example": false,
+        "options": [
+          "der Staat",
+          "die Pflanze",
+          "das Tier",
+          "die Natur"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Phân biệt nhóm nghĩa từ về thiên nhiên và đi bộ.",
+    "rationale": "Chọn đáp án trên web thay thao tác đánh dấu/nối trên giấy; giữ nguyên các phương án và chấm theo đáp án sách.",
+    "answer_page": 72,
+    "reviewed": true
+  },
+  {
+    "number": "13",
+    "source_page": 48,
+    "title": "Sankt Peter Ording",
+    "instruction": "Wählen Sie. A: Ergänzen Sie die Lücken. Die Wörter unten helfen. B: Ergänzen Sie die Lücken.",
+    "questions": [
+      {
+        "prompt": "Sankt Peter-Ording ist ein bekannter Ort an der Nordsee. Wenn man den {{1}} hört, denkt man an Wasser, Wind und lange {{2}}. Der Ort ist {{3}} bei Urlaubern und Sportlern. Viele Leute {{4}} aber auch, weil sie sich hier von Krankheiten {{5}} möchten und hoffen, dass sie bald wieder ganz {{6}} sind. Circa 400.000 Personen kommen jedes {{7}} für einen kurzen oder längeren {{8}} hierher.\nSankt Peter-Ording hat ziemlich genau 4.000 {{9}}. Es gibt eine Grundschule und eine Gesamtschule, die Nordseeschule. Der Leuchtturm ist das {{10}} von Sankt Peter-Ording.",
+        "blanks": [
+          {
+            "answers": [
+              "Namen"
+            ]
+          },
+          {
+            "answers": [
+              "Strände"
+            ]
+          },
+          {
+            "answers": [
+              "beliebt"
+            ]
+          },
+          {
+            "answers": [
+              "kommen"
+            ]
+          },
+          {
+            "answers": [
+              "erholen"
+            ]
+          },
+          {
+            "answers": [
+              "gesund"
+            ]
+          },
+          {
+            "answers": [
+              "Jahr"
+            ]
+          },
+          {
+            "answers": [
+              "Aufenthalt"
+            ]
+          },
+          {
+            "answers": [
+              "Einwohner"
+            ]
+          },
+          {
+            "answers": [
+              "Symbol"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Hoàn thành đoạn giới thiệu điểm du lịch.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 72,
+    "reviewed": true,
+    "hints": "Aufenthalt / beliebt / Einwohner / erholen / gesund / Jahr / kommen / Namen / Ort (Beispiel) / Strände / Symbol"
+  },
+  {
+    "number": "W-a",
+    "source_page": 48,
+    "title": "Verben mit Vorsilben: Was ist falsch?",
+    "instruction": "Welches Verb ist falsch? Streichen Sie.",
+    "questions": [
+      {
+        "prompt": "Wir fahren am Wochenende ans Meer. Möchtest du … ?",
+        "accepted_answers": [
+          "ankommen"
+        ],
+        "example": false,
+        "options": [
+          "mitkommen",
+          "ankommen"
+        ]
+      },
+      {
+        "prompt": "Nächste Woche habe ich Urlaub. Wir wollen gleich am Samstag … .",
+        "accepted_answers": [
+          "zurückfahren"
+        ],
+        "example": false,
+        "options": [
+          "wegfahren",
+          "zurückfahren"
+        ]
+      },
+      {
+        "prompt": "Die Pause ist leider vorbei. Ich muss wieder … .",
+        "accepted_answers": [
+          "anmachen"
+        ],
+        "example": false,
+        "options": [
+          "anmachen",
+          "weitermachen"
+        ]
+      },
+      {
+        "prompt": "Frau Ganser ist eine tolle Kollegin. Mit ihr kann ich gut … .",
+        "accepted_answers": [
+          "mitarbeiten"
+        ],
+        "example": false,
+        "options": [
+          "mitarbeiten",
+          "zusammenarbeiten"
+        ]
+      },
+      {
+        "prompt": "Ich habe noch ein Buch von dir. Wann kann ich es dir … ?",
+        "accepted_answers": [
+          "weitergeben"
+        ],
+        "example": false,
+        "options": [
+          "weitergeben",
+          "zurückgeben"
+        ]
+      }
+    ],
+    "kind": "choice",
+    "decision": "DIGITIZE_WITH_SIMPLIFICATION",
+    "objective": "Phân biệt nghĩa các động từ có tiền tố tách được.",
+    "rationale": "Chọn đáp án trên web thay thao tác đánh dấu/nối trên giấy; giữ nguyên các phương án và chấm theo đáp án sách.",
+    "answer_page": 72,
+    "reviewed": true
+  },
+  {
+    "number": "W-b",
+    "source_page": 48,
+    "title": "mit-, weg-, weiter-, zusammen-, zurück-",
+    "instruction": "Ergänzen Sie das Verb mit mit, weg, weiter, zusammen oder zurück.",
+    "questions": [
+      {
+        "prompt": "Oje, das ist der falsche Weg. Ich glaube, wir müssen {{1}}gehen.",
+        "blanks": [
+          {
+            "answers": [
+              "zurück"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Wir wollen {{1}}leben und suchen eine Wohnung.",
+        "blanks": [
+          {
+            "answers": [
+              "zusammen"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ich möchte am Wochenende {{1}}fahren. Hast du auch Lust?",
+        "blanks": [
+          {
+            "answers": [
+              "weg"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Ist das dein Hund? — Nein, er hat mich gesehen und ist einfach {{1}}gegangen.",
+        "blanks": [
+          {
+            "answers": [
+              "mit"
+            ]
+          }
+        ]
+      },
+      {
+        "prompt": "Hinten im Bus ist noch Platz. Können Sie bitte {{1}}gehen.",
+        "blanks": [
+          {
+            "answers": [
+              "weiter"
+            ]
+          }
+        ]
+      }
+    ],
+    "kind": "cloze",
+    "decision": "DIGITIZE",
+    "objective": "Chọn tiền tố tách được phù hợp ngữ cảnh.",
+    "rationale": "Giữ ngữ cảnh và phần điền của bài; mỗi chỗ trống được kiểm tra riêng theo đáp án cuối sách.",
+    "answer_page": 72,
+    "reviewed": true
+  }
+]
