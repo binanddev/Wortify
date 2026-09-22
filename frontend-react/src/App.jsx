@@ -6,7 +6,7 @@ import {
 import FlashcardStudio from "./flashcard-studio";
 import Soundscape from "./Soundscape";
 import { PracticeHub } from "./practice-hub";
-import { useEffect, useRef, useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 const Admin = lazy(() => import("../../frontend-admin/src/Admin.jsx"));
 import {
   request,
@@ -282,10 +282,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
           : "mist",
       };
     }),
-    [menu, setMenu] = useState(false),
-    [navBack, setNavBack] = useState(false),
-    [navHover, setNavHover] = useState(false);
-  const touchStart = useRef(null);
+    [navBack, setNavBack] = useState(false);
   const setPrefs = (v) => {
     setLocalPrefs(v);
     savePreference(prefKey, v);
@@ -314,18 +311,9 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
     );
   }, [prefs]);
   useEffect(() => {
-    setMenu(false);
     document.querySelector("#main-content")?.focus();
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [route]);
-  useEffect(() => {
-    if (!menu) return;
-    const close = (e) => {
-      if (e.key === "Escape") setMenu(false);
-    };
-    window.addEventListener("keydown", close);
-    return () => window.removeEventListener("keydown", close);
-  }, [menu]);
   const section = parts[1] || "flashcard";
   useEffect(() => {
     if (section === "practice") setNavBack(true);
@@ -401,7 +389,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       </Page>
     );
   return (
-    <div className={`app-shell ${prefs.navPinned ? "" : "nav-collapsed"}`}>
+    <div className="app-shell">
       <Soundscape
         interactions={prefs.sound}
         ambient={prefs.ambient}
@@ -410,95 +398,20 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       <a className="skip-link" href="#main-content">
         Đến nội dung chính
       </a>
-      {menu && (
-        <button
-          className="sidebar-scrim"
-          aria-label="Đóng điều hướng"
-          onClick={() => setMenu(false)}
-        />
-      )}
-      <button
-        className="nav-edge no-print"
-        aria-label="Hiện thanh bên"
-        onMouseEnter={() => setNavHover(true)}
-        onFocus={() => setNavHover(true)}
-        onClick={() => {
-          setNavHover(true);
-          setMenu(true);
-        }}
-      >
-        ›
-      </button>
-      <div
-        className={`nav-flip ${menu ? "open" : ""} ${navHover ? "peek" : ""}`}
-        onMouseLeave={() => setNavHover(false)}
-        onTouchStart={(e) => {
-          if (!e.target.closest("input,textarea,select"))
-            touchStart.current = {
-              x: e.touches[0].clientX,
-              y: e.touches[0].clientY,
-            };
-        }}
-        onTouchEnd={(e) => {
-          const start = touchStart.current;
-          touchStart.current = null;
-          if (!start) return;
-          const dx = e.changedTouches[0].clientX - start.x,
-            dy = e.changedTouches[0].clientY - start.y;
-          if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-            e.preventDefault();
-            setNavBack((v) => !v);
-          }
-        }}
-      >
-        <div className="nav-static">
-          <Brand />
-          <button
-            className="nav-rotate"
-            aria-label={navBack ? "Điều hướng chính" : "Công cụ trang"}
-            title={navBack ? "Điều hướng chính" : "Công cụ trang"}
-            aria-pressed={navBack}
-            onClick={() => setNavBack((v) => !v)}
-          >
-            <svg
-              width="23"
-              height="23"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              aria-hidden="true"
-            >
-              <path d="M20 7a8 8 0 0 0-14-2L3 8m0-5v5h5M4 17a8 8 0 0 0 14 2l3-3m0 5v-5h-5" />
-            </svg>
-          </button>
-          <button
-            className="nav-hide"
-            aria-label={
-              prefs.navPinned ? "Thu gọn thanh bên" : "Ghim thanh bên"
-            }
-            title={prefs.navPinned ? "Thu gọn thanh bên" : "Ghim thanh bên"}
-            onClick={() => {
-              setPrefs({ ...prefs, navPinned: !prefs.navPinned });
-              setNavHover(false);
-              setMenu(false);
-            }}
-          >
-            {" "}
-            {prefs.navPinned ? "‹" : "›"}{" "}
-          </button>
-        </div>
+      <div className="nav-flip">
         <div className={`nav-flip-inner ${navBack ? "is-flipped" : ""}`}>
-          <aside
-            className={`sidebar ${menu ? "open" : ""}`}
-            inert={navBack}
-            aria-hidden={navBack}
-          >
-            <Link className="workspace-select" to="/">
-              <span className="language-monogram">{lang.toUpperCase()}</span>
-              <span>{lang === "en" ? "English" : "Deutsch"}</span>
-              <span>⌄</span>
-            </Link>
+          <div className={`nav-face nav-front ${navBack ? "" : "is-active"}`}>
+            <NavStatic navBack={navBack} setNavBack={setNavBack} />
+            <aside
+              className="sidebar open"
+              inert={navBack}
+              aria-hidden={navBack}
+            >
+              <Link className="workspace-select" to="/">
+                <span className="language-monogram">{lang.toUpperCase()}</span>
+                <span>{lang === "en" ? "English" : "Deutsch"}</span>
+                <span>⌄</span>
+              </Link>
 
             <nav>
               {[
@@ -580,31 +493,43 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
               </div>
               <Status error={action.error || sync.error} />
             </div>
-          </aside>
-          <aside
-            className={`workspace-context ${menu ? "open" : ""}`}
-            aria-label="Công cụ và chỉ mục"
-            inert={!navBack}
-            aria-hidden={!navBack}
-          >
-            <h2>{contextItems.title}</h2>
-            <div id="workspace-tools" />
-          </aside>
+            </aside>
+          </div>
+          <div className={`nav-face nav-back ${navBack ? "is-active" : ""}`}>
+            <NavStatic navBack={navBack} setNavBack={setNavBack} />
+            <aside
+              className="workspace-context open"
+              aria-label="Công cụ và chỉ mục"
+              inert={!navBack}
+              aria-hidden={!navBack}
+            >
+              <h2>{contextItems.title}</h2>
+              <div id="workspace-tools" />
+            </aside>
+          </div>
         </div>
       </div>
       <div className="main-shell">
-        <button
-          className="workspace-menu btn"
-          aria-label="Mở điều hướng"
-          aria-expanded={menu}
-          onClick={() => setMenu(!menu)}
-        >
-          ☰
-        </button>
         <main id="main-content" tabIndex={-1}>
           {content}
         </main>
       </div>
+    </div>
+  );
+}
+function NavStatic({ navBack, setNavBack }) {
+  return (
+    <div className="nav-static">
+      <Brand />
+      <button
+        className="nav-rotate"
+        aria-label={navBack ? "Điều hướng chính" : "Công cụ trang"}
+        title={navBack ? "Điều hướng chính" : "Công cụ trang"}
+        aria-pressed={navBack}
+        onClick={() => setNavBack((v) => !v)}
+      >
+        <Icon name="flip" size={23} />
+      </button>
     </div>
   );
 }

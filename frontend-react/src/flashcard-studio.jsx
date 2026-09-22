@@ -386,7 +386,10 @@ function Studio({ lang, id, userId, sound, data }) {
       />
       <SidebarTools>
         <Status error={sync.error} />
-        <Link className="btn" to={`/${lang}/flashcard/deck/${id}/edit`}>
+        <Link
+          className="btn manage-terms-link"
+          to={`/${lang}/flashcard/deck/${id}/edit`}
+        >
           Quản lý thuật ngữ
         </Link>
         <Select
@@ -511,10 +514,10 @@ function Studio({ lang, id, userId, sound, data }) {
                   onChange={(goal) => patch({ goal })}
                 >
                   <option value="quick">
-                    Tập trung thuật ngữ · Theo dạng đã chọn
+                    Cơ bản
                   </option>
                   <option value="comprehensive">
-                    Toàn diện · Gõ đúng thẻ khó
+                    Học thông minh
                   </option>
                 </Select>
                 <Field
@@ -685,14 +688,7 @@ function Studio({ lang, id, userId, sound, data }) {
                 Kết thúc buổi học
               </Btn>
             </section>
-          ) : (
-            <section className="work-paper">
-              <h2>{started ? "Hoàn thành buổi học" : "Sẵn sàng học"}</h2>
-              <Btn primary onClick={begin}>
-                Bắt đầu học
-              </Btn>
-            </section>
-          )}
+          ) : null}
         </>
       ) : (
         <>

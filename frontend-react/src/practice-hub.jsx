@@ -57,8 +57,7 @@ export function PracticeHub({ lang, id, userId, createKind }) {
     [remove, setRemove] = useState(null),
     [creatingFolder, setCreatingFolder] = useState(null),
     [moving, setMoving] = useState(null),
-    [query, setQuery] = useState(""),
-    [importing, setImporting] = useState(false);
+    [query, setQuery] = useState("");
   const nodes = resource.data?.nodes || [],
     selected = nodes.find((n) => String(n.id) === String(id)),
     current = contents[id] || (selected?.payload ? selected : null);
@@ -96,7 +95,6 @@ export function PracticeHub({ lang, id, userId, createKind }) {
   useEffect(() => {
     setQuery("");
     setEditing(null);
-    setImporting(false);
   }, [id]);
   const refresh = () => {
     setContents({});
@@ -234,9 +232,6 @@ export function PracticeHub({ lang, id, userId, createKind }) {
             onMove={setMoving}
           />
         </nav>
-        <Btn onClick={() => setImporting(true)}>
-          <Icon name="plus" /> Nhập JSON / Lấy mẫu
-        </Btn>
       </SidebarTools>
       <Status error={resource.error || action.error} />
       {editing ? (
@@ -392,16 +387,6 @@ export function PracticeHub({ lang, id, userId, createKind }) {
             setRemove(null);
             refresh();
             navigate(`/${lang}/practice`);
-          }}
-        />
-      )}
-      {importing && (
-        <HubImport
-          {...{ lang, parent }}
-          onClose={() => setImporting(false)}
-          onSaved={() => {
-            setImporting(false);
-            refresh();
           }}
         />
       )}

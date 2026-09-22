@@ -163,7 +163,6 @@ export function GapPassage({
   rows = [],
   assets = {},
 }) {
-  const [picked, setPicked] = useState(null);
   const pool = q.presentation?.word_bank || q.presentation?.distractors || [];
   const [chips] = useState(() =>
     shuffled(pool.map((text, i) => ({ id: String(i), text }))),
@@ -174,7 +173,14 @@ export function GapPassage({
   const fill = (key, text) => {
     if (!text) return;
     onAnswer(key, text);
-    setPicked(null);
+  };
+  const fillNext = (word) => {
+    const next = Array.from({ length: q.blank_count || q.blanks?.length || 0 }, (_, i) => [
+      i,
+      answers[`${q.id}_${i}`],
+    ])
+      .find(([, value]) => !value);
+    if (next) fill(`${q.id}_${next[0]}`, word);
   };
   return (
     <div className="gap-work">
@@ -215,7 +221,7 @@ export function GapPassage({
                     );
                   }}
                   onClick={() =>
-                    picked ? fill(key, picked.text) : onAnswer(key, "")
+                    answers[key] ? onAnswer(key, "") : undefined
                   }
                 >
                   {answers[key] || <span>{n + 1}</span>}
@@ -239,8 +245,7 @@ export function GapPassage({
             <Chip
               key={c.id}
               value={c.id}
-              selected={picked?.id === c.id}
-              onClick={() => setPicked(c)}
+              onClick={() => fillNext(c.text)}
               disabled={disabled}
             >
               {c.text}

@@ -1,10 +1,120 @@
 import { gradeExercise } from "./local-learning";
-import { TypeQuestion, MatchPairs, Categories } from "./exercise-interactions";
+import {
+  TypeQuestion,
+  GapPassage,
+  MatchPairs,
+  Categories,
+} from "./exercise-interactions";
 import { modeOf } from "./exercise-types";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useAction, readPreference, savePreference } from "./core";
 import { Btn, Page, Status } from "./ui";
+function ClozePractice({ data, id, userId, practiceOnly, onComplete }) {
+  const e = data.exercise;
+  const questions = data.questions.filter((q) => !q.example);
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [completedAnswers, setCompletedAnswers] = useState({});
+  const [checked, setChecked] = useState(null);
+  const action = useAction();
+  const question = questions[index];
+  const keys = question?.blanks?.map((_, i) => `${question.id}_${i}`) || [];
+  const complete = Boolean(question) && keys.every((key) =>
+    String(answers[key] ?? "").trim(),
+  );
+  const update = (key, value) => {
+    setAnswers((current) => ({ ...current, [key]: value }));
+    setChecked(null);
+    action.setError("");
+  };
+  const evaluate = (values) => {
+    const result = gradeExercise(e, [question], values);
+    setChecked(result);
+    if (result.answers.every((row) => row.correct)) {
+      const next = { ...completedAnswers, ...values };
+      setCompletedAnswers(next);
+      if (index === questions.length - 1) onComplete?.(next);
+    }
+  };
+  useEffect(() => {
+    if (complete && !checked) evaluate(answers);
+  }, [complete, answers, checked]);
+  if (!question) return <Status>Không có câu hỏi để luyện.</Status>;
+  const check = () => {
+    if (!complete) {
+      action.setError("Hãy điền đủ các chỗ trống trước khi kiểm tra.");
+      return;
+    }
+    evaluate(answers);
+  };
+  const next = () => {
+    if (index >= questions.length - 1) return;
+    setIndex((value) => value + 1);
+    setChecked(null);
+    setCompletedAnswers((current) => ({ ...current, ...answers }));
+    setAnswers({});
+    action.setError("");
+  };
+  const rows = checked?.answers || [];
+  const correct = checked && rows.every((row) => row.correct);
+  return (
+    <Page>
+      <div className="exercise-workspace cloze-practice">
+        {e.instruction && (
+          <p className="exercise-instruction">{e.instruction}</p>
+        )}
+        <div className="exercise-progress">
+          <span>
+            Câu {index + 1}/{questions.length}
+          </span>
+          <progress value={index + (correct ? 1 : 0)} max={questions.length} />
+        </div>
+        {e.context && (
+          <aside className="reading-document">
+            <h2>Bài đọc</h2>
+            <div>{e.context}</div>
+          </aside>
+        )}
+        <section className={`work-paper cloze-question ${checked ? (correct ? "is-correct" : "is-incorrect") : ""}`}>
+          <div className="question-label">Câu {question.position}</div>
+          <GapPassage
+            q={question}
+            mode={modeOf(e)}
+            answers={answers}
+            onAnswer={update}
+            disabled={Boolean(correct)}
+            rows={rows}
+          />
+          {checked && (
+            <div className={`work-feedback ${correct ? "right" : "wrong"}`} role="status">
+              <strong>{correct ? "✓ Chính xác" : "↻ Chưa chính xác"}</strong>
+              {!correct && (
+                <p>
+                  Hãy thử lại các từ chưa đúng.
+                </p>
+              )}
+            </div>
+          )}
+        </section>
+        <Status error={action.error} />
+        <div className="work-submit">
+          <span>{index + 1} / {questions.length}</span>
+          {correct && index < questions.length - 1 ? (
+            <Btn primary onClick={next}>Tiếp tục</Btn>
+          ) : (
+            <Btn primary onClick={check} isDisabled={Boolean(correct)}>
+              {correct && index === questions.length - 1
+                ? "Hoàn thành"
+                : "Kiểm tra"}
+            </Btn>
+          )}
+        </div>
+      </div>
+    </Page>
+  );
+}
+
 export function PracticeActivity({
   data,
   id,
@@ -54,6 +164,13 @@ export function PracticeActivity({
     disabled: action.pending,
     assets: data.assets,
   };
+  if (mode === "cloze_drag_drop") {
+    return (
+      <ClozePractice
+        {...{ data, id, userId, practiceOnly, onComplete }}
+      />
+    );
+  }
   async function submit(event) {
     event.preventDefault();
 
@@ -66,6 +183,7 @@ export function PracticeActivity({
         ?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
+
     setResult(gradeExercise(e, questions, answers));
     setSubmitted(structuredClone(answers));
     if (!preview && JSON.stringify(submitted) !== JSON.stringify(answers))
