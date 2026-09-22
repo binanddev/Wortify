@@ -11,12 +11,15 @@ else
   python3 -m venv .venv
   if [[ -x .venv/Scripts/python.exe ]]; then PYTHON="$PWD/.venv/Scripts/python.exe"; else PYTHON="$PWD/.venv/bin/python"; fi
 fi
+status=0
+"$PYTHON" tools/run_local.py --check || status=$?
+if [[ "$status" == 10 ]]; then exit 0; fi
+if [[ "$status" != 0 ]]; then exit "$status"; fi
 command -v npm >/dev/null || { echo 'Please install Node.js 22.12+ (includes npm).'; exit 1; }
 "$PYTHON" -m pip install -r requirements.txt
 if [[ ! -f frontend-react/node_modules/vite/bin/vite.js ]]; then
   npm --prefix frontend-react ci --cache "$PWD/.npm-cache"
 fi
 "$PYTHON" manage.py migrate
-if [[ "${IMPORT_BOOKS:-0}" == 1 ]]; then "$PYTHON" manage.py import_book_json; fi
 npm run build
 exec "$PYTHON" tools/run_local.py

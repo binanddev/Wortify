@@ -1,4 +1,12 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import {
+  useLearningSync,
+  pendingLearning,
+  flushLearning,
+} from "./learning-sync";
+import FlashcardStudio from "./flashcard-studio";
+import Soundscape from "./Soundscape";
+import { PracticeHub } from "./practice-hub";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 const Admin = lazy(() => import("../../frontend-admin/src/Admin.jsx"));
 import {
   request,
@@ -11,12 +19,25 @@ import {
 import { Btn, Icon, Glass, Page, Heading, Field, Status, Link } from "./ui";
 import { Library, Deck } from "./library";
 import { Session, ExtraStudy } from "./study";
-import { Community, Settings, Result } from "./learning";
-import { Books } from "./books";
+import { Community, Settings } from "./learning";
+
 export default function App() {
   const route = useRoute(),
     [user, setUser] = useState(undefined),
+    [appearance, setAppearance] = useState({ background_url: "" }),
     [error, setError] = useState("");
+  useEffect(() => {
+    const p = user?.preferences || {};
+    document.documentElement.dataset.background = p.background || "mist";
+    document.documentElement.style.setProperty(
+      "--glass-alpha",
+      String(1 - Math.min(85, Math.max(0, Number(p.transparency ?? 25))) / 100),
+    );
+    document.documentElement.style.setProperty(
+      "--ui-font",
+      `${Math.min(22, Math.max(16, Number(p.textSize) || 18))}px`,
+    );
+  }, [user]);
   useEffect(() => {
     const c = new AbortController();
     request("/api/session/", "GET", undefined, c.signal)
@@ -31,6 +52,26 @@ export default function App() {
       window.removeEventListener("session-expired", expire);
     };
   }, []);
+  useEffect(() => {
+    if (!user) return undefined;
+    const c = new AbortController();
+    request("/api/site/appearance/", "GET", undefined, c.signal)
+      .then(setAppearance)
+      .catch((e) => {
+        if (e.name !== "AbortError") setAppearance({ background_url: "" });
+      });
+    return () => c.abort();
+  }, [user?.id]);
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      "--site-bg-image",
+      appearance.background_url
+        ? `url("${appearance.background_url}")`
+        : "none",
+    );
+    return () =>
+      document.documentElement.style.removeProperty("--site-bg-image");
+  }, [appearance.background_url]);
   const parts = route.split("?")[0].split("/").filter(Boolean),
     lang = ["en", "de"].includes(parts[0]) ? parts[0] : null;
   if (error)
@@ -47,26 +88,27 @@ export default function App() {
     return (
       <div className="welcome">
         <span className="loader" />
-        <p>Đang chuẩn bị không gian học…</p>
+        <p>Đang tải…</p>
       </div>
     );
   if (!user) return <Login onLogin={setUser} />;
   if (parts[0] === "manage")
-    return user.staff || user.superuser ? (
-      <Suspense fallback={<div className="loading">Đang mở quản trị…</div>}>
-        <Admin user={user} />
-      </Suspense>
-    ) : (
-      <div className="welcome">
-        <h1>Bạn không có quyền quản trị.</h1>
-        <Link to="/">Về trang học</Link>
-      </div>
+    return (
+      <Workspace
+        user={user}
+        setUser={setUser}
+        lang="en"
+        parts={["en", "admin"]}
+        route={route}
+        appearance={appearance}
+      />
     );
   if (!lang) return <Welcome {...{ user, setUser }} />;
   return (
     <Workspace
       key={`${user.id}:${lang}`}
       {...{ user, setUser, lang, parts, route }}
+      appearance={appearance}
     />
   );
 }
@@ -81,40 +123,9 @@ function Login({ onLogin }) {
     action = useAction();
   return (
     <div className="auth-layout">
-      <div className="auth-story">
-        <Brand />
-        <div>
-          <span className="eyebrow">A LITTLE EVERY DAY</span>
-          <h1>
-            Không gian nhỏ.
-            <br />
-            Khả năng lớn.
-          </h1>
-          <p>
-            Học một từ mới. Hiểu thêm một điều.
-            <br />
-            Tạo nên hành trình của riêng bạn.
-          </p>
-          <div className="decor-card">
-            <span>learn / lɜːrn /</span>
-            <strong>
-              Khám phá.
-              <br />
-              Và ghi nhớ.
-            </strong>
-            <small>Mỗi ngày, một chút tiến bộ.</small>
-          </div>
-        </div>
-        <small>LERNRAUM · YOUR SPACE TO GROW</small>
-      </div>
       <Glass className="auth-card">
-        <span className="eyebrow">CHÀO MỪNG ĐẾN LERNRAUM</span>
-        <h2>{register ? "Bắt đầu hành trình." : "Rất vui được gặp lại."}</h2>
-        <p>
-          {register
-            ? "Tạo tài khoản để lưu tiến độ học của bạn."
-            : "Đăng nhập để tiếp tục những điều đang khám phá."}
-        </p>
+        <span className="eyebrow">WORTIFY</span>
+        <h2>{register ? "Tạo tài khoản" : "Đăng nhập"}</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -188,7 +199,7 @@ function Brand() {
       <span className="brand-mark">
         <Icon name="book" size={23} />
       </span>
-      lernraum<span className="brand-dot">.</span>
+      wortify<span className="brand-dot">.</span>
     </Link>
   );
 }
@@ -198,9 +209,7 @@ function Welcome({ user, setUser }) {
     <div className="welcome-page">
       <header>
         <Brand />
-        {(user.staff || user.superuser) && (
-          <Link to="/manage">Quản trị nội dung ↗</Link>
-        )}
+        {user.superuser && <Link to="/manage">Quản trị người dùng ↗</Link>}
         <Btn
           onClick={() =>
             action.run(async (s) => {
@@ -213,11 +222,7 @@ function Welcome({ user, setUser }) {
         </Btn>
       </header>
       <Page>
-        <Heading
-          eyebrow={`XIN CHÀO, ${user.username}`}
-          title={"Hôm nay, bạn muốn\nkhám phá điều gì?"}
-          description="Chọn một ngôn ngữ. Bước vào không gian học của riêng bạn."
-        />
+        <Heading eyebrow={`XIN CHÀO, ${user.username}`} title="Chọn ngôn ngữ" />
         <div className="language-grid">
           {[
             [
@@ -236,7 +241,6 @@ function Welcome({ user, setUser }) {
             >
               <span className="eyebrow">{label}</span>
               <strong>{word}</strong>
-              <p>{sub}</p>
               <div>
                 <h2>{name}</h2>
                 <span className="round-arrow">
@@ -246,42 +250,68 @@ function Welcome({ user, setUser }) {
             </Link>
           ))}
         </div>
-        <p className="workspace-note">
-          Flashcard & Bookdigital · Học liệu và tiến độ riêng cho mỗi ngôn ngữ
-        </p>
         <Status error={action.error} />
       </Page>
     </div>
   );
 }
-function Workspace({ user, setUser, lang, parts, route }) {
-  const prefKey = `lernraum:${user.id}:${lang}:appearance`,
+function Workspace({ user, setUser, lang, parts, route, appearance }) {
+  const sync = useLearningSync(user.id, lang);
+  const prefKey = `wortify:${user.id}:appearance`,
     [prefs, setLocalPrefs] = useState(() => {
-      const p = readPreference(prefKey, {});
+      const pending = [
+        ...pendingLearning(user.id, "en"),
+        ...pendingLearning(user.id, "de"),
+      ]
+        .filter((e) => e.kind === "preferences")
+        .sort((a, b) => a.at.localeCompare(b.at));
+      const p = {
+        ...user.preferences,
+        ...Object.assign({}, ...pending.map((e) => e.payload)),
+      };
       return {
+        navPinned: p.navPinned !== false,
         font: Math.min(60, Math.max(24, Number(p?.font) || 36)),
         sound: p?.sound === true,
+        ambient: p?.ambient === true,
+        volume: Math.min(1, Math.max(0, Number(p?.volume ?? 0.25))),
+        transparency: Math.min(85, Math.max(0, Number(p?.transparency ?? 25))),
+        textSize: Math.min(22, Math.max(16, Number(p?.textSize) || 18)),
         background: ["mist", "paper", "night"].includes(p?.background)
           ? p.background
           : "mist",
       };
     }),
-    [menu, setMenu] = useState(false);
+    [menu, setMenu] = useState(false),
+    [navBack, setNavBack] = useState(false),
+    [navHover, setNavHover] = useState(false);
+  const touchStart = useRef(null);
   const setPrefs = (v) => {
     setLocalPrefs(v);
     savePreference(prefKey, v);
+    setUser((u) => ({ ...u, preferences: v }));
+    sync.enqueue(
+      "preferences",
+      Object.fromEntries(
+        Object.entries(v).filter(([k, value]) => prefs[k] !== value),
+      ),
+    );
   };
   const action = useAction();
   useEffect(() => {
     document.documentElement.dataset.background = prefs.background;
     document.documentElement.style.setProperty(
+      "--glass-alpha",
+      String(1 - prefs.transparency / 100),
+    );
+    document.documentElement.style.setProperty(
+      "--ui-font",
+      `${prefs.textSize}px`,
+    );
+    document.documentElement.style.setProperty(
       "--card-font",
       `${prefs.font}px`,
     );
-    return () => {
-      delete document.documentElement.dataset.background;
-      document.documentElement.style.removeProperty("--card-font");
-    };
   }, [prefs]);
   useEffect(() => {
     setMenu(false);
@@ -297,11 +327,25 @@ function Workspace({ user, setUser, lang, parts, route }) {
     return () => window.removeEventListener("keydown", close);
   }, [menu]);
   const section = parts[1] || "flashcard";
+  useEffect(() => {
+    if (section === "practice") setNavBack(true);
+  }, [section]);
+  const contextItems = getContextItems(lang, section, parts);
   let content;
   if (section === "flashcard") {
     content =
       parts[2] === "deck" ? (
-        <Deck key={parts[3]} lang={lang} id={parts[3]} sound={prefs.sound} />
+        parts[4] === "edit" ? (
+          <Deck key={parts[3]} lang={lang} id={parts[3]} sound={prefs.sound} />
+        ) : (
+          <FlashcardStudio
+            key={parts[3]}
+            lang={lang}
+            id={parts[3]}
+            userId={user.id}
+            sound={prefs.sound}
+          />
+        )
       ) : parts[2] === "session" ? (
         <Session
           key={parts[3]}
@@ -319,14 +363,36 @@ function Workspace({ user, setUser, lang, parts, route }) {
       ) : (
         <Library lang={lang} />
       );
-  } else if (section === "books")
-    content = <Books key={route} lang={lang} parts={parts} userId={user.id} />;
+  } else if (section === "practice")
+    content = (
+      <PracticeHub
+        key={lang}
+        lang={lang}
+        id={parts[2] === "new" ? undefined : parts[2]}
+        createKind={parts[2] === "new" ? parts[3] : undefined}
+        userId={user.id}
+      />
+    );
   else if (section === "profile")
     content = <Community key={route} {...{ lang, section, id: parts[2] }} />;
+  else if (section === "classes")
+    content = <Community key={route} {...{ lang, section, id: parts[2] }} />;
+  else if (section === "admin")
+    content = user.superuser ? (
+      <Suspense fallback={<p>Đang mở quản trị…</p>}>
+        <Admin user={user} />
+      </Suspense>
+    ) : (
+      <Status error="Chỉ superuser được quản trị người dùng." />
+    );
   else if (section === "settings")
-    content = <Settings {...{ lang, prefs, setPrefs }} />;
-  else if (section === "results")
-    content = <Result lang={lang} id={parts[2]} />;
+    content = (
+      <Settings
+        {...{ lang, prefs, setPrefs }}
+        userId={user.id}
+        superuser={user.superuser}
+      />
+    );
   else
     content = (
       <Page>
@@ -335,7 +401,12 @@ function Workspace({ user, setUser, lang, parts, route }) {
       </Page>
     );
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${prefs.navPinned ? "" : "nav-collapsed"}`}>
+      <Soundscape
+        interactions={prefs.sound}
+        ambient={prefs.ambient}
+        volume={prefs.volume}
+      />
       <a className="skip-link" href="#main-content">
         Đến nội dung chính
       </a>
@@ -346,154 +417,207 @@ function Workspace({ user, setUser, lang, parts, route }) {
           onClick={() => setMenu(false)}
         />
       )}
-      <aside className={`sidebar ${menu ? "open" : ""}`}>
-        <Brand />
-        <Link className="workspace-select" to="/">
-          <span className="language-monogram">{lang.toUpperCase()}</span>
-          <span>
-            {lang === "en" ? "English" : "Deutsch"}
-            <small>Không gian học tập</small>
-          </span>
-          <span>⌄</span>
-        </Link>
-        <div className="nav-label">HỌC & KHÁM PHÁ</div>
-        <nav>
-          {[
-            ["flashcard", "cards", "Flashcard"],
-            ["books", "book", "Bookdigital"],
-          ].map(([id, icon, title]) => (
-            <Link
-              key={id}
-              to={`/${lang}/${id}`}
-              className={`nav-link ${section === id ? "active" : ""}`}
-              aria-current={section === id ? "page" : undefined}
-            >
-              <Icon name={icon} />
-              {title}
-              {section === id && <span className="nav-dot" />}
-            </Link>
-          ))}
-        </nav>
-        <div className="nav-label">GÓC CỦA BẠN</div>
-        <nav>
-          {[["profile", "user", "Hành trình học"]].map(([id, icon, title]) => (
-            <Link
-              key={id}
-              to={`/${lang}/${id}`}
-              className={`nav-link ${section === id ? "active" : ""}`}
-              aria-current={section === id ? "page" : undefined}
-            >
-              <Icon name={icon} />
-              {title}
-            </Link>
-          ))}
-        </nav>
-        <div className="sidebar-bottom">
-          <div className="quiet-note">
-            <Icon name="spark" />
-            <p>
-              Không cần hoàn hảo.
-              <br />
-              Chỉ cần thêm một chút mỗi ngày.
-            </p>
-          </div>
-          <Link
-            className={`nav-link ${section === "settings" ? "active" : ""}`}
-            to={`/${lang}/settings`}
+      <button
+        className="nav-edge no-print"
+        aria-label="Hiện thanh bên"
+        onMouseEnter={() => setNavHover(true)}
+        onFocus={() => setNavHover(true)}
+        onClick={() => {
+          setNavHover(true);
+          setMenu(true);
+        }}
+      >
+        ›
+      </button>
+      <div
+        className={`nav-flip ${menu ? "open" : ""} ${navHover ? "peek" : ""}`}
+        onMouseLeave={() => setNavHover(false)}
+        onTouchStart={(e) => {
+          if (!e.target.closest("input,textarea,select"))
+            touchStart.current = {
+              x: e.touches[0].clientX,
+              y: e.touches[0].clientY,
+            };
+        }}
+        onTouchEnd={(e) => {
+          const start = touchStart.current;
+          touchStart.current = null;
+          if (!start) return;
+          const dx = e.changedTouches[0].clientX - start.x,
+            dy = e.changedTouches[0].clientY - start.y;
+          if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            e.preventDefault();
+            setNavBack((v) => !v);
+          }
+        }}
+      >
+        <div className="nav-static">
+          <Brand />
+          <button
+            className="nav-rotate"
+            aria-label={navBack ? "Điều hướng chính" : "Công cụ trang"}
+            title={navBack ? "Điều hướng chính" : "Công cụ trang"}
+            aria-pressed={navBack}
+            onClick={() => setNavBack((v) => !v)}
           >
-            <Icon name="settings" />
-            Cài đặt học tập
-          </Link>
-          <div className="account">
-            <Link to={`/${lang}/profile`} className="account-name">
-              <span className="avatar">{user.username[0].toUpperCase()}</span>
-              <span>
-                {user.username}
-                <small>Không gian cá nhân</small>
-              </span>
-            </Link>
-            <Btn
-              aria-label="Đăng xuất"
-              isLoading={action.pending}
-              onClick={() =>
-                action.run(async (s) => {
-                  await request("/api/session/", "DELETE", undefined, s);
-                  setUser(null);
-                  navigate("/");
-                })
-              }
+            <svg
+              width="23"
+              height="23"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              aria-hidden="true"
             >
-              <Icon name="logout" size={18} />
-            </Btn>
-          </div>
-          <Status error={action.error} />
+              <path d="M20 7a8 8 0 0 0-14-2L3 8m0-5v5h5M4 17a8 8 0 0 0 14 2l3-3m0 5v-5h-5" />
+            </svg>
+          </button>
+          <button
+            className="nav-hide"
+            aria-label={
+              prefs.navPinned ? "Thu gọn thanh bên" : "Ghim thanh bên"
+            }
+            title={prefs.navPinned ? "Thu gọn thanh bên" : "Ghim thanh bên"}
+            onClick={() => {
+              setPrefs({ ...prefs, navPinned: !prefs.navPinned });
+              setNavHover(false);
+              setMenu(false);
+            }}
+          >
+            {" "}
+            {prefs.navPinned ? "‹" : "›"}{" "}
+          </button>
         </div>
-      </aside>
+        <div className={`nav-flip-inner ${navBack ? "is-flipped" : ""}`}>
+          <aside
+            className={`sidebar ${menu ? "open" : ""}`}
+            inert={navBack}
+            aria-hidden={navBack}
+          >
+            <Link className="workspace-select" to="/">
+              <span className="language-monogram">{lang.toUpperCase()}</span>
+              <span>{lang === "en" ? "English" : "Deutsch"}</span>
+              <span>⌄</span>
+            </Link>
+
+            <nav>
+              {[
+                ["flashcard", "cards", "Flashcard"],
+                ["practice", "book", "Practice Hub"],
+              ].map(([id, icon, title]) => (
+                <Link
+                  key={id}
+                  to={`/${lang}/${id}`}
+                  onClick={() => {
+                    if (id === "practice") setNavBack(true);
+                  }}
+                  className={`nav-link ${section === id ? "active" : ""}`}
+                  aria-current={section === id ? "page" : undefined}
+                >
+                  <Icon name={icon} />
+                  {title}
+                  {section === id && <span className="nav-dot" />}
+                </Link>
+              ))}
+            </nav>
+
+            <nav>
+              {[
+                ["profile", "user", "Hành trình học"],
+                ["classes", "class", "Lớp học & chia sẻ"],
+              ].map(([id, icon, title]) => (
+                <Link
+                  key={id}
+                  to={`/${lang}/${id}`}
+                  onClick={() => {
+                    if (id === "practice") setNavBack(true);
+                  }}
+                  className={`nav-link ${section === id ? "active" : ""}`}
+                  aria-current={section === id ? "page" : undefined}
+                >
+                  <Icon name={icon} />
+                  {title}
+                </Link>
+              ))}
+            </nav>
+            <div className="sidebar-bottom">
+              {user.superuser && (
+                <Link className="nav-link" to={`/${lang}/admin`}>
+                  Quản trị người dùng
+                </Link>
+              )}
+              <Link
+                className={`nav-link ${section === "settings" ? "active" : ""}`}
+                to={`/${lang}/settings`}
+              >
+                <Icon name="settings" />
+                Cài đặt học tập
+              </Link>
+              <div className="account">
+                <Link to={`/${lang}/profile`} className="account-name">
+                  <span className="avatar">
+                    {user.username[0].toUpperCase()}
+                  </span>
+                  <span>{user.username}</span>
+                </Link>
+                <Btn
+                  aria-label="Đăng xuất"
+                  isLoading={action.pending}
+                  onClick={() =>
+                    action.run(async (s) => {
+                      await Promise.all([
+                        flushLearning(user.id, "en"),
+                        flushLearning(user.id, "de"),
+                      ]);
+                      await request("/api/session/", "DELETE", undefined, s);
+                      setUser(null);
+                      navigate("/");
+                    })
+                  }
+                >
+                  <Icon name="logout" size={18} />
+                </Btn>
+              </div>
+              <Status error={action.error || sync.error} />
+            </div>
+          </aside>
+          <aside
+            className={`workspace-context ${menu ? "open" : ""}`}
+            aria-label="Công cụ và chỉ mục"
+            inert={!navBack}
+            aria-hidden={!navBack}
+          >
+            <h2>{contextItems.title}</h2>
+            <div id="workspace-tools" />
+          </aside>
+        </div>
+      </div>
       <div className="main-shell">
-        <header className="topbar">
-          <div className="toolbar">
-            <Btn
-              className="mobile-menu btn"
-              aria-label="Mở điều hướng"
-              onClick={() => setMenu(!menu)}
-            >
-              ☰
-            </Btn>
-            <span className="topbar-label">
-              {lang === "en" ? "English" : "Deutsch"} <span>/</span>{" "}
-              {
-                {
-                  flashcard: "Flashcard",
-                  books: "Bookdigital",
-                  profile: "Hành trình",
-                  classes: "Lớp học",
-                  reviews: "Bài chấm",
-                  settings: "Cài đặt",
-                  results: "Kết quả",
-                }[section]
-              }
-            </span>
-          </div>
-          <div className="toolbar">
-            <Btn
-              aria-label="Giảm cỡ chữ"
-              isDisabled={prefs.font <= 24}
-              onClick={() =>
-                setPrefs({ ...prefs, font: Math.max(24, prefs.font - 2) })
-              }
-            >
-              A−
-            </Btn>
-            <Btn
-              aria-label="Tăng cỡ chữ"
-              isDisabled={prefs.font >= 60}
-              onClick={() =>
-                setPrefs({ ...prefs, font: Math.min(60, prefs.font + 2) })
-              }
-            >
-              A+
-            </Btn>
-            <Btn
-              aria-label={
-                prefs.sound
-                  ? "Tắt âm thanh tương tác"
-                  : "Bật âm thanh tương tác"
-              }
-              aria-pressed={prefs.sound}
-              onClick={() => setPrefs({ ...prefs, sound: !prefs.sound })}
-            >
-              <Icon name="sound" />
-              <span className="sound-label">{prefs.sound ? "Bật" : "Tắt"}</span>
-            </Btn>
-          </div>
-        </header>
+        <button
+          className="workspace-menu btn"
+          aria-label="Mở điều hướng"
+          aria-expanded={menu}
+          onClick={() => setMenu(!menu)}
+        >
+          ☰
+        </button>
         <main id="main-content" tabIndex={-1}>
           {content}
         </main>
-        <footer className="app-footer">
-          LERNRAUM <span>Một chút mỗi ngày, một bước xa hơn.</span>
-        </footer>
       </div>
     </div>
   );
+}
+function getContextItems(lang, section, parts) {
+  return {
+    title:
+      {
+        flashcard: parts[2] === "deck" ? "Bộ thẻ" : "Flashcard",
+        practice: "Practice Hub",
+        settings: "Cài đặt",
+        profile: "Hành trình học",
+        classes: "Lớp học",
+        admin: "Người dùng",
+      }[section] || "Công cụ",
+  };
 }

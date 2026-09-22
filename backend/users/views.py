@@ -28,4 +28,9 @@ def session(request):
             return JsonResponse({'error': 'Tên đăng nhập hoặc mật khẩu không đúng.'}, status=400)
         login(request, user)
     user = request.user
-    return JsonResponse({'user': {'id': user.pk, 'username': user.username, 'staff': user.is_staff, 'superuser': user.is_superuser} if user.is_authenticated else None})
+    preferences={}
+    if user.is_authenticated:
+        from .models import Profile
+        profile,_=Profile.objects.get_or_create(user=user)
+        preferences=profile.preferences
+    return JsonResponse({'user': {'id': user.pk, 'username': user.username, 'staff': user.is_staff, 'superuser': user.is_superuser, 'preferences':preferences} if user.is_authenticated else None})

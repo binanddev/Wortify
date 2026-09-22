@@ -1,5 +1,15 @@
+import { gradeCard } from "./local-learning";
 import { useEffect, useRef, useState } from "react";
-import { endpoint, request, useResource, useAction, navigate } from "./core";
+import {
+  endpoint,
+  request,
+  useResource,
+  useAction,
+  navigate,
+  readPreference,
+  savePreference,
+  shuffled,
+} from "./core";
 import {
   Btn,
   Icon,
@@ -26,27 +36,90 @@ export function Session({ lang, token, sound }) {
   );
 }
 function SessionContent({ initial, lang, token, sound }) {
-  const [session, setSession] = useState(initial),
+  const draftKey = `wortify:session:${token}`;
+  const restored = readPreference(draftKey, {});
+  const [session, setSession] = useState(() => {
+      if (initial.result) return initial;
+      const values = { ...initial.saved_answers, ...restored };
+      const completed = initial.questions.filter(
+        (q) => values[q.token] !== undefined,
+      ).length;
+      return {
+        ...initial,
+        completed,
+        question: initial.questions.find((q) => values[q.token] === undefined),
+        result:
+          completed === initial.total
+            ? summarizeLocal(initial.questions, values)
+            : null,
+      };
+    }),
     [feedback, setFeedback] = useState(null),
     [next, setNext] = useState(null),
     [answer, setAnswer] = useState(""),
-    [answers, setAnswers] = useState({}),
+    [answers, setAnswers] = useState(() => ({
+      ...initial.saved_answers,
+      ...restored,
+    })),
+    [synced, setSynced] = useState(Boolean(initial.result)),
     [flipped, setFlipped] = useState(false);
   const action = useAction(),
     audio = useSound(sound, lang);
   const q = session.question;
-  const send = (value) =>
-    action.run(async (signal) => {
-      const result = await request(
-        endpoint(lang, `sessions/${token}/answer/`),
-        "POST",
-        { question: q.token, answer: value },
-        signal,
-      );
-      setFeedback(result.feedback);
-      setNext(result.session);
-      audio.tick();
+  useEffect(() => {
+    if (!synced) savePreference(draftKey, answers);
+  }, [answers, synced, draftKey]);
+  const sync = async (signal) => {
+    await request(
+      endpoint(lang, `sessions/${token}/finish/`),
+      "POST",
+      { answers },
+      signal,
+    );
+    setSynced(true);
+    savePreference(draftKey, {});
+  };
+  useEffect(() => {
+    if (!session.result || synced) return;
+    let active = true;
+    let busy = false;
+    const save = async () => {
+      if (busy) return;
+      busy = true;
+      try {
+        await sync();
+      } catch (e) {
+        if (active) action.setError(e.message);
+      } finally {
+        busy = false;
+      }
+    };
+    save();
+    const timer = setInterval(save, 15000);
+    window.addEventListener("online", save);
+    return () => {
+      active = false;
+      clearInterval(timer);
+      window.removeEventListener("online", save);
+    };
+  }, [session.result, synced]);
+  const send = (value) => {
+    const values = { ...answers, [q.token]: value };
+    setAnswers(values);
+    const row = gradeCard(q, value);
+    const completed = session.completed + 1;
+    setFeedback(row);
+    setNext({
+      ...session,
+      completed,
+      question: session.questions[completed],
+      result:
+        completed === session.total
+          ? summarizeLocal(session.questions, values)
+          : null,
     });
+    audio.feedback(row.is_correct);
+  };
   const continueSession = () => {
     setSession(next);
     setNext(null);
@@ -73,9 +146,9 @@ function SessionContent({ initial, lang, token, sound }) {
     return () => window.removeEventListener("keydown", key);
   }, [session, feedback, next]);
   const title = {
-    flash: "Nhìn. Nhớ. Khám phá.",
-    learn: "Mỗi câu, một bước tiến.",
-    test: "Đến lúc thử sức.",
+    flash: "Thẻ ghi nhớ",
+    learn: "Học",
+    test: "Kiểm tra",
   }[session.kind];
   return (
     <Page>
@@ -121,13 +194,14 @@ function SessionContent({ initial, lang, token, sound }) {
                 {session.result.correct}
                 <span> / {session.result.total}</span>
               </div>
-              <p>câu đã ghi nhớ. Bạn đã dành thời gian cho chính mình.</p>
+              <p>câu đã ghi nhớ</p>
               {session.result.correct < session.result.total && (
                 <Btn
                   primary
                   isLoading={action.pending}
                   onClick={() =>
                     action.run(async (s) => {
+                      if (!synced) await sync(s);
                       const next = await request(
                         endpoint(lang, "sessions/"),
                         "POST",
@@ -168,14 +242,10 @@ function SessionContent({ initial, lang, token, sound }) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              action.run(async (signal) => {
-                const completed = await request(
-                  endpoint(lang, `sessions/${token}/finish/`),
-                  "POST",
-                  { answers },
-                  signal,
-                );
-                setSession({ ...completed, questions: session.questions });
+              setSession({
+                ...session,
+                completed: session.total,
+                result: summarizeLocal(session.questions, answers),
               });
             }}
           >
@@ -199,11 +269,12 @@ function SessionContent({ initial, lang, token, sound }) {
                 <h2>
                   {session.result.correct} / {session.result.total} câu đúng
                 </h2>
-                <p>Đã lưu kết quả và đáp án của bạn.</p>
+
                 {session.result.correct < session.result.total && (
                   <Btn
                     onClick={() =>
                       action.run(async (s) => {
+                        if (!synced) await sync(s);
                         const next = await request(
                           endpoint(lang, "sessions/"),
                           "POST",
@@ -298,10 +369,11 @@ function SessionContent({ initial, lang, token, sound }) {
                   <Answer
                     question={q}
                     value={answer}
-                    onChange={setAnswer}
+                    onChange={v=>{setAnswer(v);if(q.options?.length)send(v);}}
+                    feedback={feedback}
                     disabled={!!feedback || action.pending}
                   />
-                  {!feedback && (
+                  {!feedback && !q.options?.length && (
                     <Btn
                       primary
                       type="submit"
@@ -328,7 +400,7 @@ function SessionContent({ initial, lang, token, sound }) {
     </Page>
   );
 }
-function Answer({ question, value, onChange, disabled }) {
+function Answer({ question, value, onChange, disabled, feedback }) {
   return question.options?.length ? (
     <Choice
       options={question.options}
@@ -336,6 +408,8 @@ function Answer({ question, value, onChange, disabled }) {
       onChange={onChange}
       disabled={disabled}
       label="Chọn đáp án"
+      graded={!!feedback}
+      correctAnswer={question.mode==='quiz'?question.card.vietnamese_meaning:question.target}
     />
   ) : (
     <Field
@@ -348,195 +422,295 @@ function Answer({ question, value, onChange, disabled }) {
     />
   );
 }
+function summarizeLocal(questions, answers) {
+  const rows = questions.map((q) => gradeCard(q, answers[q.token]));
+  return {
+    correct: rows.filter((r) => r.is_correct).length,
+    total: rows.length,
+    rows,
+  };
+}
 export function ExtraStudy({ lang, params, sound }) {
+  const query = new URLSearchParams();
+  if (params.get("deck")) query.set("deck", params.get("deck"));
+  query.set("filter", params.get("filter") || "all");
+  const resource = useResource(endpoint(lang, `study-pack/?${query}`));
+  return (
+    <Loading resource={resource}>
+      {(pack) => <LocalPractice {...{ pack, lang, params, sound }} />}
+    </Loading>
+  );
+}
+function LocalPractice({ pack, lang, params, sound }) {
   const mode = params.get("mode") || "write",
-    deck = params.get("deck"),
-    filter = params.get("filter") || "all";
-  const [data, setData] = useState(null),
-    [index, setIndex] = useState(0),
-    [answer, setAnswer] = useState(""),
+    deck = params.get("deck");
+  const example = params.get("target") === "example";
+  const [cards] = useState(() =>
+    shuffled(pack.cards.filter((c) => !example || c.example_german)),
+  );
+  const [index, setIndex] = useState(0),
+    [answer, setAnswer] = useState(
+      mode === "order" ? [] : mode === "match" ? {} : "",
+    ),
     [result, setResult] = useState(null);
-  const action = useAction(),
-    audio = useSound(sound, lang),
-    player = useRef(null);
-  const load = (signal) =>
-    request(
-      endpoint(lang, mode === "match" ? `match/${deck}/new/` : "next/"),
-      "POST",
-      mode === "match"
-        ? { wrong_only: filter === "weak" }
-        : { mode, deck, filter, index, target: params.get("target") || "term" },
-      signal,
-    ).then((d) => {
-      setData(d);
-      setAnswer(mode === "match" ? {} : mode === "order" ? [] : "");
-      setResult(d.completed ? d.result : null);
+  const audio = useSound(sound, lang),
+    action = useAction();
+  const c = cards[index],
+    group = cards.slice(index, index + 6);
+  const target = c ? (example ? c.example_german : c.german_text) : "";
+  const items = target.split(/\s+/).map((text, i) => ({ id: String(i), text }));
+  const options = [
+    ...new Set([
+      c?.vietnamese_meaning,
+      ...cards.filter((v) => v.id !== c?.id).map((v) => v.vietnamese_meaning),
+    ]),
+  ].slice(0, 4);
+  const [recording, setRecording] = useState(false),
+    [recordUrl, setRecordUrl] = useState("");
+  const recordingRef = useRef({});
+  useEffect(
+    () => () => {
+      recordingRef.current.stream?.getTracks().forEach((t) => t.stop());
+      if (recordingRef.current.url)
+        URL.revokeObjectURL(recordingRef.current.url);
+      clearTimeout(recordingRef.current.timer);
+    },
+    [],
+  );
+  const record = () =>
+    action.run(async () => {
+      if (recording) {
+        recordingRef.current.rec.stop();
+        setRecording(false);
+        return;
+      }
+      if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder)
+        throw new Error("Trình duyệt chưa hỗ trợ ghi âm.");
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true }),
+        rec = new MediaRecorder(stream),
+        chunks = [];
+      recordingRef.current.stream = stream;
+      recordingRef.current.rec = rec;
+      rec.ondataavailable = (e) => chunks.push(e.data);
+      rec.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        clearTimeout(recordingRef.current.timer);
+        if (recordingRef.current.url)
+          URL.revokeObjectURL(recordingRef.current.url);
+        const url = URL.createObjectURL(
+          new Blob(chunks, { type: rec.mimeType }),
+        );
+        recordingRef.current.url = url;
+        setRecordUrl(url);
+        setRecording(false);
+      };
+      rec.start();
+      setRecording(true);
+      recordingRef.current.timer = setTimeout(() => {
+        if (rec.state === "recording") rec.stop();
+      }, 60000);
     });
-  useEffect(() => {
-    const c = new AbortController();
-    load(c.signal).catch((e) => {
-      if (e.name !== "AbortError") action.setError(e.message);
-    });
-    return () => {
-      c.abort();
-      player.current?.pause();
-      window.speechSynthesis?.cancel();
-    };
-  }, [index]);
-  const listen = () =>
-    action.run(async (s) => {
-      const d = await request(
-        endpoint(lang, `audio/${data.token}/`),
-        "POST",
-        {},
-        s,
+  const check = (submitted = answer) => {
+    if (mode === "match") {
+      const rows = group.map((v) => ({
+        is_correct: submitted[String(v.id)] === String(v.id),
+        term: v.german_text,
+        meaning: v.vietnamese_meaning,
+      }));
+      setResult({
+        rows,
+        correct: rows.filter((v) => v.is_correct).length,
+        total: rows.length,
+      });
+    } else {
+      const actual =
+        mode === "order"
+          ? submitted.map((id) => items.find((t) => t.id === id)?.text).join(" ")
+          : submitted;
+      setResult(
+        gradeCard(
+          {
+            mode: mode === "quiz" ? "quiz" : "write",
+            target,
+            meaning: c.vietnamese_meaning,
+            card: c,
+            alternatives: example ? c.accepted_examples : c.accepted_answers,
+            grading: pack.grading,
+          },
+          actual,
+        ),
       );
-      if (d.url) {
-        player.current?.pause();
-        player.current = new Audio(d.url);
-        await player.current.play();
-      } else audio.speak(d.text || data.target);
-    });
+    }
+    audio.tick();
+  };
   return (
     <Page>
-      <Link className="breadcrumb" to={`/${lang}/flashcard/deck/${deck}`}>
+      <Link
+        to={deck ? `/${lang}/flashcard/deck/${deck}` : `/${lang}/flashcard`}
+      >
         ← Bộ thẻ
       </Link>
       <Heading
-        eyebrow="LUYỆN TẬP"
         title={
           {
-            write: "Viết để nhớ lâu.",
-            quiz: "Tìm nghĩa phù hợp.",
-            spell: "Lắng nghe từng từ.",
-            order: "Đặt từ vào đúng chỗ.",
-            match: "Tìm những cặp đồng điệu.",
-            speak: "Tự tin cất tiếng.",
+            write: "Viết để nhớ lâu",
+            quiz: "Chọn nghĩa đúng",
+            spell: "Nghe và viết",
+            order: "Sắp xếp từ",
+            match: "Nối cặp",
+            speak: "Luyện phát âm",
           }[mode] || "Luyện tập"
         }
-        description="Phản hồi ngay tại chỗ. Bạn quyết định khi nào chuyển tiếp."
       />
       <div className="session-width">
         <Status error={action.error} />
-        {!data ? (
-          <Btn onClick={() => action.run(load)} isLoading={action.pending}>
-            Tải bài luyện
-          </Btn>
-        ) : data.done ? (
-          <Status>{data.message}</Status>
+        {!c ? (
+          <Glass>
+            <h2>Đã hoàn thành</h2>
+          </Glass>
         ) : (
           <Glass>
-            <h2 className="question-text">{data.prompt || data.target}</h2>
+            <p>
+              {index + 1}/{cards.length}
+            </p>
+            <h2>
+              {mode === "spell"
+                ? "Nghe rồi nhập từ bạn nghe được"
+                : mode === "quiz" || mode === "speak"
+                  ? target
+                  : example
+                    ? c.example_vietnamese
+                    : c.vietnamese_meaning}
+            </h2>
+            {["spell", "speak"].includes(mode) && (
+              <Btn onClick={() => audio.speak(target)}>Nghe mẫu</Btn>
+            )}
             {mode === "match" ? (
-              <Matching
-                {...data}
-                value={answer}
-                onChange={setAnswer}
-                disabled={!!result || action.pending}
+              <LocalMatching
+                key={index}
+                group={group}
+                answer={answer}
+                setAnswer={setAnswer}
+                disabled={!!result}
               />
             ) : mode === "order" ? (
-              <WordOrder
-                items={data.items}
-                value={answer}
-                onChange={setAnswer}
-                disabled={!!result || action.pending}
+              <LocalOrder
+                key={index}
+                items={items}
+                answer={answer}
+                setAnswer={setAnswer}
+                disabled={!!result}
               />
             ) : mode === "speak" ? (
               <>
-                <Btn onClick={listen}>
-                  <Icon name="sound" />
-                  Nghe mẫu
+                <Btn onClick={record} isLoading={action.pending}>
+                  {recording ? "Dừng thu" : "Thu âm"}
                 </Btn>
-                {data.stt_ready ? (
-                  <Recorder
-                    {...{ lang, token: data.token }}
-                    onResult={setResult}
-                  />
-                ) : (
-                  <Status>
-                    Chưa cấu hình dịch vụ nhận dạng. Bạn vẫn có thể nghe mẫu và
-                    luyện đọc.
-                  </Status>
-                )}
+                {recordUrl && <audio controls src={recordUrl} />}
+                <Btn
+                  isDisabled={recording}
+                  onClick={() =>
+                    setResult({ is_correct: true, target, card: c })
+                  }
+                >
+                  Đã luyện xong
+                </Btn>
               </>
+            ) : mode === "quiz" ? (
+              <LocalChoices
+                key={index}
+                options={options}
+                answer={answer}
+                setAnswer={v=>{setAnswer(v);check(v);}}
+                correctAnswer={c.vietnamese_meaning}
+                disabled={!!result}
+              />
             ) : (
-              <>
-                {mode === "spell" && (
-                  <Btn primary onClick={listen} isLoading={action.pending}>
-                    <Icon name="sound" />
-                    Nghe mẫu
-                  </Btn>
-                )}
-                <Answer
-                  question={data}
-                  value={answer}
-                  onChange={setAnswer}
-                  disabled={!!result || action.pending}
-                />
-              </>
+              <Field
+                label="Câu trả lời"
+                value={answer}
+                onChange={setAnswer}
+                isDisabled={!!result}
+              />
             )}
-            {!result && mode !== "speak" && (
-              <Btn
-                primary
-                isLoading={action.pending}
-                onClick={() =>
-                  action.run(async (s) => {
-                    const r = await request(
-                      endpoint(
-                        lang,
-                        mode === "match"
-                          ? `match/${data.token}/submit/`
-                          : `submit/${data.token}/`,
-                      ),
-                      "POST",
-                      mode === "match"
-                        ? { pairs: answer }
-                        : {
-                            answer:
-                              mode === "order"
-                                ? JSON.stringify(answer)
-                                : answer,
-                          },
-                      s,
-                    );
-                    setResult(r);
-                    audio.tick();
-                  })
-                }
-              >
+            {!result && mode !== "speak" && mode !== "quiz" && (
+              <Btn primary onClick={()=>check()}>
                 Kiểm tra
               </Btn>
             )}
-            {result &&
-              (mode === "match" ? (
-                <>
+            {result && (
+              <>
+                {mode === "match" ? (
                   <Status>
-                    {result.correct} / {result.total} cặp chính xác
+                    {result.correct}/{result.total} cặp đúng
+                    {result.rows.map((r, i) => (
+                      <p key={i}>
+                        {r.is_correct ? "✓" : "↻"} {r.term} — {r.meaning}
+                      </p>
+                    ))}
                   </Status>
-                  {result.rows.map((r, i) => (
-                    <p key={i}>
-                      {r.is_correct ? "✓" : "↻"} {r.term} — {r.meaning}
-                    </p>
-                  ))}
-                </>
-              ) : (
-                <Feedback row={result} />
-              ))}
-            {(result || (mode === "speak" && !data.stt_ready)) && (
-              <Btn
-                primary
-                onClick={() => {
-                  setData(null);
-                  setIndex((i) => i + 1);
-                }}
-              >
-                Tiếp tục <Icon name="arrow" />
-              </Btn>
+                ) : (
+                  <Feedback row={result} />
+                )}
+                <Btn
+                  primary
+                  onClick={() => {
+                    setIndex((i) => i + (mode === "match" ? group.length : 1));
+                    setAnswer(
+                      mode === "order" ? [] : mode === "match" ? {} : "",
+                    );
+                    setResult(null);
+                    setRecordUrl("");
+                  }}
+                >
+                  Tiếp tục
+                </Btn>
+              </>
             )}
           </Glass>
         )}
       </div>
     </Page>
+  );
+}
+function LocalChoices({ options, answer, setAnswer, disabled, correctAnswer }) {
+  const [rows] = useState(() => shuffled(options));
+  return (
+    <Choice
+      options={rows}
+      value={answer}
+      onChange={setAnswer}
+      disabled={disabled}
+      graded={disabled}
+      correctAnswer={correctAnswer}
+    />
+  );
+}
+function LocalOrder({ items, answer, setAnswer, disabled }) {
+  const [rows] = useState(() => shuffled(items));
+  return (
+    <WordOrder
+      items={rows}
+      value={answer}
+      onChange={setAnswer}
+      disabled={disabled}
+    />
+  );
+}
+function LocalMatching({ group, answer, setAnswer, disabled }) {
+  const [right] = useState(() =>
+    shuffled(
+      group.map((c) => ({ id: String(c.id), text: c.vietnamese_meaning })),
+    ),
+  );
+  return (
+    <Matching
+      left={group.map((c) => ({ id: String(c.id), text: c.german_text }))}
+      right={right}
+      value={answer}
+      onChange={setAnswer}
+      disabled={disabled}
+    />
   );
 }
 function Recorder({ lang, token, onResult }) {

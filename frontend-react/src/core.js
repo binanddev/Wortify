@@ -1,5 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+const contentCache = new Map();
+export function primeContentCache(path, data) {
+  contentCache.set(path, { at: Date.now(), data: structuredClone(data) });
+}
+export function clearContentCache() {
+  contentCache.clear();
+}
 export async function request(path, method = "GET", data, signal) {
+  const cacheable =
+    method === "GET" &&
+    /\/api\/(en|de)\/(practice-hub|decks|sessions|study-pack)\//.test(path);
+  if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+  const cached = contentCache.get(path);
+  if (cacheable && cached && Date.now() - cached.at < 600000)
+    return structuredClone(cached.data);
   const headers = {};
   if (data !== undefined && !(data instanceof FormData))
     headers["Content-Type"] = "application/json";
@@ -23,21 +37,36 @@ export async function request(path, method = "GET", data, signal) {
     signal,
   });
   let malformed = false;
-  const json = await res.json().catch(
-    () => (
-      (malformed = true),
-      {
-        error:
-          res.status === 403
-            ? "Phiên bảo mật đã thay đổi. Hãy tải lại trang rồi thử lại."
-            : "Máy chủ chưa phản hồi đúng định dạng.",
-      }
-    ),
-  );
+  const json = await res.json().catch((error) => {
+    if (error.name === "AbortError" || signal?.aborted)
+      throw new DOMException("Aborted", "AbortError");
+    malformed = true;
+    return {
+      error:
+        res.status === 403
+          ? "Phiên bảo mật đã thay đổi. Hãy tải lại trang rồi thử lại."
+          : "Máy chủ chưa phản hồi đúng định dạng.",
+    };
+  });
   if (!res.ok || malformed) {
     if (res.status === 401) window.dispatchEvent(new Event("session-expired"));
     throw new Error(json.error || "Không thể hoàn tất yêu cầu. Hãy thử lại.");
   }
+  if (method !== "GET" && !path.endsWith("/learning/sync/"))
+    contentCache.clear();
+  if (path.endsWith("/learning/sync/"))
+    for (const key of contentCache.keys())
+      if (/\/decks\/\d+\/$/.test(key)) contentCache.delete(key);
+  if (cacheable) {
+    if (contentCache.size >= 30)
+      contentCache.delete(contentCache.keys().next().value);
+    contentCache.set(path, { at: Date.now(), data: structuredClone(json) });
+  }
+  if (method === "POST" && /\/sessions\/$/.test(path) && json.token)
+    contentCache.set(`${path}${json.token}/`, {
+      at: Date.now(),
+      data: structuredClone(json),
+    });
   return json;
 }
 export const endpoint = (lang, path) => {
@@ -64,7 +93,13 @@ export function useResource(path, keepDataOnReload = false) {
       });
     return () => c.abort();
   }, [path, version, keepDataOnReload]);
-  return { ...state, reload: () => bump((v) => v + 1) };
+  return {
+    ...state,
+    reload: () => {
+      contentCache.delete(path);
+      bump((v) => v + 1);
+    },
+  };
 }
 export function useAction() {
   const guard = useRef(false),
@@ -109,7 +144,10 @@ export function useRoute() {
   }, []);
   return path;
 }
+const volatilePreferences = new Map();
 export function readPreference(key, fallback) {
+  if (volatilePreferences.has(key))
+    return structuredClone(volatilePreferences.get(key));
   try {
     return JSON.parse(localStorage.getItem(key)) ?? fallback;
   } catch {
@@ -119,8 +157,9 @@ export function readPreference(key, fallback) {
 export function savePreference(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
+    volatilePreferences.delete(key);
   } catch {
-    /* Browsers may disable persistence. */
+    volatilePreferences.set(key, structuredClone(value));
   }
 }
 export function shuffled(items) {

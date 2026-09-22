@@ -1,0 +1,701 @@
+import { useRef, useState } from "react";
+import { Btn, Icon, Select } from "./ui";
+import { AutoTextarea } from "./exercise-interactions";
+import { newQuestion, modeOf } from "./exercise-types";
+export function AField({ label, value = "", onChange, ...props }) {
+  return (
+    <label className="author-field">
+      <span>{label}</span>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        {...props}
+      />
+    </label>
+  );
+}
+function Lines({ label, value = [], onChange }) {
+  return (
+    <AutoTextarea
+      label={label}
+      value={value.join("\n")}
+      onChange={(v) => onChange(v.split("\n"))}
+    />
+  );
+}
+export function prepareExercise(exercise) {
+  const e = structuredClone(exercise),
+    mode = modeOf(e);
+  e.presentation = { ...e.presentation, interaction: mode, type: e.kind };
+  e.questions = e.questions.map((q) => ({
+    ...q,
+    kind: e.kind,
+    presentation: { ...q.presentation },
+    accepted_answers: q.accepted_answers.filter((v) => v.trim()),
+    options: q.options.map((v) => v.trim()),
+    blanks: q.blanks.map((b) => ({
+      ...b,
+      answers: b.answers.filter((v) => v.trim()),
+      options: b.options?.filter((v) => v.trim()),
+    })),
+  }));
+  if (mode === "cloze_drag_drop")
+    e.questions.forEach((q) => {
+      q.presentation.word_bank = [
+        ...q.blanks.map((b) => b.answers[0]).filter(Boolean),
+        ...(q.presentation.distractors || []).filter(Boolean),
+      ];
+    });
+  if (mode === "matching") {
+    const all = e.questions.map((q) => q.accepted_answers[0]).filter(Boolean);
+    e.questions.forEach((q) => (q.options = [...new Set(all)]));
+  }
+  if (mode === "categorization")
+    e.questions.forEach((q) => (q.options = e.presentation.categories));
+  return e;
+}
+export function ExerciseForm({ exercise: e, onChange, onUpload }) {
+  const mode = modeOf(e);
+  const update = (i, patch) =>
+    onChange({
+      questions: e.questions.map((q, j) => (i === j ? { ...q, ...patch } : q)),
+    });
+  return (
+    <section className="author-panel">
+      <AField
+        label="Tên bài tập"
+        value={e.title}
+        onChange={(title) => onChange({ title })}
+      />
+      <AField
+        label="Yêu cầu"
+        value={e.instruction}
+        onChange={(instruction) => onChange({ instruction })}
+      />
+      {["cloze_drag_drop", "inline_selection"].includes(mode) && (
+        <div className="form-columns">
+          <Select
+            label="Cách điền"
+            value={mode}
+            onChange={(interaction) =>
+              onChange({ presentation: { ...e.presentation, interaction } })
+            }
+          >
+            <option value="cloze_drag_drop">Kéo / chọn từ</option>
+            <option value="inline_selection">Chọn ngay trong câu</option>
+          </Select>
+        </div>
+      )}
+      {mode === "multiple_choice" && (
+        <Select
+          label="Số đáp án đúng"
+          value={e.kind}
+          onChange={(kind) => onChange({ kind })}
+        >
+          <option value="choice">Một đáp án</option>
+          <option value="multi">Nhiều đáp án</option>
+        </Select>
+      )}
+      {mode === "categorization" && (
+        <div className="author-groups">
+          <h3>Nhóm phân loại</h3>
+          {(e.presentation.categories || []).map((name, i) => (
+            <div className="form-row" key={i}>
+              <AField
+                label={`Nhóm ${i + 1}`}
+                value={name}
+                onChange={(v) =>
+                  onChange({
+                    presentation: {
+                      ...e.presentation,
+                      categories: e.presentation.categories.map((g, j) =>
+                        i === j ? v : g,
+                      ),
+                    },
+                    questions: e.questions.map((q) => ({
+                      ...q,
+                      accepted_answers: q.accepted_answers.map((a) =>
+                        a === name ? v : a,
+                      ),
+                    })),
+                  })
+                }
+              />
+              <Btn
+                aria-label={`Xóa nhóm ${i + 1}`}
+                onClick={() =>
+                  onChange({
+                    presentation: {
+                      ...e.presentation,
+                      categories: e.presentation.categories.filter(
+                        (_, j) => i !== j,
+                      ),
+                    },
+                  })
+                }
+              >
+                ×
+              </Btn>
+            </div>
+          ))}
+          <Btn
+            onClick={() =>
+              onChange({
+                presentation: {
+                  ...e.presentation,
+                  categories: [
+                    ...(e.presentation.categories || []),
+                    `Nhóm ${e.presentation.categories.length + 1}`,
+                  ],
+                },
+              })
+            }
+          >
+            ＋ Nhóm
+          </Btn>
+        </div>
+      )}
+      {mode === "true_false_not_given" && (
+        <AutoTextarea
+          label="Bài đọc"
+          value={e.context || ""}
+          onChange={(context) => onChange({ context })}
+        />
+      )}
+      {["short_answer", "audio_dictation"].includes(mode) && (
+        <label className="author-switch">
+          <input
+            type="checkbox"
+            checked={e.ignore_case !== false}
+            onChange={(x) =>
+              onChange({
+                ignore_case: x.target.checked,
+                ignore_punctuation: x.target.checked,
+              })
+            }
+          />
+          Bỏ qua hoa thường và dấu câu
+        </label>
+      )}
+      <div className="author-question-list">
+        {e.questions.map((q, i) => (
+          <section className="author-question" key={i}>
+            <header>
+              <h3>
+                {mode === "matching"
+                  ? "Cặp"
+                  : mode === "categorization"
+                    ? "Từ"
+                    : "Câu"}{" "}
+                {i + 1}
+              </h3>
+              {e.questions.length > 1 && (
+                <Btn
+                  aria-label={`Xóa câu ${i + 1}`}
+                  onClick={() =>
+                    onChange({
+                      questions: e.questions.filter((_, j) => i !== j),
+                    })
+                  }
+                >
+                  ×
+                </Btn>
+              )}
+            </header>
+            <QuestionForm
+              mode={mode}
+              kind={e.kind}
+              question={q}
+              onChange={(p) => update(i, p)}
+              categories={e.presentation.categories || []}
+              onUpload={onUpload}
+            />
+          </section>
+        ))}
+      </div>
+      <Btn
+        onClick={() =>
+          onChange({ questions: [...e.questions, newQuestion(mode)] })
+        }
+      >
+        ＋{" "}
+        {mode === "matching"
+          ? "Thêm cặp"
+          : mode === "categorization"
+            ? "Thêm từ"
+            : "Thêm câu"}
+      </Btn>
+    </section>
+  );
+}
+function QuestionForm({
+  mode,
+  kind,
+  question: q,
+  onChange,
+  categories,
+  onUpload,
+}) {
+  if (
+    [
+      "cloze_drag_drop",
+      "inline_selection",
+      "inline_error_identification",
+    ].includes(mode)
+  )
+    return <TokenAuthor {...{ mode, q, onChange }} />;
+  if (mode === "matching")
+    return (
+      <div className="pair-author-row">
+        <AField
+          label="Cột A"
+          value={q.prompt}
+          onChange={(prompt) => onChange({ prompt })}
+        />
+        <span>↔</span>
+        <AField
+          label="Cột B"
+          value={q.accepted_answers[0] || ""}
+          onChange={(v) => onChange({ accepted_answers: [v] })}
+        />
+      </div>
+    );
+  if (mode === "categorization")
+    return (
+      <div className="form-columns">
+        <AField
+          label="Từ / cụm từ"
+          value={q.prompt}
+          onChange={(prompt) => onChange({ prompt })}
+        />
+        <Select
+          label="Thuộc nhóm"
+          value={q.accepted_answers[0] || ""}
+          onChange={(v) => onChange({ accepted_answers: [v] })}
+        >
+          <option value="">Chọn nhóm</option>
+          {categories.map((g) => (
+            <option key={g}>{g}</option>
+          ))}
+        </Select>
+      </div>
+    );
+  if (mode === "sentence_building")
+    return <SentenceAuthor q={q} onChange={onChange} />;
+  return (
+    <>
+      {mode !== "audio_dictation" && (
+        <AutoTextarea
+          label={mode === "true_false_not_given" ? "Nhận định" : "Đề bài"}
+          value={q.prompt}
+          onChange={(prompt) => onChange({ prompt })}
+        />
+      )}
+      {mode === "audio_dictation" && (
+        <>
+          <AField
+            label="Tên đoạn nghe"
+            value={q.prompt}
+            onChange={(prompt) => onChange({ prompt })}
+          />
+          <div className="form-row">
+            <AField
+              label="URL âm thanh"
+              value={q.presentation?.audio || ""}
+              placeholder="https://…"
+              onChange={(audio) =>
+                onChange({ presentation: { ...q.presentation, audio } })
+              }
+            />
+            <label className="file-button">
+              Tải tệp
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={(e) => {
+                  if (e.target.files[0])
+                    onUpload(e.target.files[0], (audio) =>
+                      onChange({ presentation: { ...q.presentation, audio } }),
+                    );
+                }}
+              />
+            </label>
+          </div>
+        </>
+      )}
+      {mode === "multiple_choice" ? (
+        <div className="options-editor">
+          <h4>Đáp án</h4>
+          {q.options.map((option, i) => (
+            <div className="option-editor-row" key={i}>
+              <button
+                type="button"
+                aria-label={`Đặt đáp án ${String.fromCharCode(65 + i)} đúng`}
+                aria-pressed={!!option && q.accepted_answers.includes(option)}
+                className={
+                  option && q.accepted_answers.includes(option)
+                    ? "correct-option"
+                    : ""
+                }
+                onClick={() => {
+                  if (option)
+                    onChange({
+                      accepted_answers:
+                        kind === "multi"
+                          ? q.accepted_answers.includes(option)
+                            ? q.accepted_answers.filter((a) => a !== option)
+                            : [...q.accepted_answers, option]
+                          : [option],
+                    });
+                }}
+              >
+                {option && q.accepted_answers.includes(option)
+                  ? "✓"
+                  : String.fromCharCode(65 + i)}
+              </button>
+              <AField
+                label={`Lựa chọn ${String.fromCharCode(65 + i)}`}
+                value={option}
+                onChange={(v) =>
+                  onChange({
+                    options: q.options.map((o, j) => (i === j ? v : o)),
+                    accepted_answers: q.accepted_answers.map((a) =>
+                      a === option ? v : a,
+                    ),
+                  })
+                }
+              />
+              <button
+                type="button"
+                aria-label={`Xóa lựa chọn ${i + 1}`}
+                onClick={() =>
+                  onChange({
+                    options: q.options.filter((_, j) => i !== j),
+                    accepted_answers: q.accepted_answers.filter(
+                      (a) => a !== option,
+                    ),
+                  })
+                }
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          <Btn onClick={() => onChange({ options: [...q.options, ""] })}>
+            ＋ Lựa chọn
+          </Btn>
+          <AutoTextarea
+            label="Giải thích sau khi chấm"
+            value={q.presentation?.explanation || ""}
+            onChange={(explanation) =>
+              onChange({ presentation: { ...q.presentation, explanation } })
+            }
+          />
+        </div>
+      ) : mode === "true_false_not_given" ? (
+        <Select
+          label="Đáp án đúng"
+          value={q.accepted_answers[0] || ""}
+          onChange={(v) =>
+            onChange({
+              accepted_answers: [v],
+              options: ["TRUE", "FALSE", "NOT_GIVEN"],
+            })
+          }
+        >
+          <option value="">Chọn đáp án</option>
+          <option value="TRUE">Đúng</option>
+          <option value="FALSE">Sai</option>
+          <option value="NOT_GIVEN">Không có thông tin</option>
+        </Select>
+      ) : (
+        <Lines
+          label={
+            mode === "audio_dictation"
+              ? "Bản chép chuẩn"
+              : mode === "short_answer"
+                ? "Đáp án bắt buộc · mỗi dòng một cách trả lời"
+                : "Đáp án được chấp nhận · mỗi dòng một cách viết"
+          }
+          value={q.accepted_answers}
+          onChange={(accepted_answers) => onChange({ accepted_answers })}
+        />
+      )}
+    </>
+  );
+}
+function TokenAuthor({ mode, q, onChange }) {
+  const ref = useRef(),
+    [selection, setSelection] = useState(null);
+  const errorMode = mode === "inline_error_identification";
+  const mark = () => {
+    if (!selection) return;
+    let { start, end } = selection;
+    while (start < end && /\s/.test(q.prompt[start])) start++;
+    while (end > start && /\s/.test(q.prompt[end - 1])) end--;
+    const word = q.prompt.slice(start, end);
+    if (!word.trim() || word.includes("{{")) return;
+    const id = errorMode
+        ? `t${(q.presentation?.tokens?.length || 0) + 1}`
+        : String(q.blanks.length + 1),
+      prompt =
+        q.prompt.slice(0, start) + "{{" + id + "}}" + q.prompt.slice(end);
+    if (errorMode)
+      onChange({
+        prompt,
+        presentation: {
+          ...q.presentation,
+          tokens: [...(q.presentation?.tokens || []), { id, text: word }],
+        },
+        options: [...q.options, id],
+      });
+    else
+      onChange({
+        prompt,
+        blanks: [...q.blanks, { answers: [word], options: [word, ""] }],
+      });
+    setSelection(null);
+  };
+  return (
+    <>
+      <label className="work-field">
+        <span>Văn bản</span>
+        <textarea
+          ref={ref}
+          rows={6}
+          value={q.prompt}
+          onChange={(e) => onChange({ prompt: e.target.value })}
+          onSelect={(e) => {
+            const { selectionStart: start, selectionEnd: end } = e.target;
+            setSelection(end > start ? { start, end } : null);
+          }}
+        />
+      </label>
+      <div className="selection-toolbar">
+        <span>Bôi đen từ trong văn bản</span>
+        <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
+          disabled={!selection}
+          onClick={mark}
+        >
+          {errorMode
+            ? "Đánh dấu từ"
+            : mode === "inline_selection"
+              ? "Tạo lựa chọn"
+              : "Tạo ô trống"}
+        </button>
+      </div>
+      {errorMode ? (
+        <div className="token-answer-list">
+          {(q.presentation?.tokens || []).map((t) => (
+            <label key={t.id}>
+              <input
+                type="checkbox"
+                checked={q.accepted_answers.includes(t.id)}
+                onChange={(e) =>
+                  onChange({
+                    accepted_answers: e.target.checked
+                      ? [...q.accepted_answers, t.id]
+                      : q.accepted_answers.filter((a) => a !== t.id),
+                  })
+                }
+              />
+              <strong>{t.text}</strong>
+              <span>Đáp án đúng</span>
+            </label>
+          ))}
+        </div>
+      ) : (
+        q.blanks.map((b, i) => (
+          <div className="gap-editor" key={i}>
+            <span className="gap-number">{i + 1}</span>
+            <AField
+              label="Đáp án"
+              value={b.answers.join(" | ")}
+              onChange={(v) =>
+                onChange({
+                  blanks: q.blanks.map((x, j) =>
+                    j === i
+                      ? {
+                          ...x,
+                          answers: v.split("|").map((a) => a.trim()),
+                          options:
+                            mode === "inline_selection"
+                              ? [v, ...(x.options || []).slice(1)]
+                              : x.options,
+                        }
+                      : x,
+                  ),
+                })
+              }
+            />
+            {mode === "inline_selection" && (
+              <AField
+                label="Các từ nhiễu · cách nhau bằng |"
+                value={(b.options || []).slice(1).join(" | ")}
+                onChange={(v) =>
+                  onChange({
+                    blanks: q.blanks.map((x, j) =>
+                      j === i
+                        ? {
+                            ...x,
+                            options: [
+                              x.answers[0],
+                              ...v.split("|").map((a) => a.trim()),
+                            ],
+                          }
+                        : x,
+                    ),
+                  })
+                }
+              />
+            )}
+            <button
+              type="button"
+              aria-label={`Bỏ ô ${i + 1}`}
+              onClick={() =>
+                onChange({
+                  prompt: q.prompt.replace(/\{\{(\d+)\}\}/g, (m, n) =>
+                    Number(n) === i + 1
+                      ? b.answers[0]
+                      : `{{${Number(n) > i + 1 ? Number(n) - 1 : n}}}`,
+                  ),
+                  blanks: q.blanks.filter((_, j) => j !== i),
+                })
+              }
+            >
+              ×
+            </button>
+          </div>
+        ))
+      )}
+      {mode === "cloze_drag_drop" && (
+        <AField
+          label="Từ nhiễu · cách nhau bằng dấu phẩy"
+          value={(q.presentation?.distractors || []).join(", ")}
+          onChange={(v) =>
+            onChange({
+              presentation: {
+                ...q.presentation,
+                distractors: v.split(",").map((x) => x.trim()),
+              },
+            })
+          }
+        />
+      )}
+    </>
+  );
+}
+function SentenceAuthor({ q, onChange }) {
+  const [sentence, setSentence] = useState(() =>
+      q.accepted_answers
+        .map((id) => q.presentation?.tokens?.find((t) => t.id === id)?.text)
+        .filter(Boolean)
+        .join(" "),
+    ),
+    [noise, setNoise] = useState("");
+  const tokens = q.presentation?.tokens || [],
+    ordered = q.accepted_answers
+      .map((id) => tokens.find((t) => t.id === id))
+      .filter(Boolean);
+  const create = () => {
+    const t = sentence
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((text, i) => ({ id: `w${i}`, text }));
+    onChange({
+      prompt: q.prompt || "Sắp xếp thành câu.",
+      presentation: { ...q.presentation, tokens: t },
+      accepted_answers: t.map((t) => t.id),
+    });
+  };
+  return (
+    <>
+      <AutoTextarea
+        label="Câu hoàn chỉnh"
+        value={sentence}
+        onChange={setSentence}
+      />
+      <Btn onClick={create}>Tách thành các từ</Btn>
+      <div className="sentence-token-editor">
+        {ordered.map((t, i) => (
+          <span key={t.id}>
+            <strong>{t.text}</strong>
+            {i < ordered.length - 1 && (
+              <button
+                type="button"
+                aria-label={`Ghép ${t.text} với từ kế tiếp`}
+                onClick={() => {
+                  const next = ordered[i + 1];
+                  onChange({
+                    presentation: {
+                      ...q.presentation,
+                      tokens: tokens
+                        .filter((x) => x.id !== next.id)
+                        .map((x) =>
+                          x.id === t.id
+                            ? { ...x, text: t.text + " " + next.text }
+                            : x,
+                        ),
+                    },
+                    accepted_answers: q.accepted_answers.filter(
+                      (id) => id !== next.id,
+                    ),
+                  });
+                }}
+              >
+                ＋
+              </button>
+            )}
+          </span>
+        ))}
+      </div>
+      <AField
+        label="Gợi ý / bản dịch"
+        value={q.prompt}
+        onChange={(prompt) => onChange({ prompt })}
+      />
+      <div className="form-row">
+        <AField label="Từ nhiễu" value={noise} onChange={setNoise} />
+        <Btn
+          isDisabled={!noise.trim()}
+          onClick={() => {
+            onChange({
+              presentation: {
+                ...q.presentation,
+                tokens: [
+                  ...tokens,
+                  { id: crypto.randomUUID(), text: noise.trim() },
+                ],
+              },
+            });
+            setNoise("");
+          }}
+        >
+          Thêm
+        </Btn>
+      </div>
+      {tokens
+        .filter((t) => !q.accepted_answers.includes(t.id))
+        .map((t) => (
+          <button
+            type="button"
+            className="word-chip"
+            key={t.id}
+            onClick={() =>
+              onChange({
+                presentation: {
+                  ...q.presentation,
+                  tokens: tokens.filter((x) => x.id !== t.id),
+                },
+              })
+            }
+          >
+            {t.text} ×
+          </button>
+        ))}
+    </>
+  );
+}

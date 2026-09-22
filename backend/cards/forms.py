@@ -5,7 +5,7 @@ from .models import Deck, Card, StudySettings, Folder
 class FolderForm(forms.ModelForm):
     class Meta:
         model = Folder
-        fields = ['name']
+        fields = ['name', 'theory_format', 'theory_content']
 
 
 class TextImportForm(forms.Form):

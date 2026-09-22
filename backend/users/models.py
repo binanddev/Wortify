@@ -6,6 +6,8 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=100, blank=True)
     bio = models.TextField(blank=True)
+    preferences = models.JSONField(default=dict, blank=True)
+    preferences_at = models.JSONField(default=dict, blank=True)
 
 class Classroom(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_classes')
@@ -15,11 +17,12 @@ class Classroom(models.Model):
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='classrooms', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-class Review(models.Model):
-    attempt = models.OneToOneField('practice.Attempt', on_delete=models.CASCADE, related_name='peer_review')
-    reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='reviews_to_grade')
-    classroom = models.ForeignKey(Classroom, null=True, blank=True, on_delete=models.SET_NULL)
-    score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    feedback = models.TextField(blank=True)
+class ClassroomAssignment(models.Model):
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='assignments')
+    node = models.ForeignKey('practice.PracticeNode', on_delete=models.CASCADE, related_name='class_assignments')
+    assigned_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='created_assignments')
+    due_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    graded_at = models.DateTimeField(null=True, blank=True)
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['classroom', 'node'], name='unique_classroom_assignment')]
+

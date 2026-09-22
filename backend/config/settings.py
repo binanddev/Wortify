@@ -167,5 +167,5 @@ REACT_DIST = BASE_DIR.parent / "frontend-react" / "dist"
 if REACT_DIST.exists():
     STATICFILES_DIRS += [("react", REACT_DIST)]
 
-# Community remains isolated until the next development phase.
-COMMUNITY_ENABLED = False
+# Community features are available by default; deployments can disable them explicitly.
+COMMUNITY_ENABLED = os.environ.get('COMMUNITY_ENABLED', '1') == '1'

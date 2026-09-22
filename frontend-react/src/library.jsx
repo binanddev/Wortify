@@ -1,3 +1,4 @@
+import { SidebarTools } from "./ui";
 import { useEffect, useState } from "react";
 import {
   endpoint,
@@ -101,25 +102,14 @@ function LibraryContent({ data, lang, reload }) {
   const selected = data.folders.find((f) => String(f.id) === folder);
   return (
     <Page>
-      <Heading
-        eyebrow="KHÔNG GIAN CỦA BẠN"
-        title={"Một chút mỗi ngày.\nNhớ thêm thật nhiều."}
-        description="Từ những tấm thẻ nhỏ, đến những điều bạn thực sự ghi nhớ."
-        actions={
-          <Btn primary onClick={() => setEdit({ type: "deck" })}>
-            <Icon name="plus" />
-            Tạo bộ thẻ
-          </Btn>
-        }
-      />
       <div className="stats-strip">
         <div>
           <strong>{data.decks.length}</strong>
-          <span>Bộ thẻ của bạn</span>
+          <span>Bộ thẻ</span>
         </div>
         <div>
           <strong>{data.decks.reduce((n, d) => n + d.count, 0)}</strong>
-          <span>Từ đang khám phá</span>
+          <span>Thuật ngữ</span>
         </div>
         <div>
           <strong>{data.due}</strong>
@@ -153,56 +143,62 @@ function LibraryContent({ data, lang, reload }) {
           <Icon name="arrow" />
         </Link>
       )}
-      <div className="section-heading">
-        <h2>
-          Thư viện của bạn <span className="count">{decks.length}</span>
-        </h2>
-        <div className="toolbar">
-          <Btn onClick={() => setEdit({ type: "folder" })}>
-            <Icon name="folder" />
-            Thư mục mới
-          </Btn>
-        </div>
-      </div>
-      <div className="library-tools">
-        <div className="folder-tabs">
-          <button
-            className={folder === "all" ? "active" : ""}
-            onClick={() => setFolder("all")}
-          >
-            Tất cả
-          </button>
-          <button
-            className={folder === "" ? "active" : ""}
-            onClick={() => setFolder("")}
-          >
-            Chưa xếp
-          </button>
-          {data.folders.map((f) => (
+      <SidebarTools>
+        <div className="library-tools">
+          <div className="folder-tabs">
             <button
-              key={f.id}
-              className={folder === String(f.id) ? "active" : ""}
-              onClick={() => setFolder(String(f.id))}
+              className={folder === "all" ? "active" : ""}
+              onClick={() => setFolder("all")}
             >
-              <Icon name="folder" size={16} />
-              {f.name}
+              Tất cả
             </button>
-          ))}
+            <button
+              className={folder === "" ? "active" : ""}
+              onClick={() => setFolder("")}
+            >
+              Chưa xếp
+            </button>
+            {data.folders.map((f) => (
+              <button
+                key={f.id}
+                className={folder === String(f.id) ? "active" : ""}
+                onClick={() => setFolder(String(f.id))}
+              >
+                <Icon name="folder" size={16} />
+                {f.name}
+              </button>
+            ))}
+          </div>
+          <div className="toolbar">
+            <Btn
+              primary
+              onClick={() => setEdit({ type: "deck" })}
+              className="library-create-btn"
+            >
+              <Icon name="plus" size={18} />
+              Tạo bộ thẻ
+            </Btn>
+            <Btn
+              onClick={() => setEdit({ type: "folder" })}
+              className="library-folder-btn"
+            >
+              <Icon name="folder" size={18} />
+              Thư mục mới
+            </Btn>
+            <Field
+              label="Tìm bộ thẻ"
+              value={query}
+              onChange={setQuery}
+              startContent={<Icon name="search" />}
+            />
+            <Select label="Sắp xếp" value={sort} onChange={setSort}>
+              <option value="recent">Mới cập nhật</option>
+              <option value="name">Tên A–Z</option>
+              <option value="count">Số lượng thẻ</option>
+            </Select>
+          </div>
         </div>
-        <div className="toolbar">
-          <Field
-            label="Tìm bộ thẻ"
-            value={query}
-            onChange={setQuery}
-            startContent={<Icon name="search" />}
-          />
-          <Select label="Sắp xếp" value={sort} onChange={setSort}>
-            <option value="recent">Mới cập nhật</option>
-            <option value="name">Tên A–Z</option>
-            <option value="count">Số lượng thẻ</option>
-          </Select>
-        </div>
-      </div>
+      </SidebarTools>
       {selected && (
         <div className="toolbar">
           <Btn onClick={() => setEdit({ type: "folder", item: selected })}>
@@ -229,7 +225,7 @@ function LibraryContent({ data, lang, reload }) {
                 BỘ THẺ {String(i + 1).padStart(2, "0")}
               </div>
               <h3>{d.title}</h3>
-              <p>{d.description || "Mỗi lần ôn, một lần nhớ lâu hơn."}</p>
+              {d.description && <p>{d.description}</p>}
               <div className="tile-bottom">
                 <span>{d.count} thuật ngữ</span>
                 <Icon name="arrow" />
@@ -251,8 +247,8 @@ function LibraryContent({ data, lang, reload }) {
           <span className="new-icon">
             <Icon name="plus" size={28} />
           </span>
-          <strong>Tạo điều bạn muốn nhớ</strong>
-          <span>Bắt đầu với bộ thẻ đầu tiên của bạn</span>
+          <strong>Tạo bộ thẻ</strong>
+          <span></span>
         </button>
       </div>
       {!decks.length && query && (
@@ -327,6 +323,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
     [remove, setRemove] = useState(null),
     [importing, setImporting] = useState(false),
     [mode, setMode] = useState("flash"),
+    [view, setView] = useState("cards"),
     [count, setCount] = useState("20"),
     [filter, setFilter] = useState("all"),
     [order, setOrder] = useState(data.cards),
@@ -396,13 +393,15 @@ function DeckContent({ lang, id, data, reload, sound }) {
     });
   return (
     <Page>
-      <Link className="breadcrumb" to={`/${lang}/flashcard`}>
-        ← Thư viện của bạn
+      <Link className="back-library-link" to={`/${lang}/flashcard`}>
+        <Icon name="arrow" />
+        Thư viện
       </Link>
       <Heading
         eyebrow={`${data.deck.level} · ${data.cards.length} THUẬT NGỮ`}
         title={data.deck.title}
         description={data.deck.description}
+        contentDescription
         actions={
           <>
             <Btn onClick={() => setImporting(true)}>Nhập danh sách</Btn>
@@ -412,203 +411,213 @@ function DeckContent({ lang, id, data, reload, sound }) {
           </>
         }
       />
+      <SidebarTools>
+        <Btn aria-pressed={view === "cards"} onClick={() => setView("cards")}>
+          Học thẻ
+        </Btn>
+        <Btn aria-pressed={view === "terms"} onClick={() => setView("terms")}>
+          Danh sách thuật ngữ
+        </Btn>
+        <Btn onClick={() => setEdit({ type: "card" })}>Thêm thuật ngữ</Btn>
+      </SidebarTools>
       <div className="study-layout">
-        <div>
-          <div className="section-heading">
-            <h2>Khám phá bộ thẻ</h2>
-            <span className="muted">Xem tự do · chưa ghi tiến độ</span>
+        {view === "cards" && (
+          <div>
+            {card ? (
+              <>
+                <FlipCard
+                  front={reverse ? card.vietnamese_meaning : card.german_text}
+                  back={reverse ? card.german_text : card.vietnamese_meaning}
+                  example={card.example_german}
+                  {...{ flipped }}
+                  setFlipped={flip}
+                />
+                <div className="card-navigation">
+                  <Btn
+                    aria-label="Thẻ trước"
+                    isDisabled={!index}
+                    onClick={() => step(-1)}
+                  >
+                    ←
+                  </Btn>
+                  <span>
+                    {index + 1} <span className="muted">/ {order.length}</span>
+                  </span>
+                  <Btn
+                    aria-label="Thẻ tiếp theo"
+                    isDisabled={index === order.length - 1}
+                    onClick={() => step(1)}
+                  >
+                    →
+                  </Btn>
+                </div>
+                <div className="toolbar centered">
+                  <Btn
+                    onClick={() => {
+                      setOrder(shuffled(order));
+                      setIndex(0);
+                      setFlipped(false);
+                    }}
+                  >
+                    <Icon name="shuffle" />
+                    Trộn thẻ
+                  </Btn>
+                  <Btn
+                    onClick={() => {
+                      setReverse(!reverse);
+                      setFlipped(false);
+                    }}
+                  >
+                    <Icon name="flip" />
+                    Đảo mặt
+                  </Btn>
+                  <Btn
+                    onClick={() =>
+                      action.run(() => audio.speak(card.german_text))
+                    }
+                  >
+                    <Icon name="sound" />
+                    Nghe
+                  </Btn>
+                  <Btn onClick={() => setAuto(!auto)}>
+                    {auto ? "Ⅱ Dừng" : "▷ Tự chạy"}
+                  </Btn>
+                </div>
+              </>
+            ) : (
+              <Glass>
+                <h3>Bộ thẻ đang chờ từ đầu tiên</h3>
+
+                <Btn primary onClick={() => setEdit({ type: "card" })}>
+                  Thêm thuật ngữ
+                </Btn>
+              </Glass>
+            )}
           </div>
-          {card ? (
-            <>
-              <FlipCard
-                front={reverse ? card.vietnamese_meaning : card.german_text}
-                back={reverse ? card.german_text : card.vietnamese_meaning}
-                example={card.example_german}
-                {...{ flipped }}
-                setFlipped={flip}
+        )}
+        <SidebarTools>
+          <Glass className="study-config">
+            <span className="tile-icon">
+              <Icon name="spark" size={26} />
+            </span>
+            <Select value={mode} onChange={setMode}>
+              {[
+                ["flash", "Flashcards · Tự đánh giá"],
+                ["learn", "Learn · Luyện ghi nhớ"],
+                ["test", "Test · Kiểm tra"],
+                ["quiz", "Trắc nghiệm"],
+                ["write", "Nhớ và viết"],
+                ["spell", "Nghe và chép"],
+                ["order", "Sắp xếp câu"],
+                ["match", "Ghép cặp"],
+                ["speak", "Luyện nói"],
+              ].map(([v, t]) => (
+                <option key={v} value={v}>
+                  {t}
+                </option>
+              ))}
+            </Select>
+            {["flash", "learn", "test"].includes(mode) && (
+              <Field
+                label="Số câu hỏi"
+                type="number"
+                min="1"
+                max="100"
+                value={count}
+                onChange={setCount}
               />
-              <div className="card-navigation">
-                <Btn
-                  aria-label="Thẻ trước"
-                  isDisabled={!index}
-                  onClick={() => step(-1)}
-                >
-                  ←
-                </Btn>
-                <span>
-                  {index + 1} <span className="muted">/ {order.length}</span>
-                </span>
-                <Btn
-                  aria-label="Thẻ tiếp theo"
-                  isDisabled={index === order.length - 1}
-                  onClick={() => step(1)}
-                >
-                  →
-                </Btn>
-              </div>
-              <div className="toolbar centered">
-                <Btn
-                  onClick={() => {
-                    setOrder(shuffled(order));
-                    setIndex(0);
-                    setFlipped(false);
-                  }}
-                >
-                  <Icon name="shuffle" />
-                  Trộn thẻ
-                </Btn>
-                <Btn
-                  onClick={() => {
-                    setReverse(!reverse);
-                    setFlipped(false);
-                  }}
-                >
-                  <Icon name="flip" />
-                  Đảo mặt
-                </Btn>
-                <Btn
-                  onClick={() =>
-                    action.run(() => audio.speak(card.german_text))
-                  }
-                >
-                  <Icon name="sound" />
-                  Nghe
-                </Btn>
-                <Btn onClick={() => setAuto(!auto)}>
-                  {auto ? "Ⅱ Dừng" : "▷ Tự chạy"}
-                </Btn>
-              </div>
-              <p className="keyboard-hint">
-                <kbd>space</kbd> lật thẻ <kbd>←</kbd>
-                <kbd>→</kbd> chuyển thẻ
-              </p>
-            </>
-          ) : (
-            <Glass>
-              <h3>Bộ thẻ đang chờ từ đầu tiên</h3>
-              <p>Thêm từ và nghĩa, hoặc nhập nhanh một danh sách.</p>
-              <Btn primary onClick={() => setEdit({ type: "card" })}>
-                Thêm thuật ngữ
-              </Btn>
-            </Glass>
-          )}
-        </div>
-        <Glass className="study-config">
-          <span className="tile-icon">
-            <Icon name="spark" size={26} />
-          </span>
-          <h2>Học theo cách của bạn.</h2>
-          <p>
-            Chọn một nhịp học phù hợp. Tiến độ sẽ được lưu sau mỗi câu trả lời.
-          </p>
-          <Select label="Cách luyện tập" value={mode} onChange={setMode}>
-            {[
-              ["flash", "Flashcards · Tự đánh giá"],
-              ["learn", "Learn · Luyện ghi nhớ"],
-              ["test", "Test · Kiểm tra"],
-              ["quiz", "Trắc nghiệm"],
-              ["write", "Nhớ và viết"],
-              ["spell", "Nghe và chép"],
-              ["order", "Sắp xếp câu"],
-              ["match", "Ghép cặp"],
-              ["speak", "Luyện nói"],
-            ].map(([v, t]) => (
-              <option key={v} value={v}>
-                {t}
-              </option>
-            ))}
-          </Select>
-          {["flash", "learn", "test"].includes(mode) && (
-            <Field
-              label="Số câu trong buổi"
-              type="number"
-              min="1"
-              max="100"
-              value={count}
-              onChange={setCount}
-            />
-          )}
-          <Select label="Phạm vi thẻ" value={filter} onChange={setFilter}>
-            {[
-              ["all", "Tất cả thẻ"],
-              ["due", "Đến hạn"],
-              ["weak", "Cần luyện thêm"],
-              ["new", "Thẻ mới"],
-            ].map(([v, t]) => (
-              <option key={v} value={v}>
-                {t}
-              </option>
-            ))}
-          </Select>
-          <Btn
-            primary
-            isDisabled={
-              !data.cards.length || !Number(count) || Number(count) > 100
-            }
-            isLoading={action.pending}
-            onClick={start}
-          >
-            Bắt đầu học <Icon name="arrow" />
-          </Btn>
-          <Status error={action.error} />
-          <small>
+            )}
+            <Select label="Phạm vi thẻ" value={filter} onChange={setFilter}>
+              {[
+                ["all", "Tất cả thẻ"],
+                ["due", "Đến hạn"],
+                ["weak", "Cần luyện thêm"],
+                ["new", "Thẻ mới"],
+              ].map(([v, t]) => (
+                <option key={v} value={v}>
+                  {t}
+                </option>
+              ))}
+            </Select>
+            <Btn
+              primary
+              isDisabled={
+                !data.cards.length || !Number(count) || Number(count) > 100
+              }
+              isLoading={action.pending}
+              onClick={start}
+            >
+              Bắt đầu học <Icon name="arrow" />
+            </Btn>
+            <Status error={action.error} />
+            {/* <small>
             {mode === "test"
               ? "Đáp án chỉ xuất hiện sau khi nộp toàn bài."
               : "Bạn chủ động chuyển câu sau khi xem phản hồi."}
-          </small>
-        </Glass>
+          </small> */}
+          </Glass>
+        </SidebarTools>
       </div>
-      <div className="section-heading">
-        <h2>
-          Thuật ngữ <span className="count">{data.cards.length}</span>
-        </h2>
-        <Btn primary onClick={() => setEdit({ type: "card" })}>
-          <Icon name="plus" />
-          Thêm thuật ngữ
-        </Btn>
-      </div>
-      <Field label="Tìm trong bộ thẻ" value={query} onChange={setQuery} />
-      <div className="term-list">
-        {data.cards
-          .filter((c) =>
-            `${c.german_text} ${c.vietnamese_meaning}`
-              .toLowerCase()
-              .includes(query.toLowerCase()),
-          )
-          .map((c) => (
-            <Glass className="term-row" key={c.id}>
-              <div>
-                <strong>{c.german_text}</strong>
-                <p>{c.example_german}</p>
-              </div>
-              <div>
-                {c.vietnamese_meaning}
-                <small>{c.example_vietnamese}</small>
-              </div>
-              <div className="toolbar">
-                <Btn
-                  aria-label={`Di chuyển ${c.german_text}`}
-                  onClick={() => setEdit({ type: "position", item: c })}
-                >
-                  ↕
-                </Btn>
-                <Btn onClick={() => setEdit({ type: "card", item: c })}>
-                  Sửa
-                </Btn>
-                <Btn onClick={() => setRemove({ type: "card", item: c })}>
-                  Xóa
-                </Btn>
-              </div>
-            </Glass>
-          ))}
-      </div>
-      <div className="toolbar export-tools">
-        <a href={endpoint(lang, `decks/${id}/export/csv/`)}>Xuất CSV ↗</a>
-        <a href={endpoint(lang, `decks/${id}/export/json/`)}>Xuất JSON ↗</a>
-        <Btn onClick={() => setRemove({ type: "deck", item: data.deck })}>
-          Xóa bộ thẻ
-        </Btn>
-      </div>
+      {view === "terms" && (
+        <>
+          <div className="section-heading">
+            <h2>
+              Thuật ngữ <span className="count">{data.cards.length}</span>
+            </h2>
+            <Btn primary onClick={() => setEdit({ type: "card" })}>
+              <Icon name="plus" />
+              Thêm thuật ngữ
+            </Btn>
+          </div>
+          <SidebarTools>
+            <Field label="Tìm trong bộ thẻ" value={query} onChange={setQuery} />
+          </SidebarTools>
+          <div className="term-list">
+            {data.cards
+              .filter((c) =>
+                `${c.german_text} ${c.vietnamese_meaning}`
+                  .toLowerCase()
+                  .includes(query.toLowerCase()),
+              )
+              .map((c) => (
+                <Glass className="term-row" key={c.id}>
+                  <div>
+                    <strong>{c.german_text}</strong>
+                    <p>{c.example_german}</p>
+                  </div>
+                  <div>
+                    {c.vietnamese_meaning}
+                    <small>{c.example_vietnamese}</small>
+                  </div>
+                  <div className="toolbar">
+                    <Btn
+                      aria-label={`Di chuyển ${c.german_text}`}
+                      onClick={() => setEdit({ type: "position", item: c })}
+                    >
+                      ↕
+                    </Btn>
+                    <Btn onClick={() => setEdit({ type: "card", item: c })}>
+                      Sửa
+                    </Btn>
+                    <Btn onClick={() => setRemove({ type: "card", item: c })}>
+                      Xóa
+                    </Btn>
+                  </div>
+                </Glass>
+              ))}
+          </div>
+        </>
+      )}
+      <SidebarTools>
+        {" "}
+        <div className="toolbar export-tools">
+          <a href={endpoint(lang, `decks/${id}/export/csv/`)}>Xuất CSV ↗</a>
+          <a href={endpoint(lang, `decks/${id}/export/json/`)}>Xuất JSON ↗</a>
+          <Btn onClick={() => setRemove({ type: "deck", item: data.deck })}>
+            Xóa bộ thẻ
+          </Btn>
+        </div>
+      </SidebarTools>{" "}
       {edit && (
         <Editor
           title={

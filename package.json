@@ -8,7 +8,7 @@
     "preview": "npm --prefix frontend-react run preview",
     "setup:frontend": "npm --prefix frontend-react ci"
   },
-  "name": "lernraum",
+  "name": "wortify",
   "engines": {
     "node": ">=22.12.0",
     "npm": ">=10"

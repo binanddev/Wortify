@@ -16,9 +16,12 @@ try {
             Invoke-Checked $launcher.Source @('-m', 'venv', '.venv')
         }
     }
+    & $pythonPath -X utf8 tools/run_local.py --check
+    if ($LASTEXITCODE -eq 10) { exit 0 }
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     $npmPath = (Get-Command npm.cmd -ErrorAction SilentlyContinue).Source
     if (-not $npmPath) { throw 'Node.js is required. Install Node.js 22.12+ and reopen this terminal.' }
-    Write-Host 'Preparing Lernraum...' -ForegroundColor Cyan
+    Write-Host 'Preparing Wortify...' -ForegroundColor Cyan
     Invoke-Checked $pythonPath @('-m', 'pip', 'install', '-r', 'requirements.txt', '--disable-pip-version-check')
     if (-not (Test-Path -LiteralPath 'frontend-react\node_modules\vite\bin\vite.js')) {
         Invoke-Checked $npmPath @('--prefix', 'frontend-react', 'ci', '--cache', (Join-Path $PSScriptRoot '.npm-cache'), '--no-audit', '--no-fund')

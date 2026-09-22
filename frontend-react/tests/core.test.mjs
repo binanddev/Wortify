@@ -57,3 +57,15 @@ test("blocked storage safely uses the default", () => {
   };
   assert.equal(readPreference("font", 36), 36);
 });
+
+test("cancelling response parsing stays an abort, not a server error", async () => {
+  globalThis.fetch = async () => ({
+    ok: true,
+    json: async () => {
+      throw new DOMException("Aborted", "AbortError");
+    },
+  });
+  await assert.rejects(request("/api/en/practice-hub/nodes/987/"), {
+    name: "AbortError",
+  });
+});

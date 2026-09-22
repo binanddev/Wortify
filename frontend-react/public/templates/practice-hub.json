@@ -1,0 +1,338 @@
+{
+  "nodes": [
+    {
+      "kind": "folder",
+      "title": "Practice Hub · Mười dạng nội dung",
+      "children": [
+        {
+          "kind": "exercise",
+          "title": "Điền chỗ trống",
+          "payload": {
+            "title": "Điền chỗ trống",
+            "kind": "cloze",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "cloze_drag_drop",
+              "type": "cloze",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "She {{1}} learning.",
+                "accepted_answers": [],
+                "options": [],
+                "blanks": [
+                  {
+                    "answers": [
+                      "is"
+                    ],
+                    "options": [
+                      "is",
+                      "are"
+                    ]
+                  }
+                ],
+                "presentation": {
+                  "word_bank": [
+                    "is",
+                    "are"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Tìm lỗi trong câu",
+          "payload": {
+            "title": "Tìm lỗi trong câu",
+            "kind": "multi",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "inline_error_identification",
+              "type": "multi",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "{{a}} {{b}} {{c}}",
+                "accepted_answers": [
+                  "b"
+                ],
+                "options": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "blanks": [],
+                "presentation": {
+                  "tokens": [
+                    {
+                      "id": "a",
+                      "text": "She"
+                    },
+                    {
+                      "id": "b",
+                      "text": "go"
+                    },
+                    {
+                      "id": "c",
+                      "text": "home."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Viết câu ngắn",
+          "payload": {
+            "title": "Viết câu ngắn",
+            "kind": "text",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "short_answer",
+              "type": "text",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Translate: xin chào",
+                "accepted_answers": [
+                  "hello"
+                ],
+                "options": [],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Sắp xếp câu",
+          "payload": {
+            "title": "Sắp xếp câu",
+            "kind": "order",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "sentence_building",
+              "type": "order",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Build the sentence.",
+                "accepted_answers": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "options": [],
+                "blanks": [],
+                "presentation": {
+                  "tokens": [
+                    {
+                      "id": "a",
+                      "text": "She"
+                    },
+                    {
+                      "id": "b",
+                      "text": "goes"
+                    },
+                    {
+                      "id": "c",
+                      "text": "home."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Trắc nghiệm",
+          "payload": {
+            "title": "Trắc nghiệm",
+            "kind": "choice",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "multiple_choice",
+              "type": "choice",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Choose a greeting.",
+                "accepted_answers": [
+                  "hello"
+                ],
+                "options": [
+                  "hello",
+                  "book",
+                  "red",
+                  "run"
+                ],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Phân loại",
+          "payload": {
+            "title": "Phân loại",
+            "kind": "choice",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "categorization",
+              "type": "choice",
+              "categories": [
+                "Greetings",
+                "Objects"
+              ]
+            },
+            "questions": [
+              {
+                "prompt": "hello",
+                "accepted_answers": [
+                  "Greetings"
+                ],
+                "options": [
+                  "Greetings",
+                  "Objects"
+                ],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Nghe – chép",
+          "payload": {
+            "title": "Nghe – chép",
+            "kind": "text",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "audio_dictation",
+              "type": "text",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Type the sound you hear in English.",
+                "accepted_answers": [
+                  "beep"
+                ],
+                "options": [],
+                "blanks": [],
+                "presentation": {
+                  "audio": "/static/react/audio/tone.wav"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Nối cặp",
+          "payload": {
+            "title": "Nối cặp",
+            "kind": "matching",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "matching",
+              "type": "matching",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "xin chào",
+                "accepted_answers": [
+                  "hello"
+                ],
+                "options": [
+                  "hello"
+                ],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Đúng / Sai / Không có",
+          "payload": {
+            "title": "Đúng / Sai / Không có",
+            "kind": "choice",
+            "instruction": "",
+            "context": "Anna reads a book every day.",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "true_false_not_given",
+              "type": "choice",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Anna reads daily.",
+                "accepted_answers": [
+                  "TRUE"
+                ],
+                "options": [
+                  "TRUE",
+                  "FALSE",
+                  "NOT_GIVEN"
+                ],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "theory",
+          "title": "Lý thuyết mẫu",
+          "payload": {
+            "format": "markdown",
+            "content": "# Chào hỏi\n\n**Hello** nghĩa là xin chào."
+          }
+        }
+      ]
+    }
+  ]
+}

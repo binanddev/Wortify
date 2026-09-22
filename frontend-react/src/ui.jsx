@@ -1,10 +1,9 @@
+import { createPortal } from "react-dom";
 import { useEffect, useRef, useState, useId } from "react";
 import {
   Button,
   Card,
   CardBody,
-  Input,
-  Textarea,
   Modal,
   ModalContent,
   ModalHeader,
@@ -18,6 +17,7 @@ export function Icon({ name = "cards", size = 20 }) {
     cards: "M8 4h12v14H8z M4 8v13h12",
     book: "M12 5C8 2 3 3 3 3v16s5-1 9 2c4-3 9-2 9-2V3s-5-1-9 2v16",
     folder: "M3 6h7l2 3h9v11H3z",
+    edit: "m15 4 5 5 M4 20l5-1L21 7l-5-5L4 14z",
     home: "m3 11 9-8 9 8 M5 10v11h14V10 M10 21v-7h4v7",
     user: "M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0 M4 21v-3c0-6 16-6 16 0v3",
     settings: "M4 6h16 M4 12h16 M4 18h16 M8 3v6 M16 9v6 M10 15v6",
@@ -63,12 +63,14 @@ export function Btn({ children, primary = false, onClick, ...props }) {
     </Button>
   );
 }
-export function Link({ to, children, className = "", ...props }) {
+export function Link({ to, children, className = "", onClick, ...props }) {
   return (
     <a
       href={to}
       className={className}
       onClick={(e) => {
+        onClick?.(e);
+        if (e.defaultPrevented) return;
         if (!e.ctrlKey && !e.metaKey && !e.shiftKey && e.button === 0) {
           e.preventDefault();
           navigate(to);
@@ -99,15 +101,17 @@ export function Page({ children }) {
     </motion.div>
   );
 }
-export function Heading({ eyebrow, title, description, actions }) {
+export function Heading({ eyebrow, title, description, contentDescription = false, actions }) {
   return (
     <div className="heading">
       <div>
-        {eyebrow && <div className="eyebrow">{eyebrow}</div>}
         <h1>{title}</h1>
-        {description && <p>{description}</p>}
       </div>
-      <div className="toolbar">{actions}</div>
+      {actions && (
+        <SidebarTools>
+          <div className="toolbar">{actions}</div>
+        </SidebarTools>
+      )}
     </div>
   );
 }
@@ -121,6 +125,16 @@ export function Status({ error, children }) {
       {children}
     </div>
   ) : null;
+}
+export function ExerciseTypeBadge({ type, label }) {
+  return (
+    <span
+      className="pill exercise-type"
+      aria-label={`Dạng bài: ${label || type}`}
+    >
+      {label || type}
+    </span>
+  );
 }
 export function Loading({ resource, children }) {
   if (resource.loading)
@@ -139,22 +153,65 @@ export function Loading({ resource, children }) {
     );
   return children(resource.data);
 }
-export function Field({ label, value, onChange, multiline = false, ...props }) {
-  const Component = multiline ? Textarea : Input;
+export function SidebarTools({ children }) {
+  const [target, setTarget] = useState(null);
+  useEffect(() => {
+    setTarget(document.getElementById("workspace-tools"));
+  }, []);
+  return target ? (
+    createPortal(<div className="sidebar-tools-group">{children}</div>, target)
+  ) : (
+    <div className="sidebar-tools-group">{children}</div>
+  );
+}
+export function Field({
+  label,
+  value,
+  onChange,
+  multiline = false,
+  isRequired,
+  isDisabled,
+  isInvalid,
+  errorMessage,
+  description,
+  startContent,
+  endContent,
+  classNames,
+  className = "",
+  ...props
+}) {
+  const id = useId();
+  const Component = multiline ? "textarea" : "input";
   return (
-    <Component
-      label={label}
-      labelPlacement="outside"
-      variant="bordered"
-      value={String(value ?? "")}
-      onValueChange={onChange}
-      classNames={{
-        base: "field",
-        inputWrapper: "field-wrap",
-        label: "field-label",
-      }}
-      {...props}
-    />
+    <label className={`field native-field ${className}`} htmlFor={id}>
+      {label && (
+        <span className="field-label">
+          {label}
+          {isRequired ? " *" : ""}
+        </span>
+      )}
+      <span className="native-field-wrap">
+        {startContent}
+        <Component
+          {...props}
+          id={id}
+          required={isRequired}
+          disabled={isDisabled}
+          aria-invalid={isInvalid || undefined}
+          aria-describedby={
+            description || errorMessage ? `${id}-help` : undefined
+          }
+          value={String(value ?? "")}
+          onChange={(e) => onChange?.(e.target.value)}
+        />
+        {endContent}
+      </span>
+      {(description || errorMessage) && (
+        <small id={`${id}-help`}>
+          {isInvalid ? errorMessage : description}
+        </small>
+      )}
+    </label>
   );
 }
 export function Select({ label, value, onChange, children, ...props }) {
@@ -298,6 +355,32 @@ export function useSound(enabled, language) {
         o.stop(c.currentTime + 0.11);
       } catch {}
     },
+    feedback: (correct) => {
+      if (!enabled) return;
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        audio.current ??= new Ctx();
+        const c = audio.current;
+        c.resume();
+        const notes = correct ? [660, 880] : [220, 165];
+        notes.forEach((frequency, index) => {
+          const o = c.createOscillator(),
+            g = c.createGain();
+          o.type = correct ? "sine" : "triangle";
+          o.frequency.setValueAtTime(frequency, c.currentTime + index * 0.08);
+          g.gain.setValueAtTime(0.03, c.currentTime + index * 0.08);
+          g.gain.exponentialRampToValueAtTime(
+            0.001,
+            c.currentTime + index * 0.08 + 0.12,
+          );
+          o.connect(g);
+          g.connect(c.destination);
+          o.start(c.currentTime + index * 0.08);
+          o.stop(c.currentTime + index * 0.08 + 0.13);
+        });
+      } catch {}
+    },
     speak: (text) => {
       if (!window.speechSynthesis)
         throw new Error("Trình duyệt không hỗ trợ giọng đọc.");
@@ -322,15 +405,11 @@ export function FlipCard({ front, back, example, flipped, setFlipped }) {
         <span className="flip-face" aria-hidden={flipped}>
           <span className="eyebrow">TỪ VỰNG</span>
           <strong>{front}</strong>
-          <span className="flip-hint">
-            Chạm để khám phá nghĩa <Icon name="flip" size={16} />
-          </span>
         </span>
         <span className="flip-face flip-back" aria-hidden={!flipped}>
           <span className="eyebrow">Ý NGHĨA</span>
           <strong>{back}</strong>
           {example && <span className="example">{example}</span>}
-          <span className="flip-hint">Chạm để quay lại</span>
         </span>
       </span>
     </button>
@@ -343,6 +422,8 @@ export function Choice({
   multiple = false,
   disabled = false,
   label = "Chọn đáp án",
+  graded = false,
+  correctAnswer,
 }) {
   const group = useId();
   return (
@@ -350,7 +431,7 @@ export function Choice({
       <legend className="sr-only">{label}</legend>
       {options.map((text, i) => (
         <label
-          className={`choice ${(multiple ? value?.includes(text) : value === text) ? "selected" : ""}`}
+          className={`choice ${(multiple ? value?.includes(text) : value === text) ? "selected" : ""} ${graded ? text === correctAnswer ? "answer-correct" : value === text ? "answer-wrong" : "" : ""}`}
           key={text}
         >
           <input
@@ -453,8 +534,15 @@ export function Matching({ left, right, value = {}, onChange, disabled }) {
   );
 }
 export function Feedback({ row }) {
+  const correct = row?.is_correct ?? row?.correct;
   return row ? (
-    <Status>
+    <motion.div
+      className={`feedback ${correct === true ? "feedback-correct" : correct === false ? "feedback-incorrect" : ""}`}
+      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.28 }}
+      role="status"
+    >
       {row.is_correct === undefined
         ? row.correct === null
           ? "Đã lưu • Chờ người chấm"
@@ -476,6 +564,6 @@ export function Feedback({ row }) {
           Đáp án: {row.expected.join(" / ")}
         </>
       )}
-    </Status>
+    </motion.div>
   ) : null;
 }

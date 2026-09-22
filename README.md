@@ -1,70 +1,52 @@
-# Lernraum
+# Wortify
 
-Phần mềm học ngôn ngữ với **React 19 + HeroUI v2 + Tailwind CSS 4 + Framer Motion**, backend Django 5.2. Hai không gian English / Deutsch độc lập.
+Ứng dụng học tiếng Anh/Đức: React 19, Vite, Django 5.2, SQLite.
 
-## Chạy trên Windows — dùng PowerShell
-
-Mở Terminal **PowerShell**, dán đúng hai dòng sau. Không cần kích hoạt venv, không dùng lệnh Bash trong PowerShell:
+## Chạy trên Windows
 
 ```powershell
 Set-Location -LiteralPath 'E:\code\bigmywweb'
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\start.ps1
 ```
 
-Hoặc mở thư mục dự án rồi **nhấp đúp `start.cmd`**. Script kiểm tra Python/Node, cài thành phần thiếu, cập nhật database và bật web. Giữ cửa sổ terminal mở trong khi học; nhấn Ctrl+C để tắt cả hai dịch vụ.
+Hoặc nhấp đúp `start.cmd`. Backend mặc định **8000**, frontend **5173**. Mở http://127.0.0.1:5173. Giữ terminal chạy; Ctrl+C dừng các dịch vụ được cửa sổ này khởi động. Script tự dùng lại đúng Wortify của workspace nếu đã chạy; không tắt chương trình khác chiếm cổng. Có thể đổi bằng `WORTIFY_BACKEND_PORT` và `WORTIFY_FRONTEND_PORT`.
 
-- Trang học: http://127.0.0.1:5173
-- Quản trị sách: http://127.0.0.1:5173/manage
-- Dùng tài khoản đã có. Nếu database mới chưa có quản trị, mở terminal khác và chạy:
+Cần Python 3.12+, Node.js 22.12+ và Internet để cài thư viện lần đầu. Bash/Linux/macOS: `bash start.sh`.
+
+## Dữ liệu thử
 
 ```powershell
-Set-Location -LiteralPath 'E:\code\bigmywweb'
-.\.venv\Scripts\python.exe -X utf8 manage.py createsuperuser
+.\.venv\Scripts\python.exe manage.py seed_development_demo
 ```
 
-**Khi gặp lỗi:**
+Lệnh chỉ chạy trong DEBUG, không nhân bản khi chạy lại. Tài khoản `demo` (superuser), `learner` (user), `staff` (staff), mật khẩu ban đầu `WortifyDemo2026!`. Nội dung mẫu của demo gồm hai cây Practice Hub có chín dạng bài và lý thuyết, hai bộ thẻ EN/DE. User và staff có cùng tính năng học, tạo/sửa nội dung của mình; superuser thêm quản trị người dùng tại `/en/admin` hoặc `/manage`.
 
-- “Port ... already in use”: dừng cửa sổ chạy web cũ bằng Ctrl+C trước khi chạy lại. Không mở hai lần.
-- “Node.js is required”: cài Node.js 22.12 trở lên, rồi đóng/mở lại Terminal.
-- “Python is required”: cài Python 3.12 trở lên, rồi đóng/mở lại Terminal.
-- “running scripts is disabled”: dùng nguyên dòng `powershell.exe ...` ở trên, không chạy trực tiếp `./start.ps1`. `npm.cmd` đã được dùng trong script để tránh lỗi chính sách `npm.ps1`.
-- Lần đầu cần Internet để tải thư viện. Nếu tải bị gián đoạn, chạy lại script; không tự xóa thư mục dự án.
-- Không cần giữ `book/` hoặc `frontend/` để chạy. Sách mới được thêm bằng JSON trong quản trị.
+## Tạo bài học
 
-## Git Bash / Linux / macOS
+Practice Hub mở cây nội dung ở thanh bên. **＋** cạnh “Tất cả nội dung” tạo ở cấp gốc; **＋** tại thư mục tạo nội dung con. Tạo folder chỉ cần tên, bài/lý thuyết tự nhận vị trí đang chọn. **Di chuyển** chọn đích riêng sau khi tạo; tối đa ba cấp folder. Thanh bên liền khối có icon xoay cố định, hỗ trợ vuốt ngang để lật, thu gọn và mở lại khi đưa chuột về mép trái.
 
-Trong **Bash**, tại thư mục dự án chạy `bash start.sh`. Đây là lựa chọn khác, không phải lệnh dành cho PowerShell. Cần Python 3.12+ và Node.js >=22.12.
+Bài tập bắt buộc có đáp án, chấm ngay tại máy rồi tự lưu kết quả lên tài khoản. Không có bài viết dài hoặc chấm thủ công. Lý thuyết nhận HTML/Markdown; có liên kết học tiếp tùy chọn tới bài/lý thuyết/folder.
 
-## Chức năng
+**Nhập JSON / Lấy mẫu** có mẫu folder, bài, lý thuyết; trình soạn bài hỗ trợ thêm câu hỏi bằng JSON. Mẫu đầy đủ: `frontend-react/public/templates/practice-hub.json`. Cấu trúc gốc `nodes`, thư mục có `children`, bài có `payload.questions`. Nhập cây nguyên tử: lỗi không lưu một phần. Chọn liên kết sau khi nhập.
 
-- Thư viện thẻ: thư mục, tìm kiếm, sắp xếp bộ, tạo/sửa/xóa từ, chuyển vị trí, nhập danh sách có xem trước và xuất dữ liệu.
-- Xem thẻ: lật 3D, phím cách/mũi tên, đảo mặt, trộn thẻ, tự chạy, giọng đọc. Xem tự do không ghi điểm.
-- Flashcards / Learn / Test: phiên được lưu trên server, phản hồi tại chỗ, luyện lại từ sai; Test chỉ chấm sau khi nộp toàn bài.
-- Luyện bổ sung: trắc nghiệm, viết, nghe chép, sắp xếp câu, ghép cặp, luyện nói khi cấu hình STT.
-- Bookdigital: sách → chương/lý thuyết → bài, câu hỏi chuẩn hóa từ JSON, audio/ảnh, sửa và nộp lại tại chỗ.
-- Hồ sơ, thành tích thực, lớp học, gửi/nhận bài chấm.
-- Cỡ chữ 24–60px, 3 nền, âm thanh tương tác bật/tắt, giảm chuyển động theo hệ điều hành, bố cục mobile.
+## Học và tự lưu
 
-## Sách JSON và quản trị
+- Flashcards: trộn, chiều mặt, sao, phím tắt, TTS từng mặt.
+- Learn: lặp thẻ sai, tiến độ chưa học/quen thuộc/thành thạo, chọn dạng câu, chiều trả lời, mục tiêu số thẻ/thời gian.
+- Learn/Test: chọn đáp án là chấm ngay, viền và đáp án xanh/đỏ, sai hiện đáp án đúng. Câu viết dùng Enter/nút ↵; nối cặp chấm khi nối đủ. Test tự lưu khi hoàn thành câu cuối, có thống kê và in/lưu PDF. Gắn sao chỉ dùng icon và không làm nhảy thẻ.
+- Cài đặt giao diện, âm thanh, học tập, cấu hình bộ thẻ, sao và tiến độ đều lưu server. Thay đổi gom thành đợt tự động, có hàng đợi tại thiết bị và tự thử lại khi mất mạng. Không cần nút đồng bộ.
+- Tải toàn bộ bộ thẻ và tải nền Practice Hub; lật thẻ, nhập đáp án và phản hồi tại máy. Kết quả nộp bài được gửi để server kiểm tra và lưu lịch sử.
+- Giao diện Liquid Glass, độ trong suốt/cỡ chữ tùy chỉnh; âm thanh tương tác và nền tạo bằng Web Audio. TTS dùng giọng trình duyệt/hệ điều hành.
 
-Sách, chương, lý thuyết, câu hỏi và đáp án đều được lưu trong database. `book/` chỉ là nguồn nhập ban đầu, không thuộc mã triển khai và có thể xóa. Admin tạo sách và tải thêm JSON trực tiếp qua giao diện, không cần thư mục nguồn.
+## Phát triển
 
-Hiện đã nhập 4 sách, 74 chương, 369 bài. Các bài thiếu đáp án, đáp án mơ hồ hoặc không khớp lựa chọn được chuyển sang chấm thủ công và ghi chú trong quản trị. Cần đối chiếu nội dung nguồn; nhập JSON không đồng nghĩa xác nhận đáp án đúng.
-
-`frontend-admin/src/` chứa giao diện quản trị, dùng chung React build, mở tại `/manage`. Chỉ superuser được truy cập. Có thể tìm/tạo/sửa/khóa người dùng, đặt lại mật khẩu, tạo sách, thêm/cập nhật chương bằng JSON có xem trước, biên tập bài/lý thuyết, xem media thiếu và tải 1–20 tệp/lượt (10 MB/tệp, 50 MB/lượt). Tên tệp được ghép tự động với đường dẫn JSON; admin kiểm tra và xác nhận trước khi tải. Media nằm trong `backend/private_media`, được phục vụ qua API yêu cầu đăng nhập.
-
-Mục **Hướng dẫn & mẫu JSON** ngay trong admin cho tải mẫu, quy tắc nhập và ví dụ các dạng bài. Bản mẫu cũng có tại [docs/book-template-v1.json](docs/book-template-v1.json). JSON mới dùng schema_version 1; bộ nhập vẫn hỗ trợ các biến thể sách đã cung cấp.
-
-## Phát triển và kiểm thử
-
-```bash
-npm run dev
-npm run build
-npm test
-.venv/Scripts/python.exe -X utf8 manage.py check
-.venv/Scripts/python.exe -X utf8 manage.py test
+```powershell
+npm.cmd test
+npm.cmd run build
+.\.venv\Scripts\python.exe manage.py test
+.\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
 ```
 
-Django giữ auth, CSRF, quyền sở hữu, SRS và chấm điểm. Frontend cũ đã ngắt hoàn toàn, bạn có thể xóa `frontend/`. Thư mục backups và công cụ import_legacy đã được gỡ theo yêu cầu.
+Đã bỏ Book/Chapter và API tương thích. Migrations phát triển gồm bốn baseline cùng migration bổ sung cài đặt tài khoản. Database trước khi reset được sao lưu tại `.development-backups/` (gitignored). Không fake baseline lên database cũ. Chỉ thay schema mới cần migration; build không sinh migration.
 
-Xem [tổng quan kiến trúc](docs/README.md), [vận hành và kiểm thử](docs/OPERATIONS.md), [quy tắc cho agent](AGENTS.md) và [frontend](frontend-react/README.md).
+Xem [kiến trúc dự án](docs/AGENTS.md).

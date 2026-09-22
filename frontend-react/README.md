@@ -1,17 +1,16 @@
-# React frontend
+# Frontend Wortify
 
-Ứng dụng đã triển khai tại `src/` và tích hợp API Django. React 19, HeroUI v2, Tailwind 4, Framer Motion 12, Vite 8. Không dùng Next.js hoặc backend Node.
+React19, HeroUI2, Tailwind4, Framer Motion12, Vite8; backend Django, không có backend Node riêng.
 
-- `App.jsx`: auth, chọn ngôn ngữ, shell và điều hướng history.
-- `core.js`: API/CSRF, hủy request, chống submit lặp, dữ liệu đọc và tùy chọn cục bộ.
-- `ui.jsx`: thành phần kính, biểu mẫu, modal, input bài tập, thẻ lật, audio.
-- `library.jsx`: thư viện, CRUD, thư mục, import và thứ tự từ.
-- `study.jsx`: phiên Flash/Learn/Test, bài luyện bổ sung và thu âm.
-- `learning.jsx`: sách/lý thuyết/media, bài tập, hồ sơ, lớp và chấm bài.
-- `../frontend-admin/src/Admin.jsx`: quản trị riêng, tải lười khi mở `/manage`.
+- App.jsx: auth, routing EN/DE, sidebar hai mặt.
+- core.js: API/CSRF, cache, hủy request và action guard.
+- ui.jsx/glass.css: giao diện và form chung.
+- practice-hub.jsx, exercise-authoring.jsx, practice-activity.jsx: CRUD, JSON, lý thuyết và chín dạng bài.
+- library.jsx: bộ thẻ/thư mục; flashcard-studio.jsx: Flashcards/Learn/Test; study.jsx: ôn liên bộ và luyện thêm.
+- learning-sync.js: queue tự lưu server, retry/idempotence. local-learning.js/flashcard-engine.js: chấm tại trình duyệt.
+- learning.jsx: cài đặt; community.jsx: hồ sơ/lớp.
+- frontend-admin/src/Admin.jsx: quản trị người dùng, tải riêng.
 
-Chạy `bash start.sh` từ gốc để bật toàn bộ, hoặc chạy backend 8002 và `npm run dev` riêng. Build có base `/static/react/`; Django đọc Vite manifest, phục vụ qua staticfiles. Dev chạy ở 5173 với proxy cùng origin, không tắt CSRF. Preview 4173 dùng đường dẫn `/static/react/`; kiểm tra bản sản phẩm tốt nhất qua Django 8002.
+Khởi động từ gốc bằng start.ps1 (PowerShell) hoặc start.sh (Bash). Backend8000, frontend5173. Build có base /static/react/, Django đọc manifest. Chạy npm test và npm run build từ gốc; backend tests trong backend/api.
 
-`npm test` ở thư mục này chạy kiểm thử API adapter bằng Node. Kiểm thử quyền/chấm/nhập JSON/upload trong `backend/api/test_react_migration.py` cùng các bài test hiện có. UI dùng tiếng Việt, ngôn ngữ học và dữ liệu chia theo `/en` hoặc `/de`.
-
-Cần kiểm tra giọng đọc/micro thật trên thiết bị; nhận dạng nói cần cấu hình provider. Không có AI chấm ngữ nghĩa. Chất lượng đáp án JSON được đánh dấu để admin rà soát, không tự suy diễn câu trả lời thiếu.
+Giọng TTS/micro phụ thuộc thiết bị. Practice Hub yêu cầu đáp án khi tạo; không có bài viết dài hoặc chấm thủ công. Hướng dẫn kiến trúc và giới hạn hiện tại: docs/AGENTS.md.

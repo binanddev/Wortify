@@ -2,8 +2,6 @@ import json
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from cards.models import Deck,Card,Folder,StudyProgress,StudySettings,StudyAttempt,StudySession
-from content.models import Book
-from practice.models import Chapter
 
 class WorkspaceTests(TestCase):
     @classmethod
@@ -53,7 +51,7 @@ class WorkspaceTests(TestCase):
         self.assertIsNone(data['result'])
         values={}
         for q in data['questions']:
-            self.assertNotIn('card',q);self.assertNotIn('target',q);self.assertNotIn('result',q)
+            self.assertIn('card',q);self.assertIn('target',q);self.assertNotIn('result',q)
             attempt=StudyAttempt.objects.get(token=q['token'])
             values[q['token']]=attempt.question['meaning'] if q['mode']=='quiz' else attempt.question['target']
             self.assertEqual(self.client.get(f'/api/en/question/{q["token"]}/').status_code,400)
@@ -67,13 +65,6 @@ class WorkspaceTests(TestCase):
         self.assertEqual(self.client.get(f'/api/de/sessions/{token}/').status_code,404)
         self.client.force_login(self.other)
         self.assertEqual(self.client.get(f'/api/en/sessions/{token}/').status_code,404)
-    def test_book_library_shows_actual_books_not_empty_levels(self):
-        book=Book.objects.get(slug='english-a1')
-        Chapter.objects.create(book=book,number=1,title='Chapter one',page_start=1)
-        books=self.client.get('/api/en/books/').json()['books']
-        self.assertEqual([b['slug'] for b in books],['english-a1'])
-        self.assertNotIn('level',books[0])
-        self.assertEqual(self.client.get('/api/de/books/english-a1/').status_code,404)
 
     def test_session_rejects_out_of_order_and_invalid_answer_without_progress(self):
         data=self.start('flash',count=2)

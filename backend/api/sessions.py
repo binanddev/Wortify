@@ -21,7 +21,7 @@ def attempts(session):
 def public_question(attempt):
     q = attempt.question
     data = {'token': str(attempt.token), 'mode': attempt.mode, 'prompt': q['target'] if attempt.mode in ['flash','quiz'] else q['meaning'], 'options': q['options']}
-    if attempt.mode == 'flash': data.update(target=q['target'], card=q['card'])
+    data.update(target=q['target'], card=q['card'], meaning=q['meaning'], alternatives=q['alternatives'], grading=q['grading'])
     return data
 
 def payload(session):
@@ -30,8 +30,9 @@ def payload(session):
     completed = sum(a.completed_at is not None for a in rows)
     data = {'token': str(session.token), 'kind': session.kind, 'deck': session.deck_id, 'total': len(rows), 'completed': completed, 'result': session.result or None}
     if session.result: return data
-    if session.kind == 'test': data['questions'] = [public_question(a) for a in rows]
-    else:
+    data['questions'] = [public_question(a) for a in rows]
+    data['saved_answers'] = {str(a.token):a.submitted_answer for a in rows if a.completed_at}
+    if session.kind != 'test':
         pending = next((a for a in rows if not a.completed_at), None)
         data['question'] = public_question(pending) if pending else None
     return data
@@ -115,11 +116,11 @@ def answer(request, token):
 @transaction.atomic
 def finish_test(request, token):
     session = owned(request, token)
-    if session.kind != 'test': raise ValueError('Đây không phải bài kiểm tra.')
     if session.result: return JsonResponse(payload(session))
     values = body(request).get('answers', {})
     if not isinstance(values, dict) or set(values) != set(session.tokens): raise ValueError('Hãy trả lời đủ các câu trước khi nộp.')
     graded = [(a, calculate(a, values[str(a.token)])) for a in attempts(session)]
-    for a, result in graded: finish(a, values[str(a.token)], result)
+    for a, result in graded:
+        if not a.completed_at: finish(a, values[str(a.token)], result)
     summarize(session)
     return JsonResponse(payload(session))

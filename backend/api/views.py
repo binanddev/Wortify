@@ -11,9 +11,6 @@ from django.views.decorators.http import require_http_methods
 from cards.models import Deck, Card, Folder, StudySettings, StudyProgress, StudyAttempt, ImportBatch, StudySession
 from cards.forms import DeckForm, CardForm, FolderForm, SettingsForm
 from cards.services.importing import parse_cards
-from content.models import Book
-from practice.models import Chapter, Exercise, Attempt, Notification
-from learning.grading import grade
 from .common import body, endpoint
 
 @ensure_csrf_cookie
@@ -37,14 +34,6 @@ def form_save(form, **fields):
         setattr(obj, key, value)
     obj.save()
     return obj
-
-@endpoint
-@require_http_methods(['GET'])
-def dashboard(request):
-    progress = StudyProgress.objects.filter(user=request.user, card__deck__language=request.language)
-    history = Attempt.objects.filter(user=request.user, exercise__chapter__book__language=request.language).select_related('exercise').order_by('-created_at')[:20]
-    notifications = Notification.objects.filter(attempt__user=request.user, attempt__exercise__chapter__book__language=request.language).order_by('-created_at')[:20]
-    return JsonResponse({'decks': Deck.objects.filter(owner=request.user, language=request.language).count(), 'cards': Card.objects.filter(deck__owner=request.user, deck__language=request.language).count(), 'due': progress.filter(due_at__lte=timezone.now()).count(), 'mastered': progress.filter(state='mastered').count(), 'reviews': StudyAttempt.objects.filter(user=request.user, card__deck__language=request.language, completed_at__isnull=False).count(), 'history': [{'id': a.pk, 'exercise': a.exercise.title, 'score': a.score, 'total': a.total, 'status': a.status, 'feedback': a.teacher_feedback} for a in history], 'notifications': [{'text': n.text, 'attempt': n.attempt_id} for n in notifications]})
 
 @endpoint
 @require_http_methods(['GET', 'POST'])
@@ -79,7 +68,11 @@ def deck(request, pk):
         if body(request).get('language', request.language) != request.language:
             raise ValueError('Không thể chuyển bộ thẻ sang không gian ngôn ngữ khác.')
         item = form_save(DeckForm({**model_to_dict(item), **body(request), 'language': request.language}, instance=item, user=request.user, language=request.language))
-    return JsonResponse({'deck': model_to_dict(item, exclude=['owner']), 'cards': [model_to_dict(c) for c in item.cards.all()], 'folders': list(Folder.objects.filter(owner=request.user, language=request.language).values('id', 'name'))})
+    from cards.models import DeckLearningState, LearningEvent
+    from .learning_sync import state_payload
+    state,_=DeckLearningState.objects.get_or_create(user=request.user,deck=item)
+    preferences,_=StudySettings.objects.get_or_create(user=request.user,language=request.language)
+    return JsonResponse({'study_defaults':model_to_dict(preferences,exclude=['id','user','language']), 'learning':{**state_payload(state),'applied':[str(t) for t in LearningEvent.objects.filter(user=request.user,language=request.language,payload__deck=pk).order_by('-id').values_list('token',flat=True)[:100]]}, 'deck': model_to_dict(item, exclude=['owner']), 'cards': [model_to_dict(c) for c in item.cards.all()], 'folders': list(Folder.objects.filter(owner=request.user, language=request.language).values('id', 'name'))})
 
 @endpoint
 @require_http_methods(['POST', 'PATCH', 'DELETE'])
@@ -145,87 +138,6 @@ def import_cards(request, pk):
     batch = ImportBatch.objects.create(deck=parent, rows=rows)
     return JsonResponse({'token': str(batch.token), 'count': len(rows), 'preview': rows[:10]})
 
-def published():
-    return Exercise.objects.filter(reviewed=True).exclude(decision='SKIP')
-
-@endpoint
-@require_http_methods(['GET'])
-def books(request):
-    return JsonResponse({'books': list(Book.objects.filter(language=request.language, chapters__isnull=False).distinct().values('id','slug','title','author','description'))})
-
-@endpoint
-@require_http_methods(['GET'])
-def book(request, slug):
-    item = get_object_or_404(Book, slug=slug, language=request.language)
-    from django.db.models import Count
-    from practice.models import ChapterProgress
-    checked=set(ChapterProgress.objects.filter(user=request.user,chapter__book=item,completed=True).values_list('chapter_id',flat=True))
-    counts=dict(published().filter(chapter__book=item).values('chapter_id').annotate(n=Count('id')).values_list('chapter_id','n'))
-    return JsonResponse({'book': model_to_dict(item,exclude=['source_directory']), 'chapters': [{'id':c.pk,'number':c.number,'title':c.title,'count':counts.get(c.pk,0),'completed':c.pk in checked} for c in item.chapters.all()]})
-
-@endpoint
-@require_http_methods(['GET'])
-def lesson(request, slug, pk):
-    chapter = get_object_or_404(Chapter, pk=pk, book__slug=slug, book__language=request.language)
-    latest={}
-    for attempt in Attempt.objects.filter(user=request.user,exercise__chapter=chapter).order_by('-created_at').values('exercise_id','score','total','status'):
-        latest.setdefault(attempt['exercise_id'],attempt)
-    return JsonResponse({'chapter':model_to_dict(chapter,exclude=['source_document']), 'book':{'slug':chapter.book.slug,'title':chapter.book.title},'assets':asset_map(chapter.book),'exercises':[{**e,'type':e.pop('presentation',{}).get('type','text'),'attempt':latest.get(e['id'])} for e in published().filter(chapter=chapter).values('id','number','title','kind','check_mode','objective','presentation')]})
-
-@endpoint
-@require_http_methods(['POST'])
-def chapter_progress(request,slug,pk):
-    from practice.models import ChapterProgress
-    chapter=get_object_or_404(Chapter,pk=pk,book__slug=slug,book__language=request.language)
-    completed=body(request).get('completed')
-    if type(completed) is not bool:raise ValueError('completed phải là true hoặc false.')
-    ChapterProgress.objects.update_or_create(user=request.user,chapter=chapter,defaults={'completed':completed})
-    return JsonResponse({'completed':completed})
-
-@endpoint
-@require_http_methods(['GET', 'POST'])
-def exercise(request, slug, pk):
-    item = get_object_or_404(published().select_related('chapter__book'), pk=pk, chapter__book__slug=slug, chapter__book__language=request.language)
-    if request.method == 'GET':
-        questions = [{'id': q.pk, 'position': q.position, 'kind': q.kind, 'prompt': q.prompt, 'options': q.options, 'blank_count': len(q.blanks), 'example': q.example, 'presentation': q.presentation, 'sample': q.accepted_answers if q.example else []} for q in item.questions.all()]
-        return JsonResponse({'exercise': {**model_to_dict(item, exclude=['reviewed','source_document','import_warnings']), 'language': item.chapter.book.language, 'resources': public_resources(item)}, 'questions': questions, 'token': str(uuid.uuid4()), 'assets': asset_map(item.chapter.book), 'next':published().filter(chapter=item.chapter,id__gt=item.id).values('id','title').first()})
-    data = body(request)
-    token = uuid.UUID(data.get('token', ''))
-    existing = Attempt.objects.filter(token=token).first()
-    if existing:
-        if existing.user_id != request.user.pk or existing.exercise_id != pk:
-            raise ValueError('Lượt nộp không hợp lệ.')
-        return JsonResponse({'id': existing.pk})
-    answers = grade(item, data.get('answers', {}))
-    auto = item.check_mode == 'auto_check'
-    # Unique token makes retries idempotent, including concurrent submissions.
-    attempt, created = Attempt.objects.get_or_create(token=token, defaults={'user': request.user, 'exercise': item, 'session_key': request.session.session_key or '', 'answers': answers, 'score': sum(a['correct'] for a in answers) if auto else None, 'total': len(answers), 'status': 'graded' if auto else 'pending_manual'})
-    if attempt.user_id != request.user.pk or attempt.exercise_id != pk:
-        raise ValueError('Lượt nộp không hợp lệ.')
-    return JsonResponse({'id': attempt.pk}, status=201 if created else 200)
-
-@endpoint
-@require_http_methods(['GET', 'POST'])
-def result(request, pk):
-    item = get_object_or_404(Attempt, pk=pk, user=request.user, exercise__chapter__book__language=request.language)
-    if request.method == 'POST':
-        from django.conf import settings
-        if not settings.COMMUNITY_ENABLED:return JsonResponse({'error':'Gửi bài chấm đang tạm ngắt.'},status=503)
-        if not item.exercise.allow_review:
-            raise ValueError('Bài này không hỗ trợ yêu cầu xem lại.')
-        if item.status == 'graded':
-            item.status = 'pending_manual'
-            item.save(update_fields=['status'])
-    return JsonResponse({'id': item.pk, 'title': item.exercise.title, 'status': item.status, 'score': item.score, 'total': item.total, 'answers': item.answers, 'feedback': item.teacher_feedback, 'manual': item.exercise.check_mode != 'auto_check', 'review': {'id':item.peer_review.pk,'reviewer':item.peer_review.reviewer.username,'score':str(item.peer_review.score) if item.peer_review.score is not None else None} if hasattr(item,'peer_review') else None, 'allow_review': item.exercise.allow_review, 'book': item.exercise.chapter.book.slug, 'chapter': item.exercise.chapter_id})
-
-
-def public_resources(item):
-    from content.importing import resources
-    return resources(item.source_document)
-
-def asset_map(book):
-    return {a.key: {'url': f'/api/{book.language}/book-assets/{a.pk}/', 'description': a.description} for a in book.assets.all()}
-
 @endpoint
 @require_http_methods(['POST'])
 @transaction.atomic
@@ -239,3 +151,13 @@ def reorder_cards(request,pk):
     for card in cards:card.position=positions[card.pk]
     Card.objects.bulk_update(cards,['position'])
     return JsonResponse({'ok':True})
+
+@endpoint
+@require_http_methods(['GET'])
+def study_pack(request):
+    from cards.services.study import queue
+    prefs, _ = StudySettings.objects.get_or_create(user=request.user, language=request.language)
+    deck_id = request.GET.get('deck') or None
+    if deck_id: get_object_or_404(Deck,pk=deck_id,owner=request.user,language=request.language)
+    cards = queue(request.user,prefs,deck_id,request.GET.get('filter','all'),language=request.language)
+    return JsonResponse({'cards':[model_to_dict(c) for c in cards], 'grading':{'ignore_case':prefs.ignore_case,'ignore_punctuation':prefs.ignore_punctuation,'transliteration':prefs.transliteration and request.language=='de'}})

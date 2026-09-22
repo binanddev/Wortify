@@ -1,23 +1,27 @@
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path,re_path
 from django.http import JsonResponse
-from api import views, sessions, community, management
-from api.common import legacy_json, namespace
+from api import views,sessions,community,management,practice_hub,learning_sync
+from api.common import legacy_json,namespace
 from users.views import session
 from cards import views as cards
-urlpatterns = [path('admin/', admin.site.urls), path('api/session/', session),
- path('api/manage/users/',management.users), path('api/manage/users/<int:pk>/',management.user_detail),
- path('api/manage/documentation/',management.json_documentation), path('api/manage/books/',management.admin_books), path('api/manage/json-template/',management.json_template),
- path('api/manage/books/<int:pk>/json/preview/',management.json_preview), path('api/manage/books/<int:pk>/json/confirm/',management.json_confirm), path('api/manage/books/<int:pk>/',management.admin_book),
- path('api/manage/books/<int:pk>/assets/',management.upload_assets),path('api/manage/exercises/<int:pk>/',management.admin_exercise),path('api/manage/chapters/<int:pk>/',management.admin_chapter),path('manage',views.shell)]
-def route(pattern, view):
-    urlpatterns.append(path('api/<str:language>/' + pattern, namespace(view)))
-for pattern, view in [
- ('book-assets/<int:pk>/',management.book_asset),('profile/',community.profile),('classes/',community.classes),('classes/<int:pk>/',community.classroom),('reviews/',community.reviews),('reviews/<int:pk>/',community.review),
- ('dashboard/',views.dashboard),('settings/',views.preferences),('decks/',views.decks),('decks/<int:pk>/',views.deck),
- ('decks/<int:pk>/reorder/',views.reorder_cards),('decks/<int:pk>/import/',views.import_cards),('decks/<int:deck_id>/cards/',views.card),('decks/<int:deck_id>/cards/<int:pk>/',views.card),
- ('folders/',views.folder),('folders/<int:pk>/',views.folder),('books/',views.books),('books/<slug:slug>/',views.book),
- ('books/<slug:slug>/lessons/<int:pk>/progress/',views.chapter_progress),('books/<slug:slug>/lessons/<int:pk>/',views.lesson),('books/<slug:slug>/exercises/<int:pk>/',views.exercise),('results/<int:pk>/',views.result),
+# The low-level admin is also superuser-only; staff is currently a normal learner.
+admin.site.has_permission=lambda request: request.user.is_active and request.user.is_superuser
+def health(request):
+    import hashlib
+    from django.conf import settings
+    identity=hashlib.sha256(str(settings.BASE_DIR.parent).lower().encode()).hexdigest()[:16]
+    return JsonResponse({'app':'Wortify','workspace':identity})
+urlpatterns=[path('api/health/',health),path('api/session/',session),path('admin/',admin.site.urls),path('manage',views.shell),
+ path('api/manage/users/',management.users),path('api/manage/users/<int:pk>/',management.user_detail),
+ path('api/manage/appearance/',management.site_appearance),path('api/site/appearance/',management.public_appearance),path('api/site/appearance/image/',management.site_appearance_image)]
+def route(pattern,view):urlpatterns.append(path('api/<str:language>/'+pattern,namespace(view)))
+for pattern,view in [
+ ('profile/',community.profile),('classes/',community.classes),('classes/<int:pk>/',community.classroom),('classes/<int:pk>/assignments/',community.classroom_assignments),
+ ('practice-hub/nodes/',practice_hub.nodes),('practice-hub/nodes/<int:pk>/',practice_hub.node),('practice-hub/import/',practice_hub.import_nodes),
+ ('learning/sync/',learning_sync.sync),('decks/<int:pk>/learning/',learning_sync.deck_state),
+ ('settings/',views.preferences),('decks/',views.decks),('decks/<int:pk>/',views.deck),('study-pack/',views.study_pack),
+ ('decks/<int:pk>/reorder/',views.reorder_cards),('decks/<int:pk>/import/',views.import_cards),('decks/<int:deck_id>/cards/',views.card),('decks/<int:deck_id>/cards/<int:pk>/',views.card),('folders/',views.folder),('folders/<int:pk>/',views.folder),
  ('sessions/',sessions.create),('sessions/<uuid:token>/',sessions.detail),('sessions/<uuid:token>/answer/',sessions.answer),('sessions/<uuid:token>/finish/',sessions.finish_test),
 ]:route(pattern,view)
 for pattern, view in [

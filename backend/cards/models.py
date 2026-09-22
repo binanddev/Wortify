@@ -11,6 +11,8 @@ class Folder(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField('Tên thư mục', max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
+    theory_format = models.CharField(max_length=10, choices=[('markdown', 'Markdown'), ('html', 'HTML')], blank=True)
+    theory_content = models.TextField(blank=True)
 
     class Meta:
         ordering = ['name', 'id']
@@ -151,3 +153,23 @@ class StudySession(models.Model):
     result = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True)
+
+
+class DeckLearningState(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
+    options = models.JSONField(default=dict)
+    progress = models.JSONField(default=dict)
+    stars = models.JSONField(default=dict)
+    options_at = models.CharField(max_length=40, blank=True)
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user','deck'],name='unique_deck_learning_state')]
+
+class LearningEvent(models.Model):
+    token = models.UUIDField(unique=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    language = models.CharField(max_length=2)
+    kind = models.CharField(max_length=30)
+    payload = models.JSONField(default=dict)
+    result = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
