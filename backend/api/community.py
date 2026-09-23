@@ -18,13 +18,22 @@ def text(data, key, limit, required=False):
 @endpoint
 @require_http_methods(['GET','PATCH'])
 def profile(request):
+    from django.db import transaction
+    from .profile_data import profile_data
     p,_=Profile.objects.get_or_create(user=request.user)
     if request.method=='PATCH':
-        data=body(request);p.display_name=text(data,'display_name',100);p.bio=text(data,'bio',2000);p.save()
-    events=LearningEvent.objects.filter(user=request.user,language=request.language)
-    attempts=PracticeAttempt.objects.filter(user=request.user,node__language=request.language).select_related('node').order_by('-created_at')
-    mastered=StudyProgress.objects.filter(user=request.user,card__deck__language=request.language,state='mastered').count()
-    return JsonResponse({'username':request.user.username,'display_name':p.display_name,'bio':p.bio,'reviews':events.filter(kind='review').count(),'mastered':mastered,'sessions':events.filter(kind__in=['test','practice']).count(),'achievements':['Nắm vững thẻ đầu tiên'] if mastered else [],'history':[{'id':a.pk,'node':a.node_id,'title':a.node.title,'score':a.result['score'],'total':a.result['total'],'date':a.created_at.isoformat()} for a in attempts[:30]],'study_history':[{'token':str(e.token),'kind':e.kind,'result':e.result,'date':e.created_at.isoformat()} for e in events.filter(kind='test').order_by('-created_at')[:20]]})
+        data=body(request)
+        with transaction.atomic():
+            p=Profile.objects.select_for_update().get(pk=p.pk)
+            if 'display_name' in data:p.display_name=text(data,'display_name',100)
+            if 'bio' in data:p.bio=text(data,'bio',2000)
+            if 'daily_goal' in data:
+                goal=data['daily_goal']
+                if type(goal) is not int or not 1<=goal<=500:raise ValueError('Mục tiêu cần từ 1 đến 500 câu mỗi ngày.')
+                p.preferences={**p.preferences,'dailyGoals':{**p.preferences.get('dailyGoals',{}),request.language:goal}}
+            p.save()
+    return JsonResponse(profile_data(request,p))
+
 
 @endpoint
 @require_http_methods(['POST','DELETE'])

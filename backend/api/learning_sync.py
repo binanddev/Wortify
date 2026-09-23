@@ -104,7 +104,12 @@ def apply_event(request,event):
         if not stamp or timezone.is_naive(stamp):raise ValueError('Thời gian thay đổi không hợp lệ.')
         stamp=min(stamp,timezone.now()).isoformat()
         card_ids=set(deck.cards.values_list('id',flat=True))
-        if kind in ('star','review'):
+        if kind=='reset':
+            state.progress={}
+            StudyProgress.objects.filter(user=request.user,card__deck=deck).delete()
+            state.save(update_fields=['progress'])
+            result={'reset':True}
+        elif kind in ('star','review'):
             card=int(data['card'])
             if card not in card_ids:raise ValueError('Thẻ không thuộc bộ này.')
             key=str(card)

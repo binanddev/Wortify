@@ -1,3 +1,4 @@
+import LearningProfile from "./profile";
 import { useState } from "react";
 import { endpoint, request, useResource, useAction } from "./core";
 import {
@@ -14,7 +15,14 @@ import {
   SidebarTools,
   Confirm,
 } from "./ui";
-export function Community({ lang, section, id }) {
+export function Community(props) {
+  return props.section === "profile" ? (
+    <LearningProfile lang={props.lang} />
+  ) : (
+    <CommunityPage {...props} />
+  );
+}
+function CommunityPage({ lang, section, id }) {
   const resource = useResource(
     endpoint(lang, `${section}/${id ? `${id}/` : ""}`),
   );
@@ -33,81 +41,6 @@ function Content({ lang, section, id, data, reload }) {
   const [edit, setEdit] = useState(null),
     [remove, setRemove] = useState(null);
   const action = useAction();
-  if (section === "profile")
-    return (
-      <Page>
-        <Heading
-          title={data.display_name || data.username}
-          description={data.bio}
-          contentDescription
-          actions={
-            <Btn
-              onClick={() =>
-                setEdit({
-                  title: "Hồ sơ",
-                  fields: [
-                    { name: "display_name", label: "Tên hiển thị" },
-                    { name: "bio", label: "Giới thiệu", multiline: true },
-                  ],
-                  initial: data,
-                })
-              }
-            >
-              Sửa hồ sơ
-            </Btn>
-          }
-        />
-        <div className="stats-strip">
-          {[
-            [data.sessions, "Bài đã hoàn thành"],
-            [data.reviews, "Lượt ôn"],
-            [data.mastered, "Thẻ thành thạo"],
-          ].map(([value, label]) => (
-            <div key={label}>
-              <strong>{value}</strong>
-              <span>{label}</span>
-            </div>
-          ))}
-        </div>
-        <h2>Kết quả Practice Hub</h2>
-        {data.history.map((h) => (
-          <Link
-            className="history-row"
-            key={h.id}
-            to={`/${lang}/practice/${h.node}`}
-          >
-            <span>{h.title}</span>
-            <strong>
-              {h.score}/{h.total}
-            </strong>
-            <small>{new Date(h.date).toLocaleString("vi-VN")}</small>
-          </Link>
-        ))}
-        <h2>Kiểm tra Flashcard</h2>
-        {data.study_history.map((h) => (
-          <Link
-            className="history-row"
-            key={h.token}
-            to={`/${lang}/flashcard/deck/${h.result.deck}`}
-          >
-            <span>{h.result.title}</span>
-            <strong>
-              {h.result.correct}/{h.result.total}
-            </strong>
-          </Link>
-        ))}
-        {edit && (
-          <Editor
-            {...edit}
-            onClose={() => setEdit(null)}
-            onSave={async (v, s) => {
-              await request(endpoint(lang, "profile/"), "PATCH", v, s);
-              reload();
-            }}
-          />
-        )}
-      </Page>
-    );
   return (
     <Page>
       <Heading

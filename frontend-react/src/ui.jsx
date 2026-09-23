@@ -381,6 +381,29 @@ export function useSound(enabled, language) {
         });
       } catch {}
     },
+    applause: () => {
+      if (!enabled) return;
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        audio.current ??= new Ctx();
+        const c = audio.current;
+        c.resume();
+        [523, 659, 784, 1047].forEach((frequency, index) => {
+          const o = c.createOscillator();
+          const g = c.createGain();
+          const start = c.currentTime + index * 0.1;
+          o.type = "sine";
+          o.frequency.setValueAtTime(frequency, start);
+          g.gain.setValueAtTime(0.035, start);
+          g.gain.exponentialRampToValueAtTime(0.001, start + 0.22);
+          o.connect(g);
+          g.connect(c.destination);
+          o.start(start);
+          o.stop(start + 0.24);
+        });
+      } catch {}
+    },
     speak: (text) => {
       if (!window.speechSynthesis)
         throw new Error("Trình duyệt không hỗ trợ giọng đọc.");

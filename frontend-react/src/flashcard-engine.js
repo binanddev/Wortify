@@ -13,8 +13,14 @@ export function mix(items, random = Math.random) {
   }
   return a;
 }
-export function sides(card, answerWith = "term") {
-  return answerWith === "term"
+export function sides(card, answerWith = "term", random = Math.random) {
+  const selected =
+    answerWith === "random"
+      ? random() < 0.5
+        ? "term"
+        : "definition"
+      : answerWith;
+  return selected === "term"
     ? {
         prompt: card.vietnamese_meaning,
         expected: card.german_text,
@@ -33,7 +39,13 @@ export function makeQuestion(
   answerWith = "term",
   random = Math.random,
 ) {
-  const side = sides(card, answerWith),
+  const selectedAnswerWith =
+      answerWith === "random"
+        ? random() < 0.5
+          ? "term"
+          : "definition"
+        : answerWith,
+    side = sides(card, selectedAnswerWith),
     q = { id: card.id, type, card, ...side };
   if (type === "choice") {
     q.options = mix(
@@ -44,7 +56,7 @@ export function makeQuestion(
             ...new Set(
               cards
                 .filter((c) => c.id !== card.id)
-                .map((c) => sides(c, answerWith).expected),
+                .map((c) => sides(c, selectedAnswerWith).expected),
             ),
           ].filter((v) => v !== side.expected),
           random,
@@ -56,12 +68,15 @@ export function makeQuestion(
   }
   if (type === "truefalse") {
     const others = cards.filter(
-      (c) => sides(c, answerWith).expected !== side.expected,
+      (c) => sides(c, selectedAnswerWith).expected !== side.expected,
     );
     q.truth = random() > 0.5 || !others.length;
     q.proposed = q.truth
       ? side.expected
-      : sides(others[Math.floor(random() * others.length)], answerWith)
+      : sides(
+          others[Math.floor(random() * others.length)],
+          selectedAnswerWith,
+        )
           .expected;
   }
   if (type === "matching") {
@@ -74,12 +89,12 @@ export function makeQuestion(
     ];
     q.left = group.map((c) => ({
       id: String(c.id),
-      text: sides(c, answerWith).prompt,
+      text: sides(c, selectedAnswerWith).prompt,
     }));
     q.right = mix(
       group.map((c) => ({
         id: String(c.id),
-        text: sides(c, answerWith).expected,
+        text: sides(c, selectedAnswerWith).expected,
       })),
       random,
     );

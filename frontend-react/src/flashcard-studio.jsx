@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { endpoint, useResource, readPreference, savePreference } from "./core";
 import {
   Btn,
+  Icon,
   Field,
   Select,
   Page,
@@ -10,6 +11,7 @@ import {
   SidebarTools,
   Status,
   Link,
+  Confirm,
   FlipCard,
   Choice,
   Matching,
@@ -30,6 +32,7 @@ const defaults = {
   shuffle: false,
   direction: "front",
   autoSpeak: false,
+  speakAfterCorrect: false,
   frontVoice: "",
   backVoice: "vi-VN",
   starredOnly: false,
@@ -69,9 +72,10 @@ function Studio({ lang, id, userId, sound, data }) {
         : initialStars.delete(e.payload.card),
     );
   const initialProgress = { ...data.learning?.progress };
-  waiting
-    .filter((e) => e.kind === "review")
-    .forEach((e) => {
+  waiting.forEach((e) => {
+    if (e.kind === "reset") {
+      Object.keys(initialProgress).forEach((key) => delete initialProgress[key]);
+    } else if (e.kind === "review") {
       initialProgress[e.payload.card] = advanceProgress(
         initialProgress[e.payload.card],
         e.payload.correct,
@@ -79,7 +83,8 @@ function Studio({ lang, id, userId, sound, data }) {
         0,
         e.payload.goal,
       );
-    });
+    }
+  });
   const initialOptions =
     waiting.filter((e) => e.kind === "options").at(-1)?.payload.options ||
     data.learning?.options ||
@@ -92,10 +97,6 @@ function Studio({ lang, id, userId, sound, data }) {
     ignore_punctuation:
       data.study_defaults?.ignore_punctuation ?? defaults.ignore_punctuation,
     transliteration: data.study_defaults?.transliteration ?? false,
-    count: Math.max(
-      1,
-      data.study_defaults?.new_cards_per_day ?? defaults.count,
-    ),
     minutes: data.study_defaults?.session_minutes ?? defaults.minutes,
     ...initialOptions,
     frontVoice:
@@ -112,13 +113,15 @@ function Studio({ lang, id, userId, sound, data }) {
     [turn, setTurn] = useState(0),
     [running, setRunning] = useState(false),
     [started, setStarted] = useState(0),
-    [elapsed, setElapsed] = useState(0);
+    [elapsed, setElapsed] = useState(0),
+    [completed, setCompleted] = useState(false);
   const [test, setTest] = useState([]),
     [testAnswers, setTestAnswers] = useState({}),
     [testResult, setTestResult] = useState(null),
     [testChecked, setTestChecked] = useState({}),
     [error, setError] = useState(""),
-    [sessionCards, setSessionCards] = useState([]);
+    [sessionCards, setSessionCards] = useState([]),
+    [resetLearning, setResetLearning] = useState(false);
   const audio = useSound(sound, lang),
     startSides = useRef({});
   const pool = data.cards.filter(
@@ -245,6 +248,16 @@ function Studio({ lang, id, userId, sound, data }) {
       s.includes(card.id) ? s.filter((x) => x !== card.id) : [...s, card.id],
     );
   };
+  const reset = () => {
+    sync.enqueue("reset", { deck: Number(id) });
+    setProgress({});
+    setRunning(false);
+    setQuestion(null);
+    setFeedback(null);
+    setValue("");
+    setTurn(0);
+    setResetLearning(false);
+  };
   const chooseType = (card, records, t = 0) => {
     const p = records[card.id];
     if (options.goal === "comprehensive" && (p?.misses || p?.streak >= 2))
@@ -265,14 +278,7 @@ function Studio({ lang, id, userId, sound, data }) {
       setError("Chọn ít nhất một dạng câu hỏi.");
       return;
     }
-    if (!Number.isInteger(Number(options.count)) || Number(options.count) < 1) {
-      setError("Số thẻ phải là số nguyên lớn hơn 0.");
-      return;
-    }
-    const cards = (options.shuffle ? mix(pool) : pool).slice(
-      0,
-      Math.min(pool.length, Math.max(1, Number(options.count))),
-    );
+    const cards = options.shuffle ? mix(pool) : pool;
     setSessionCards(cards);
     setTurn(0);
     setFeedback(null);
@@ -280,11 +286,12 @@ function Studio({ lang, id, userId, sound, data }) {
     setElapsed(0);
     setStarted(Date.now());
     setRunning(true);
+    setCompleted(false);
     if (options.mode === "test") {
       setTest(
         createTest(
           pool,
-          Number(options.count),
+          pool.length,
           options.types,
           options.answerWith,
         ),
@@ -305,7 +312,7 @@ function Studio({ lang, id, userId, sound, data }) {
     }
   };
   const submitLearn = (submittedValue = value) => {
-    if (!question || feedback) return;
+    if (!question || feedback?.correct) return;
     const correct = checkQuestion(question, submittedValue, options),
       records = {
         ...progress,
@@ -329,14 +336,37 @@ function Studio({ lang, id, userId, sound, data }) {
     setValue(submittedValue);
     setFeedback({ correct, expected: question.expected });
     audio.feedback(correct);
+    if (correct && options.speakAfterCorrect) {
+      try {
+        audio.speak(question.card.german_text);
+      } catch (e) {
+        setError(e.message);
+      }
+    }
   };
   const next = () => {
     const t = turn + 1;
     setTurn(t);
     setFeedback(null);
     setValue("");
-    if (sessionCards.every((c) => progress[c.id]?.stage === "mastered")) {
+    const nextProgress = {
+      ...progress,
+      ...(question
+        ? {
+            [question.id]: advanceProgress(
+              progress[question.id],
+              feedback?.correct,
+              question.type,
+              turn,
+              options.goal,
+            ),
+          }
+        : {}),
+    };
+    if (sessionCards.every((c) => nextProgress[c.id]?.stage === "mastered")) {
       setRunning(false);
+      setCompleted(true);
+      audio.applause();
       return;
     }
     const c = nextLearningCard(sessionCards, progress, t, question?.id);
@@ -469,6 +499,7 @@ function Studio({ lang, id, userId, sound, data }) {
               <option value="definition">
                 Định nghĩa · Hiện thuật ngữ trước
               </option>
+              <option value="random">Cả hai · Ngẫu nhiên</option>
             </Select>
             <fieldset>
               <legend>Dạng câu hỏi</legend>
@@ -491,21 +522,6 @@ function Studio({ lang, id, userId, sound, data }) {
                 </label>
               ))}
             </fieldset>
-            <Field
-              label={
-                options.mode === "learn"
-                  ? "Mục tiêu thẻ mỗi buổi/ngày"
-                  : "Số câu hỏi"
-              }
-              type="number"
-              min="1"
-              max={pool.length || 1}
-              value={options.count}
-              onChange={(count) => patch({ count: Number(count) })}
-            />
-            <Btn onClick={() => patch({ count: pool.length })}>
-              Lấy toàn bộ {pool.length} thẻ
-            </Btn>
             {options.mode === "learn" && (
               <>
                 <Select
@@ -532,7 +548,22 @@ function Studio({ lang, id, userId, sound, data }) {
                     })
                   }
                 />
+                <Btn onClick={() => setResetLearning(true)}>
+                  Đặt lại tiến độ học
+                </Btn>
               </>
+            )}
+            {options.mode === "learn" && (
+              <label className="check-line">
+                <input
+                  type="checkbox"
+                  checked={options.speakAfterCorrect}
+                  onChange={(e) =>
+                    patch({ speakAfterCorrect: e.target.checked })
+                  }
+                />
+                Đọc thuật ngữ sau khi trả lời đúng
+              </label>
             )}
             <label className="check-line">
               <input
@@ -614,6 +645,24 @@ function Studio({ lang, id, userId, sound, data }) {
         )
       ) : options.mode === "learn" ? (
         <>
+          {completed && !running ? (
+            <section className="learning-complete" role="status">
+              <div className="learning-complete-icon" aria-hidden="true">🎉</div>
+              <h2>Chúc mừng!</h2>
+              <p>Bạn đã hoàn thành các thẻ cần học trong phiên này.</p>
+              <Btn primary onClick={begin}>Học lại</Btn>
+            </section>
+          ) : null}
+          {data.deck.folder_id && (
+            <Link
+              className="study-folder-back"
+              to={`/${lang}/flashcard?folder=${data.deck.folder_id}`}
+            >
+              <Icon name="arrow" /> Về thư mục {data.folders?.find(
+                (f) => String(f.id) === String(data.deck.folder_id),
+              )?.name || ""}
+            </Link>
+          )}
           <p>
             Hôm nay đã luyện{" "}
             {
@@ -623,8 +672,7 @@ function Studio({ lang, id, userId, sound, data }) {
                   new Date().toLocaleDateString("en-CA"),
               ).length
             }
-            /{Math.min(options.count, pool.length)} thẻ · {options.minutes} phút
-            mục tiêu
+            /{pool.length} thẻ · {options.minutes} phút mục tiêu
           </p>
           <div className="learn-stages">
             {[
@@ -668,25 +716,33 @@ function Studio({ lang, id, userId, sound, data }) {
                 }}
                 onCommit={() => submitLearn()}
                 feedback={feedback?.correct}
-                disabled={!!feedback}
+                disabled={feedback?.correct}
               />
-              <div className="question-next">
+              <div className="session-controls">
                 <Btn
                   primary
+                  className="next-question"
+                  aria-label="Câu tiếp theo"
+                  title="Câu tiếp theo"
                   onClick={next}
-                  style={{ visibility: feedback ? "visible" : "hidden" }}
+                  isDisabled={!feedback?.correct}
                 >
-                  Tiếp tục →
+                  <span className="next-label">Tiếp tục</span>
+                  <Icon name="arrow" />
+                </Btn>
+                <Btn
+                  className="end-session"
+                  aria-label="Kết thúc buổi học"
+                  title="Kết thúc buổi học"
+                  onClick={() => {
+                    setRunning(false);
+                    sync.flush();
+                  }}
+                >
+                  <span aria-hidden="true">×</span>
+                  <span>Kết thúc</span>
                 </Btn>
               </div>
-              <Btn
-                onClick={() => {
-                  setRunning(false);
-                  sync.flush();
-                }}
-              >
-                Kết thúc buổi học
-              </Btn>
             </section>
           ) : null}
         </>
@@ -749,23 +805,19 @@ function Studio({ lang, id, userId, sound, data }) {
           )}
         </>
       )}
+      {resetLearning && (
+        <Confirm
+          title="Đặt lại tiến độ học?"
+          description="Toàn bộ tiến độ đúng, sai và mức độ thành thạo của bộ thẻ này sẽ được xóa. Các dấu sao và tùy chọn học vẫn được giữ lại."
+          onClose={() => setResetLearning(false)}
+          onConfirm={async () => reset()}
+        />
+      )}
     </Page>
   );
 }
 function QuestionUI({ q, value, onChange, disabled, feedback, onCommit }) {
   const checked = typeof feedback === "boolean";
-  const expected =
-    q.type === "truefalse"
-      ? q.truth
-        ? "Đúng"
-        : "Sai"
-      : q.type === "matching"
-        ? q.left
-            .map(
-              (l) => `${l.text} → ${q.right.find((r) => r.id === l.id).text}`,
-            )
-            .join("; ")
-        : q.expected;
   const answerClass = (answer, correct) =>
     `answer-option ${checked && correct ? "answer-correct" : checked && value === answer ? "answer-wrong" : value === answer ? "selected" : ""}`;
   return (
@@ -784,13 +836,6 @@ function QuestionUI({ q, value, onChange, disabled, feedback, onCommit }) {
             >
               <span>{String.fromCharCode(65 + i)}</span>
               {answer}
-              <b aria-hidden="true">
-                {checked && answer === q.expected
-                  ? "✓"
-                  : checked && value === answer
-                    ? "×"
-                    : ""}
-              </b>
             </button>
           ))}
         </div>
@@ -851,9 +896,6 @@ function QuestionUI({ q, value, onChange, disabled, feedback, onCommit }) {
           }
         />
       )}
-      <div className="question-feedback no-print" role="status">
-        {checked ? (feedback ? "✓" : `× ${expected}`) : "\u00a0"}
-      </div>
       {q.type === "matching" && (
         <div className="print-only print-matching">
           <div>

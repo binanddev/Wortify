@@ -86,7 +86,9 @@ export function Library({ lang }) {
 }
 function LibraryContent({ data, lang, reload }) {
   const [query, setQuery] = useState(""),
-    [folder, setFolder] = useState("all"),
+    [folder, setFolder] = useState(
+      () => new URLSearchParams(window.location.search).get("folder") || "all",
+    ),
     [sort, setSort] = useState("recent"),
     [edit, setEdit] = useState(null),
     [remove, setRemove] = useState(null);
@@ -412,6 +414,9 @@ function DeckContent({ lang, id, data, reload, sound }) {
         }
       />
       <SidebarTools>
+        <Btn onClick={() => setEdit({ type: "deck", item: data.deck })}>
+          Đổi tên bộ thẻ
+        </Btn>
         <Btn aria-pressed={view === "cards"} onClick={() => setView("cards")}>
           Học thẻ
         </Btn>
