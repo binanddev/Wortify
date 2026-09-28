@@ -1,0 +1,165 @@
+.app-shell {
+  @apply min-h-screen grid grid-cols-[240px_minmax(0,1fr)];
+}
+.sidebar {
+  @apply sticky [top:0] h-dvh p-[35px_21px_18px] [background:rgba(8,12,26,0.62)] [backdrop-filter:blur(28px)] [border-right:1px_solid_rgba(226,243,255,0.14)] flex flex-col z-20;
+}
+.brand {
+  @apply text-[25px];
+  @apply [font-weight:650] [letter-spacing:-1.4px] flex items-center gap-[10px];
+}
+.brand-dot {
+  @apply text-(--accent) ml-[-10px];
+}
+.brand-mark {
+  @apply w-[34px] h-[37px] grid place-items-center [background:linear-gradient(145deg,rgba(117,231,255,0.32),rgba(188,91,255,0.28))] [border:1px_solid_rgba(255,255,255,0.38)];
+  @apply rounded-[11px];
+}
+.workspace-select {
+  @apply m-[36px_0_28px] flex gap-[12px] items-center p-[12px_9px] [border:1px_solid_var(--line)];
+  @apply rounded-[12px] text-[13px];
+  @apply [font-weight:600];
+}
+.workspace-select > span:last-child {
+  @apply ml-auto;
+}
+.workspace-select small {
+  @apply [font-weight:400];
+  @apply text-[10px];
+}
+.language-monogram {
+  @apply [background:#fff8] p-[7px] rounded-[8px] text-[11px];
+}
+.nav-label {
+  @apply text-[9px] [letter-spacing:1.55px];
+  @apply [font-weight:600] text-[#8a928c] m-[0_10px_12px];
+}
+.sidebar nav {
+  @apply grid gap-[5px] mb-[32px];
+}
+.nav-link {
+  @apply flex items-center gap-[12px] text-[13px] p-[12px_13px] rounded-[10px] text-[#a8b4c9] [transition:background_0.2s];
+}
+.nav-link.active {
+  @apply text-[#8de6ff] [background:rgba(69,209,255,0.12)] [font-weight:600];
+}
+.nav-link:hover {
+  @apply [background:rgba(255,255,255,0.08)];
+}
+.nav-dot {
+  @apply w-[5px] h-[5px] rounded-[50%] [background:var(--accent)] ml-auto;
+}
+.sidebar-bottom {
+  @apply mt-auto;
+}
+.account {
+  @apply [border-top:1px_solid_var(--line)] pt-[18px] mt-[17px] flex items-center gap-[3px];
+}
+.account .btn {
+  @apply min-w-[32px] w-[32px] [padding:0] [background:transparent] [border:0];
+}
+.account-name {
+  @apply flex items-center gap-[9px] [min-width:0] flex-1 text-[12px] wrap-anywhere;
+}
+.account small {
+  @apply text-[10px];
+}
+.avatar {
+  @apply h-[32px] w-[32px] shrink-0 [background:linear-gradient(145deg,rgba(99,216,255,0.35),rgba(194,92,255,0.35))] grid place-items-center rounded-[50%] text-[12px];
+}
+.main-shell {
+  @apply [min-width:0];
+}
+.context-edge-trigger {
+  @apply fixed z-35 [top:0];
+  @apply [right:0] w-[22px] h-dvh [border:0];
+  @apply rounded-[12px_0_0_12px] [background:transparent] opacity-[0];
+}
+.context-edge-trigger:hover,
+.context-edge-trigger:focus-visible,
+.context-edge-trigger.is-open {
+  @apply opacity-[1] [background:linear-gradient(90deg,transparent,rgba(255,255,255,0.42))];
+}
+.context-drawer {
+  @apply fixed z-34 top-[18px];
+  @apply right-[18px] w-[min(330px,calc(100vw-36px))] min-h-[300px] p-[22px] [border:1px_solid_rgba(255,255,255,0.72)];
+  @apply rounded-[24px] [background:rgba(244,249,255,0.76)] [backdrop-filter:blur(28px)_saturate(1.15)];
+  @apply [-webkit-backdrop-filter:blur(28px)_saturate(1.15)] [box-shadow:-18px_20px_55px_rgba(48,78,120,0.2),inset_0_1px_rgba(255,255,255,0.9)] text-[#172338];
+  @apply [transform:translateX(calc(100%_+_36px))] opacity-[0] pointer-events-none [transition:transform_0.28s_ease,opacity_0.2s_ease];
+}
+.context-drawer.open {
+  @apply [transform:translateX(0)] opacity-[1] pointer-events-auto;
+}
+.context-drawer-header {
+  @apply flex items-start;
+  @apply justify-between gap-[16px] pb-[18px] [border-bottom:1px_solid_rgba(61,102,148,0.14)];
+}
+.context-drawer-header h2 {
+  @apply text-[24px];
+}
+.context-close {
+  @apply grid place-items-center w-[36px] h-[36px] [padding:0] [border:1px_solid_rgba(61,102,148,0.14)];
+  @apply rounded-[12px] [background:rgba(255,255,255,0.55)] text-[#344965] text-[24px];
+  @apply [line-height:1];
+}
+.context-nav {
+  @apply grid gap-[8px] mt-[18px];
+}
+.context-nav a,
+.context-nav button {
+  @apply flex items-center gap-[12px] min-h-[58px] w-full p-[10px_12px] [border:1px_solid_transparent];
+  @apply rounded-[15px] [background:transparent] text-[#53647c] text-left [transition:background_0.2s,border-color_0.2s,transform_0.2s];
+}
+.context-nav a:hover,
+.context-nav a.active,
+.context-nav button:hover,
+.context-nav button.active {
+  @apply border-[rgba(61,102,148,0.14)] [background:rgba(255,255,255,0.72)] text-[#172338] [transform:translateX(-3px)];
+}
+.context-nav a > svg,
+.context-nav button > svg {
+  @apply w-[37px] h-[37px] p-[8px] rounded-[11px] [background:rgba(226,240,255,0.85)] text-[#2873a1];
+}
+.context-nav a span:not(.context-current),
+.context-nav button span:not(.context-current) {
+  @apply grid gap-[3px] [min-width:0];
+}
+.context-nav strong {
+  @apply text-[13px];
+}
+.context-nav small {
+  @apply text-[11px] text-[#73839b];
+}
+.context-current {
+  @apply ml-auto text-(--accent) text-[10px];
+}
+.context-hint {
+  @apply mt-[22px] text-[11px] text-[#7b8ba0] text-center;
+}
+.topbar {
+  @apply h-[85px] [border-bottom:1px_solid_var(--line)] flex items-center;
+  @apply justify-between p-[0_46px] gap-[15px];
+}
+.flashcard-topbar {
+  @apply hidden;
+}
+.topbar-label {
+  @apply text-[12px] text-[#6d7770];
+}
+.topbar-label span {
+  @apply m-[0_11px] text-[#a8b0aa];
+}
+.topbar .btn {
+  @apply min-w-[35px] p-[0_9px] h-[32px];
+  @apply min-h-[32px] text-[11px];
+}
+.toolbar {
+  @apply flex items-center gap-[10px] flex-wrap;
+}
+.page {
+  @apply p-[44px_46px_30px] max-w-[1480px] m-auto;
+}
+.heading {
+  @apply flex items-center;
+  @apply justify-between gap-[25px] mb-[35px];
+}

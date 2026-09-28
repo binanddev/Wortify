@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.http import require_http_methods
 from cards.models import Deck, DeckLearningState, LearningEvent, StudyProgress
-from practice.models import PracticeAttempt
+from practice.models import PracticeProgress, PracticeNode
 from learning.grading import grade
 from .common import endpoint, body
 from .practice_hub import visible
@@ -55,7 +55,7 @@ def sync(request):
             from django.core.exceptions import ValidationError
             from django.http import Http404
             if not isinstance(exc,(ValidationError,Http404)):raise
-            errors.append({'token':event.get('token'),'error':'; '.join(exc.messages) if isinstance(exc,ValidationError) else 'Nội dung không còn truy cập được.'})
+            errors.append({'token':event.get('token'),'error':'; '.join(exc.messages) if isinstance(exc,ValidationError) else 'Nội dung không còn truy cập được.', 'code':'validation' if isinstance(exc,ValidationError) else 'content_unavailable'})
     return JsonResponse({'accepted':accepted,'errors':errors})
 
 
@@ -89,13 +89,34 @@ def apply_event(request,event):
         form=SettingsForm({**model_to_dict(settings),**data},instance=settings)
         if not form.is_valid():raise ValueError(form.errors.as_text())
         form.save();result={'saved':True}
-    elif kind=='practice':
-        node=get_object_or_404(visible(request),pk=data.get('node'),kind='exercise')
-        if data.get('revision')!=node.updated_at.isoformat():
-            raise ValueError('Bài đã được sửa. Mở lại bài và nộp theo nội dung mới; bản cũ vẫn ở thiết bị.')
-        result=grade_payload(node.payload,data.get('answers',{}))
-        attempt=PracticeAttempt.objects.create(user=request.user,node=node,token=token,answers=data['answers'],result=result)
-        result={**result,'id':attempt.pk}
+    elif kind in ('practice_progress','practice'):
+        accessible=get_object_or_404(visible(request),pk=data.get('node'),kind='exercise')
+        node=PracticeNode.objects.select_for_update().get(pk=accessible.pk)
+        revision=node.updated_at.isoformat()
+        if data.get('revision')!=revision:
+            result={'outdated':True}
+        else:
+            if kind=='practice':
+                # Translate receipts queued by older clients into progress only.
+                rows=grade_payload(node.payload,data.get('answers',{}))['answers']
+                completed=[]
+                for question in node.payload['questions']:
+                    question_rows=[row for row in rows if row['question_position']==question['position']]
+                    if question_rows and all(row['correct'] for row in question_rows):completed.append(str(question['id']))
+                data={**data,'completed':completed}
+            completed=data.get('completed')
+            valid={str(q['id']) for q in node.payload['questions'] if not q.get('example')}
+            if not isinstance(completed,list) or len(completed)>100 or any(not isinstance(q,str) or q not in valid for q in completed):
+                raise ValueError('Tiến độ chứa câu hỏi không hợp lệ.')
+            progress,_=PracticeProgress.objects.get_or_create(user=request.user,node=node,defaults={'revision':revision})
+            previous=progress.completed if progress.revision==revision else []
+            progress.completed=sorted(set(previous+completed),key=int)
+            progress.revision=revision
+            progress.save()
+            result={'completed':progress.completed,'revision':revision}
+        # Keep only progress; answer content and scores are never recorded.
+        log.payload={key:data[key] for key in ('node','revision','completed') if key in data}
+        log.save(update_fields=['payload'])
     else:
         deck=get_object_or_404(Deck,pk=data.get('deck'),owner=request.user,language=request.language)
         state,_=DeckLearningState.objects.get_or_create(user=request.user,deck=deck)

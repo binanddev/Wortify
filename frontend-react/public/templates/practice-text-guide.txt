@@ -1,0 +1,107 @@
+XƯỞNG BÀI TẬP — HƯỚNG DẪN NHẬP .TXT
+Mở Xưởng bài tập trên thanh Nav. Chọn Nhập bài từ .txt, kiểm tra rồi lưu. Practice Hub chỉ dành cho học.
+
+Mỗi bài bắt đầu bằng BAI: tên bài. Các trường dùng dấu hai chấm.
+DANG: mã dạng bài; STYLE: mã kiểu tương tác (xem mẫu).
+HUONG_DAN: yêu cầu; NGU_CANH: bài đọc dùng chung; NHOM: các nhóm, phân cách bằng |.
+Mỗi câu bắt đầu bằng CAU: nội dung. DAP_AN: đáp án; dùng | cho các đáp án tương đương.
+Điền từ / chọn trong câu: đánh dấu {{1}}, {{2}}…; mỗi dòng O: đáp án => lựa chọn 1 | lựa chọn 2.
+TU: ngân hàng từ (điền từ) hoặc các mảnh theo đúng thứ tự đáp án (sắp xếp câu), phân cách bằng |.
+GOI_Y: phần đầu câu viết lại; đáp án luôn là cả câu. GIAI_THICH: giải thích sau khi chấm.
+PHAN_BIET_HOA: co và GIU_DAU_CAU: co (trước CAU) bật chấm chính xác chữ hoa và dấu câu. Mặc định bỏ qua.
+VI_DU: co (sau CAU) đánh dấu câu ví dụ, không tính vào tiến độ; vẫn cần ít nhất một câu thực hành.
+Tìm/sửa lỗi và gạch từ thừa: DAP_AN là cả câu sau khi sửa.
+Nối cặp / phân loại: mỗi CAU là một thẻ, DAP_AN là thẻ ghép / tên nhóm.
+Dòng trống và dòng bắt đầu bằng # được bỏ qua. Dòng bắt đầu bằng > nối tiếp nội dung văn bản của trường trước.
+Không dùng | hay => bên trong một mục. Có thể nhập nhiều bài bằng nhiều dòng BAI.
+Giới hạn: 100 bài, 100 câu mỗi bài, 2 MB. Lỗi có số dòng để sửa.
+
+BAI: Điền vào chỗ trống
+DANG: cloze_drag_drop
+STYLE: drag_drop
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: I {{1}} coffee in the {{2}}.
+O: drink => drink | eat
+O: morning => morning | evening
+TU: morning | drink | eat
+
+BAI: Điền vào chỗ trống
+DANG: cloze_drag_drop
+STYLE: tap_fill
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: I {{1}} coffee in the {{2}}.
+O: drink => drink | eat
+O: morning => morning | evening
+TU: morning | drink | eat
+
+BAI: Tìm và sửa lỗi sai
+DANG: error_correction
+STYLE: click_edit
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: He do not like sports.
+DAP_AN: He does not like sports.
+
+BAI: Tìm và sửa lỗi sai
+DANG: error_correction
+STYLE: cross_out
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: They discussed about the project yesterday.
+DAP_AN: They discussed the project yesterday.
+
+BAI: Nối đáp án
+DANG: matching
+STYLE: tap_match
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: cat
+DAP_AN: mèo
+CAU: dog
+DAP_AN: chó
+
+BAI: Sắp xếp câu
+DANG: sentence_building
+STYLE: tap_build
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: Sắp xếp thành câu đúng.
+TU: She | is | reading | a book.
+
+BAI: Phân loại
+DANG: categorization
+STYLE: drag_sort
+HUONG_DAN: Hoàn thành các câu bên dưới.
+NHOM: Fruit | Animals
+CAU: apple
+DAP_AN: Fruit
+CAU: cat
+DAP_AN: Animals
+
+BAI: Trắc nghiệm trong câu
+DANG: inline_selection
+STYLE: pill_toggle
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: She {{1}} a doctor.
+O: is => is | are
+
+BAI: Trắc nghiệm trong câu
+DANG: inline_selection
+STYLE: inline_select
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: She {{1}} a doctor.
+O: is => is | are
+
+BAI: Viết lại câu
+DANG: short_answer
+STYLE: partial_input
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: Rewrite: He began learning English two years ago.
+GOI_Y: He has
+DAP_AN: He has learned English for two years. | He has been learning English for two years.
+
+BAI: Viết lại câu
+DANG: short_answer
+STYLE: sentence_rewrite
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: Rewrite: He began learning English two years ago.
+GOI_Y: He has
+DAP_AN: He has learned English for two years. | He has been learning English for two years.
+
+Mỗi từ trong TU chỉ dùng một lần. Nếu hai ô cần cùng một từ, hãy ghi từ đó hai lần trong TU.

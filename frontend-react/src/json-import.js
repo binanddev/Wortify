@@ -40,7 +40,7 @@ export function jsonTemplate(scope, mode = "short_answer") {
   }
   if (mode === "audio_dictation") {
     q.prompt = "Type the sound you hear in English.";
-    q.presentation.audio = "/static/react/audio/tone.wav";
+    q.presentation.audio = "/audio/tone.wav";
     q.accepted_answers = ["beep"];
   }
   if (mode === "true_false_not_given") {

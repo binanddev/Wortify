@@ -163,7 +163,7 @@ class AppTests(TestCase):
 
     @override_settings(STT_PROVIDER='')
     def test_learn_does_not_require_stt_key(self):
-        with patch('cards.views.random.choice', side_effect=lambda modes: modes[-1]):
+        with patch('api.card_learning.random.choice', side_effect=lambda modes: modes[-1]):
             q = self.question('learn')
         self.assertNotEqual(q['mode'], 'speak')
 

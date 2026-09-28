@@ -5,6 +5,34 @@ import {
   flushLearning,
   pendingLearning,
 } from "../src/learning-sync.js";
+test("offline practice progress coalesces without losing completed questions", () => {
+  const stored = new Map();
+  globalThis.localStorage = {
+    getItem: (k) => stored.get(k) || null,
+    setItem: (k, v) => stored.set(k, v),
+  };
+  globalThis.window = new EventTarget();
+  enqueueLearning(890, "en", "practice_progress", {
+    node: 1,
+    revision: "a",
+    completed: ["1"],
+  });
+  enqueueLearning(890, "en", "practice_progress", {
+    node: 1,
+    revision: "a",
+    completed: ["2"],
+  });
+  enqueueLearning(890, "en", "practice_progress", {
+    node: 2,
+    revision: "a",
+    completed: ["1"],
+  });
+  const queue = pendingLearning(890, "en");
+  assert.equal(queue.length, 2);
+  assert.deepEqual(queue[0].payload.completed, ["1", "2"]);
+  assert.equal(queue[0].payload.answers, undefined);
+  assert.equal(queue[0].payload.score, undefined);
+});
 test("offline batch retains IDs, retries without loss, and isolates accounts", async () => {
   const stored = new Map();
   globalThis.localStorage = {
@@ -93,4 +121,42 @@ test("blocked browser storage still sends preferences to the server", async () =
   await flushLearning(73, "de");
   assert.equal(sent[0].payload.textSize, 20);
   assert.equal(pendingLearning(73, "de").length, 0);
+});
+
+test("obsolete unavailable receipts leave the retry queue and remain recoverable locally", async () => {
+  const stored = new Map();
+  globalThis.localStorage = {
+    getItem: (k) => stored.get(k) || null,
+    setItem: (k, v) => stored.set(k, v),
+  };
+  globalThis.window = new EventTarget();
+  globalThis.document = { cookie: "" };
+  const key = "wortify:sync:701:en";
+  stored.set(
+    key,
+    JSON.stringify([
+      {
+        token: "old",
+        error: "Nội dung không còn truy cập được.",
+        kind: "practice_progress",
+        payload: { node: 9 },
+      },
+    ]),
+  );
+  assert.deepEqual(pendingLearning(701, "en"), []);
+  assert.equal(JSON.parse(stored.get(`${key}:unavailable`))[0].token, "old");
+  const token = enqueueLearning(701, "en", "practice_progress", {
+    node: 10,
+    completed: [],
+  });
+  globalThis.fetch = async () => ({
+    ok: true,
+    json: async () => ({
+      accepted: [],
+      errors: [{ token, error: "Unavailable", code: "content_unavailable" }],
+    }),
+  });
+  await flushLearning(701, "en");
+  assert.deepEqual(pendingLearning(701, "en"), []);
+  assert.equal(JSON.parse(stored.get(`${key}:unavailable`)).length, 2);
 });

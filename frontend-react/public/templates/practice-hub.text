@@ -1,0 +1,87 @@
+BAI: Điền vào chỗ trống
+DANG: cloze_drag_drop
+STYLE: drag_drop
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: I {{1}} coffee in the {{2}}.
+O: drink => drink | eat
+O: morning => morning | evening
+TU: morning | drink | eat
+
+BAI: Điền vào chỗ trống
+DANG: cloze_drag_drop
+STYLE: tap_fill
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: I {{1}} coffee in the {{2}}.
+O: drink => drink | eat
+O: morning => morning | evening
+TU: morning | drink | eat
+
+BAI: Tìm và sửa lỗi sai
+DANG: error_correction
+STYLE: click_edit
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: He do not like sports.
+DAP_AN: He does not like sports.
+
+BAI: Tìm và sửa lỗi sai
+DANG: error_correction
+STYLE: cross_out
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: They discussed about the project yesterday.
+DAP_AN: They discussed the project yesterday.
+
+BAI: Nối đáp án
+DANG: matching
+STYLE: tap_match
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: cat
+DAP_AN: mèo
+CAU: dog
+DAP_AN: chó
+
+BAI: Sắp xếp câu
+DANG: sentence_building
+STYLE: tap_build
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: Sắp xếp thành câu đúng.
+TU: She | is | reading | a book.
+
+BAI: Phân loại
+DANG: categorization
+STYLE: drag_sort
+HUONG_DAN: Hoàn thành các câu bên dưới.
+NHOM: Fruit | Animals
+CAU: apple
+DAP_AN: Fruit
+CAU: cat
+DAP_AN: Animals
+
+BAI: Trắc nghiệm trong câu
+DANG: inline_selection
+STYLE: pill_toggle
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: She {{1}} a doctor.
+O: is => is | are
+
+BAI: Trắc nghiệm trong câu
+DANG: inline_selection
+STYLE: inline_select
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: She {{1}} a doctor.
+O: is => is | are
+
+BAI: Viết lại câu
+DANG: short_answer
+STYLE: partial_input
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: Rewrite: He began learning English two years ago.
+GOI_Y: He has
+DAP_AN: He has learned English for two years. | He has been learning English for two years.
+
+BAI: Viết lại câu
+DANG: short_answer
+STYLE: sentence_rewrite
+HUONG_DAN: Hoàn thành các câu bên dưới.
+CAU: Rewrite: He began learning English two years ago.
+GOI_Y: He has
+DAP_AN: He has learned English for two years. | He has been learning English for two years.

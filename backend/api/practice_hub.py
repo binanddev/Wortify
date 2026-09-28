@@ -1,13 +1,14 @@
 """Practice Hub API: folder trees and standalone practice/theory, automatic grading and batch persistence."""
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
-from practice.models import PracticeNode
+from practice.models import PracticeNode, PracticeProgress
 from types import SimpleNamespace
 from practice.schema import MODES, validate_presentation, validate_question
 from .common import endpoint, body
+from copy import deepcopy
 
 def visible(request):
     access=Q(owner=request.user)|Q(visibility='public')
@@ -16,7 +17,8 @@ def visible(request):
     return PracticeNode.objects.filter(language=request.language).filter(access).distinct()
 
 def node_data(n,user):
-    return {'id':n.pk,'parent':n.parent_id,'kind':n.kind,'title':n.title,'payload':n.payload,'links':[r.pk for r in n.links.all()], 'visibility':n.visibility,'position':n.position,'can_edit':n.owner_id==user.pk,'updated_at':n.updated_at.isoformat()}
+    progress=next((p for p in n.learning_progress.all() if p.user_id==user.pk and p.revision==n.updated_at.isoformat()),None)
+    return {'id':n.pk,'parent':n.parent_id,'kind':n.kind,'title':n.title,'payload':n.payload,'links':[r.pk for r in n.links.all()], 'visibility':n.visibility,'position':n.position,'can_edit':n.owner_id==user.pk,'updated_at':n.updated_at.isoformat(),'interaction':n.payload.get('presentation',{}).get('interaction') if n.kind=='exercise' else None,'progress':{'completed':progress.completed if progress else []}}
 
 def validate_payload(kind,payload):
     if not isinstance(payload,dict):raise ValueError('Nội dung phải là đối tượng JSON.')
@@ -65,7 +67,9 @@ def save_node(request,data,node=None):
         seen.add(p.pk);depth+=1;p=p.parent
     height=tree_height(node) if node else (1 if kind=='folder' else 0)
     if depth+height>3:raise ValueError('Tối đa 3 cấp thư mục, kể cả thư mục con được di chuyển.')
+    previous_payload=deepcopy(node.payload) if node else None
     payload=validate_payload(kind,data.get('payload',node.payload if node else {}))
+    content_changed=not node or {k:v for k,v in payload.items() if k!='title'}!={k:v for k,v in previous_payload.items() if k!='title'}
     links=data.get('links',list(node.links.values_list('id',flat=True)) if node else [])
     if not isinstance(links,list) or len(links)>100:raise ValueError('Tối đa 100 liên kết.')
     targets=list(visible(request).filter(pk__in=links))
@@ -75,7 +79,9 @@ def save_node(request,data,node=None):
     if visibility not in ('private','public'):raise ValueError('Chia sẻ không hợp lệ.')
     n=node or PracticeNode(owner=request.user,language=request.language)
     n.kind=kind;n.parent=parent;n.title=title.strip();n.payload=payload;n.visibility=visibility;n.position=int(data.get('position',n.position))
-    n.full_clean();n.save();n.links.set(targets)
+    n.full_clean()
+    n.save() if content_changed else n.save(update_fields=['kind','parent','title','payload','visibility','position'])
+    n.links.set(targets)
     return n
 
 @endpoint
@@ -84,7 +90,7 @@ def save_node(request,data,node=None):
 def nodes(request):
     if request.method=='POST':return JsonResponse({'node':node_data(save_node(request,body(request)),request.user)},status=201)
     # Small metadata response first; full content is fetched once in the background.
-    qs=visible(request).prefetch_related('links')
+    qs=visible(request).prefetch_related('links',Prefetch('learning_progress',queryset=PracticeProgress.objects.filter(user=request.user)))
     rows=[]
     for n in qs:
         d=node_data(n,request.user)
@@ -96,7 +102,7 @@ def nodes(request):
 @require_http_methods(['GET','PATCH','DELETE'])
 @transaction.atomic
 def node(request,pk):
-    n=get_object_or_404(visible(request).prefetch_related('links'),pk=pk)
+    n=get_object_or_404(visible(request).prefetch_related('links',Prefetch('learning_progress',queryset=PracticeProgress.objects.filter(user=request.user))),pk=pk)
     if request.method=='GET':return JsonResponse({'node':node_data(n,request.user)})
     if n.owner_id!=request.user.pk:return JsonResponse({'error':'Chỉ chủ sở hữu được sửa nội dung.'},status=403)
     if request.method=='DELETE':n.delete();return JsonResponse({'ok':True})
@@ -121,3 +127,102 @@ def import_nodes(request):
                 add(children,n.pk,depth+1)
     add(rows,data.get('parent'))
     return JsonResponse({'created':created},status=201)
+
+
+@endpoint
+@require_http_methods(['POST'])
+@transaction.atomic
+def organize(request):
+    data=body(request)
+    ids=data.get('ids')
+    if not isinstance(ids,list) or not 1<=len(ids)<=100 or any(type(i) is not int for i in ids) or len(set(ids))!=len(ids):
+        raise ValueError('Chọn 1–100 nội dung khác nhau.')
+    owned={n.pk:n for n in PracticeNode.objects.select_for_update().filter(owner=request.user,language=request.language)}
+    if any(i not in owned for i in ids):raise ValueError('Chỉ chủ sở hữu được sắp xếp nội dung.')
+    action=data.get('action','move')
+    if action=='restore':
+        placements=data.get('placements')
+        if not isinstance(placements,list) or len(placements)!=len(ids) or any(not isinstance(p,dict) or p.get('id')!=pk for p,pk in zip(placements,ids)):
+            raise ValueError('Dữ liệu hoàn tác không hợp lệ.')
+        for placement in placements:
+            save_node(request,{'parent':placement.get('parent'),'position':placement.get('position',0)},owned[placement['id']])
+        return JsonResponse({'ok':True})
+    if action=='reorder':
+        parents={owned[i].parent_id for i in ids}
+        if len(parents)!=1:raise ValueError('Chỉ sắp xếp thứ tự trong cùng một thư mục.')
+        siblings=[n.pk for n in owned.values() if n.parent_id==owned[ids[0]].parent_id]
+        # Preserve the positions of retired/hidden items outside this selection.
+        replacement=iter(ids)
+        ordered=[next(replacement) if pk in ids else pk for pk in siblings]
+        for position,pk in enumerate(ordered):
+            PracticeNode.objects.filter(pk=pk).update(position=position)
+        return JsonResponse({'ok':True})
+    if action not in ('move','group'):raise ValueError('Thao tác không hợp lệ.')
+    for pk in ids:
+        ancestor=owned[pk].parent_id
+        while ancestor in owned:
+            if ancestor in ids:raise ValueError('Chọn thư mục hoặc nội dung con, không chọn cả hai.')
+            ancestor=owned[ancestor].parent_id
+    parent=data.get('parent') or None
+    if parent is not None and (type(parent) is not int or parent not in owned or owned[parent].kind!='folder'):
+        raise ValueError('Chọn thư mục thuộc sở hữu của bạn.')
+    if action=='group':
+        folder=save_node(request,{'kind':'folder','title':data.get('title','Nhóm bài mới'),'parent':parent})
+        parent=folder.pk
+    offset=PracticeNode.objects.filter(owner=request.user,language=request.language,parent_id=parent).count()
+    for index,pk in enumerate(ids):
+        save_node(request,{'parent':parent,'position':offset+index},owned[pk])
+    return JsonResponse({'ok':True,'parent':parent})
+
+
+PUBLIC_MODES = {'cloze_drag_drop', 'error_correction', 'matching', 'sentence_building', 'categorization', 'inline_selection', 'short_answer'}
+
+
+def search_text(value):
+    import unicodedata
+    return ''.join(c for c in unicodedata.normalize('NFD', str(value).casefold().replace('đ', 'd')) if unicodedata.category(c) != 'Mn')
+
+
+@endpoint
+@require_http_methods(['GET'])
+def explore(request):
+    query = request.GET.get('q', '').strip()[:200]
+    mode = request.GET.get('mode', '')
+    kind = request.GET.get('kind', '')
+    sort = request.GET.get('sort', 'relevance')
+    if mode and mode not in PUBLIC_MODES: raise ValueError('Dạng bài không hợp lệ.')
+    if kind not in ('', 'exercise', 'theory', 'folder'): raise ValueError('Loại nội dung không hợp lệ.')
+    if sort not in ('relevance', 'newest'): raise ValueError('Thứ tự không hợp lệ.')
+    page = max(1, int(request.GET.get('page', 1)))
+    terms = search_text(query).split()
+    # Recognize common bilingual topic names without pretending to be semantic search.
+    aliases = [('thi hien tai don', 'present simple'), ('thi qua khu don', 'past simple'), ('thi hien tai tiep dien', 'present continuous')]
+    alternatives = [terms]
+    for vietnamese, english in aliases:
+        if search_text(query) in (vietnamese, english): alternatives = [vietnamese.split(), english.split()]
+    qs = PracticeNode.objects.filter(language=request.language, visibility='public').select_related('owner')
+    if kind: qs = qs.filter(kind=kind)
+    results = []
+    for node in qs.iterator(chunk_size=200):
+        payload = node.payload
+        interaction = payload.get('presentation', {}).get('interaction', 'short_answer') if node.kind == 'exercise' else ''
+        if node.kind == 'exercise' and interaction not in PUBLIC_MODES: continue
+        if mode and interaction != mode: continue
+        author = node.owner.get_full_name().strip() or node.owner.get_username()
+        title = search_text(node.title)
+        description = str(payload.get('instruction') or payload.get('context') or '')
+        searchable = ' '.join([title, search_text(description), search_text(author), search_text(payload.get('context', '')), search_text(payload.get('content', '')), ' '.join(search_text(q.get('prompt', '')) for q in payload.get('questions', []))])
+        matching = [group for group in alternatives if all(term in searchable for term in group)]
+        if not matching: continue
+        score = max(sum(3 if term in title else 1 for term in group) for group in matching)
+        results.append((score, node.updated_at, node.pk, {
+            'id':node.pk, 'title':node.title, 'kind':node.kind, 'interaction':interaction,
+            'description':description[:200], 'author':author,
+            'question_count':len(payload.get('questions', [])), 'updated_at':node.updated_at.isoformat(),
+            'can_edit':node.owner_id == request.user.pk,
+        }))
+    results.sort(key=lambda item: (item[1], item[2]) if sort == 'newest' else item[:3], reverse=True)
+    total = len(results)
+    pages = max(1, (total + 17) // 18)
+    page = min(page, pages)
+    return JsonResponse({'results':[item[3] for item in results[(page-1)*18:page*18]], 'total':total, 'page':page, 'pages':pages})

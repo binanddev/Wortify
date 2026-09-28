@@ -1,0 +1,297 @@
+@media (min-width: 1600px) {
+  .deck-grid {
+    @apply grid-cols-4;
+  }
+}
+@media (max-width: 1200px) {
+  .app-shell {
+    @apply grid-cols-[210px_minmax(0,1fr)];
+  }
+  .sidebar {
+    @apply p-[28px_15px_18px];
+  }
+  .page {
+    @apply p-[35px_30px];
+  }
+  .topbar {
+    @apply p-[0_30px];
+  }
+  .deck-grid {
+    @apply grid-cols-2;
+  }
+  .stats-strip {
+    @apply gap-[20px] flex-wrap;
+  }
+  .stats-strip .btn {
+    @apply [margin-left:0];
+  }
+  .study-layout {
+    @apply grid-cols-[minmax(0,1fr)];
+  }
+  .study-config .glass-body {
+    @apply grid grid-cols-[1fr_1fr] items-center;
+  }
+  .study-config .tile-icon {
+    @apply hidden;
+  }
+  .study-config h2 {
+    @apply text-[22px];
+  }
+  .term-row .glass-body {
+    @apply grid-cols-[1fr_1fr];
+  }
+  .term-row .toolbar {
+    @apply col-span-full;
+  }
+  .heading {
+    @apply items-start;
+  }
+  .heading > .toolbar {
+    @apply max-w-[200px];
+  }
+  .auth-layout {
+    @apply p-[35px_6vw] gap-[5vw];
+  }
+}
+@media (max-width: 760px) {
+  .flashcard-topbar {
+    @apply flex h-[58px] p-[0_18px] [border-bottom:0];
+  }
+  .flashcard-topbar .topbar-label,
+  .flashcard-topbar > .toolbar:last-child {
+    @apply hidden;
+  }
+  .flashcard-topbar > .toolbar:first-child {
+    @apply w-full;
+  }
+  .app-shell {
+    @apply block;
+  }
+  .sidebar {
+    @apply fixed w-[245px] left-[-260px] [transition:left_0.25s];
+  }
+  .sidebar.open {
+    @apply [left:0];
+  }
+  .sidebar-scrim {
+    @apply fixed [inset:0] [background:#15271e44] [backdrop-filter:blur(4px)] z-19 [border:0];
+  }
+  .mobile-menu {
+    @apply flex;
+  }
+  .topbar {
+    @apply h-[70px] p-[0_18px];
+  }
+  .topbar-label {
+    @apply text-[11px];
+  }
+  .topbar .toolbar {
+    @apply gap-[5px];
+  }
+  .topbar-label span {
+    @apply m-[0_4px];
+  }
+  .sound-label {
+    @apply hidden;
+  }
+  .page {
+    @apply p-[29px_20px];
+  }
+  .heading {
+    @apply flex-col gap-[19px] mb-[25px];
+  }
+  .heading > .toolbar {
+    @apply max-w-full justify-start;
+  }
+  .heading h1 {
+    @apply text-[34px] [letter-spacing:-1.2px];
+  }
+  .heading p {
+    @apply text-[12px];
+  }
+  .stats-strip {
+    @apply p-[18px] gap-[20px] mb-[25px] justify-between;
+  }
+  .stats-strip > div {
+    @apply flex-col gap-[3px] items-start;
+  }
+  .stats-strip strong {
+    @apply text-[26px];
+  }
+  .stats-strip span {
+    @apply text-[10px] max-w-[100px];
+  }
+  .stats-strip .btn {
+    @apply w-full;
+  }
+  .deck-grid {
+    @apply gap-[14px];
+  }
+  .deck-tile .glass-body {
+    @apply p-[18px] min-h-[260px];
+  }
+  .deck-tile h3 {
+    @apply text-[17px];
+  }
+  .deck-tile p {
+    @apply text-[11px];
+  }
+  .tile-top {
+    @apply mb-[20px];
+  }
+  .new-deck {
+    @apply min-h-[250px];
+  }
+  .new-deck > span:last-child {
+    @apply text-[10px] text-center;
+  }
+  .new-deck strong {
+    @apply text-center text-[12px];
+  }
+  .library-tools > .toolbar {
+    @apply w-full;
+  }
+  .library-tools .field {
+    @apply max-w-none flex-1;
+  }
+  .library-tools .select-field {
+    @apply max-w-[125px];
+  }
+  .section-heading h2 {
+    @apply text-[18px];
+  }
+  .section-heading .btn {
+    @apply text-[11px] p-[0_10px];
+  }
+  .glass-body {
+    @apply p-[22px];
+  }
+  .flip-stage {
+    @apply h-[320px];
+  }
+  .study-layout {
+    @apply gap-[22px];
+  }
+  .study-layout .section-heading {
+    @apply flex-wrap;
+  }
+  .study-config .glass-body {
+    @apply flex;
+  }
+  .term-row .glass-body {
+    @apply p-[18px] gap-[15px];
+  }
+  .term-row .toolbar {
+    @apply justify-end;
+  }
+  .two {
+    @apply grid-cols-[1fr];
+  }
+  .auth-layout {
+    @apply flex flex-col p-[30px_22px] w-full;
+  }
+  .auth-card .glass-body {
+    @apply p-[27px];
+  }
+  .auth-card h2 {
+    @apply text-[25px];
+  }
+  .welcome-page header {
+    @apply p-[25px_20px];
+  }
+  .welcome-page .page {
+    @apply pt-[35px];
+  }
+  .language-grid {
+    @apply gap-[16px];
+  }
+  .language-card {
+    @apply p-[25px_20px];
+  }
+  .language-card > strong {
+    @apply text-[47px];
+  }
+  .language-card > p {
+    @apply text-[11px];
+  }
+  .language-card > div {
+    @apply mt-[28px];
+  }
+  .language-card h2 {
+    @apply text-[16px];
+  }
+  .round-arrow {
+    @apply w-[32px] h-[32px];
+  }
+  .matching {
+    @apply gap-[10px];
+  }
+  .match-item {
+    @apply text-[12px];
+  }
+  .history-row {
+    @apply text-[12px] p-[18px_5px];
+  }
+  .question-text {
+    @apply [font-size:var(--card-font)];
+  }
+  .auth-switch {
+    @apply flex-wrap;
+  }
+  .cloze input {
+    @apply max-w-[125px];
+  }
+  .session-width {
+    @apply [min-width:0];
+  }
+  .topbar .btn {
+    @apply min-w-[30px];
+  }
+  .invite-code {
+    @apply text-[12px];
+  }
+}
+@media (max-width: 390px) {
+  .deck-grid {
+    @apply grid-cols-[1fr];
+  }
+  .language-grid {
+    @apply grid-cols-[1fr];
+  }
+  .language-card > strong {
+    @apply text-[54px];
+  }
+  .brand {
+    @apply text-[22px];
+  }
+  .topbar-label {
+    @apply text-[10px];
+  }
+  .topbar .btn {
+    @apply p-[0_6px];
+  }
+  .topbar {
+    @apply p-[0_12px];
+  }
+  .toolbar.centered {
+    @apply gap-[6px];
+  }
+  .centered .btn {
+    @apply text-[11px] p-[0_10px];
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    @apply [animation-duration:0.01ms]!;
+    @apply [animation-iteration-count:1]! [transition-duration:0.01ms]! scroll-auto!;
+  }
+  .deck-tile:hover,
+  .language-card:hover {
+    @apply transform-none;
+  }
+  .flip-inner {
+    @apply [transition:none];
+  }
+}

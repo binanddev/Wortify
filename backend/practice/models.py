@@ -24,3 +24,13 @@ class PracticeAttempt(models.Model):
     answers = models.JSONField(default=dict)
     result = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
+
+class PracticeProgress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    node = models.ForeignKey(PracticeNode, on_delete=models.CASCADE, related_name='learning_progress')
+    revision = models.CharField(max_length=64)
+    completed = models.JSONField(default=list)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'node'], name='unique_practice_progress')]

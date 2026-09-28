@@ -56,7 +56,7 @@ export async function request(path, method = "GET", data, signal) {
     contentCache.clear();
   if (path.endsWith("/learning/sync/"))
     for (const key of contentCache.keys())
-      if (/\/decks\/\d+\/$/.test(key)) contentCache.delete(key);
+      if (/\/decks\/\d+\/$/.test(key) || key.includes("/practice-hub/")) contentCache.delete(key);
   if (cacheable) {
     if (contentCache.size >= 30)
       contentCache.delete(contentCache.keys().next().value);

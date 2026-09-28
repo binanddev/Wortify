@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Exercises UI/UX - Full 7 Types</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* 1. Điền vào chỗ trống styles */
+        .dropzone { min-width: 80px; min-height: 36px; border: 2px dashed #cbd5e1; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; transition: all 0.2s; }
+        .dropzone.drag-over { border-color: #3b82f6; background-color: #eff6ff; transform: scale(1.05); }
+        .word-chip { cursor: grab; user-select: none; touch-action: none; }
+        .word-chip:active { cursor: grabbing; }
+        
+        .click-zone { min-width: 80px; min-height: 36px; border-bottom: 2px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; cursor: pointer; transition: all 0.2s; }
+        .click-zone.active { border-color: #f59e0b; background-color: #fef3c7; box-shadow: 0 0 0 2px #fde68a; border-radius: 4px; }
+        .click-zone.filled { border-bottom-style: solid; border-color: #22c55e; color: #15803d; font-weight: 600; }
+        
+        /* 2. Tìm lỗi sai styles */
+        .mistake-word { transition: all 0.2s; padding: 2px 4px; border-radius: 4px; }
+        .mistake-word:hover { background-color: #fee2e2; cursor: pointer; }
+        .mistake-word.active { background-color: #fca5a5; color: #7f1d1d; }
+        .mistake-word.corrected { color: #16a34a; font-weight: 600; background-color: #dcfce7; }
+        
+        .strike-word { cursor: pointer; transition: all 0.2s; padding: 2px 4px; border-radius: 4px; }
+        .strike-word:hover { background-color: #f3f4f6; }
+        .strike-word.struck { text-decoration: line-through; color: #9ca3af; background-color: transparent; }
+
+        /* 3. Nối đáp án styles */
+        .match-btn { transition: all 0.2s; user-select: none; }
+        .match-btn:active { transform: scale(0.98); }
+        .match-btn.selected { border-color: #3b82f6; background-color: #eff6ff; color: #1d4ed8; box-shadow: 0 0 0 2px #bfdbfe; }
+        .match-btn.matched { border-color: #22c55e; background-color: #dcfce7; color: #15803d; pointer-events: none; opacity: 0.8; }
+        .match-btn.error { border-color: #ef4444; background-color: #fee2e2; color: #b91c1c; animation: shake 0.4s; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        /* 4. Sắp xếp câu styles */
+        .build-word { transition: all 0.2s; user-select: none; }
+        .build-word:active { transform: scale(0.95); }
+
+        /* 5. Phân loại (Kanban) styles */
+        .category-box { min-height: 150px; transition: all 0.2s; }
+        .category-box.drag-over { background-color: #f0fdf4; border-color: #22c55e; }
+
+        /* 6. Trắc nghiệm inline styles */
+        .inline-toggle .option { transition: all 0.2s; }
+        .inline-toggle .option.selected { background-color: #3b82f6; color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        .inline-dropdown { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 2rem !important; }
+
+        /* 7. Viết lại câu styles */
+        .auto-expand { overflow: hidden; resize: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 p-4 md:p-8">
+    <div class="max-w-5xl mx-auto space-y-8">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">UI/UX Exercises Prototype</h1>
+            <p class="text-slate-500 mt-3 text-lg">Tổng hợp 7 dạng bài tập tương tác với các Style khác nhau</p>
+        </header>
+
+        <!-- DẠNG 1 -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-indigo-700">
+                <span class="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span> 
+                Điền vào chỗ trống (Fill-in-the-blanks)
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Style 1A: Drag & Drop -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h3 class="font-semibold text-slate-700 mb-2">Style A: Drag & Drop (Phù hợp Desktop)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Kéo từ vựng ở dưới thả vào ô nét đứt.</p>
+                    
+                    <div class="text-lg leading-loose mb-6 font-medium">
+                        I usually <span class="dropzone rounded-md px-3 border-b-2 border-dashed border-slate-400 !border-t-0 !border-l-0 !border-r-0 min-h-[30px]" data-target="drink"></span> a cup of coffee in the <span class="dropzone rounded-md px-3 border-b-2 border-dashed border-slate-400 !border-t-0 !border-l-0 !border-r-0 min-h-[30px]" data-target="morning"></span>.
+                    </div>
+
+                    <div class="flex flex-wrap gap-3" id="word-bank-drag">
+                        <div class="word-chip bg-white text-indigo-600 px-4 py-2 rounded-lg shadow-sm border border-indigo-200 font-semibold" draggable="true">morning</div>
+                        <div class="word-chip bg-white text-indigo-600 px-4 py-2 rounded-lg shadow-sm border border-indigo-200 font-semibold" draggable="true">drink</div>
+                        <div class="word-chip bg-white text-indigo-600 px-4 py-2 rounded-lg shadow-sm border border-indigo-200 font-semibold" draggable="true">eat</div>
+                    </div>
+                </div>
+
+                <!-- Style 1B: Tap to Fill -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h3 class="font-semibold text-slate-700 mb-2">Style B: Click/Tap to Fill (Tối ưu Mobile)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Bấm chọn 1 vị trí trống (sẽ sáng lên), sau đó bấm chọn từ.</p>
+                    
+                    <div class="text-lg leading-loose mb-6 font-medium">
+                        She is <span class="click-zone px-3 text-slate-400" data-id="z1">___</span> a letter to her <span class="click-zone px-3 text-slate-400" data-id="z2">___</span>.
+                    </div>
+
+                    <div class="flex flex-wrap gap-3" id="word-bank-click">
+                        <button class="click-word bg-white hover:bg-slate-100 text-slate-700 px-4 py-2 rounded-lg shadow-sm border border-slate-200 font-semibold transition-colors">friend</button>
+                        <button class="click-word bg-white hover:bg-slate-100 text-slate-700 px-4 py-2 rounded-lg shadow-sm border border-slate-200 font-semibold transition-colors">reading</button>
+                        <button class="click-word bg-white hover:bg-slate-100 text-slate-700 px-4 py-2 rounded-lg shadow-sm border border-slate-200 font-semibold transition-colors">writing</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DẠNG 2 -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-rose-600">
+                <span class="bg-rose-100 text-rose-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span> 
+                Tìm và sửa lỗi sai (Find & Correct Mistakes)
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Style 2A: Click & Edit -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 relative">
+                    <h3 class="font-semibold text-slate-700 mb-2">Style A: Click to Edit</h3>
+                    <p class="text-sm text-slate-500 mb-4">Click vào từ sai để gõ lại từ đúng.</p>
+                    
+                    <div class="text-lg font-medium leading-loose" id="mistake-container">
+                        <span class="mistake-word">He</span> 
+                        <span class="mistake-word">do</span> 
+                        <span class="mistake-word">not</span> 
+                        <span class="mistake-word">like</span> 
+                        <span class="mistake-word">playing</span>
+                        <span class="mistake-word">sports.</span>
+                        
+                        <!-- Popup Edit -->
+                        <div id="edit-popup" class="hidden absolute z-10 bg-white border border-slate-200 shadow-xl rounded-lg p-3 flex gap-2 w-64 mt-2">
+                            <input type="text" id="mistake-input" class="w-full border rounded-md px-3 py-1.5 outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm" placeholder="Nhập từ đúng...">
+                            <button id="save-mistake" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Style 2B: Strike-through -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h3 class="font-semibold text-slate-700 mb-2">Style B: Gạch bỏ từ thừa (Cross out)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Click vào từ không cần thiết để loại bỏ nó khỏi câu.</p>
+                    
+                    <div class="text-lg font-medium leading-loose">
+                        <span class="strike-word">They</span> 
+                        <span class="strike-word">discussed</span> 
+                        <span class="strike-word font-bold text-rose-600">about</span> 
+                        <span class="strike-word">the</span> 
+                        <span class="strike-word">project</span>
+                        <span class="strike-word">yesterday.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DẠNG 3 -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-emerald-600">
+                <span class="bg-emerald-100 text-emerald-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span> 
+                Nối đáp án (Matching)
+            </h2>
+            
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                <h3 class="font-semibold text-slate-700 mb-2">Style: Tap & Tap (Khắc phục lỗi viền xanh khi chọn sai)</h3>
+                <p class="text-sm text-slate-500 mb-6">Bấm chọn 1 thẻ bên trái, sau đó chọn 1 thẻ bên phải tương ứng.</p>
+                
+                <div class="flex flex-col md:flex-row gap-6 md:gap-12 justify-center items-center">
+                    <div class="flex flex-col gap-3 w-full md:w-64" id="match-left">
+                        <button class="match-btn border-2 border-slate-200 bg-white rounded-xl p-4 text-left font-medium text-slate-700 shadow-sm hover:border-slate-300" data-match="1">A. The cheetah</button>
+                        <button class="match-btn border-2 border-slate-200 bg-white rounded-xl p-4 text-left font-medium text-slate-700 shadow-sm hover:border-slate-300" data-match="2">B. The kangaroo</button>
+                        <button class="match-btn border-2 border-slate-200 bg-white rounded-xl p-4 text-left font-medium text-slate-700 shadow-sm hover:border-slate-300" data-match="3">C. The owl</button>
+                    </div>
+                    
+                    <div class="hidden md:flex flex-col gap-4 text-slate-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                    </div>
+
+                    <div class="flex flex-col gap-3 w-full md:w-64" id="match-right">
+                        <button class="match-btn border-2 border-slate-200 bg-white rounded-xl p-4 text-left font-medium text-slate-700 shadow-sm hover:border-slate-300" data-match="3">Flies at night</button>
+                        <button class="match-btn border-2 border-slate-200 bg-white rounded-xl p-4 text-left font-medium text-slate-700 shadow-sm hover:border-slate-300" data-match="1">Fastest animal</button>
+                        <button class="match-btn border-2 border-slate-200 bg-white rounded-xl p-4 text-left font-medium text-slate-700 shadow-sm hover:border-slate-300" data-match="2">Lives in Australia</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DẠNG 4 -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-cyan-600">
+                <span class="bg-cyan-100 text-cyan-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span> 
+                Sắp xếp câu (Word Ordering)
+            </h2>
+            
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                <h3 class="font-semibold text-slate-700 mb-2">Style: Tap to Build (Có tính năng Undo)</h3>
+                <p class="text-sm text-slate-500 mb-6">Bấm vào các từ bên dưới để đẩy lên trên. Bấm vào từ ở trên để hoàn tác (trả lại xuống dưới).</p>
+                
+                <!-- Result area -->
+                <div class="bg-white p-4 rounded-xl border-2 border-dashed border-slate-300 min-h-[80px] mb-6 flex flex-wrap gap-2 items-center" id="build-result">
+                    <span class="text-slate-400 italic text-sm empty-text">Kết quả sẽ hiển thị ở đây...</span>
+                </div>
+                
+                <!-- Source words -->
+                <div id="build-source" class="flex flex-wrap gap-3 p-4 bg-slate-200/50 rounded-xl">
+                    <button class="build-word bg-white text-slate-800 shadow-sm hover:shadow-md hover:border-cyan-400 border-2 border-transparent px-5 py-2.5 rounded-lg font-medium cursor-pointer">reading</button>
+                    <button class="build-word bg-white text-slate-800 shadow-sm hover:shadow-md hover:border-cyan-400 border-2 border-transparent px-5 py-2.5 rounded-lg font-medium cursor-pointer">is</button>
+                    <button class="build-word bg-white text-slate-800 shadow-sm hover:shadow-md hover:border-cyan-400 border-2 border-transparent px-5 py-2.5 rounded-lg font-medium cursor-pointer">He</button>
+                    <button class="build-word bg-white text-slate-800 shadow-sm hover:shadow-md hover:border-cyan-400 border-2 border-transparent px-5 py-2.5 rounded-lg font-medium cursor-pointer">a</button>
+                    <button class="build-word bg-white text-slate-800 shadow-sm hover:shadow-md hover:border-cyan-400 border-2 border-transparent px-5 py-2.5 rounded-lg font-medium cursor-pointer">book.</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DẠNG 5 (MỚI BỔ SUNG) -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-amber-600">
+                <span class="bg-amber-100 text-amber-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">5</span> 
+                Phân loại từ (Categorization)
+            </h2>
+            
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                <h3 class="font-semibold text-slate-700 mb-2">Style: Kanban Board</h3>
+                <p class="text-sm text-slate-500 mb-6">Kéo các từ ở danh sách chung thả vào đúng cột phân loại.</p>
+                
+                <div class="flex flex-wrap gap-2 mb-6 p-4 bg-white rounded-xl shadow-sm border border-slate-200 justify-center" id="kanban-source">
+                    <div class="word-chip bg-amber-50 text-amber-700 border border-amber-200 px-4 py-2 rounded-md font-medium" draggable="true">Apple</div>
+                    <div class="word-chip bg-amber-50 text-amber-700 border border-amber-200 px-4 py-2 rounded-md font-medium" draggable="true">Run</div>
+                    <div class="word-chip bg-amber-50 text-amber-700 border border-amber-200 px-4 py-2 rounded-md font-medium" draggable="true">Beautiful</div>
+                    <div class="word-chip bg-amber-50 text-amber-700 border border-amber-200 px-4 py-2 rounded-md font-medium" draggable="true">Car</div>
+                    <div class="word-chip bg-amber-50 text-amber-700 border border-amber-200 px-4 py-2 rounded-md font-medium" draggable="true">Eat</div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-blue-100 text-blue-800 py-3 px-4 font-bold text-center border-b border-slate-200">Nouns (Danh từ)</div>
+                        <div class="category-box p-4 flex flex-col gap-2" data-category="noun">
+                            <!-- Nouns drop here -->
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-green-100 text-green-800 py-3 px-4 font-bold text-center border-b border-slate-200">Verbs (Động từ)</div>
+                        <div class="category-box p-4 flex flex-col gap-2" data-category="verb">
+                            <!-- Verbs drop here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DẠNG 6 -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-violet-600">
+                <span class="bg-violet-100 text-violet-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">6</span> 
+                Trắc nghiệm trong câu (In-line Choice)
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Style 6A: Toggle Pill -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h3 class="font-semibold text-slate-700 mb-2">Style A: Pill Toggle (Dành cho 2 lựa chọn)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Bấm vào một nửa viên thuốc để chọn.</p>
+                    
+                    <div class="text-lg font-medium leading-loose">
+                        I prefer 
+                        <span class="inline-toggle inline-flex bg-white border border-slate-200 shadow-sm rounded-full p-1 mx-2 cursor-pointer select-none align-middle">
+                            <span class="option px-4 py-1.5 rounded-full text-sm font-semibold text-slate-600">to stay</span>
+                            <span class="option px-4 py-1.5 rounded-full text-sm font-semibold text-slate-600">staying</span>
+                        </span>
+                        at home tonight.
+                    </div>
+                </div>
+
+                <!-- Style 6B: Inline Dropdown -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h3 class="font-semibold text-slate-700 mb-2">Style B: Inline Dropdown (Dành cho 3+ lựa chọn)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Click vào ô để mở danh sách chọn.</p>
+                    
+                    <div class="text-lg font-medium leading-loose">
+                        She is the 
+                        <select class="inline-dropdown bg-white border border-slate-300 text-violet-700 font-bold rounded-lg px-3 py-1.5 mx-2 outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 cursor-pointer shadow-sm text-base align-middle">
+                            <option value="" disabled selected>Chọn...</option>
+                            <option value="good">good</option>
+                            <option value="better">better</option>
+                            <option value="best">best</option>
+                        </select>
+                        student in the class.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DẠNG 7 -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-pink-600">
+                <span class="bg-pink-100 text-pink-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">7</span> 
+                Viết lại câu (Sentence Rewrite)
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Style 7A: Partial Input -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h3 class="font-semibold text-slate-700 mb-2">Style A: Partial Input (Gợi ý đầu câu)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Tiết kiệm thời gian gõ phím cho học viên.</p>
+                    
+                    <div class="bg-white p-4 border border-slate-200 rounded-lg mb-4 text-slate-600 italic shadow-sm text-sm">
+                        "I haven't seen him for two years."
+                    </div>
+                    <div class="flex items-baseline flex-wrap font-medium">
+                        <span class="mr-2 text-slate-800">The last time I saw him</span>
+                        <input type="text" class="flex-1 border-b-2 border-slate-300 bg-transparent focus:outline-none focus:border-pink-500 py-1 min-w-[150px] text-pink-700 placeholder-slate-300 transition-colors" placeholder="nhập phần còn lại...">
+                    </div>
+                </div>
+
+                <!-- Style 7B: Smart Textarea -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h3 class="font-semibold text-slate-700 mb-2">Style B: Auto-expand Textarea</h3>
+                    <p class="text-sm text-slate-500 mb-4">Khung tự động giãn chiều cao khi gõ dài, không bị scroll.</p>
+                    
+                    <div class="bg-white p-4 border border-slate-200 rounded-lg mb-4 text-slate-600 italic shadow-sm text-sm">
+                        Combine using 'Although': It was raining heavily. We still went out.
+                    </div>
+                    <textarea class="auto-expand w-full bg-white border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 shadow-sm text-slate-800" rows="1" placeholder="Type your full sentence here..."></textarea>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1A. Dạng 1: Drag & Drop ---
+            const draggables = document.querySelectorAll('#word-bank-drag .word-chip');
+            const dropzones = document.querySelectorAll('.dropzone');
+            let draggedItem = null;
+
+            draggables.forEach(item => {
+                item.addEventListener('dragstart', function() {
+                    draggedItem = this;
+                    setTimeout(() => this.classList.add('opacity-50'), 0);
+                });
+                item.addEventListener('dragend', function() {
+                    setTimeout(() => this.classList.remove('opacity-50'), 0);
+                    draggedItem = null;
+                });
+            });
+
+            dropzones.forEach(zone => {
+                zone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    if (draggedItem) {
+                        // Return existing child to bank if present
+                        if (this.children.length > 0) {
+                            const oldItem = this.children[0];
+                            document.getElementById('word-bank-drag').appendChild(oldItem);
+                            resetChipStyle(oldItem);
+                        }
+                        this.appendChild(draggedItem);
+                        draggedItem.classList.remove('bg-white', 'border-indigo-200');
+                        draggedItem.classList.add('bg-indigo-100', 'border-transparent', 'shadow-none');
+                    }
+                });
+            });
+
+            function resetChipStyle(chip) {
+                chip.classList.add('bg-white', 'border-indigo-200');
+                chip.classList.remove('bg-indigo-100', 'border-transparent', 'shadow-none');
+            }
+
+            // --- 1B. Dạng 1: Click to Fill ---
+            const clickZones = document.querySelectorAll('.click-zone');
+            const clickWords = document.querySelectorAll('.click-word');
+            let activeZone = null;
+
+            clickZones.forEach(zone => {
+                zone.addEventListener('click', function() {
+                    // Reset all
+                    clickZones.forEach(z => z.classList.remove('active'));
+                    this.classList.add('active');
+                    activeZone = this;
+                    
+                    // If it already has text (not '___'), clicking it could clear it (optional enhancement)
+                    if(this.classList.contains('filled')) {
+                        // Put word back (UI simulation only for this prototype)
+                        this.innerText = '___';
+                        this.classList.remove('filled');
+                        activeZone = this; // keep active
+                    }
+                });
+            });
+
+            clickWords.forEach(wordBtn => {
+                wordBtn.addEventListener('click', function() {
+                    if (activeZone) {
+                        activeZone.innerText = this.innerText;
+                        activeZone.classList.add('filled');
+                        activeZone.classList.remove('active');
+                        activeZone = null;
+                        
+                        // Visual feedback on button
+                        this.classList.add('bg-green-50', 'text-green-600', 'border-green-200');
+                        setTimeout(() => {
+                            this.classList.remove('bg-green-50', 'text-green-600', 'border-green-200');
+                        }, 300);
+                    } else {
+                        // Alert user to select zone first natively or visually (Using visual shake for non-alert rule)
+                        this.style.animation = 'shake 0.4s';
+                        setTimeout(() => this.style.animation = '', 400);
+                    }
+                });
+            });
+
+            // --- 2A. Dạng 2: Click to Edit (Mistakes) ---
+            const mistakeWords = document.querySelectorAll('.mistake-word');
+            const editPopup = document.getElementById('edit-popup');
+            const mistInput = document.getElementById('mistake-input');
+            const saveBtn = document.getElementById('save-mistake');
+            let activeMistake = null;
+
+            mistakeWords.forEach(word => {
+                word.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mistakeWords.forEach(w => w.classList.remove('active'));
+                    this.classList.add('active');
+                    activeMistake = this;
+                    
+                    // Position and show popup
+                    editPopup.classList.remove('hidden');
+                    editPopup.style.left = this.offsetLeft + 'px';
+                    editPopup.style.top = (this.offsetTop + this.offsetHeight + 5) + 'px';
+                    
+                    mistInput.value = this.classList.contains('corrected') ? this.innerText : '';
+                    mistInput.placeholder = `Sửa từ "${this.innerText}" thành...`;
+                    mistInput.focus();
+                });
+            });
+
+            saveBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(activeMistake && mistInput.value.trim() !== '') {
+                    activeMistake.innerText = mistInput.value;
+                    activeMistake.classList.remove('active');
+                    activeMistake.classList.add('corrected');
+                    editPopup.classList.add('hidden');
+                }
+            });
+
+            // Hide popup when clicking outside
+            document.addEventListener('click', (e) => {
+                if(!editPopup.contains(e.target) && !e.target.classList.contains('mistake-word')) {
+                    editPopup.classList.add('hidden');
+                    mistakeWords.forEach(w => w.classList.remove('active'));
+                }
+            });
+
+            // --- 2B. Dạng 2: Strike-through ---
+            const strikeWords = document.querySelectorAll('.strike-word');
+            strikeWords.forEach(word => {
+                word.addEventListener('click', function() {
+                    this.classList.toggle('struck');
+                });
+            });
+
+            // --- 3. Dạng 3: Matching (Tap & Tap) ---
+            let selectedLeft = null;
+            let selectedRight = null;
+
+            document.getElementById('match-left').addEventListener('click', e => {
+                const btn = e.target.closest('.match-btn');
+                if(btn && !btn.classList.contains('matched')) {
+                    document.querySelectorAll('#match-left .match-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedLeft = btn;
+                    checkMatch();
+                }
+            });
+
+            document.getElementById('match-right').addEventListener('click', e => {
+                const btn = e.target.closest('.match-btn');
+                if(btn && !btn.classList.contains('matched')) {
+                    document.querySelectorAll('#match-right .match-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedRight = btn;
+                    checkMatch();
+                }
+            });
+
+            function checkMatch() {
+                if(selectedLeft && selectedRight) {
+                    if(selectedLeft.dataset.match === selectedRight.dataset.match) {
+                        // Success
+                        selectedLeft.classList.remove('selected');
+                        selectedRight.classList.remove('selected');
+                        selectedLeft.classList.add('matched');
+                        selectedRight.classList.add('matched');
+                        selectedLeft = null;
+                        selectedRight = null;
+                    } else {
+                        // Fail - show error and shake
+                        selectedLeft.classList.remove('selected');
+                        selectedRight.classList.remove('selected');
+                        selectedLeft.classList.add('error');
+                        selectedRight.classList.add('error');
+                        
+                        // Local variables to hold reference for setTimeout
+                        const left = selectedLeft;
+                        const right = selectedRight;
+                        
+                        setTimeout(() => {
+                            left.classList.remove('error');
+                            right.classList.remove('error');
+                        }, 500);
+                        
+                        selectedLeft = null;
+                        selectedRight = null;
+                    }
+                }
+            }
+
+            // --- 4. Dạng 4: Tap to Build (Ordering) ---
+            const buildResult = document.getElementById('build-result');
+            const buildSource = document.getElementById('build-source');
+            const emptyText = buildResult.querySelector('.empty-text');
+
+            function toggleEmptyText() {
+                const wordsInResult = buildResult.querySelectorAll('.build-word');
+                if(wordsInResult.length > 0) {
+                    if(emptyText) emptyText.style.display = 'none';
+                } else {
+                    if(emptyText) emptyText.style.display = 'inline';
+                }
+            }
+
+            document.addEventListener('click', e => {
+                const btn = e.target.closest('.build-word');
+                if (btn) {
+                    if(btn.parentNode === buildSource) {
+                        // Move to result
+                        buildResult.appendChild(btn);
+                        btn.classList.replace('bg-white', 'bg-cyan-100');
+                        btn.classList.replace('text-slate-800', 'text-cyan-800');
+                        btn.classList.replace('hover:border-cyan-400', 'hover:border-cyan-600');
+                    } else {
+                        // Move back to source (Undo)
+                        buildSource.appendChild(btn);
+                        btn.classList.replace('bg-cyan-100', 'bg-white');
+                        btn.classList.replace('text-cyan-800', 'text-slate-800');
+                        btn.classList.replace('hover:border-cyan-600', 'hover:border-cyan-400');
+                    }
+                    toggleEmptyText();
+                }
+            });
+
+            // --- 5. Dạng 5: Kanban Categorization ---
+            const kanbanDraggables = document.querySelectorAll('#kanban-source .word-chip, .category-box .word-chip');
+            const categoryBoxes = document.querySelectorAll('.category-box');
+            let kanbanItem = null;
+
+            kanbanDraggables.forEach(item => {
+                item.addEventListener('dragstart', function() {
+                    kanbanItem = this;
+                    setTimeout(() => this.classList.add('opacity-50'), 0);
+                });
+                item.addEventListener('dragend', function() {
+                    setTimeout(() => this.classList.remove('opacity-50'), 0);
+                    kanbanItem = null;
+                });
+            });
+
+            categoryBoxes.forEach(box => {
+                box.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    box.classList.add('drag-over');
+                });
+                box.addEventListener('dragleave', () => {
+                    box.classList.remove('drag-over');
+                });
+                box.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    if (kanbanItem) {
+                        this.appendChild(kanbanItem);
+                        // Make it span full width in the box
+                        kanbanItem.classList.add('w-full', 'text-center');
+                    }
+                });
+            });
+            
+            // Allow returning to source
+            const kanbanSource = document.getElementById('kanban-source');
+            kanbanSource.addEventListener('dragover', e => e.preventDefault());
+            kanbanSource.addEventListener('drop', function(e) {
+                e.preventDefault();
+                if(kanbanItem) {
+                    this.appendChild(kanbanItem);
+                    kanbanItem.classList.remove('w-full', 'text-center');
+                }
+            });
+
+            // --- 6. Dạng 6: Inline Toggle ---
+            const toggles = document.querySelectorAll('.inline-toggle');
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', e => {
+                    const opt = e.target.closest('.option');
+                    if (opt) {
+                        toggle.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+                        opt.classList.add('selected');
+                    }
+                });
+            });
+
+            // --- 7. Dạng 7: Auto-expand Textarea ---
+            const tx = document.querySelectorAll('.auto-expand');
+            tx.forEach(t => {
+                t.addEventListener('input', function() {
+                    this.style.height = 'auto'; // Reset height
+                    this.style.height = (this.scrollHeight) + 'px'; // Set to scroll height
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

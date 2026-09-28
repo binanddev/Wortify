@@ -39,14 +39,12 @@ class PlatformTests(TestCase):
         result = client.post('/api/session/', data=json.dumps({'username': 'learner', 'password': 'Testing-7391-secure'}), content_type='application/json', HTTP_X_CSRFTOKEN=csrf)
         self.assertEqual(result.json()['user']['username'], 'learner')
 
-    def test_shell_deep_links_and_unknown_api(self):
-        for path in ['/en/flashcard', '/de/flashcard/deck/1', '/de/practice/1', '/en/practice/2']:
+    def test_backend_does_not_serve_frontend_routes(self):
+        for path in ['/', '/login', '/manage', '/en/flashcard', '/de/flashcard/deck/1', '/de/practice/1', '/en/create', '/api/en/missing/', '/unregistered']:
             response = self.client.get(path)
-            self.assertContains(response, 'type="module"')
-            self.assertNotContains(response, 'htmx')
-            self.assertNotContains(response, 'alpine')
-        self.assertEqual(self.client.get('/api/en/missing/').status_code, 404)
-        self.assertEqual(self.client.get('/unregistered').status_code, 404)
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response['Content-Type'], 'application/json')
+            self.assertIn('error', response.json())
 
     def test_flashcard_language_and_idempotent_grading(self):
         response = self.post('/api/en/next/', {'deck': self.deck.pk, 'mode': 'write'}).json()

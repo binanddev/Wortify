@@ -4,27 +4,13 @@ from django.db import transaction
 from django.db.models import Count, Q
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from cards.models import Deck, Card, Folder, StudySettings, StudyProgress, StudyAttempt, ImportBatch, StudySession
 from cards.forms import DeckForm, CardForm, FolderForm, SettingsForm
 from cards.services.importing import parse_cards
 from .common import body, endpoint
-
-@ensure_csrf_cookie
-@require_http_methods(['GET'])
-def shell(request, *args, **kwargs):
-    from django.conf import settings
-    from django.templatetags.static import static
-    import json
-    manifest_path=settings.REACT_DIST / '.vite' / 'manifest.json'
-    if manifest_path.exists():
-        manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
-        entry=manifest['index.html']
-        return render(request,'react.html',{'script':static('react/'+entry['file']),'styles':[static('react/'+p) for p in entry.get('css',[])]})
-    return render(request, 'react_unbuilt.html', status=503)
 
 def form_save(form, **fields):
     if not form.is_valid():

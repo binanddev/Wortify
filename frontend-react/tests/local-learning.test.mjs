@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {gradeExercise,gradeCard,normalize} from '../src/local-learning.js';
 import {parseImport,jsonTemplate} from '../src/json-import.js';
 import {EXERCISE_TYPES} from '../src/exercise-types.js';
 import {request,clearContentCache} from '../src/core.js';
-test('all nine JSON examples survive import and grade locally without fetch', () => {
+test('current JSON compatibility examples survive import and grade locally without fetch', () => {
  globalThis.fetch=()=>{throw new Error('Unexpected network');};
  for(const [mode] of EXERCISE_TYPES) {
   const e=parseImport(JSON.stringify(jsonTemplate('exercise',mode)),'exercise');
@@ -13,6 +14,22 @@ test('all nine JSON examples survive import and grade locally without fetch', ()
   for(const q of qs) if(q.blanks.length) q.blanks.forEach((b,i)=>values[`${q.id}_${i}`]=b.answers[0]);else values[q.id]=['multi','order'].includes(e.kind) ? q.accepted_answers : q.accepted_answers[0];
   const r=gradeExercise({...e,check_mode:'auto_check'},qs,values);
   assert.equal(r.score,r.total,mode);
+ }
+});
+test('the full Practice Hub UX demo dataset imports and grades for every exercise type', () => {
+ const demo=JSON.parse(readFileSync(new URL('../public/templates/practice-hub-demo.json',import.meta.url),'utf8'));
+ assert.equal(demo.nodes.length,9);
+ for(const entry of demo.nodes) {
+  const e=parseImport(JSON.stringify(entry.payload),'exercise');
+  assert.ok(e.questions.length>=3,entry.title);
+  const qs=e.questions.map((q,i)=>({...q,id:String(i+1),position:i+1,kind:e.kind}));
+  const values={};
+  for(const q of qs) {
+   if(q.blanks.length) q.blanks.forEach((b,i)=>values[`${q.id}_${i}`]=b.answers[0]);
+   else values[q.id]=['multi','order'].includes(e.kind) ? q.accepted_answers : q.accepted_answers[0];
+  }
+  const result=gradeExercise({...e,check_mode:'auto_check'},qs,values);
+  assert.equal(result.score,result.total,entry.title);
  }
 });
 test('normalization preserves accents, honors case and punctuation, supports German transliteration',()=>{

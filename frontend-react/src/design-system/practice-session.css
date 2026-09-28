@@ -1,0 +1,318 @@
+.practice-text-editor {
+  @apply grid gap-[18px] max-w-full;
+}
+.practice-text-editor details {
+  @apply p-[14px] [border:1px_solid_var(--line)];
+  @apply rounded-[14px];
+}
+.practice-text-editor summary {
+  @apply cursor-pointer [font-weight:600];
+}
+.text-guide {
+  @apply whitespace-pre-wrap wrap-anywhere [font:14px/1.8_ui-monospace,monospace];
+}
+.inline-pills {
+  @apply inline-flex flex-wrap gap-[4px] p-[4px] m-[0_6px] rounded-[24px] [background:#eef2ff] align-middle;
+}
+.inline-pills button {
+  @apply [border:0] p-[8px_17px] min-h-[44px];
+  @apply rounded-[22px] text-[#334155] [transition:background_0.18s,transform_0.18s];
+}
+.inline-pills button.selected {
+  @apply [background:#4f46e5] text-[white] [box-shadow:0_3px_9px_#6366f140];
+}
+.inline-pills button:active {
+  @apply [transform:scale(0.96)];
+}
+.correction-work {
+  @apply grid gap-[18px];
+}
+.correction-work .clickable-passage {
+  @apply flex flex-wrap gap-[5px];
+}
+.correction-work .clickable-passage button {
+  @apply min-h-[44px] rounded-[9px] p-[7px_10px];
+  @apply [border:1px_solid_transparent];
+}
+.correction-work .clickable-passage button:hover {
+  @apply [background:#ffe4e6];
+}
+.correction-work .corrected-word {
+  @apply text-[#15803d] [background:#dcfce7];
+}
+.correction-work .struck-word {
+  @apply [text-decoration:line-through] text-[#9f1239] [background:#fff1f2];
+}
+.correction-editor {
+  @apply flex [align-items:end] gap-[10px] flex-wrap p-[16px] [background:var(--solid)] [border:1px_solid_#fda4af];
+  @apply rounded-[14px] [box-shadow:0_8px_25px_#88133710];
+}
+.correction-editor label {
+  @apply grid gap-[6px];
+}
+.correction-editor input,
+.partial-rewrite input {
+  @apply min-h-[44px] [border:1px_solid_var(--line)];
+  @apply rounded-[9px] p-[8px_12px] [background:var(--solid)] text-(--ink);
+}
+.correction-editor button,
+.correction-work > button,
+.sentence-builder .toolbar button {
+  @apply min-h-[44px] p-[8px_16px] [border:1px_solid_var(--line)];
+  @apply rounded-[10px];
+}
+.partial-rewrite {
+  @apply flex flex-wrap gap-[12px] items-center [background:#f5f3ff] p-[18px] rounded-[16px] text-[#5b21b6];
+}
+.partial-rewrite input {
+  @apply flex-1 min-w-[min(230px,100%)];
+}
+.pairing-work {
+  @apply relative pb-[36px];
+}
+.match-status {
+  @apply absolute [bottom:0];
+  @apply [left:0] text-[14px] text-(--muted);
+}
+.pair-card.pair-error {
+  @apply border-[#f43f5e] [background:#fff1f2] text-[#9f1239] animate-[practice-shake_0.3s];
+}
+.exercise-workspace button:focus-visible,
+.exercise-workspace input:focus-visible,
+.practice-text-editor summary:focus-visible {
+  @apply [outline:3px_solid_#818cf8];
+  @apply outline-offset-[3px];
+}
+.exercise-workspace .work-feedback.right {
+  @apply animate-[practice-reward_0.35s_ease-out];
+}
+@keyframes practice-shake {
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+@keyframes practice-reward {
+  from {
+    opacity: 0.3;
+    transform: translateY(7px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exercise-workspace *,
+  .exercise-workspace *::before {
+    @apply animate-none! [transition:none]!;
+  }
+}
+.practice-journey {
+  @apply max-w-[880px] m-[24px_auto];
+}
+.journey-topline {
+  @apply flex items-center gap-[18px] p-[10px_0_24px] [font-weight:650] text-(--ink);
+}
+.journey-topline progress {
+  @apply flex-1 w-full h-[12px] [border:0];
+  @apply rounded-[20px] overflow-hidden accent-[#8b5cf6];
+}
+.journey-topline progress::-webkit-progress-bar {
+  @apply [background:#ede9fe];
+}
+.journey-topline progress::-webkit-progress-value {
+  @apply [background:linear-gradient(90deg,#a78bfa,#c084fc)] rounded-[20px] [transition:width_0.4s];
+}
+.journey-question {
+  @apply p-[clamp(22px,4vw,44px)] rounded-[28px] [background:var(--solid)] [box-shadow:0_12px_38px_#7c3aed09] animate-[journey-enter_0.25s_ease-out];
+}
+.journey-question.is-correct {
+  @apply border-[#86cfa4] [box-shadow:0_0_0_4px_#bbf7d03b];
+}
+.journey-question.is-incorrect {
+  @apply border-[#f4b4ba] animate-[practice-shake_0.35s_ease-out];
+}
+.journey-feedback {
+  @apply mt-[24px] rounded-[16px] p-[16px_20px] text-[15px] [background:#f5f3ff] text-[#6d5b89] min-h-[58px];
+}
+.journey-feedback.right {
+  @apply [background:#edf9f0] text-[#21733d];
+}
+.journey-feedback.wrong {
+  @apply [background:#fff2f1] text-[#aa4e58];
+}
+.journey-save-note {
+  @apply block text-center text-(--muted) p-[18px];
+}
+.journey-finish {
+  @apply text-center p-[60px_24px] [border:1px_solid_#ddd6fe];
+  @apply rounded-[30px] [background:linear-gradient(145deg,#f5f3ff,#fff7ed)] text-[#3c3059];
+}
+.finish-mascot {
+  @apply block text-[64px] mb-[16px] animate-[practice-reward_0.5s_ease-out];
+}
+.journey-finish h2 {
+  @apply text-[28px] m-[12px_0];
+}
+.journey-finish p {
+  @apply max-w-[450px] m-[14px_auto_28px] [line-height:1.7];
+}
+.pair-card.assigned {
+  @apply border-[#c4b5fd] [background:#f5f3ff] text-[#6d28d9];
+}
+.practice-guide {
+  @apply max-w-[1000px] m-auto grid gap-[28px];
+}
+.practice-guide > section,
+.guide-example {
+  @apply [border:1px_solid_var(--line)] p-[24px];
+  @apply rounded-[24px] [background:var(--solid)];
+}
+.practice-guide p {
+  @apply [line-height:1.8];
+}
+.guide-steps {
+  @apply grid grid-cols-3 gap-[16px];
+}
+.guide-steps article {
+  @apply p-[24px] rounded-[22px] [background:#f5f3ff] text-[#574376];
+}
+.guide-example {
+  @apply mt-[16px];
+}
+.guide-example details {
+  @apply p-[14px_0] [border-bottom:1px_solid_var(--line)];
+}
+.guide-example summary {
+  @apply cursor-pointer min-h-[40px] p-[8px_0] [font-weight:600];
+}
+.practice-file-drop {
+  @apply grid justify-items-center text-center gap-[12px] [border:2px_dashed_#c4b5fd];
+  @apply rounded-[24px] p-[30px_20px] [background:#f8f5ff] text-[#674b8d];
+}
+.practice-file-drop > span:first-child {
+  @apply text-[36px];
+}
+.practice-file-drop input {
+  @apply max-w-full;
+}
+.practice-library {
+  @apply mt-[30px];
+}
+.library-heading {
+  @apply flex gap-[14px] items-center;
+  @apply justify-between;
+}
+.library-heading > span {
+  @apply text-(--muted);
+}
+.library-card {
+  @apply relative min-h-[210px] [background:var(--solid)] [transition:transform_0.2s,box-shadow_0.2s,border-color_0.2s];
+}
+.library-card[draggable="true"] {
+  @apply cursor-grab;
+}
+.library-card.is-selected {
+  @apply border-[#a78bfa] [box-shadow:0_0_0_3px_#ddd6fe80];
+}
+.library-card.is-drop-target {
+  @apply border-[#34d399] [background:#ecfdf5] [transform:translateY(-4px)];
+}
+.library-card-top {
+  @apply flex items-center;
+  @apply justify-between;
+}
+.library-card-icon {
+  @apply grid place-items-center w-[46px] h-[46px] text-[24px] rounded-[15px] [background:#f5f3ff];
+}
+.library-card-top input {
+  @apply w-[22px] h-[22px] accent-[#8b5cf6] cursor-pointer;
+}
+.library-card-title {
+  @apply text-[18px];
+  @apply [font-weight:650];
+  @apply [line-height:1.45] text-(--ink) wrap-anywhere;
+}
+.library-card-actions {
+  @apply flex flex-wrap gap-[5px] pt-[6px];
+}
+.library-card-actions button {
+  @apply p-[8px_10px] min-h-[38px] rounded-[12px] text-[13px] text-(--muted) [background:transparent];
+}
+.library-card-actions button:hover {
+  @apply [background:#f5f3ff] text-[#6d28d9];
+}
+.selection-bar {
+  @apply sticky top-[12px] z-5 flex flex-wrap items-center gap-[10px] p-[14px_18px] [border:1px_solid_#c4b5fd];
+  @apply rounded-[20px] [background:var(--solid)] [box-shadow:0_8px_26px_#7c3aed14];
+}
+.library-notice {
+  @apply flex gap-[12px] items-center text-[14px] text-(--muted);
+}
+.library-notice:not(:empty) {
+  @apply p-[14px_0];
+}
+.library-notice button {
+  @apply text-[#7c3aed] [font-weight:600] [text-decoration:underline];
+}
+.destination-picker {
+  @apply [border:1px_solid_#ddd6fe];
+  @apply rounded-[24px] p-[22px] [background:var(--solid)] grid gap-[8px] m-[18px_0] max-h-[460px] overflow-auto [box-shadow:0_12px_38px_#7c3aed12];
+}
+.destination-picker > button {
+  @apply text-left p-[14px_16px] min-h-[48px] [border:1px_solid_var(--line)];
+  @apply rounded-[14px] wrap-anywhere;
+}
+.destination-picker > button:hover {
+  @apply [background:#f5f3ff] border-[#a78bfa];
+}
+.inline-rename {
+  @apply flex gap-[5px];
+}
+.inline-rename input {
+  @apply [min-width:0] w-full [border:1px_solid_#a78bfa];
+  @apply rounded-[10px] p-[8px];
+}
+.inline-rename button {
+  @apply p-[8px];
+}
+.library-empty {
+  @apply text-center p-[48px_20px] text-(--muted);
+}
+.library-empty > span {
+  @apply text-[42px];
+}
+@keyframes journey-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 640px) {
+  .guide-steps {
+    @apply grid-cols-[1fr];
+  }
+  .journey-topline {
+    @apply gap-[10px] text-[13px];
+  }
+  .journey-topline > span {
+    @apply whitespace-nowrap;
+  }
+  .library-card-actions button {
+    @apply min-h-[44px];
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .library-card,
+  .journey-question,
+  .finish-mascot {
+    @apply animate-none! [transition:none]!;
+  }
+}

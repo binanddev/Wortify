@@ -7,7 +7,7 @@ from django.views.decorators.http import require_http_methods
 from cards.models import Deck, Card, StudySettings, StudyAttempt, StudySession, StudyProgress
 from cards.services.study import queue, choices, finish
 from cards.services.comparison import compare
-from cards.views import card_data
+from .card_learning import card_data
 from .common import endpoint, body
 
 def owned(request, token):

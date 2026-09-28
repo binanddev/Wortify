@@ -14,7 +14,24 @@ function schedule(user, lang, delay = 2000) {
 }
 const queueKey = (user, lang) => `wortify:sync:${user}:${lang}`;
 export function pendingLearning(user, lang) {
-  return readPreference(queueKey(user, lang), []);
+  const key = queueKey(user, lang);
+  const queue = readPreference(key, []);
+  const unavailable = queue.filter(
+    (e) =>
+      e.errorCode === "content_unavailable" ||
+      e.error === "Nội dung không còn truy cập được.",
+  );
+  if (!unavailable.length) return queue;
+  // Keep obsolete receipts locally for recovery, outside the active retry queue.
+  const archived = readPreference(`${key}:unavailable`, []);
+  const known = new Set(archived.map((e) => e.token));
+  savePreference(`${key}:unavailable`, [
+    ...archived,
+    ...unavailable.filter((e) => !known.has(e.token)),
+  ]);
+  const remaining = queue.filter((e) => !unavailable.includes(e));
+  savePreference(key, remaining);
+  return remaining;
 }
 function announce() {
   window.dispatchEvent(new Event("learning-sync-change"));
@@ -22,12 +39,37 @@ function announce() {
 export function enqueueLearning(user, lang, kind, payload) {
   const key = queueKey(user, lang),
     queue = readPreference(key, []);
+  if (kind === "practice_progress") {
+    const previous = queue.filter(
+      (e) =>
+        e.kind === kind &&
+        e.payload.node === payload.node &&
+        e.payload.revision === payload.revision,
+    );
+    payload = {
+      ...payload,
+      completed: [
+        ...new Set([
+          ...previous.flatMap((e) => e.payload.completed || []),
+          ...(payload.completed || []),
+        ]),
+      ],
+    };
+  }
   // A newer preferences snapshot supersedes an unsent older snapshot.
-  const next = ["options", "preferences", "study_settings"].includes(kind)
+  const next = [
+    "options",
+    "preferences",
+    "study_settings",
+    "practice_progress",
+  ].includes(kind)
     ? queue.filter(
         (e) =>
           e.kind !== kind ||
-          (kind === "options" && e.payload.deck !== payload.deck),
+          (kind === "options" && e.payload.deck !== payload.deck) ||
+          (kind === "practice_progress" &&
+            (e.payload.node !== payload.node ||
+              e.payload.revision !== payload.revision)),
       )
     : queue;
   const event = {
@@ -56,22 +98,29 @@ export async function flushLearning(user, lang) {
   clearTimeout(timers.get(key));
   timers.delete(key);
   if (flights.has(key)) return flights.get(key);
-  const events = readPreference(key, [])
+  const events = pendingLearning(user, lang)
     .filter((e) => !e.error)
     .slice(0, 100);
   if (!events.length) return;
   const task = request(endpoint(lang, "learning/sync/"), "POST", { events })
     .then((data) => {
       const done = new Set(data.accepted.map((e) => e.token));
-      const errors = new Map(data.errors.map((e) => [e.token, e.error]));
+      const errors = new Map(data.errors.map((e) => [e.token, e]));
       savePreference(
         key,
         readPreference(key, [])
           .filter((e) => !done.has(e.token))
           .map((e) =>
-            errors.has(e.token) ? { ...e, error: errors.get(e.token) } : e,
+            errors.has(e.token)
+              ? {
+                  ...e,
+                  error: errors.get(e.token).error,
+                  errorCode: errors.get(e.token).code,
+                }
+              : e,
           ),
       );
+      pendingLearning(user, lang);
       window.dispatchEvent(
         new CustomEvent("learning-synced", { detail: { user, lang, ...data } }),
       );

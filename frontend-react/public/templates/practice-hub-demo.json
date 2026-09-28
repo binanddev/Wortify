@@ -1,0 +1,283 @@
+{
+  "nodes": [
+    {
+      "kind": "exercise",
+      "title": "Điền chỗ trống · Chuyến đi buổi sáng",
+      "payload": {
+        "title": "Chuyến đi buổi sáng",
+        "kind": "cloze",
+        "instruction": "Chạm vào ô trống rồi chọn từ, hoặc kéo thẻ từ vào vị trí phù hợp.",
+        "context": "",
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "presentation": {
+          "interaction": "cloze_drag_drop",
+          "type": "cloze",
+          "categories": []
+        },
+        "questions": [
+          {
+            "prompt": "Every morning, Mia {{1}} a cup of tea before she {{2}} to work.",
+            "accepted_answers": [],
+            "options": [],
+            "blanks": [
+              { "answers": ["drinks"], "options": ["drinks", "drink"] },
+              { "answers": ["goes"], "options": ["go", "goes"] }
+            ],
+            "presentation": { "word_bank": ["goes", "drinks", "go", "drink"] }
+          },
+          {
+            "prompt": "She {{1}} her bag and {{2}} the bus at seven.",
+            "accepted_answers": [],
+            "options": [],
+            "blanks": [
+              { "answers": ["packs"], "options": ["packs", "pack"] },
+              { "answers": ["catches"], "options": ["catches", "catch"] }
+            ],
+            "presentation": { "word_bank": ["catches", "packs", "catch", "pack"] }
+          },
+          {
+            "prompt": "At the station, Mia {{1}} a book while she {{2}} for her train.",
+            "accepted_answers": [],
+            "options": [],
+            "blanks": [
+              { "answers": ["reads"], "options": ["reads", "read"] },
+              { "answers": ["waits"], "options": ["waits", "wait"] }
+            ],
+            "presentation": { "word_bank": ["waits", "reads", "wait", "read"] }
+          }
+        ]
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Tìm lỗi trong câu · Sửa nhanh",
+      "payload": {
+        "title": "Sửa nhanh",
+        "kind": "multi",
+        "instruction": "Chọn từ đang làm câu sai. Chọn lại để bỏ đánh dấu.",
+        "context": "",
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "presentation": {
+          "interaction": "inline_error_identification",
+          "type": "multi",
+          "categories": []
+        },
+        "questions": [
+          {
+            "prompt": "{{a}} {{b}} {{c}}",
+            "accepted_answers": ["b"],
+            "options": ["a", "b", "c"],
+            "blanks": [],
+            "presentation": {
+              "tokens": [
+                { "id": "a", "text": "She" },
+                { "id": "b", "text": "go" },
+                { "id": "c", "text": "home." }
+              ]
+            }
+          },
+          {
+            "prompt": "{{a}} {{b}} {{c}} {{d}}",
+            "accepted_answers": ["b"],
+            "options": ["a", "b", "c", "d"],
+            "blanks": [],
+            "presentation": {
+              "tokens": [
+                { "id": "a", "text": "They" },
+                { "id": "b", "text": "is" },
+                { "id": "c", "text": "very" },
+                { "id": "d", "text": "kind." }
+              ]
+            }
+          },
+          {
+            "prompt": "{{a}} {{b}} {{c}}",
+            "accepted_answers": ["b"],
+            "options": ["a", "b", "c"],
+            "blanks": [],
+            "presentation": {
+              "tokens": [
+                { "id": "a", "text": "He" },
+                { "id": "b", "text": "have" },
+                { "id": "c", "text": "a bicycle." }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Viết câu ngắn · Từ vựng hằng ngày",
+      "payload": {
+        "title": "Từ vựng hằng ngày",
+        "kind": "text",
+        "instruction": "Viết nghĩa tiếng Anh của mỗi từ. Không cần phân biệt chữ hoa, dấu câu được bỏ qua.",
+        "context": "",
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "presentation": {
+          "interaction": "short_answer",
+          "type": "text",
+          "categories": []
+        },
+        "questions": [
+          { "prompt": "Dịch sang tiếng Anh: xin chào", "accepted_answers": ["hello"], "options": [], "blanks": [], "presentation": {} },
+          { "prompt": "Dịch sang tiếng Anh: quyển sách", "accepted_answers": ["book"], "options": [], "blanks": [], "presentation": {} },
+          { "prompt": "Dịch sang tiếng Anh: người bạn", "accepted_answers": ["friend"], "options": [], "blanks": [], "presentation": {} }
+        ]
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Sắp xếp câu · Một ngày của Mia",
+      "payload": {
+        "title": "Một ngày của Mia",
+        "kind": "order",
+        "instruction": "Chạm vào thẻ từ để ghép câu. Chạm vào từ đã chọn để đưa từ đó trở lại.",
+        "context": "",
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "presentation": {
+          "interaction": "sentence_building",
+          "type": "order",
+          "categories": []
+        },
+        "questions": [
+          {
+            "prompt": "Sắp xếp thành câu hoàn chỉnh.",
+            "accepted_answers": ["a", "b", "c", "d"],
+            "options": [],
+            "blanks": [],
+            "presentation": { "tokens": [{ "id": "a", "text": "Mia" }, { "id": "b", "text": "reads" }, { "id": "c", "text": "a" }, { "id": "d", "text": "book." }] }
+          },
+          {
+            "prompt": "Sắp xếp thành câu hoàn chỉnh.",
+            "accepted_answers": ["a", "b", "c", "d"],
+            "options": [],
+            "blanks": [],
+            "presentation": { "tokens": [{ "id": "a", "text": "We" }, { "id": "b", "text": "walk" }, { "id": "c", "text": "to" }, { "id": "d", "text": "school." }] }
+          },
+          {
+            "prompt": "Sắp xếp thành câu hoàn chỉnh.",
+            "accepted_answers": ["a", "b", "c", "d"],
+            "options": [],
+            "blanks": [],
+            "presentation": { "tokens": [{ "id": "a", "text": "The" }, { "id": "b", "text": "train" }, { "id": "c", "text": "arrives" }, { "id": "d", "text": "early." }] }
+          }
+        ]
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Trắc nghiệm · Chọn đáp án",
+      "payload": {
+        "title": "Chọn đáp án",
+        "kind": "choice",
+        "instruction": "Chọn một đáp án phù hợp nhất cho mỗi câu.",
+        "context": "",
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "presentation": {
+          "interaction": "multiple_choice",
+          "type": "choice",
+          "categories": []
+        },
+        "questions": [
+          { "prompt": "Which word is a greeting?", "accepted_answers": ["hello"], "options": ["hello", "table", "green", "quietly"], "blanks": [], "presentation": {} },
+          { "prompt": "Choose the correct sentence.", "accepted_answers": ["She reads every day."], "options": ["She reads every day.", "She read every day now.", "She reading every day.", "She is read every day."], "blanks": [], "presentation": {} },
+          { "prompt": "What is the opposite of “early”?", "accepted_answers": ["late"], "options": ["fast", "late", "near", "small"], "blanks": [], "presentation": {} }
+        ]
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Phân loại · Lời chào và đồ vật",
+      "payload": {
+        "title": "Lời chào và đồ vật",
+        "kind": "choice",
+        "instruction": "Chọn một thẻ từ, sau đó đưa thẻ vào nhóm phù hợp. Có thể chạm lại để đổi nhóm.",
+        "context": "",
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "presentation": {
+          "interaction": "categorization",
+          "type": "choice",
+          "categories": ["Lời chào", "Đồ vật"]
+        },
+        "questions": [
+          { "prompt": "hello", "accepted_answers": ["Lời chào"], "options": ["Lời chào", "Đồ vật"], "blanks": [], "presentation": {} },
+          { "prompt": "goodbye", "accepted_answers": ["Lời chào"], "options": ["Lời chào", "Đồ vật"], "blanks": [], "presentation": {} },
+          { "prompt": "book", "accepted_answers": ["Đồ vật"], "options": ["Lời chào", "Đồ vật"], "blanks": [], "presentation": {} },
+          { "prompt": "umbrella", "accepted_answers": ["Đồ vật"], "options": ["Lời chào", "Đồ vật"], "blanks": [], "presentation": {} }
+        ]
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Nghe – chép · Lắng nghe",
+      "payload": {
+        "title": "Lắng nghe",
+        "kind": "text",
+        "instruction": "Nghe đoạn âm thanh rồi nhập từ bạn nghe được. Có thể phát lại hoặc giảm tốc độ.",
+        "context": "",
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "presentation": {
+          "interaction": "audio_dictation",
+          "type": "text",
+          "categories": []
+        },
+        "questions": [
+          { "prompt": "Nghe và nhập từ bạn nhận ra.", "accepted_answers": ["beep"], "options": [], "blanks": [], "presentation": { "audio": "/audio/tone.wav" } },
+          { "prompt": "Nghe lại và nhập cùng từ đó.", "accepted_answers": ["beep"], "options": [], "blanks": [], "presentation": { "audio": "/audio/tone.wav" } },
+          { "prompt": "Thử thêm một lần nữa: bạn nghe thấy từ nào?", "accepted_answers": ["beep"], "options": [], "blanks": [], "presentation": { "audio": "/audio/tone.wav" } }
+        ]
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Nối cặp · Từ và nghĩa",
+      "payload": {
+        "title": "Từ và nghĩa",
+        "kind": "matching",
+        "instruction": "Chọn một thẻ ở cột A rồi chọn nghĩa tương ứng ở cột B.",
+        "context": "",
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "presentation": {
+          "interaction": "matching",
+          "type": "matching",
+          "categories": []
+        },
+        "questions": [
+          { "prompt": "xin chào", "accepted_answers": ["hello"], "options": ["hello"], "blanks": [], "presentation": {} },
+          { "prompt": "tạm biệt", "accepted_answers": ["goodbye"], "options": ["goodbye"], "blanks": [], "presentation": {} },
+          { "prompt": "cảm ơn", "accepted_answers": ["thank you"], "options": ["thank you"], "blanks": [], "presentation": {} }
+        ]
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Đúng / Sai / Không có · Bài đọc ngắn",
+      "payload": {
+        "title": "Bài đọc ngắn",
+        "kind": "choice",
+        "instruction": "Đọc đoạn văn, sau đó chọn Đúng, Sai hoặc Không có thông tin.",
+        "context": "Anna reads a book every evening. She usually reads at home, but on Fridays she visits the library. Her brother enjoys drawing and does not read with her.",
+        "presentation": {
+          "interaction": "true_false_not_given",
+          "type": "choice",
+          "categories": []
+        },
+        "questions": [
+          { "prompt": "Anna reads a book every evening.", "accepted_answers": ["TRUE"], "options": ["TRUE", "FALSE", "NOT_GIVEN"], "blanks": [], "presentation": {} },
+          { "prompt": "Anna reads at the library every day.", "accepted_answers": ["FALSE"], "options": ["TRUE", "FALSE", "NOT_GIVEN"], "blanks": [], "presentation": {} },
+          { "prompt": "Anna's favourite book is about animals.", "accepted_answers": ["NOT_GIVEN"], "options": ["TRUE", "FALSE", "NOT_GIVEN"], "blanks": [], "presentation": {} }
+        ]
+      }
+    }
+  ]
+}

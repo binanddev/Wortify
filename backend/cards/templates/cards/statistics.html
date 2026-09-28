@@ -1,7 +1,0 @@
-{% extends 'cards/base.html' %}{% block content %}
-<p class="eyebrow">NHÌN LẠI HÀNH TRÌNH</p><h1>Mỗi lần học đều có ý nghĩa.</h1>
-<section class="stats" aria-label="Thống kê học tập"><div><strong>{{ total }}</strong><span>Lượt học hợp lệ</span></div><div><strong>{{ accuracy }}%</strong><span>Trả lời đúng / đã nhớ</span></div><div><strong>{{ due }}</strong><span>Đến hạn ôn</span></div><div><strong>{{ learning }}</strong><span>Đang học</span></div><div><strong>{{ mastered }}</strong><span>Đã nhớ</span></div></section>
-<section class="panel"><h2>7 ngày gần đây</h2><div class="activity-chart" aria-label="Số lượt học mỗi ngày">{% for day in days %}<div class="activity-day"><strong>{{ day.count }}</strong><div class="bar-track"><div class="bar" style="height:{{ day.height }}%"></div></div><span>{{ day.day|date:'d/m' }}</span></div>{% endfor %}</div></section>
-<div class="section-heading"><h2>Từ cần ôn thêm</h2><a class="button primary" href="{% url 'study' %}?mode=learn">Học hôm nay</a></div>
-{% for item in weak %}<article class="card-row"><div><h3 lang="de">{{ item.card.german_text }}</h3><p>{{ item.card.vietnamese_meaning }}</p><small>{{ item.incorrect_count }} lần cần ôn · Hẹn ôn {{ item.due_at|date:'d/m H:i' }}</small></div><a class="button" href="{% url 'study' %}?deck={{ item.card.deck_id }}&mode=flash&filter=weak">Ôn bộ thẻ</a></article>{% empty %}<div class="panel empty">Chưa có từ khó. Hãy bắt đầu một buổi học để ghi nhận tiến độ.</div>{% endfor %}
-{% endblock %}

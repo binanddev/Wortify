@@ -1,10 +1,20 @@
 import json
+from pathlib import Path
 from django.test import TestCase
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from practice.models import PracticeNode
 
 
 class PracticeHubTests(TestCase):
+    def test_seven_new_types_and_all_styles_import(self):
+        fixture = Path(settings.BASE_DIR.parent) / 'frontend-react/public/templates/practice-hub-v2.json'
+        data = json.loads(fixture.read_text(encoding='utf-8'))
+        self.assertEqual(len({n['payload']['presentation']['interaction'] for n in data['nodes']}), 7)
+        response = self.client.post('/api/en/practice-hub/import/', json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertEqual(len(response.json()['created']), 11)
+
     def setUp(self):
         self.user = get_user_model().objects.create_user('hub', password='test')
         self.client.force_login(self.user)
@@ -50,3 +60,17 @@ class PracticeHubTests(TestCase):
 
     def test_malformed_presentation_is_validation_error(self):
         self.assertEqual(self.create(kind='exercise', title='Invalid', payload={'presentation':[]}).status_code, 400)
+
+    def test_ui_ux_demo_fixture_imports_all_exercise_types(self):
+        fixture = Path(settings.BASE_DIR.parent) / 'frontend-react' / 'public' / 'templates' / 'practice-hub-demo.json'
+        data = json.loads(fixture.read_text(encoding='utf-8'))
+        response = self.client.post(
+            '/api/en/practice-hub/import/',
+            json.dumps(data),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertEqual(len(response.json()['created']), 9)
+        exercises = PracticeNode.objects.filter(owner=self.user, kind='exercise')
+        self.assertEqual(exercises.count(), 9)
+        self.assertTrue(all(len(node.payload['questions']) >= 3 for node in exercises))

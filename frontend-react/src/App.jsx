@@ -1,3 +1,7 @@
+import { Explore } from "./explore";
+import { ExerciseStudio } from "./exercise-studio";
+import { legacyPracticeDestination } from "./practice-navigation";
+import { PracticeGuide } from "./practice-guide";
 import {
   useLearningSync,
   pendingLearning,
@@ -315,8 +319,18 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [route]);
   const section = parts[1] || "flashcard";
+  const legacyDestination =
+    section === "exercise-studio"
+      ? route.replace("/exercise-studio", "/create")
+      : legacyPracticeDestination(lang, section, parts[2]);
   useEffect(() => {
-    if (section === "practice") setNavBack(true);
+    if (legacyDestination) {
+      history.replaceState({}, "", legacyDestination);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    }
+  }, [legacyDestination]);
+  useEffect(() => {
+    if (["practice", "create", "explore"].includes(section)) setNavBack(true);
   }, [section]);
   const contextItems = getContextItems(lang, section, parts);
   let content;
@@ -351,14 +365,37 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       ) : (
         <Library lang={lang} />
       );
-  } else if (section === "practice")
+  } else if (legacyDestination)
+    content = (
+      <Page>
+        <Status>Đang mở Create…</Status>
+      </Page>
+    );
+  else if (section === "create" && parts[2] === "guide")
+    content = <PracticeGuide lang={lang} />;
+  else if (section === "create")
+    content = (
+      <ExerciseStudio
+        key={lang}
+        lang={lang}
+        id={parts[2] === "new" ? undefined : parts[2]}
+        create={parts[2] === "new"}
+        edit={parts[3] === "edit"}
+        parentId={new URLSearchParams(route.split("?")[1]).get("parent")}
+      />
+    );
+  else if (section === "explore")
+    content = (
+      <Explore key={`${lang}:${user.id}`} lang={lang} userId={user.id} />
+    );
+  else if (section === "practice")
     content = (
       <PracticeHub
         key={lang}
         lang={lang}
-        id={parts[2] === "new" ? undefined : parts[2]}
-        createKind={parts[2] === "new" ? parts[3] : undefined}
+        id={parts[2]}
         userId={user.id}
+        sound={prefs.sound}
       />
     );
   else if (section === "profile")
@@ -413,86 +450,90 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                 <span>⌄</span>
               </Link>
 
-            <nav>
-              {[
-                ["flashcard", "cards", "Flashcard"],
-                ["practice", "book", "Practice Hub"],
-              ].map(([id, icon, title]) => (
-                <Link
-                  key={id}
-                  to={`/${lang}/${id}`}
-                  onClick={() => {
-                    if (id === "practice") setNavBack(true);
-                  }}
-                  className={`nav-link ${section === id ? "active" : ""}`}
-                  aria-current={section === id ? "page" : undefined}
-                >
-                  <Icon name={icon} />
-                  {title}
-                  {section === id && <span className="nav-dot" />}
-                </Link>
-              ))}
-            </nav>
+              <nav>
+                {[
+                  ["flashcard", "cards", "Flashcard"],
+                  ["practice", "book", "Practice Hub"],
+                  ["explore", "search", "Explore"],
+                  ["create", "edit", "Create"],
+                ].map(([id, icon, title]) => (
+                  <Link
+                    key={id}
+                    to={`/${lang}/${id}`}
+                    onClick={() => {
+                      if (["practice", "create", "explore"].includes(id))
+                        setNavBack(true);
+                    }}
+                    className={`nav-link ${section === id ? "active" : ""}`}
+                    aria-current={section === id ? "page" : undefined}
+                  >
+                    <Icon name={icon} />
+                    {title}
+                    {section === id && <span className="nav-dot" />}
+                  </Link>
+                ))}
+              </nav>
 
-            <nav>
-              {[
-                ["profile", "user", "Hành trình học"],
-                ["classes", "class", "Lớp học & chia sẻ"],
-              ].map(([id, icon, title]) => (
+              <nav>
+                {[
+                  ["profile", "user", "Hành trình học"],
+                  ["classes", "class", "Lớp học & chia sẻ"],
+                ].map(([id, icon, title]) => (
+                  <Link
+                    key={id}
+                    to={`/${lang}/${id}`}
+                    onClick={() => {
+                      if (["practice", "create", "explore"].includes(id))
+                        setNavBack(true);
+                    }}
+                    className={`nav-link ${section === id ? "active" : ""}`}
+                    aria-current={section === id ? "page" : undefined}
+                  >
+                    <Icon name={icon} />
+                    {title}
+                  </Link>
+                ))}
+              </nav>
+              <div className="sidebar-bottom">
+                {user.superuser && (
+                  <Link className="nav-link" to={`/${lang}/admin`}>
+                    Quản trị người dùng
+                  </Link>
+                )}
                 <Link
-                  key={id}
-                  to={`/${lang}/${id}`}
-                  onClick={() => {
-                    if (id === "practice") setNavBack(true);
-                  }}
-                  className={`nav-link ${section === id ? "active" : ""}`}
-                  aria-current={section === id ? "page" : undefined}
+                  className={`nav-link ${section === "settings" ? "active" : ""}`}
+                  to={`/${lang}/settings`}
                 >
-                  <Icon name={icon} />
-                  {title}
+                  <Icon name="settings" />
+                  Cài đặt học tập
                 </Link>
-              ))}
-            </nav>
-            <div className="sidebar-bottom">
-              {user.superuser && (
-                <Link className="nav-link" to={`/${lang}/admin`}>
-                  Quản trị người dùng
-                </Link>
-              )}
-              <Link
-                className={`nav-link ${section === "settings" ? "active" : ""}`}
-                to={`/${lang}/settings`}
-              >
-                <Icon name="settings" />
-                Cài đặt học tập
-              </Link>
-              <div className="account">
-                <Link to={`/${lang}/profile`} className="account-name">
-                  <span className="avatar">
-                    {user.username[0].toUpperCase()}
-                  </span>
-                  <span>{user.username}</span>
-                </Link>
-                <Btn
-                  aria-label="Đăng xuất"
-                  isLoading={action.pending}
-                  onClick={() =>
-                    action.run(async (s) => {
-                      await Promise.all([
-                        flushLearning(user.id, "en"),
-                        flushLearning(user.id, "de"),
-                      ]);
-                      await request("/api/session/", "DELETE", undefined, s);
-                      setUser(null);
-                      navigate("/");
-                    })
-                  }
-                >
-                  <Icon name="logout" size={18} />
-                </Btn>
+                <div className="account">
+                  <Link to={`/${lang}/profile`} className="account-name">
+                    <span className="avatar">
+                      {user.username[0].toUpperCase()}
+                    </span>
+                    <span>{user.username}</span>
+                  </Link>
+                  <Btn
+                    aria-label="Đăng xuất"
+                    isLoading={action.pending}
+                    onClick={() =>
+                      action.run(async (s) => {
+                        await Promise.all([
+                          flushLearning(user.id, "en"),
+                          flushLearning(user.id, "de"),
+                        ]);
+                        await request("/api/session/", "DELETE", undefined, s);
+                        setUser(null);
+                        navigate("/");
+                      })
+                    }
+                  >
+                    <Icon name="logout" size={18} />
+                  </Btn>
+                </div>
+                <Status error={action.error || sync.error} />
               </div>
-              <Status error={action.error || sync.error} />
-            </div>
             </aside>
           </div>
           <div className={`nav-face nav-back ${navBack ? "is-active" : ""}`}>
@@ -539,6 +580,8 @@ function getContextItems(lang, section, parts) {
       {
         flashcard: parts[2] === "deck" ? "Bộ thẻ" : "Flashcard",
         practice: "Practice Hub",
+        explore: "Explore",
+        create: "Create",
         settings: "Cài đặt",
         profile: "Hành trình học",
         classes: "Lớp học",

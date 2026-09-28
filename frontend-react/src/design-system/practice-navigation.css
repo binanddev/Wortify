@@ -1,0 +1,304 @@
+.learning-navigation,
+.studio-navigation,
+.studio-import-tools {
+  @apply grid gap-[14px] [min-width:0];
+}
+.learning-navigation nav,
+.studio-shortcuts,
+.studio-actions,
+.studio-selected,
+.studio-folder-name {
+  @apply grid gap-[10px];
+}
+.learning-folder {
+  @apply [border:0] p-[0_0_0_8px];
+}
+.learning-folder > summary {
+  @apply cursor-pointer p-[12px_4px] [font-weight:600];
+  @apply text-[14px] wrap-anywhere;
+}
+.learning-nav-item {
+  @apply flex gap-[10px] p-[12px] rounded-[14px] text-(--ink) min-h-[52px] [transition:background_0.15s];
+}
+.learning-nav-item > span:last-child {
+  @apply [min-width:0] wrap-anywhere;
+}
+.learning-nav-item small {
+  @apply block text-[11px] mt-[5px] text-(--muted);
+}
+.learning-nav-item:hover,
+.learning-nav-item.active {
+  @apply [background:#ede9fe] text-[#6d28d9];
+}
+.learning-related {
+  @apply grid gap-[12px] pt-[16px] [border-top:1px_solid_var(--line)];
+}
+.learning-welcome,
+.studio-welcome {
+  @apply max-w-[650px] m-[12vh_auto] text-center [line-height:1.8];
+}
+.learning-welcome > span,
+.studio-welcome > span {
+  @apply block text-[48px] mb-[22px];
+}
+.learning-welcome h1,
+.studio-welcome h1 {
+  @apply text-[clamp(25px,3vw,38px)] [letter-spacing:-0.035em];
+}
+.studio-content {
+  @apply max-w-[1000px] m-auto;
+}
+.studio-content .native-field textarea {
+  @apply [font:15px/1.8_ui-monospace,monospace] p-[24px] rounded-[20px];
+}
+.studio-selected,
+.studio-folder-name,
+.sidebar-confirm {
+  @apply p-[14px] [border:1px_solid_var(--line)];
+  @apply rounded-[16px];
+}
+.studio-navigation .practice-library {
+  @apply mt-[6px];
+}
+.studio-navigation .library-heading h2 {
+  @apply text-[15px];
+}
+.studio-navigation .library-heading > span {
+  @apply text-[11px];
+}
+.studio-navigation .hub-grid {
+  @apply grid-cols-[minmax(0,1fr)] gap-[10px] mt-[12px];
+}
+.studio-navigation .library-card {
+  @apply [min-height:0] p-[13px] rounded-[16px] gap-[8px] [box-shadow:none];
+}
+.studio-navigation .library-card:hover {
+  @apply transform-none;
+}
+.studio-navigation .library-card-top {
+  @apply gap-[8px];
+}
+.studio-navigation .library-card-icon {
+  @apply w-[28px] h-[28px] rounded-[8px] text-[18px];
+}
+.studio-navigation .library-card-title {
+  @apply text-[14px];
+}
+.studio-navigation .library-card small {
+  @apply text-[11px];
+}
+.studio-navigation .library-card-actions {
+  @apply gap-[2px];
+}
+.studio-navigation .library-card-actions button {
+  @apply p-[6px_8px] min-h-[36px] text-[12px];
+}
+.studio-navigation .selection-bar {
+  @apply p-[10px] rounded-[14px] gap-[7px];
+}
+.studio-navigation .selection-bar strong {
+  @apply w-full text-[13px];
+}
+.studio-navigation .destination-picker {
+  @apply p-[12px] rounded-[14px] max-h-[350px];
+}
+.studio-navigation .destination-picker h3 {
+  @apply text-[15px];
+}
+.studio-navigation .library-notice {
+  @apply flex-wrap text-[12px];
+}
+.studio-import-tools .practice-file-drop {
+  @apply p-[16px_10px] rounded-[16px] text-[13px];
+}
+.studio-import-tools input[type="file"] {
+  @apply w-full text-[12px];
+}
+.studio-import-tools details {
+  @apply p-[12px] [border:1px_solid_var(--line)];
+  @apply rounded-[14px];
+}
+.studio-import-tools summary {
+  @apply cursor-pointer mb-[10px] [font-weight:600];
+}
+.studio-import-tools details > :not(summary) {
+  @apply mt-[10px];
+}
+.studio-import-tools .btn {
+  @apply whitespace-normal text-center;
+}
+.studio-preview-content {
+  @apply grid gap-[20px];
+}
+/* Compact navigation; detailed tools are displayed in dialogs. */
+.practice-tree ul {
+  @apply [list-style:none] [padding:0] [margin:0];
+}
+.practice-tree-row {
+  @apply flex items-center gap-[6px] min-h-[32px] rounded-[6px] pr-[5px] text-(--muted,#687080) [transition:background_0.15s_ease];
+}
+.practice-tree-row:hover {
+  @apply [background:rgba(128,120,150,0.08)];
+}
+.practice-tree-row.active {
+  @apply [background:rgba(138,112,210,0.13)] text-(--text,#51446d);
+}
+.practice-tree-row.drop-target {
+  @apply [outline:2px_solid_#a894dd] [background:rgba(138,112,210,0.15)];
+}
+.practice-tree-row svg {
+  @apply shrink-0;
+}
+.practice-tree-row .tree-title {
+  @apply [min-width:0] flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[13px] p-[6px_0] text-inherit;
+  @apply [text-decoration:none];
+}
+.tree-icon {
+  @apply [border:0] [background:transparent] text-inherit inline-flex items-center;
+  @apply justify-center w-[24px] h-[26px] rounded-[5px] shrink-0 cursor-pointer;
+}
+.tree-icon:hover {
+  @apply [background:rgba(128,120,150,0.14)];
+}
+.tree-icon:focus-visible {
+  @apply [outline:2px_solid_#9b84ce];
+  @apply outline-offset-1;
+}
+.tree-spacer {
+  @apply w-[24px] shrink-0;
+}
+.tree-settings {
+  @apply opacity-[0.45];
+}
+.practice-tree-row:hover .tree-settings,
+.tree-settings:focus-visible {
+  @apply opacity-[1];
+}
+.practice-tree-row small {
+  @apply text-[10px] p-[0_5px];
+  @apply [font-variant-numeric:tabular-nums];
+}
+.studio-nav-heading {
+  @apply flex items-center;
+  @apply justify-between text-[12px] mt-[12px] text-(--muted,#687080);
+}
+.practice-modal {
+  @apply max-h-[calc(100dvh-40px)];
+}
+.practice-modal [data-slot="body"] {
+  @apply pb-[24px] gap-[16px];
+}
+.practice-modal .studio-import-tools {
+  @apply grid gap-[14px];
+}
+.practice-modal .studio-actions,
+.practice-modal .studio-folder-name,
+.practice-modal .studio-selected {
+  @apply flex flex-wrap items-center gap-[12px];
+}
+.practice-modal .studio-selected h3 {
+  @apply basis-full;
+}
+.practice-modal .hub-grid {
+  @apply grid-cols-[repeat(auto-fit,minmax(220px,1fr))];
+}
+.practice-modal .destination-picker {
+  @apply static w-full max-h-[280px] overflow-auto;
+}
+.practice-modal .library-heading h2 {
+  @apply text-[16px];
+}
+@media (prefers-reduced-motion: reduce) {
+  .practice-tree-row {
+    @apply [transition:none];
+  }
+}
+/* Readable workspace tree and library. */
+.practice-tree-row {
+  @apply text-(--text,#303543);
+}
+.practice-tree-row .tree-title {
+  @apply text-[14px];
+  @apply [font-weight:550];
+}
+.practice-tree-row small {
+  @apply text-(--text,#404657) opacity-[0.85];
+}
+.learning-navigation {
+  @apply min-h-[min(65dvh,720px)];
+}
+.workspace-browse {
+  @apply mt-auto flex items-center gap-[9px] [border-top:1px_solid_rgba(128,120,150,0.18)] p-[15px_8px_5px] text-inherit text-[13px];
+}
+.workspace-browse:hover {
+  @apply text-[#7656b1];
+}
+.catalog-grid {
+  @apply grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-[16px] mt-[22px];
+}
+.catalog-card {
+  @apply grid grid-cols-[24px_1fr] gap-[10px] [align-items:start] p-[20px] [border:1px_solid_rgba(128,120,150,0.2)];
+  @apply rounded-[16px] [background:rgba(150,135,180,0.04)];
+}
+.catalog-card a {
+  @apply [font-weight:600] text-inherit wrap-anywhere;
+}
+.catalog-card small {
+  @apply col-2 text-(--muted,#687080);
+}
+.catalog-pin {
+  @apply col-2 inline-flex items-center gap-[7px];
+  @apply [justify-self:start] [background:transparent] [border:1px_solid_rgba(128,120,150,0.2)];
+  @apply rounded-[8px] p-[6px_9px] text-inherit cursor-pointer;
+}
+.catalog-pin[aria-pressed="true"] {
+  @apply [background:rgba(140,110,200,0.12)];
+}
+.movable-gap .gap-bank-token {
+  @apply inline-flex [border:0] [background:transparent] [padding:0] cursor-grab text-inherit touch-none;
+}
+.movable-gap .gap-drop {
+  @apply touch-none;
+}
+.movable-gap .movable-token,
+.gap-held-token {
+  @apply inline-flex items-center;
+  @apply justify-center p-[10px_17px] rounded-[12px];
+  @apply [border:1px_solid_#b9aad8] [background:var(--surface,#f6f0ff)] text-(--text,#30263e) font-[inherit];
+  @apply text-[17px];
+  @apply [font-weight:600];
+  @apply [line-height:1.3] [box-shadow:0_3px_0_rgba(109,83,156,0.15)] [user-select:none];
+}
+.movable-gap .gap-drop.filled {
+  @apply [padding:0] border-transparent [background:transparent];
+}
+.gap-held-token {
+  @apply fixed z-100000 pointer-events-none box-border;
+  @apply [box-shadow:0_12px_24px_rgba(62,40,102,0.22)] [transform:rotate(-2deg)] text-[17px];
+  @apply [font-weight:600];
+}
+.movable-gap .word-bank {
+  @apply min-h-[65px];
+}
+.movable-gap button:focus-visible {
+  @apply [outline:2px_solid_#8c67c9];
+  @apply outline-offset-4;
+}
+[data-background="night"] .practice-tree-row {
+  @apply text-[#f0edf7];
+}
+[data-background="night"] .movable-token,
+[data-background="night"] .gap-held-token {
+  @apply [background:#393047] text-[#f8f4ff];
+}
+
+.learning-navigation {
+  @apply flex flex-col;
+}
+
+.workspace-browse {
+  @apply self-start p-[12px] rounded-[8px];
+}
+.practice-tree-row small {
+  @apply text-(--ink,#303543);
+}

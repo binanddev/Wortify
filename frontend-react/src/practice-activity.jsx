@@ -1,327 +1,231 @@
-import { gradeExercise } from "./local-learning";
-import {
-  TypeQuestion,
-  GapPassage,
-  MatchPairs,
-  Categories,
-} from "./exercise-interactions";
-import { modeOf } from "./exercise-types";
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { useAction, readPreference, savePreference } from "./core";
-import { Btn, Page, Status } from "./ui";
-function ClozePractice({ data, id, userId, practiceOnly, onComplete }) {
-  const e = data.exercise;
-  const questions = data.questions.filter((q) => !q.example);
-  const [index, setIndex] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [completedAnswers, setCompletedAnswers] = useState({});
-  const [checked, setChecked] = useState(null);
-  const action = useAction();
-  const question = questions[index];
-  const keys = question?.blanks?.map((_, i) => `${question.id}_${i}`) || [];
-  const complete = Boolean(question) && keys.every((key) =>
-    String(answers[key] ?? "").trim(),
-  );
-  const update = (key, value) => {
-    setAnswers((current) => ({ ...current, [key]: value }));
-    setChecked(null);
-    action.setError("");
-  };
-  const evaluate = (values) => {
-    const result = gradeExercise(e, [question], values);
-    setChecked(result);
-    if (result.answers.every((row) => row.correct)) {
-      const next = { ...completedAnswers, ...values };
-      setCompletedAnswers(next);
-      if (index === questions.length - 1) onComplete?.(next);
-    }
-  };
-  useEffect(() => {
-    if (complete && !checked) evaluate(answers);
-  }, [complete, answers, checked]);
-  if (!question) return <Status>Không có câu hỏi để luyện.</Status>;
-  const check = () => {
-    if (!complete) {
-      action.setError("Hãy điền đủ các chỗ trống trước khi kiểm tra.");
-      return;
-    }
-    evaluate(answers);
-  };
-  const next = () => {
-    if (index >= questions.length - 1) return;
-    setIndex((value) => value + 1);
-    setChecked(null);
-    setCompletedAnswers((current) => ({ ...current, ...answers }));
-    setAnswers({});
-    action.setError("");
-  };
-  const rows = checked?.answers || [];
-  const correct = checked && rows.every((row) => row.correct);
-  return (
-    <Page>
-      <div className="exercise-workspace cloze-practice">
-        {e.instruction && (
-          <p className="exercise-instruction">{e.instruction}</p>
-        )}
-        <div className="exercise-progress">
-          <span>
-            Câu {index + 1}/{questions.length}
-          </span>
-          <progress value={index + (correct ? 1 : 0)} max={questions.length} />
-        </div>
-        {e.context && (
-          <aside className="reading-document">
-            <h2>Bài đọc</h2>
-            <div>{e.context}</div>
-          </aside>
-        )}
-        <section className={`work-paper cloze-question ${checked ? (correct ? "is-correct" : "is-incorrect") : ""}`}>
-          <div className="question-label">Câu {question.position}</div>
-          <GapPassage
-            q={question}
-            mode={modeOf(e)}
-            answers={answers}
-            onAnswer={update}
-            disabled={Boolean(correct)}
-            rows={rows}
-          />
-          {checked && (
-            <div className={`work-feedback ${correct ? "right" : "wrong"}`} role="status">
-              <strong>{correct ? "✓ Chính xác" : "↻ Chưa chính xác"}</strong>
-              {!correct && (
-                <p>
-                  Hãy thử lại các từ chưa đúng.
-                </p>
-              )}
-            </div>
-          )}
-        </section>
-        <Status error={action.error} />
-        <div className="work-submit">
-          <span>{index + 1} / {questions.length}</span>
-          {correct && index < questions.length - 1 ? (
-            <Btn primary onClick={next}>Tiếp tục</Btn>
-          ) : (
-            <Btn primary onClick={check} isDisabled={Boolean(correct)}>
-              {correct && index === questions.length - 1
-                ? "Hoàn thành"
-                : "Kiểm tra"}
-            </Btn>
-          )}
-        </div>
-      </div>
-    </Page>
-  );
-}
+import { gradeExercise } from "./local-learning";
+import { TypeQuestion, MatchPairs, Categories } from "./exercise-interactions";
+import { exerciseStylesOf, modeOf } from "./exercise-types";
+import { readPreference, savePreference } from "./core";
+import { Btn, Icon, Status, useSound } from "./ui";
+import { mergeProgress, readyToCheck } from "./practice-session";
 
 export function PracticeActivity({
   data,
   id,
   userId,
   preview = false,
-  practiceOnly = false,
-  onComplete,
+  onProgress,
+  sound = false,
+  lang,
+  uiStyle,
 }) {
-  const e = data.exercise,
-    questions = data.questions.filter((q) => !q.example),
-    mode = modeOf(e),
-    key = `wortify:answers:${userId}:${id}:${questions.map((q) => q.id).join("-")}`;
-  const [answers, setAnswers] = useState(() =>
-      preview ? {} : readPreference(key, {}),
+  const e = data.exercise;
+  const questions = data.questions.filter((q) => !q.example);
+  const mode = modeOf(e);
+  const style =
+    uiStyle || e.presentation?.style || exerciseStylesOf(mode)[0][0];
+  const storageKey = `wortify:practice-progress:${userId}:${lang}:${id}`;
+  const [completed, setCompleted] = useState(() =>
+    mergeProgress(
+      questions,
+      data.progress?.completed,
+      preview ? [] : readPreference(storageKey, []),
     ),
-    [submitted, setSubmitted] = useState({}),
-    [result, setResult] = useState(null),
-    [missing, setMissing] = useState([]);
-  const action = useAction(),
-    ref = useRef();
-  useEffect(() => {
-    if (!preview) savePreference(key, answers);
-  }, [key, answers, preview]);
-  const update = (k, v) => {
-    setAnswers((a) => ({ ...a, [k]: v }));
-    setMissing((m) => m.filter((x) => x !== k));
-  };
-  const keys = (q) =>
-    q.blank_count
-      ? Array.from({ length: q.blank_count }, (_, i) => `${q.id}_${i}`)
-      : [String(q.id)];
-  const has = (k) =>
-    Array.isArray(answers[k])
-      ? answers[k].length > 0
-      : Boolean(String(answers[k] ?? "").trim());
-  const rowsFor = (q) =>
-    (result?.answers || []).filter(
-      (r) =>
-        r.question_position === q.position &&
-        JSON.stringify(answers[r.key]) === JSON.stringify(submitted[r.key]),
+  );
+  const [index, setIndex] = useState(() => {
+    const done = mergeProgress(
+      questions,
+      data.progress?.completed,
+      preview ? [] : readPreference(storageKey, []),
     );
+    const next = questions.findIndex((q) => !done.includes(String(q.id)));
+    return next < 0 ? questions.length : next;
+  });
+  const [answers, setAnswers] = useState({});
+  const [feedback, setFeedback] = useState(null);
+  const [composing, setComposing] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(sound);
+  const [replaying, setReplaying] = useState(false);
+  const checked = useRef("");
+  const sentProgress = useRef(
+    JSON.stringify(mergeProgress(questions, data.progress?.completed).sort()),
+  );
+  const paper = useRef(null);
+  const callback = useRef(onProgress);
+  callback.current = onProgress;
+  const sounds = useSound(soundEnabled, lang);
+  const question = questions[index];
+  const typed = ["short_answer", "error_correction"].includes(mode);
+  useEffect(() => setSoundEnabled(sound), [sound]);
+  useEffect(() => {
+    if (index > 0 && index < questions.length)
+      paper.current?.focus({ preventScroll: true });
+  }, [index]);
+  useEffect(() => {
+    if (!preview) savePreference(storageKey, completed);
+  }, [storageKey, completed, preview]);
+  useEffect(() => {
+    const signature = JSON.stringify([...completed].sort());
+    if (!preview && completed.length && signature !== sentProgress.current) {
+      sentProgress.current = signature;
+      callback.current?.(completed);
+    }
+  }, [completed, preview]);
+  useEffect(() => {
+    if (
+      !question ||
+      composing ||
+      feedback?.correct ||
+      !readyToCheck(question, answers)
+    )
+      return;
+    const fingerprint = JSON.stringify([question.id, answers]);
+    if (checked.current === fingerprint) return;
+    const timer = setTimeout(
+      () => {
+        checked.current = fingerprint;
+        const result = gradeExercise(e, [question], answers);
+        const correct = result.answers.every((row) => row.correct);
+        setFeedback({ correct, rows: result.answers, fingerprint });
+        sounds.feedback(correct);
+        if (correct)
+          setCompleted((current) =>
+            mergeProgress(questions, current, [String(question.id)]),
+          );
+      },
+      typed ? 1400 : 250,
+    );
+    return () => clearTimeout(timer);
+  }, [answers, question, composing, feedback?.correct]);
+  useEffect(() => {
+    if (!feedback?.correct) return;
+    const timer = setTimeout(() => {
+      const next = replaying
+        ? index + 1
+        : questions.findIndex(
+            (q, i) => i > index && !completed.includes(String(q.id)),
+          );
+      setIndex(next < 0 ? questions.length : next);
+      setAnswers({});
+      setFeedback(null);
+      checked.current = "";
+      if (index === questions.length - 1) sounds.applause();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [feedback?.correct, index]);
+  const update = (key, value) => {
+    if (feedback?.correct) return;
+    if (JSON.stringify(answers[key]) === JSON.stringify(value)) return;
+    setAnswers((current) => ({ ...current, [key]: value }));
+    setFeedback(null);
+    if (!typed) sounds.tick();
+  };
   const props = {
     exercise: e,
-    questions,
+    questions: question ? [question] : [],
+    q: question,
     answers,
     onAnswer: update,
-    disabled: action.pending,
-    assets: data.assets,
+    disabled: Boolean(feedback?.correct),
+    uiStyle: style,
+    rows: feedback?.rows || [],
   };
-  if (mode === "cloze_drag_drop") {
-    return (
-      <ClozePractice
-        {...{ data, id, userId, practiceOnly, onComplete }}
-      />
-    );
-  }
-  async function submit(event) {
-    event.preventDefault();
-
-    const empty = questions.flatMap(keys).filter((k) => !has(k));
-    setMissing(empty);
-    if (empty.length) {
-      action.setError("Hoàn thành các câu được đánh dấu.");
-      ref.current
-        ?.querySelector(`[data-question="${empty[0].split("_")[0]}"]`)
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
-
-    setResult(gradeExercise(e, questions, answers));
-    setSubmitted(structuredClone(answers));
-    if (!preview && JSON.stringify(submitted) !== JSON.stringify(answers))
-      onComplete?.(structuredClone(answers));
-    action.setError("");
-  }
+  if (!questions.length) return <Status>Chưa có câu hỏi trong bài này.</Status>;
   return (
-    <Page>
-      <div
-        className={`exercise-workspace ${preview ? "preview-workspace" : ""}`}
-      >
-        {e.instruction && (
-          <p className="exercise-instruction">{e.instruction}</p>
-        )}
-        {!preview && (
-          <div className="exercise-progress">
-            <span>
-              {questions.filter((q) => keys(q).every(has)).length}/
-              {questions.length} câu
-            </span>
-            <progress
-              value={questions.filter((q) => keys(q).every(has)).length}
-              max={questions.length || 1}
-            />
-          </div>
-        )}
-        <form
-          ref={ref}
-          onSubmit={submit}
-          noValidate
-          className={mode === "true_false_not_given" ? "reading-split" : ""}
+    <div className="exercise-workspace practice-journey" data-ui-style={style}>
+      <div className="journey-topline">
+        <span>
+          {index >= questions.length
+            ? "Chặng học hoàn tất"
+            : `Câu ${index + 1} / ${questions.length}`}
+        </span>
+        <progress
+          aria-label="Tiến độ bài học"
+          value={
+            replaying ? Math.min(index, questions.length) : completed.length
+          }
+          max={questions.length}
+        />
+        <button
+          type="button"
+          className="exercise-sound-toggle"
+          aria-label={
+            soundEnabled ? "Tắt âm thanh bài tập" : "Bật âm thanh bài tập"
+          }
+          aria-pressed={soundEnabled}
+          onClick={() => setSoundEnabled((v) => !v)}
         >
-          {e.context && (
-            <aside className="reading-document">
-              <h2>Bài đọc</h2>
-              <div>{e.context}</div>
-            </aside>
-          )}
-          <div className="exercise-questions">
-            {mode === "matching" ? (
-              <section className="work-paper">
-                <MatchPairs {...props} />
-              </section>
-            ) : mode === "categorization" ? (
-              <section className="work-paper">
-                <Categories {...props} />
-              </section>
-            ) : (
-              questions.map((q) => (
-                <section
-                  tabIndex={-1}
-                  data-question={q.id}
-                  className={`work-paper ${keys(q).some((k) => missing.includes(k)) ? "has-error" : ""}`}
-                  key={q.id}
-                >
-                  <div className="question-label">Câu {q.position}</div>
-                  {!q.blank_count &&
-                    ![
-                      "inline_error_identification",
-                      "audio_dictation",
-                    ].includes(mode) && (
-                      <p className="work-prompt">{q.prompt}</p>
-                    )}
-                  <TypeQuestion {...props} q={q} rows={rowsFor(q)} />
-                  {keys(q).some((k) => missing.includes(k)) && (
-                    <p className="field-error">Chưa hoàn thành câu này.</p>
-                  )}
-                  {rowsFor(q).map((r, i) => (
-                    <motion.div
-                      key={`${result.id}-${i}`}
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={`work-feedback ${r.correct === true ? "right" : r.correct === false ? "wrong" : ""}`}
-                      role="status"
-                    >
-                      <strong>
-                        {r.label ? `${r.label} · ` : ""}
-                        {r.correct === true
-                          ? "✓ Chính xác"
-                          : r.correct === false
-                            ? "↻ Chưa chính xác"
-                            : practiceOnly
-                              ? "Tự đối chiếu với gợi ý"
-                              : "Đã lưu"}
-                      </strong>
-                      {(r.correct === false ||
-                        (practiceOnly && r.correct === null)) &&
-                        r.expected?.length > 0 && (
-                          <p>
-                            Đáp án: <b>{r.expected.join(" / ")}</b>
-                          </p>
-                        )}
-                      {r.explanation && <p>{r.explanation}</p>}
-                      {r.diff && (
-                        <p className="dictation-diff">
-                          {r.diff.map((word, j) => (
-                            <span className={word.state} key={j}>
-                              {word.text}{" "}
-                            </span>
-                          ))}
-                        </p>
-                      )}
-                    </motion.div>
-                  ))}
-                </section>
-              ))
-            )}
-            {["matching", "categorization"].includes(mode) && result && (
-              <div className="pair-results">
-                {result.answers.map((r, i) => (
-                  <div
-                    key={i}
-                    className={`work-feedback ${r.correct ? "right" : "wrong"}`}
-                  >
-                    <strong>
-                      {r.correct ? "✓" : "↻"} {r.prompt}
-                    </strong>
-                    {!r.correct && <p>{r.expected.join(" / ")}</p>}
-                  </div>
-                ))}
-              </div>
-            )}
-            {(!preview || practiceOnly) && (
-              <>
-                <Status error={action.error} />
-                <div className="work-submit">
-                  <span>
-                    {result ? `${result.score}/${result.total} đúng` : ""}
-                  </span>
-                  <Btn primary type="submit" isLoading={action.pending}>
-                    {result ? "Kiểm tra lại" : "Kiểm tra và lưu"}
-                  </Btn>
-                </div>
-              </>
-            )}
-          </div>
-        </form>
+          <Icon name="sound" size={18} />
+        </button>
       </div>
-    </Page>
+      {index >= questions.length ? (
+        <section className="journey-finish" role="status">
+          <span className="finish-mascot" aria-hidden="true">
+            🌷
+          </span>
+          <h2>Bạn đã làm được rồi!</h2>
+          <p>
+            Mỗi câu đã hoàn thành là một bước tiến nhỏ. Hẹn bạn ở bài tiếp theo
+            nhé.
+          </p>
+          <Btn
+            onClick={() => {
+              setReplaying(true);
+              setIndex(0);
+              setAnswers({});
+              setFeedback(null);
+              checked.current = "";
+            }}
+          >
+            Luyện lại cho vững
+          </Btn>
+        </section>
+      ) : (
+        <>
+          {e.instruction && (
+            <p className="exercise-instruction">{e.instruction}</p>
+          )}
+          {e.context && <aside className="reading-document">{e.context}</aside>}
+          <section
+            ref={paper}
+            tabIndex={-1}
+            key={question.id}
+            className={`work-paper journey-question ${feedback ? (feedback.correct ? "is-correct" : "is-incorrect") : ""}`}
+            onCompositionStart={() => setComposing(true)}
+            onCompositionEnd={() => setComposing(false)}
+          >
+            {!question.blanks?.length &&
+              !["error_correction", "matching", "categorization"].includes(
+                mode,
+              ) && <p className="work-prompt">{question.prompt}</p>}
+            {mode === "matching" ? (
+              <MatchPairs {...props} />
+            ) : mode === "categorization" ? (
+              <Categories {...props} />
+            ) : (
+              <TypeQuestion {...props} />
+            )}
+            <div
+              className={`journey-feedback ${feedback ? (feedback.correct ? "right" : "wrong") : ""}`}
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {feedback
+                ? feedback.correct
+                  ? "✨ Đúng rồi! Mình sang câu tiếp nhé."
+                  : "🌱 Gần tới rồi! Sửa một chút và thử lại nhé."
+                : typed
+                  ? "Viết xong, dừng một chút để tự kiểm tra."
+                  : "Hoàn thành câu này, mình sẽ tự kiểm tra cho bạn."}
+              {feedback?.correct && question.presentation?.explanation && (
+                <p>{question.presentation.explanation}</p>
+              )}
+            </div>
+          </section>
+          {!preview && (
+            <small className="journey-save-note">
+              Tiến độ được giữ tự động. Bạn có thể quay lại bất cứ lúc nào.
+            </small>
+          )}
+        </>
+      )}
+    </div>
   );
 }

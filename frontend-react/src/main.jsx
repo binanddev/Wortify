@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { HeroUIProvider } from "@heroui/react";
 import { MotionConfig } from "framer-motion";
 import App from "./App";
-import "./styles.css";
+import "./design-system/index.css";
 class Boundary extends Component {
   state = { error: false };
   static getDerivedStateFromError() {
@@ -24,7 +24,38 @@ class Boundary extends Component {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <HeroUIProvider>
-      <svg aria-hidden="true" width="0" height="0" style={{position:"fixed",pointerEvents:"none"}}><defs><filter id="liquid-refraction" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="1" seed="4" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+      <svg
+        aria-hidden="true"
+        width="0"
+        height="0"
+        style={{ position: "fixed", pointerEvents: "none" }}
+      >
+        <defs>
+          <filter
+            id="liquid-refraction"
+            x="-10%"
+            y="-10%"
+            width="120%"
+            height="120%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.015"
+              numOctaves="1"
+              seed="4"
+              result="noise"
+            />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="noise"
+              scale="3"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+        </defs>
+      </svg>
       <MotionConfig reducedMotion="user">
         <Boundary>
           <App />
@@ -33,4 +64,3 @@ createRoot(document.getElementById("root")).render(
     </HeroUIProvider>
   </StrictMode>,
 );
-import "./glass.css";

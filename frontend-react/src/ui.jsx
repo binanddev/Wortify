@@ -153,14 +153,14 @@ export function Loading({ resource, children }) {
     );
   return children(resource.data);
 }
-export function SidebarTools({ children }) {
+export function SidebarTools({ children, navOnly = false }) {
   const [target, setTarget] = useState(null);
   useEffect(() => {
     setTarget(document.getElementById("workspace-tools"));
   }, []);
   return target ? (
     createPortal(<div className="sidebar-tools-group">{children}</div>, target)
-  ) : (
+  ) : navOnly ? null : (
     <div className="sidebar-tools-group">{children}</div>
   );
 }

@@ -60,7 +60,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,9 +122,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/admin/'
+LOGOUT_REDIRECT_URL = '/admin/login/'
 MEDIA_ROOT = BASE_DIR / 'private_media'
 STT_PROVIDER = os.environ.get('STT_PROVIDER', '')
 TTS_PROVIDER = os.environ.get('TTS_PROVIDER', '')
@@ -162,10 +162,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEST_RUNNER = 'api.test_runner.PlatformRunner'
 MIDDLEWARE += ['api.middleware.PrivateResponsesMiddleware']
 
-# Only the React build is served. frontend/ is disconnected.
-REACT_DIST = BASE_DIR.parent / "frontend-react" / "dist"
-if REACT_DIST.exists():
-    STATICFILES_DIRS += [("react", REACT_DIST)]
-
 # Community features are available by default; deployments can disable them explicitly.
 COMMUNITY_ENABLED = os.environ.get('COMMUNITY_ENABLED', '1') == '1'
+
+# Application clients bootstrap CSRF through /api/session/. Admin retains Django HTML.
+CSRF_FAILURE_VIEW = "api.errors.csrf_failure"
+
+if os.environ.get("DJANGO_TRUST_PROXY") == "1":
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

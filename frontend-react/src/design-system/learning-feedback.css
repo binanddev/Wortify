@@ -1,0 +1,164 @@
+@media (hover: none) {
+  .hub-tree .tree-move {
+    @apply opacity-[1];
+  }
+}
+.star-button {
+  @apply min-w-[42px]! w-[42px] h-[42px] [padding:0]! [border:0]! text-[27px]!;
+  @apply [line-height:1];
+}
+.star-button[aria-pressed="true"] {
+  @apply text-[#a76500]! [background:#fff0c3]!;
+}
+.answer-options {
+  @apply grid gap-[10px];
+}
+.answer-option {
+  @apply flex items-center gap-[12px] [border:2px_solid_var(--line)] p-[14px_16px];
+  @apply rounded-[14px] [background:var(--surface)] text-(--ink) text-[20px];
+  @apply [font-weight:650] text-left cursor-pointer [transition:background_0.18s,border-color_0.18s,color_0.18s];
+}
+.answer-option > span {
+  @apply text-[13px] text-(--muted);
+}
+.answer-option > b {
+  @apply ml-auto min-w-[18px];
+}
+.answer-option:disabled {
+  @apply opacity-[1]! cursor-default;
+}
+.answer-option:not(:disabled):hover {
+  @apply border-(--accent);
+}
+.answer-option.answer-correct {
+  @apply border-[#228148]! text-[#146535]! [background:#e6f6eb]!;
+}
+.answer-option.answer-wrong {
+  @apply border-[#c74343]! text-[#a52828]! [background:#ffeded]!;
+}
+.answer-option.answer-correct > span {
+  @apply text-[#146535];
+}
+.answer-option.answer-wrong > span {
+  @apply text-[#a52828];
+}
+.answer-right .native-field-wrap {
+  @apply border-[#228148]! text-[#146535]!;
+}
+.answer-error .native-field-wrap {
+  @apply border-[#c74343]! text-[#a52828]! animate-[answer-shake_0.42s_ease-in-out];
+}
+.answer-error .answer-correct {
+  @apply animate-[answer-shake_0.42s_ease-in-out];
+}
+.answer-enter {
+  @apply [border:0];
+  @apply rounded-[8px] [background:var(--surface)] text-(--ink) min-w-[38px];
+  @apply min-h-[36px] cursor-pointer text-[22px];
+}
+.answer-enter:disabled {
+  @apply opacity-[0.4] cursor-default;
+}
+.session-controls {
+  @apply flex items-center;
+  @apply justify-between gap-[14px] mt-[12px];
+}
+.next-question {
+  @apply min-w-[150px];
+  @apply min-h-[52px] text-[19px]!;
+  @apply [font-weight:750];
+}
+.next-question svg {
+  @apply ml-[4px];
+}
+.end-session {
+  @apply text-(--muted)! [font-weight:650];
+}
+@keyframes answer-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-7px);
+  }
+  50% {
+    transform: translateX(7px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+}
+@media print {
+  .answer-enter {
+    @apply hidden!;
+  }
+  .answer-option {
+    @apply text-[black]! border-[#bbb]! [background:white]!;
+  }
+  .answer-option > b {
+    @apply invisible;
+  }
+}
+
+.workspace-context .toolbar:has(.hub-action) {
+  @apply flex flex-row gap-[8px];
+}
+.hub-action {
+  @apply w-[42px]! min-w-[42px]!;
+  @apply min-h-[42px] p-[8px]!;
+}
+.range-label,
+.check-line {
+  @apply text-[calc(var(--ui-font)-2px)];
+}
+
+.choice.answer-correct {
+  @apply border-[#228148]! text-[#146535]! [background:#e6f6eb]!;
+}
+.choice.answer-wrong {
+  @apply border-[#c74343]! text-[#a52828]! [background:#ffeded]!;
+}
+
+.cloze-practice .cloze-question {
+  @apply grid gap-[22px];
+}
+.cloze-practice .fluid-passage {
+  @apply text-[clamp(21px,2.5vw,32px)];
+  @apply [line-height:2];
+}
+.cloze-practice .gap-token {
+  @apply inline;
+}
+.cloze-practice .gap-drop,
+.cloze-practice .gap-input,
+.cloze-practice .inline-choice {
+  @apply inline-flex w-auto min-w-[76px];
+  @apply [min-height:0] m-[0_4px] p-[0_4px_2px] [border:0];
+  @apply [border-bottom:2px_solid_var(--muted)];
+  @apply rounded-none [background:transparent] text-(--ink) align-baseline [box-shadow:none];
+}
+.cloze-practice .gap-drop:not(:disabled):hover,
+.cloze-practice .gap-drop.filled {
+  @apply border-b-(--accent) [background:transparent];
+}
+.cloze-practice .gap-token.is-right .gap-drop,
+.cloze-practice .gap-token.is-right .inline-choice {
+  @apply border-b-[#228148] text-[#146535];
+}
+.cloze-practice .gap-token.is-wrong .gap-drop,
+.cloze-practice .gap-token.is-wrong .inline-choice {
+  @apply border-b-[#c74343] text-[#a52828];
+}
+.cloze-practice .word-bank {
+  @apply justify-center;
+}
+.cloze-practice .word-chip {
+  @apply min-h-[44px];
+}
+.cloze-practice .is-correct {
+  @apply border-[#8ac99e];
+}
+.cloze-practice .is-incorrect {
+  @apply border-[#e3a0a0];
+}

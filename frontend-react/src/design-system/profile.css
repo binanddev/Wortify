@@ -1,0 +1,355 @@
+/* Profile-only styles. Shared navigation and exercise UI remain owned by their existing styles. */
+.learner-profile {
+  @apply max-w-[1180px] m-[0_auto] grid gap-[28px] text-(--ink);
+}
+.learner-profile section[id],
+.profile-identity {
+  @apply scroll-mt-[24px];
+}
+.profile-identity {
+  @apply flex items-center gap-[18px] [min-width:0] p-[6px_0_8px];
+}
+.profile-avatar {
+  @apply w-[72px] h-[72px] rounded-[24px] grid place-items-center [background:linear-gradient(140deg,#d7e8ff,#e4dcf5)] text-[#254c88] text-[32px];
+  @apply [font-weight:750] shrink-0;
+}
+.profile-name {
+  @apply [min-width:0] flex-1;
+}
+.profile-name h1 {
+  @apply m-[3px_0] text-[32px];
+  @apply [line-height:1.25] wrap-anywhere;
+}
+.profile-name p {
+  @apply m-[8px_0_0] whitespace-pre-wrap max-w-[650px] text-(--muted) text-[16px];
+}
+.profile-language {
+  @apply text-[13px] [letter-spacing:0.07em] text-(--muted);
+  @apply [font-weight:650];
+}
+.learner-profile button.profile-edit,
+.profile-section-title > button {
+  @apply [border:1px_solid_var(--line)] [background:var(--surface)] text-(--ink);
+  @apply rounded-[12px] grid place-items-center w-[40px] h-[40px] cursor-pointer shrink-0;
+}
+.profile-panel {
+  @apply [border:1px_solid_var(--line)];
+  @apply rounded-[24px] [background:var(--surface)] p-[25px] [box-shadow:inset_0_1px_0_#ffffff60,0_8px_24px_#1d35550a] [min-width:0];
+}
+.profile-focus-grid {
+  @apply grid grid-cols-[1fr_1fr] gap-[22px];
+}
+.profile-section-title {
+  @apply flex items-center;
+  @apply justify-between gap-[12px] mb-[20px];
+}
+.profile-section-title h2 {
+  @apply text-[20px];
+  @apply [line-height:1.3] [margin:0];
+  @apply [font-weight:700];
+}
+.profile-section-title > a {
+  @apply text-(--accent);
+}
+.profile-goal {
+  @apply flex flex-col;
+}
+.profile-goal-body {
+  @apply flex items-center gap-[26px] flex-1;
+}
+.profile-goal-ring {
+  @apply w-[146px] h-[146px] shrink-0 rounded-[50%] [background:conic-gradient(#4279df_var(--goal),rgb(104_134_179/0.15)_0)] relative flex;
+  @apply flex-col items-center;
+  @apply justify-center gap-[3px];
+}
+.profile-goal-ring:before {
+  @apply [content:""] absolute inset-[10px] rounded-[50%] [background:var(--solid)];
+}
+.profile-goal-ring > strong,
+.profile-goal-ring > span {
+  @apply z-1;
+}
+.profile-goal-ring strong {
+  @apply text-[38px];
+  @apply [line-height:1.2];
+}
+.profile-goal-ring span {
+  @apply text-[14px] text-(--muted);
+}
+.profile-goal-body > div:last-child {
+  @apply flex flex-col items-start gap-[13px] [min-width:0];
+}
+.profile-goal-state {
+  @apply text-[15px] text-(--muted);
+}
+.profile-goal-state.complete {
+  @apply text-[#238349] [font-weight:650];
+}
+.profile-continue {
+  @apply inline-flex items-center;
+  @apply justify-center gap-[12px] [text-decoration:none] whitespace-nowrap;
+}
+.profile-due {
+  @apply text-[14px] text-(--muted);
+}
+.profile-streak {
+  @apply flex gap-[7px] items-center text-[#b86119] [font-weight:700] whitespace-nowrap;
+}
+.profile-week-labels,
+.profile-calendar-grid {
+  @apply grid grid-cols-7 gap-[6px];
+}
+.profile-week-labels span {
+  @apply text-center text-[12px] text-(--muted) pb-[7px];
+}
+.profile-day {
+  @apply h-[30px] rounded-[7px] grid place-items-center [background:rgb(108_134_171/0.08)] text-(--muted) text-[12px];
+  @apply [font-variant-numeric:tabular-nums] [border:1px_solid_transparent];
+}
+.profile-day.level-1 {
+  @apply [background:#e0eddf] text-[#285d37];
+}
+.profile-day.level-2 {
+  @apply [background:#b9dcbf] text-[#24492d];
+}
+.profile-day.level-3 {
+  @apply [background:#76b78a] text-[#133b21];
+}
+.profile-day.level-4 {
+  @apply [background:#337e52] [color:#fff];
+}
+.profile-day.today {
+  @apply border-(--accent) [font-weight:750];
+}
+.profile-day.future {
+  @apply opacity-[0.28];
+}
+.profile-calendar-foot {
+  @apply flex justify-between gap-[12px] mt-[13px] text-[12px] text-(--muted);
+}
+.profile-calendar-foot > span:last-child {
+  @apply flex items-center gap-[5px];
+}
+.profile-calendar-foot i {
+  @apply w-[9px] h-[9px] rounded-[3px] [background:#76b78a];
+}
+.profile-periods {
+  @apply flex gap-[3px] [background:rgb(117_144_177/0.09)] [border:1px_solid_var(--line)] p-[3px];
+  @apply rounded-[11px];
+}
+.profile-periods button {
+  @apply [border:0] [background:transparent] text-(--muted) text-[13px] p-[7px_10px];
+  @apply rounded-[8px] cursor-pointer whitespace-nowrap;
+}
+.profile-periods button[aria-pressed="true"] {
+  @apply [background:var(--solid)] text-(--accent) [box-shadow:0_2px_5px_#20304a0b];
+}
+.profile-metrics {
+  @apply grid grid-cols-4 gap-[15px];
+}
+.profile-metric {
+  @apply grid grid-cols-[1fr_auto] gap-[8px] p-[20px];
+}
+.profile-metric > svg {
+  @apply col-2;
+  @apply row-1 text-(--muted);
+}
+.profile-metric > strong {
+  @apply text-[29px];
+  @apply [line-height:1.2] row-1;
+  @apply col-1;
+}
+.profile-metric > span {
+  @apply col-span-full text-(--muted) text-[14px];
+}
+.profile-detail-grid {
+  @apply grid grid-cols-[1fr_1fr] gap-[22px];
+}
+.profile-mastery-number {
+  @apply flex items-baseline gap-[8px] mb-[22px];
+}
+.profile-mastery-number strong {
+  @apply text-[34px];
+}
+.profile-mastery-number span {
+  @apply text-[14px] text-(--muted);
+}
+.profile-mastery-bar {
+  @apply flex h-[12px] overflow-hidden rounded-[8px] gap-[2px];
+}
+.profile-mastery-bar .mastered,
+.profile-mastery-key .mastered {
+  @apply [background:#389763];
+}
+.profile-mastery-bar .familiar,
+.profile-mastery-key .familiar {
+  @apply [background:#7cacee];
+}
+.profile-mastery-bar .new,
+.profile-mastery-key .new {
+  @apply [background:#ccd6e4];
+}
+.profile-mastery-key {
+  @apply grid gap-[13px] mt-[20px];
+}
+.profile-mastery-key > span {
+  @apply flex gap-[9px] items-center text-[14px] text-(--muted);
+}
+.profile-mastery-key i {
+  @apply w-[9px] h-[9px] rounded-[3px];
+}
+.profile-mastery-key b {
+  @apply ml-auto text-(--ink);
+}
+.profile-milestones {
+  @apply flex gap-[8px] flex-wrap mt-[24px] [border-top:1px_solid_var(--line)] pt-[18px];
+}
+.profile-milestones > span {
+  @apply flex items-center gap-[5px] text-[11px] p-[6px_8px] [border:1px_dashed_var(--line)];
+  @apply rounded-[9px] text-(--muted) opacity-[0.7];
+}
+.profile-milestones > span.earned {
+  @apply opacity-[1] [background:rgb(80_139_212/0.1)] [border-style:solid] text-(--accent);
+}
+.profile-deck {
+  @apply flex items-center gap-[12px] p-[13px_0] [border-bottom:1px_solid_var(--line)] text-inherit;
+}
+.profile-deck > div {
+  @apply [min-width:0] flex-1;
+}
+.profile-deck strong {
+  @apply block overflow-hidden text-ellipsis whitespace-nowrap text-[16px];
+}
+.profile-deck > div > span {
+  @apply block text-[12px] text-(--muted) m-[5px_0_8px];
+}
+.profile-deck progress {
+  @apply h-[5px] block w-full accent-[#6a9fe5];
+}
+.profile-deck-icon,
+.profile-history-icon {
+  @apply [background:rgb(98_151_222/0.12)] rounded-[12px] w-[42px] h-[42px] grid place-items-center text-(--accent) shrink-0;
+}
+.profile-practice-link {
+  @apply flex items-center gap-[10px] mt-[20px] text-(--accent) text-[15px];
+}
+.profile-practice-link svg:last-child {
+  @apply ml-auto;
+}
+.profile-history-list {
+  @apply grid;
+}
+.profile-history-row {
+  @apply flex items-center gap-[14px] p-[15px_4px] [border-top:1px_solid_var(--line)] text-inherit;
+}
+.profile-history-copy {
+  @apply flex-1 [min-width:0];
+}
+.profile-history-copy strong {
+  @apply block text-[16px] wrap-anywhere;
+}
+.profile-history-copy > span {
+  @apply text-[12px] text-(--muted) block mt-[4px];
+}
+.profile-score {
+  @apply text-[15px] whitespace-nowrap;
+  @apply [font-weight:650] rounded-[8px] p-[5px_9px] [background:rgb(115_142_179/0.09)];
+}
+.profile-score.perfect {
+  @apply [background:#e5f3e8] text-[#27683c];
+}
+.profile-history > .btn {
+  @apply m-[16px_auto_0] flex;
+}
+.profile-empty {
+  @apply flex flex-col items-center;
+  @apply justify-center gap-[12px] min-h-[160px] text-(--muted) text-center;
+}
+.profile-empty p {
+  @apply [margin:0] text-[15px];
+}
+.profile-index {
+  @apply grid gap-[6px];
+}
+.profile-index a {
+  @apply p-[10px_12px] rounded-[10px] text-(--ink);
+}
+.profile-index a:hover {
+  @apply [background:var(--surface)];
+}
+:root[data-background="night"] .profile-panel {
+  @apply [box-shadow:inset_0_1px_0_#ffffff12];
+}
+@media (max-width: 1100px) {
+  .profile-goal-body {
+    @apply gap-[16px];
+  }
+  .profile-goal-ring {
+    @apply w-[122px] h-[122px];
+  }
+  .profile-panel {
+    @apply p-[20px];
+  }
+  .profile-metrics {
+    @apply gap-[10px];
+  }
+  .profile-metric {
+    @apply p-[16px];
+  }
+}
+@media (max-width: 900px) {
+  .profile-focus-grid,
+  .profile-detail-grid {
+    @apply grid-cols-[1fr];
+  }
+  .profile-goal-body {
+    @apply justify-around p-[6px_0_16px];
+  }
+  .profile-metrics {
+    @apply grid-cols-2;
+  }
+  .profile-calendar-grid .profile-day {
+    @apply h-[34px];
+  }
+}
+@media (max-width: 480px) {
+  .learner-profile {
+    @apply gap-[22px];
+  }
+  .profile-avatar {
+    @apply w-[52px] h-[52px] rounded-[17px] text-[25px];
+  }
+  .profile-name h1 {
+    @apply text-[25px];
+  }
+  .profile-identity {
+    @apply gap-[12px];
+  }
+  .profile-section-title {
+    @apply flex-wrap;
+  }
+  .profile-panel {
+    @apply p-[18px] rounded-[20px];
+  }
+  .profile-goal-ring {
+    @apply w-[116px] h-[116px];
+  }
+  .profile-goal-body {
+    @apply gap-[14px];
+  }
+  .profile-continue {
+    @apply p-[10px] text-[15px];
+  }
+  .profile-history-row {
+    @apply gap-[9px];
+  }
+  .profile-history-icon {
+    @apply w-[34px] h-[34px];
+  }
+  .profile-history-copy strong {
+    @apply text-[14px];
+  }
+  .profile-periods button {
+    @apply text-[12px] p-[7px_8px];
+  }
+}

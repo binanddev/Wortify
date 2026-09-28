@@ -1,2 +1,0 @@
-{% extends 'cards/base.html' %}{% block content %}<section class="panel form-panel"><a href="{% url 'home' %}">← Về bộ thẻ</a><h1>{{ title }}</h1><form method="post">{% csrf_token %}{% include "cards/fields.html" %}<button class="primary" type="submit">Lưu và tiếp tục</button></form></section>{% endblock %}
-

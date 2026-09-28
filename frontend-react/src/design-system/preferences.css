@@ -1,0 +1,188 @@
+.admin-shell {
+  @apply max-w-[1480px] m-auto p-[18px_24px_48px];
+}
+.admin-shell > .topbar {
+  @apply h-[72px] m-[0_0_26px] p-[0_20px] [border:1px_solid_rgba(61,102,148,0.14)];
+  @apply rounded-[18px] [background:rgba(255,255,255,0.66)] [box-shadow:0_12px_30px_rgba(61,91,133,0.1)];
+}
+.admin-shell > .topbar .toolbar {
+  @apply gap-[8px];
+}
+.admin-shell > .topbar .btn {
+  @apply min-h-[38px] rounded-[10px] text-[12px];
+}
+.admin-shell > .topbar a:not(.brand) {
+  @apply text-[#36516f] text-[12px];
+  @apply [font-weight:600];
+}
+.admin-shell > main {
+  @apply min-h-[calc(100dvh-100px)];
+}
+.admin-shell .page {
+  @apply max-w-[1320px];
+}
+.appearance-layout {
+  @apply grid grid-cols-[minmax(0,1.4fr)_minmax(260px,0.6fr)] gap-[22px] [align-items:start];
+}
+.appearance-editor .glass-body,
+.appearance-guide .glass-body {
+  @apply gap-[18px];
+}
+.appearance-heading {
+  @apply flex items-start;
+  @apply justify-between gap-[16px];
+}
+.appearance-heading h2 {
+  @apply text-[24px];
+}
+.appearance-status {
+  @apply rounded-[99px] p-[7px_11px] [background:#e5f7ee] text-[#26734d] text-[12px];
+  @apply [font-weight:650] whitespace-nowrap;
+}
+.appearance-preview {
+  @apply min-h-[260px] grid place-items-center [border:1px_solid_rgba(61,102,148,0.16)];
+  @apply rounded-[18px] [background:radial-gradient(circle_at_18%_20%,#ffc6e9,transparent_35%),radial-gradient(circle_at_85%_30%,#bcecff,transparent_38%),#eef5ff];
+  @apply bg-center;
+  @apply bg-cover [box-shadow:inset_0_0_0_1000px_rgba(255,255,255,0.2)] text-[#172338] text-[40px] [letter-spacing:-2px];
+}
+.appearance-actions {
+  @apply flex items-center flex-wrap gap-[12px];
+}
+.appearance-actions input {
+  @apply hidden;
+}
+.appearance-file {
+  @apply text-(--muted) text-[12px];
+}
+.appearance-guide {
+  @apply text-[#344965];
+}
+.appearance-guide .tile-icon {
+  @apply grid place-items-center w-[42px] h-[42px] rounded-[12px] [background:#edf5ff];
+}
+.appearance-guide ul {
+  @apply grid gap-[13px] [margin:0] pl-[20px] text-(--muted) text-[14px];
+  @apply [line-height:1.6];
+}
+@media (max-width: 760px) {
+  .admin-shell {
+    @apply p-[10px_14px_32px];
+  }
+  .admin-shell > .topbar {
+    @apply h-auto min-h-[64px] p-[12px] items-start;
+  }
+  .admin-shell > .topbar .toolbar {
+    @apply w-full flex-wrap;
+  }
+  .appearance-layout {
+    @apply grid-cols-[1fr];
+  }
+  .appearance-preview {
+    @apply min-h-[190px];
+  }
+}
+.admin-shell .topbar {
+  @apply gap-[20px] flex-wrap h-auto min-h-[90px] pt-[18px];
+  @apply pb-[18px];
+}
+.admin-shell .topbar a:not(.brand) {
+  @apply text-[12px];
+}
+.admin-badge {
+  @apply text-[10px] [letter-spacing:2px] text-(--accent) ml-[12px];
+}
+.admin-book-grid {
+  @apply mt-[28px];
+}
+.admin-user-list {
+  @apply grid gap-[12px];
+}
+.admin-user-list .glass-body {
+  @apply p-[5px_20px];
+}
+.admin-user-list .history-row {
+  @apply [border:0];
+}
+.resource-grid {
+  @apply grid grid-cols-3 gap-[18px] mt-[22px];
+}
+.resource-preview {
+  @apply max-h-[180px] object-contain w-full rounded-[10px];
+}
+.resource-grid audio {
+  @apply max-w-full;
+}
+.resource-key {
+  @apply text-[12px] wrap-anywhere;
+}
+.missing-resource {
+  @apply h-[130px] flex flex-col gap-[15px] items-center;
+  @apply justify-center [background:#ffffff35] [border:1px_dashed_var(--line)];
+  @apply rounded-[10px] text-(--muted) text-[12px];
+}
+.bulk-upload {
+  @apply m-[25px_0];
+}
+.upload-zone {
+  @apply relative [border:1px_dashed_#87998d];
+  @apply rounded-[15px] min-h-[150px] flex flex-col items-center;
+  @apply justify-center gap-[12px] text-(--muted) text-center p-[20px] cursor-pointer;
+}
+.upload-zone input {
+  @apply max-w-full text-[12px];
+}
+.upload-zone span {
+  @apply text-[11px];
+}
+.upload-row {
+  @apply grid grid-cols-[1fr_1.4fr_1.4fr_auto] gap-[14px] items-center [border-bottom:1px_solid_var(--line)] text-[12px];
+}
+.admin-exercise {
+  @apply m-[14px_0];
+}
+.admin-exercise .glass-body {
+  @apply p-[5px_20px];
+}
+.admin-exercise .history-row {
+  @apply [border:0];
+}
+.admin-exercise h3 {
+  @apply text-[16px];
+  @apply [line-height:1.6];
+}
+.admin-shell .folder-tabs {
+  @apply m-[22px_0];
+}
+.theory-panel {
+  @apply m-[20px_0_35px];
+}
+.theory-panel .context-text {
+  @apply text-[16px];
+}
+.theory-panel ul {
+  @apply pl-[22px] [list-style:disc] [line-height:1.9];
+}
+.theory-table {
+  @apply overflow-x-auto;
+}
+.theory-table table {
+  @apply w-full border-collapse text-[13px];
+}
+.theory-table th,
+.theory-table td {
+  @apply p-[12px] [border:1px_solid_var(--line)] text-left;
+}
+.book-media {
+  @apply m-[15px_0] grid gap-[14px];
+}
+.book-media img {
+  @apply max-w-full;
+  @apply max-h-[500px] object-contain rounded-[12px];
+}
+.book-media audio {
+  @apply w-full;
+}
+.media-placeholder {
+  @apply [border:1px_dashed_var(--line)] p-[20px];
+  @apply rounded-[12px] text-[12px] text-(--muted);
+}

@@ -1,0 +1,104 @@
+:root {
+  --accent: #63d8ff;
+  --ink: #edf4ff;
+  --muted: #a8b4c9;
+  --line: rgba(220, 239, 255, 0.18);
+  --card-font: 36px;
+  --surface: rgba(19, 25, 45, 0.54);
+  --solid: #f6f8ff;
+}
+:root[data-background="paper"] {
+  --page-bg: #070912;
+}
+:root[data-background="night"] {
+  --muted: #a8b4c9;
+  --line: rgba(220, 239, 255, 0.18);
+  --page-bg: #070912;
+  --surface: rgba(19, 25, 45, 0.54);
+  --solid: #10172a;
+}
+:root {
+  --accent: #087db8;
+  --ink: #172338;
+  --muted: #53647c;
+  --line: rgba(44, 72, 112, 0.2);
+  --surface: rgba(255, 255, 255, 0.62);
+  --solid: #172338;
+}
+:root[data-background="paper"],
+:root[data-background="night"] {
+  --muted: #53647c;
+  --line: rgba(44, 72, 112, 0.2);
+  --surface: rgba(255, 255, 255, 0.62);
+  --solid: #172338;
+}
+
+[data-background="night"] {
+  --ink: #edf1f4;
+}
+:root {
+  --ink: #17253d;
+  --muted: #52627a;
+  --accent: #245eea;
+  --line: #d9e1ed;
+  --surface: rgba(255, 255, 255, 0.82);
+  --solid: #fff;
+  --page-bg:
+    radial-gradient(ellipse at 90% 0%, #e2eafb 0, transparent 50%),
+    radial-gradient(ellipse at 0% 75%, #e9eef7 0, transparent 60%), #f3f6fb;
+}
+[data-background="night"] {
+  --ink: #e9effa;
+  --muted: #b5c1d5;
+  --line: #35445c;
+  --surface: rgba(24, 36, 57, 0.94);
+  --solid: #17263e;
+  --page-bg:
+    radial-gradient(ellipse at top right, #1b3054, transparent 60%), #111c30;
+}
+.exercise-mode-error_correction {
+  --mode-accent: #e11d48;
+}
+.exercise-mode-inline_selection {
+  --mode-accent: #2563eb;
+}
+:root,
+:root[data-background="paper"] {
+  --glass-alpha: 0.75;
+  --ui-font: 18px;
+  --glass-rgb: 250 253 255;
+  --ink: #152740;
+  --muted: #455970;
+  --line: rgb(93 122 159 / 0.28);
+  --accent: #1854cf;
+  --surface: rgb(var(--glass-rgb) / var(--glass-alpha));
+  --solid: rgb(var(--glass-rgb) / 0.94);
+  --page-bg:
+    radial-gradient(ellipse at 90% 10%, #c5e5f4, transparent 52%),
+    radial-gradient(ellipse at 10% 85%, #e3d7f4, transparent 60%), #edf3f9;
+}
+:root[data-background="night"] {
+  --glass-rgb: 19 32 53;
+  --ink: #f0f5ff;
+  --muted: #c2cfe2;
+  --accent: #94baff;
+  --line: rgb(185 211 249 / 0.3);
+  --surface: rgb(var(--glass-rgb) / var(--glass-alpha));
+  --solid: #172a45;
+  --page-bg:
+    radial-gradient(ellipse at top right, #284c68, transparent 60%), #0d1729;
+}
+:root[data-background="paper"] {
+  --page-bg:
+    radial-gradient(ellipse at top left, #e6e6dc, transparent 60%), #f4f2ee;
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-alpha: 1 !important;
+  }
+}
+@supports not (backdrop-filter: blur(1px)) {
+  :root {
+    --glass-alpha: 1 !important;
+  }
+}

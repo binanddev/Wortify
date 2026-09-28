@@ -1,7 +1,7 @@
 import re
 from django.core.exceptions import ValidationError
 from types import SimpleNamespace
-MODES={'cloze_drag_drop':'cloze','inline_selection':'cloze','inline_error_identification':'multi','short_answer':'text','sentence_building':'order','multiple_choice':'choice','categorization':'choice','audio_dictation':'text','matching':'matching','true_false_not_given':'choice'}
+MODES={'error_correction':'text','cloze_drag_drop':'cloze','inline_selection':'cloze','inline_error_identification':'multi','short_answer':'text','sentence_building':'order','multiple_choice':'choice','categorization':'choice','audio_dictation':'text','matching':'matching','true_false_not_given':'choice'}
 
 def validate_presentation(q,mode):
     p=q.presentation

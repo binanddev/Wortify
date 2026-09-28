@@ -1,3 +1,4 @@
+"""Server-side payload validation for API writes; no form rendering."""
 from django import forms
 from .models import Deck, Card, StudySettings, Folder
 
@@ -6,18 +7,6 @@ class FolderForm(forms.ModelForm):
     class Meta:
         model = Folder
         fields = ['name', 'theory_format', 'theory_content']
-
-
-class TextImportForm(forms.Form):
-    separator = forms.ChoiceField(label='Ngăn cách các cột bằng', choices=[(',', 'Dấu phẩy (,)'), ('\t', 'Tab (dán từ bảng tính)'), (';', 'Dấu chấm phẩy (;)'), ('|', 'Gạch đứng (|)')])
-    text = forms.CharField(label='Dán nội dung bộ thẻ', max_length=500000, widget=forms.Textarea(attrs={'rows': 12, 'placeholder': 'der Alltag, cuộc sống hằng ngày, Mein Alltag beginnt um sieben Uhr.\ndie Wohnung, căn hộ, Unsere Wohnung hat zwei Zimmer.'}))
-
-    def clean(self):
-        data = super().clean()
-        if 'text' in data and 'separator' in data:
-            from .services.importing import parse_cards
-            data['rows'] = parse_cards(data['text'], data['separator'])
-        return data
 
 
 class DeckForm(forms.ModelForm):
@@ -31,12 +20,11 @@ class DeckForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['folder'].queryset = Folder.objects.filter(owner=user, **({'language': language} if language else {}))
         self.fields['folder'].empty_label = 'Chưa xếp thư mục'
-        self.fields['description'].widget.attrs['rows'] = 3
 
 
 class CardForm(forms.ModelForm):
-    accepted_answers = forms.CharField(label='Cách trả lời khác cho từ', required=False, widget=forms.Textarea(attrs={'rows': 3}), help_text='Mỗi dòng một cách trả lời được chấp nhận. Có thể để trống.')
-    accepted_examples = forms.CharField(label='Cách nói khác cho câu ví dụ', required=False, widget=forms.Textarea(attrs={'rows': 3}), help_text='Mỗi dòng một câu hợp lệ. Có thể để trống.')
+    accepted_answers = forms.CharField(label='Cách trả lời khác cho từ', required=False, help_text='Mỗi dòng một cách trả lời được chấp nhận. Có thể để trống.')
+    accepted_examples = forms.CharField(label='Cách nói khác cho câu ví dụ', required=False, help_text='Mỗi dòng một câu hợp lệ. Có thể để trống.')
 
     class Meta:
         model = Card
@@ -44,9 +32,6 @@ class CardForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            if isinstance(field.widget, forms.Textarea):
-                field.widget.attrs['rows'] = 3
         for name in ('accepted_answers', 'accepted_examples'):
             self.initial[name] = '\n'.join(getattr(self.instance, name, []) or [])
 

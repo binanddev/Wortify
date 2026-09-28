@@ -1,14 +1,61 @@
 export const EXERCISE_TYPES = [
-  ["cloze_drag_drop", "Điền chỗ trống", "01", "cloze"],
-  ["inline_error_identification", "Tìm lỗi trong câu", "02", "multi"],
-  ["short_answer", "Viết câu ngắn", "03", "text"],
+  ["cloze_drag_drop", "Điền vào chỗ trống", "01", "cloze"],
+  ["error_correction", "Tìm và sửa lỗi sai", "02", "text"],
+  ["matching", "Nối đáp án", "03", "matching"],
   ["sentence_building", "Sắp xếp câu", "04", "order"],
-  ["multiple_choice", "Trắc nghiệm", "05", "choice"],
-  ["categorization", "Phân loại", "06", "choice"],
-  ["audio_dictation", "Nghe – chép", "07", "text"],
-  ["matching", "Nối cặp", "08", "matching"],
-  ["true_false_not_given", "Đúng / Sai / Không có", "09", "choice"],
+  ["categorization", "Phân loại", "05", "choice"],
+  ["inline_selection", "Trắc nghiệm trong câu", "06", "cloze"],
+  ["short_answer", "Viết lại câu", "07", "text"],
 ];
+export const EXERCISE_STYLES = {
+  cloze_drag_drop: [
+    [
+      "drag_drop",
+      "Kéo thả từ",
+      "Kéo từ vào ô trống; cũng có thể chạm để điền.",
+    ],
+    ["tap_fill", "Chạm để điền", "Chọn ô trống rồi chọn từ."],
+  ],
+  error_correction: [
+    ["click_edit", "Chạm và sửa", "Chạm vào từ sai và nhập từ đúng."],
+    [
+      "cross_out",
+      "Gạch từ thừa",
+      "Chạm để bỏ từ thừa; chạm lần nữa để khôi phục.",
+    ],
+  ],
+  matching: [["tap_match", "Chạm nối cặp", "Chọn một thẻ ở mỗi cột để nối."]],
+  sentence_building: [
+    ["tap_build", "Chạm ghép câu", "Chọn từ theo thứ tự. Có thể hoàn tác."],
+  ],
+  categorization: [
+    [
+      "drag_sort",
+      "Bảng phân loại",
+      "Kéo thẻ vào nhóm, hoặc chọn thẻ rồi chạm tên nhóm.",
+    ],
+  ],
+  inline_selection: [
+    ["pill_toggle", "Nút chọn", "Chọn đáp án ngay trong câu."],
+    ["inline_select", "Danh sách chọn", "Mở danh sách tại mỗi chỗ trống."],
+  ],
+  short_answer: [
+    [
+      "partial_input",
+      "Viết tiếp câu",
+      "Hoàn thành câu từ phần mở đầu cho sẵn.",
+    ],
+    [
+      "sentence_rewrite",
+      "Viết lại cả câu",
+      "Khung viết tự mở rộng theo nội dung.",
+    ],
+  ],
+};
+export const exerciseStylesOf = (mode) =>
+  EXERCISE_STYLES[mode] || [
+    ["default", "Luyện tập", "Thực hành dạng bài này."],
+  ];
 export const modeOf = (e) =>
   e.presentation?.interaction ||
   {
@@ -22,9 +69,7 @@ export const modeOf = (e) =>
   e.presentation?.type ||
   e.kind;
 export const titleOf = (e) =>
-  modeOf(e) === "inline_selection"
-    ? "Điền chỗ trống"
-    : EXERCISE_TYPES.find((t) => t[0] === modeOf(e))?.[1] || "Bài tập";
+  EXERCISE_TYPES.find((t) => t[0] === modeOf(e))?.[1] || "Bài tập";
 export function newQuestion(mode) {
   return {
     prompt: "",

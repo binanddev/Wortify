@@ -10,7 +10,6 @@ import {
   Status,
   SidebarTools,
 } from "./ui";
-import "./profile.css";
 
 export default function LearningProfile({ lang }) {
   const resource = useResource(endpoint(lang, "profile/"), true);

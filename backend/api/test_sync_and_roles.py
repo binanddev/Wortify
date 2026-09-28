@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from cards.models import Deck, Card, LearningEvent, StudyProgress
-from practice.models import PracticeNode, PracticeAttempt
+from practice.models import PracticeNode, PracticeAttempt, PracticeProgress
 from users.models import Classroom, ClassroomAssignment
 from .practice_hub import validate_payload
 
@@ -44,12 +44,14 @@ class SyncAndRolesTests(TestCase):
         self.assertEqual(len(result['accepted']),1)
         self.assertEqual(LearningEvent.objects.count(),1)
 
-    def test_practice_is_graded_and_saved_once(self):
+    def test_legacy_practice_receipts_save_progress_without_new_scores(self):
         node=PracticeNode.objects.create(owner=self.user,language='en',kind='exercise',title='Greeting',payload=validate_payload('exercise',{'presentation':{'interaction':'short_answer'},'questions':[{'prompt':'Xin chào','accepted_answers':['hello']}]}))
         event=self.event('practice',node=node.pk,revision=node.updated_at.isoformat(),answers={'1':'hello'})
-        result=self.sync([event]);self.assertEqual(result['accepted'][0]['result']['score'],1)
-        self.sync([event]);self.assertEqual(PracticeAttempt.objects.count(),1)
-        self.assertEqual(self.client.get('/api/en/profile/').json()['history'][0]['score'],1)
+        result=self.sync([event]);self.assertEqual(result['accepted'][0]['result']['completed'],['1'])
+        self.sync([event]);self.assertEqual(PracticeAttempt.objects.count(),0)
+        self.assertEqual(PracticeProgress.objects.get().completed,['1'])
+        self.assertNotIn('answers',LearningEvent.objects.get().payload)
+        self.assertNotIn('score',LearningEvent.objects.get().result)
 
     def test_no_answer_and_long_writing_are_rejected(self):
         for payload in [{'presentation':{'interaction':'short_answer'},'questions':[{'prompt':'Hello','accepted_answers':[]}]},{'presentation':{'interaction':'writing'},'questions':[]}]:
