@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  Chip,
-  Input,
-  Select,
-  SelectItem,
-  Pagination,
-  Skeleton,
-} from "@heroui/react";
+import { Skeleton } from "@heroui/react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   endpoint,
@@ -19,278 +8,701 @@ import {
   savePreference,
   useResource,
   useRoute,
+  request,
 } from "./core";
-import { Page, SidebarTools, Link, Icon, Status } from "./ui";
-import { EXERCISE_TYPES } from "./exercise-types";
+import {
+  Page,
+  SidebarTools,
+  Link,
+  Icon,
+  Status,
+  Btn,
+  Field,
+  Heading,
+  Select,
+} from "./ui";
+import { EXERCISE_TYPES, previewData } from "./exercise-types";
 import { practiceRoutes } from "./practice-navigation";
+import {
+  searchHistoryKey,
+  normalizeHistory,
+  rememberSearch,
+  cleanSearch,
+} from "./explore-history";
+import { PracticeModal } from "./practice-workspace";
+import { PracticeActivity } from "./practice-activity";
+import { TheoryActivity } from "./practice-theory";
+
+function ExplorePreview({ lang, node, onClose }) {
+  const resource = useResource(
+    endpoint(lang, `practice-hub/nodes/${node.id}/`),
+  );
+  const content = resource.data?.node;
+  return (
+    <PracticeModal title={node.title} onClose={onClose}>
+      <Status error={resource.error} />
+      {resource.loading ? (
+        <Skeleton className="h-64 rounded-2xl" />
+      ) : (
+        content && (
+          <>
+            <div className="flex justify-end">
+              <Link
+                className="studio-nav-icon"
+                title="Vào học"
+                aria-label="Vào học"
+                to={`${practiceRoutes(lang).learn}/${node.id}`}
+              >
+                <Icon name="play" />
+              </Link>
+            </div>
+            {content.kind === "exercise" ? (
+              <PracticeActivity
+                key={`${content.id}:${content.updated_at}`}
+                preview
+                data={previewData(content.payload)}
+              />
+            ) : (
+              <TheoryActivity payload={content.payload} />
+            )}
+          </>
+        )
+      )}
+    </PracticeModal>
+  );
+}
 
 export function Explore({ lang, userId }) {
-  const routes = practiceRoutes(lang);
   const route = useRoute();
-  const params = new URLSearchParams(route.split("?")[1]);
+  return (
+    <ExploreContent
+      key={`${userId}:${lang}:${route}`}
+      lang={lang}
+      userId={userId}
+    />
+  );
+}
+function ExploreContent({ lang, userId }) {
+  const routes = practiceRoutes(lang);
+  const params = new URLSearchParams(useRoute().split("?")[1]);
   const query = params.get("q") || "";
-  const kind = params.get("kind") || "";
   const mode = params.get("mode") || "";
-  const sort = params.get("sort") || "relevance";
+  const sort = params.get("sort") === "newest" ? "newest" : "relevance";
+  const parent = Number(params.get("folder")) || null;
+  const historyKey = searchHistoryKey(userId, lang);
+  const [historyState, setHistoryState] = useState(() => ({
+    key: historyKey,
+    rows: normalizeHistory(readPreference(historyKey, [])),
+  }));
+  const history =
+    historyState.key === historyKey
+      ? historyState.rows
+      : normalizeHistory(readPreference(historyKey, []));
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const updateHistory = (update) =>
+    setHistoryState((previous) => {
+      const next = update(
+        previous.key === historyKey
+          ? previous.rows
+          : normalizeHistory(readPreference(historyKey, [])),
+      );
+      savePreference(historyKey, next);
+      return { key: historyKey, rows: next };
+    });
+  const removeHistory = (query) =>
+    updateHistory((rows) => rows.filter((row) => row.query !== query));
   const [draft, setDraft] = useState(query);
+  const [filters, setFilters] = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [notice, setNotice] = useState("");
+  const [view, setView] = useState(() =>
+    readPreference(`wortify:explore-view:${lang}`, "grid") === "list"
+      ? "list"
+      : "grid",
+  );
+  const [results, setResults] = useState({
+    loading: true,
+    rows: [],
+    error: "",
+  });
+  const [retry, setRetry] = useState(0);
+  const [page, setPage] = useState(1);
+  const [seed] = useState(() => String(Date.now()));
+  const current = results.current;
+  const viewsKey = `wortify:explore-views:${userId}:${lang}`;
+  const [interests] = useState(() => {
+    const viewed = readPreference(viewsKey, []);
+    return [
+      ...history.slice(0, 5).map((row) => row.query),
+      ...(Array.isArray(viewed)
+        ? viewed.slice(0, 5).map((row) => row.query || "")
+        : []),
+    ]
+      .join(" ")
+      .slice(0, 600);
+  });
+  const rememberView = (node) => {
+    const old = readPreference(viewsKey, []);
+    savePreference(
+      viewsKey,
+      [
+        { id: node.id, query: `${node.title} ${(node.tags || []).join(" ")}` },
+        ...(Array.isArray(old) ? old.filter((row) => row.id !== node.id) : []),
+      ].slice(0, 20),
+    );
+  };
+  const showPreview = (node) => {
+    rememberView(node);
+    setPreview(node);
+  };
+  const workspaceKey = `wortify:practice-workspace:${userId}:${lang}`;
+  const [pinned, setPinned] = useState(() => {
+    const value = readPreference(workspaceKey, []);
+    return Array.isArray(value) ? value : [];
+  });
+  const reduced = useReducedMotion();
   useEffect(() => setDraft(query), [query]);
+
+  const resultKey = `${lang}:${query}:${mode}:${sort}:${parent}`;
+  useEffect(() => {
+    const controller = new AbortController();
+    const searchParams = new URLSearchParams({
+      browse: "1",
+      q: query,
+      mode,
+      sort,
+      folder: parent || "",
+      page: String(page),
+      seed,
+      interests,
+    });
+    setResults((previous) => ({ ...previous, loading: true, error: "" }));
+    request(
+      endpoint(lang, `practice-hub/explore/?${searchParams}`),
+      "GET",
+      undefined,
+      controller.signal,
+    )
+      .then((data) => {
+        if (!controller.signal.aborted)
+          setResults((previous) => ({
+            ...data,
+            key: resultKey,
+            loading: false,
+            error: "",
+            rows:
+              page === 1 || previous.key !== resultKey
+                ? data.results
+                : [
+                    ...previous.rows,
+                    ...data.results.filter(
+                      (n) => !previous.rows.some((old) => old.id === n.id),
+                    ),
+                  ],
+          }));
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted)
+          setResults((previous) => ({
+            ...previous,
+            loading: false,
+            error: error.message,
+          }));
+      });
+    return () => controller.abort();
+  }, [resultKey, page, seed, interests, retry]);
   const search = (changes) => {
+    setPage(1);
     const next = new URLSearchParams(params);
     next.delete("page");
+    next.delete("kind");
     for (const [key, value] of Object.entries(changes))
       value ? next.set(key, String(value)) : next.delete(key);
     navigate(`${routes.explore}${next.size ? `?${next}` : ""}`);
   };
-  const resource = useResource(
-    endpoint(lang, `practice-hub/explore/?${params}`),
-    true,
+  const submitSearch = (value, fromHistory = false) => {
+    const text = cleanSearch(value);
+    updateHistory((rows) => rememberSearch(rows, text));
+    setDraft(text);
+    setSuggestionsOpen(false);
+    setHistoryOpen(false);
+    search({ q: text, ...(fromHistory ? { folder: "", mode: "" } : {}) });
+  };
+  const recentRows = (rows, full = false) => (
+    <ul className="explore-recent-list">
+      {rows.map((row) => (
+        <li key={row.query}>
+          <button
+            type="button"
+            className="explore-recent-query"
+            title={row.query}
+            onClick={() => submitSearch(row.query, true)}
+          >
+            <Icon name="history" size={17} />
+            <span>{row.query}</span>
+            {full && (
+              <small>{new Date(row.at).toLocaleDateString("vi-VN")}</small>
+            )}
+          </button>
+          <button
+            type="button"
+            className="tree-icon"
+            title="Xóa tìm kiếm"
+            aria-label={`Xóa tìm kiếm ${row.query}`}
+            onClick={() => removeHistory(row.query)}
+          >
+            <Icon name="close" size={15} />
+          </button>
+        </li>
+      ))}
+    </ul>
   );
-  const key = `wortify:practice-workspace:${userId}:${lang}`;
-  const [pinned, setPinned] = useState(() => {
-    const saved = readPreference(key, []);
-    return Array.isArray(saved) ? saved : [];
-  });
-  const [notice, setNotice] = useState("");
-  const reduced = useReducedMotion();
-  const toggle = (node) =>
+  const suggestions = history
+    .filter((row) =>
+      row.query.toLocaleLowerCase().includes(draft.trim().toLocaleLowerCase()),
+    )
+    .slice(0, 5);
+  const openFolder = (id) => {
+    const node =
+      results.rows.find((n) => n.id === id) ||
+      results.ancestors?.find((n) => n.id === id);
+    if (node) rememberView(node);
+    search({ folder: id, q: "", mode: "" });
+  };
+  const isPinned = (node) => pinned.includes(node.root_id || node.id);
+  const toggle = (node) => {
+    const rootId = node.root_id || node.id;
+    const exists = isPinned(node);
     setPinned((previous) => {
-      const exists = previous.includes(node.id);
       const next = exists
-        ? previous.filter((id) => id !== node.id)
-        : [...previous, node.id];
-      savePreference(key, next);
-      setNotice(
-        `${node.title}: ${exists ? "đã bỏ khỏi" : "đã thêm vào"} workspace.`,
-      );
+        ? previous.filter((id) => id !== rootId)
+        : [...previous, rootId];
+      savePreference(workspaceKey, next);
       return next;
     });
+    setNotice(exists ? "Đã bỏ khỏi workspace." : "Đã thêm vào workspace.");
+  };
+  const items = results.key === resultKey ? results.rows : [];
+  const loading = results.loading && !items.length;
+  const error = results.error;
+  const ancestors = results.ancestors || [];
   return (
     <Page>
       <SidebarTools navOnly>
-        <nav className="flex flex-col gap-3" aria-label="Khám phá và học tập">
-          <Link to={routes.learn}>Practice Hub · workspace</Link>
-          <Link to={`${routes.learn}/all`}>Nội dung tôi có thể xem</Link>
-          <Link to={routes.studio}>Create · nội dung của tôi</Link>
-          <Link to={routes.guide}>Hướng dẫn tạo bài</Link>
-        </nav>
+        <div className="explore-nav">
+          <nav className="studio-nav-shortcuts" aria-label="Explore tools">
+            <Link
+              className={`studio-nav-icon ${!parent ? "active" : ""}`}
+              to={routes.explore}
+              onClick={() => setPage(1)}
+              title="Explore"
+              aria-label="Explore"
+            >
+              <Icon name="home" size={23} />
+            </Link>
+            <Btn
+              isIconOnly
+              title="Bộ lọc"
+              aria-label="Bộ lọc"
+              aria-pressed={Boolean(mode || sort !== "relevance")}
+              onClick={() => setFilters(true)}
+            >
+              <Icon name="settings" />
+            </Btn>
+            <Btn
+              isIconOnly
+              title="Lịch sử tìm kiếm"
+              aria-label="Lịch sử tìm kiếm"
+              onClick={() => setHistoryOpen(true)}
+            >
+              <Icon name="history" />
+            </Btn>
+          </nav>
+          {current && (
+            <div className="explore-current">
+              <Icon name="folder" />
+              <span className="truncate" title={current.title}>
+                {current.title}
+              </span>
+            </div>
+          )}
+          {history.length > 0 && (
+            <section className="explore-recent" aria-label="Tìm kiếm gần đây">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-semibold">Gần đây</span>
+                <button
+                  type="button"
+                  className="tree-icon"
+                  title="Toàn bộ lịch sử"
+                  aria-label="Toàn bộ lịch sử"
+                  onClick={() => setHistoryOpen(true)}
+                >
+                  <Icon name="more" />
+                </button>
+              </div>
+              {recentRows(history.slice(0, 4))}
+            </section>
+          )}
+        </div>
       </SidebarTools>
-      <section className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-        <header className="flex flex-col gap-3 py-4">
-          <span className="text-sm font-semibold text-[var(--muted)]">
-            EXPLORE · HỌC CÙNG CỘNG ĐỒNG
-          </span>
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Hôm nay bạn muốn hiểu thêm điều gì?
-          </h1>
-          <p className="max-w-2xl text-[var(--muted)]">
-            Tìm bài tập và nội dung công khai từ cộng đồng. Chọn một bài để học
-            ngay hoặc thêm vào workspace của bạn.
-          </p>
+      <section className="mx-auto flex w-full max-w-6xl flex-col gap-5">
+        {current && (
+          <nav
+            className="flex min-w-0 items-center gap-2 overflow-hidden text-sm"
+            aria-label="Vị trí folde"
+          >
+            <Link
+              to={routes.explore}
+              onClick={() => setPage(1)}
+              title="Explore"
+              aria-label="Explore"
+            >
+              <Icon name="home" />
+            </Link>
+            {ancestors.map((node) => (
+              <span key={node.id} className="flex min-w-0 items-center gap-2">
+                <Icon name="chevron_right" size={14} />
+                <button
+                  type="button"
+                  className="truncate"
+                  title={node.title}
+                  onClick={() => openFolder(node.id)}
+                >
+                  {node.title}
+                </button>
+              </span>
+            ))}
+          </nav>
+        )}
+        <header className="flex flex-wrap items-center justify-between gap-3">
+          <Heading title={current?.title || "Explore"} />
+          <div className="flex gap-2">
+            {[
+              ["grid", "Dạng lưới"],
+              ["list", "Dạng danh sách"],
+            ].map(([value, label]) => (
+              <Btn
+                key={value}
+                isIconOnly
+                title={label}
+                aria-label={label}
+                aria-pressed={view === value}
+                onClick={() => {
+                  setView(value);
+                  savePreference(`wortify:explore-view:${lang}`, value);
+                }}
+              >
+                <Icon name={value} />
+              </Btn>
+            ))}
+            {current && (
+              <Btn
+                isIconOnly
+                title={
+                  isPinned(current) ? "Bỏ khỏi workspace" : "Thêm vào workspace"
+                }
+                aria-label={
+                  isPinned(current) ? "Bỏ khỏi workspace" : "Thêm vào workspace"
+                }
+                aria-pressed={isPinned(current)}
+                onClick={() => toggle(current)}
+              >
+                <Icon name={isPinned(current) ? "check" : "plus"} />
+              </Btn>
+            )}
+          </div>
         </header>
-        <form
-          className="flex flex-col gap-3 sm:flex-row"
-          onSubmit={(event) => {
-            event.preventDefault();
-            search({ q: draft.trim() });
+        <div
+          className="explore-search"
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget))
+              setSuggestionsOpen(false);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") setSuggestionsOpen(false);
           }}
         >
-          <Input
-            aria-label="Tìm bài học công khai"
-            placeholder="Thử tìm: thì hiện tại đơn…"
-            value={draft}
-            onValueChange={setDraft}
-            startContent={<Icon name="search" />}
-            size="lg"
-            variant="bordered"
-            className="flex-1"
-          />
-          <Button type="submit" color="primary" size="lg">
-            Tìm bài học
-          </Button>
-        </form>
-        {!query && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm text-[var(--muted)]">Thử một chủ đề:</span>
-            {["Thì hiện tại đơn", "Thì quá khứ đơn", "Từ vựng"].map((topic) => (
-              <Button
-                key={topic}
-                size="sm"
-                variant="flat"
-                radius="full"
-                onPress={() => search({ q: topic })}
-              >
-                {topic}
-              </Button>
-            ))}
-          </div>
-        )}
-        <div className="grid gap-3 sm:grid-cols-3">
-          <Select
-            aria-label="Loại nội dung"
-            label="Nội dung"
-            selectedKeys={[kind || "all"]}
-            onSelectionChange={(keys) => {
-              const value = Array.from(keys)[0];
-              if (value)
-                search({ kind: value === "all" ? "" : value, mode: "" });
+          <form
+            className="flex items-center gap-2"
+            onSubmit={(event) => {
+              event.preventDefault();
+              submitSearch(draft);
             }}
           >
-            {[
-              ["all", "Tất cả"],
-              ["exercise", "Bài tập"],
-              ["folder", "Thư mục"],
-              ["theory", "Lý thuyết"],
-            ].map(([key, label]) => (
-              <SelectItem key={key}>{label}</SelectItem>
-            ))}
-          </Select>
-          <Select
-            aria-label="Dạng bài tập"
-            label="Dạng bài"
-            selectedKeys={[mode || "all"]}
-            onSelectionChange={(keys) => {
-              const value = Array.from(keys)[0];
-              if (value)
-                search({
-                  mode: value === "all" ? "" : value,
-                  kind: value === "all" ? kind : "exercise",
-                });
-            }}
-          >
-            {[["all", "Mọi dạng bài"], ...EXERCISE_TYPES].map(
-              ([key, label]) => (
-                <SelectItem key={key}>{label}</SelectItem>
-              ),
-            )}
-          </Select>
-          <Select
-            aria-label="Sắp xếp kết quả"
-            label="Sắp xếp"
-            selectedKeys={[sort]}
-            onSelectionChange={(keys) => {
-              const value = Array.from(keys)[0];
-              if (value) search({ sort: value });
-            }}
-          >
-            <SelectItem key="relevance">Phù hợp nhất</SelectItem>
-            <SelectItem key="newest">Mới cập nhật</SelectItem>
-          </Select>
+            <div className="min-w-0 flex-1">
+              <Field
+                aria-label="Tìm kiếm"
+                placeholder={
+                  current ? "Tìm trong folde…" : "Tìm folde, chủ đề…"
+                }
+                value={draft}
+                onChange={(value) => {
+                  setDraft(value);
+                  setSuggestionsOpen(true);
+                }}
+                onFocus={() => setSuggestionsOpen(true)}
+                autoComplete="off"
+                maxLength={200}
+                aria-expanded={suggestionsOpen && suggestions.length > 0}
+                aria-controls="explore-search-suggestions"
+                startContent={<Icon name="search" />}
+              />
+            </div>
+            <Btn
+              type="submit"
+              isIconOnly
+              title="Tìm kiếm"
+              aria-label="Tìm kiếm"
+            >
+              <Icon name="search" />
+            </Btn>
+            <Btn
+              isIconOnly
+              title="Bộ lọc"
+              aria-label="Bộ lọc"
+              aria-pressed={Boolean(mode || sort !== "relevance")}
+              onClick={() => setFilters(true)}
+            >
+              <Icon name="settings" />
+            </Btn>
+          </form>
+          {suggestionsOpen && suggestions.length > 0 && (
+            <section
+              id="explore-search-suggestions"
+              className="explore-suggestions"
+              aria-label="Tìm kiếm gần đây"
+            >
+              <span className="px-2 text-sm text-(--muted)">
+                Tìm kiếm gần đây
+              </span>
+              {recentRows(suggestions)}
+            </section>
+          )}
         </div>
-        <Status error={resource.error} />
-        <p role="status" className="text-sm text-[var(--muted)]">
-          {notice ||
-            (resource.loading
-              ? "Đang tìm bài học…"
-              : `${resource.data?.total || 0} nội dung${query ? ` cho “${query}”` : " công khai"}`)}
-        </p>
-        <div
-          className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
-          aria-busy={resource.loading}
-        >
-          {resource.loading
-            ? Array.from({ length: 6 }, (_, i) => (
-                <Skeleton key={i} className="h-56 rounded-2xl" />
-              ))
-            : resource.data?.results.map((node, index) => (
-                <motion.div
-                  key={node.id}
-                  initial={reduced ? false : { opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.2,
-                    delay: Math.min(index, 5) * 0.025,
-                  }}
-                  className="h-full"
-                >
-                  <Card
-                    className="h-full border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)]"
-                    shadow="none"
-                  >
-                    <CardBody className="gap-3 p-5">
-                      <div className="flex items-center justify-between gap-2">
-                        <Icon
-                          name={node.kind === "folder" ? "folder" : "book"}
-                        />
-                        <Chip size="sm" variant="flat">
-                          {node.kind === "folder"
-                            ? "Thư mục"
-                            : node.kind === "theory"
-                              ? "Lý thuyết"
-                              : `${node.question_count} câu`}
-                        </Chip>
+        {!query && !parent && results.suggestions?.length > 0 && <div className="flex flex-wrap gap-2" aria-label="Gợi ý tìm kiếm">{results.suggestions.map(tag => <button key={tag} className="pill" onClick={() => submitSearch(tag, true)}>#{tag}</button>)}</div>}
+        <Status error={error} />
+        {notice && (
+          <p role="status" className="text-sm text-(--muted)">
+            {notice}
+          </p>
+        )}
+        {error && (
+          <Btn
+            icon="refresh"
+            onClick={() => {
+              setRetry((value) => value + 1);
+            }}
+          >
+            Thử lại
+          </Btn>
+        )}
+        {!loading && parent && !current ? (
+          <Status>
+            Folde không còn công khai hoặc không có quyền truy cập.
+          </Status>
+        ) : (
+          <div className={`hub-grid library-view-${view}`} aria-busy={loading}>
+            {loading
+              ? Array.from({ length: 6 }, (_, index) => (
+                  <Skeleton key={index} className="h-48 rounded-2xl" />
+                ))
+              : items.map((node, index) => {
+                  const folder = node.kind === "folder";
+                  const info = node;
+                  const author = node.author;
+                  return (
+                    <motion.article
+                      key={node.id}
+                      data-kind={node.kind}
+                      className="hub-tile library-card"
+                      initial={reduced ? false : { opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.18,
+                        delay: Math.min(index, 5) * 0.02,
+                      }}
+                    >
+                      <div className="library-card-top">
+                        <span className="library-card-icon">
+                          <Icon
+                            name={
+                              folder
+                                ? "folder"
+                                : node.kind === "exercise"
+                                  ? "exercise"
+                                  : "book"
+                            }
+                            size={24}
+                          />
+                        </span>
                       </div>
-                      <Link
-                        to={`${routes.learn}/${node.id}`}
-                        className="text-lg font-semibold leading-snug hover:underline"
+                      <button
+                        type="button"
+                        className="library-card-title text-left"
+                        title={node.title}
+                        onClick={() =>
+                          folder ? openFolder(node.id) : showPreview(node)
+                        }
                       >
                         {node.title}
-                      </Link>
-                      <p className="line-clamp-2 text-sm text-[var(--muted)]">
-                        {node.description ||
-                          EXERCISE_TYPES.find(
-                            ([key]) => key === node.interaction,
-                          )?.[1] ||
-                          "Khám phá nội dung học tập"}
-                      </p>
-                      <span className="mt-auto text-sm text-[var(--muted)]">
-                        Bởi {node.author}
-                        {node.can_edit ? " · Bạn" : ""}
-                      </span>
-                    </CardBody>
-                    <CardFooter className="flex-wrap gap-2 px-5 pb-5">
-                      <Button
-                        color="primary"
-                        variant="flat"
-                        size="sm"
-                        onPress={() => navigate(`${routes.learn}/${node.id}`)}
-                      >
-                        Mở nội dung
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="light"
-                        aria-pressed={pinned.includes(node.id)}
-                        startContent={
-                          <Icon
-                            size={15}
-                            name={pinned.includes(node.id) ? "check" : "plus"}
-                          />
-                        }
-                        onPress={() => toggle(node)}
-                      >
-                        {pinned.includes(node.id) ? "Đã thêm" : "Workspace"}
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </motion.div>
-              ))}
-        </div>
-        {!resource.loading && !resource.error && !resource.data?.total && (
-          <div className="rounded-2xl border border-dashed border-[var(--line)] p-10 text-center">
-            <h2 className="text-xl font-semibold">Chưa tìm thấy bài phù hợp</h2>
-            <p className="mt-2 text-[var(--muted)]">
-              Thử từ khóa ngắn hơn hoặc bỏ bộ lọc. Bạn cũng có thể tạo bài học
-              của riêng mình trong Create.
-            </p>
-            <Button
-              className="mt-4"
-              variant="flat"
-              onPress={() => search({ q: "", kind: "", mode: "" })}
-            >
-              Xem mọi chủ đề
-            </Button>
+                      </button>
+                      <small>
+                        {folder
+                          ? `${node.child_count || 0} nội dung`
+                          : node.kind === "exercise"
+                            ? `${info?.question_count || 0} câu`
+                            : "Nội dung đọc"}
+                        {author
+                          ? ` · ${author}`
+                          : node.can_edit
+                            ? " · Bạn"
+                            : ""}
+                      </small>
+                      {node.tags?.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {node.tags.slice(0, 4).map((tag) => (
+                            <button
+                              key={tag}
+                              className="pill"
+                              onClick={() => submitSearch(tag, true)}
+                            >
+                              #{tag}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      <div className="library-card-actions">
+                        <Btn
+                          isIconOnly
+                          title={folder ? "Mở folde" : "Xem trước"}
+                          aria-label={`${folder ? "Mở" : "Xem trước"} ${node.title}`}
+                          onClick={() =>
+                            folder ? openFolder(node.id) : showPreview(node)
+                          }
+                        >
+                          <Icon name={folder ? "arrow" : "eye"} />
+                        </Btn>
+                        <Btn
+                          isIconOnly
+                          title={
+                            isPinned(node)
+                              ? "Bỏ khỏi workspace"
+                              : "Thêm vào workspace"
+                          }
+                          aria-label={
+                            isPinned(node)
+                              ? "Bỏ khỏi workspace"
+                              : "Thêm vào workspace"
+                          }
+                          aria-pressed={isPinned(node)}
+                          onClick={() => toggle(node)}
+                        >
+                          <Icon name={isPinned(node) ? "check" : "plus"} />
+                        </Btn>
+                      </div>
+                    </motion.article>
+                  );
+                })}
           </div>
         )}
-        {!resource.loading && resource.data?.pages > 1 && (
-          <Pagination
-            aria-label="Trang kết quả"
-            total={resource.data.pages}
-            page={resource.data.page}
-            onChange={(page) => search({ page })}
-            showControls
-          />
+        {!loading && !error && !items.length && (!parent || current) && (
+          <div className="rounded-2xl border border-dashed border-(--line) p-10 text-center text-(--muted)">
+            <Icon name="search" />
+            <p className="mt-3">
+              {query || mode
+                ? "Không có kết quả phù hợp."
+                : "Chưa có nội dung công khai."}
+            </p>
+          </div>
+        )}
+        {results.has_more && items.length > 0 && (
+          <div className="flex justify-center">
+            <Btn
+              icon="more"
+              isLoading={results.loading}
+              isDisabled={results.loading}
+              onClick={() =>
+                error ? setRetry((v) => v + 1) : setPage((v) => v + 1)
+              }
+            >
+              Xem thêm kết quả
+            </Btn>
+          </div>
         )}
       </section>
+      {historyOpen && (
+        <PracticeModal
+          title="Lịch sử tìm kiếm"
+          size="lg"
+          onClose={() => setHistoryOpen(false)}
+        >
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-sm text-(--muted)">
+              Lưu trên trình duyệt này ·{" "}
+              {lang === "de" ? "Tiếng Đức" : "Tiếng Anh"}
+            </span>
+            <Btn
+              isIconOnly
+              title="Xóa tất cả"
+              aria-label="Xóa toàn bộ lịch sử tìm kiếm"
+              isDisabled={!history.length}
+              onClick={() => updateHistory(() => [])}
+            >
+              <Icon name="trash" />
+            </Btn>
+          </div>
+          {history.length ? (
+            recentRows(history, true)
+          ) : (
+            <p className="text-sm text-(--muted)">Chưa có tìm kiếm gần đây.</p>
+          )}
+        </PracticeModal>
+      )}
+      {filters && (
+        <PracticeModal
+          title="Bộ lọc"
+          size="sm"
+          onClose={() => setFilters(false)}
+        >
+          <Select
+            label="Dạng bài"
+            value={mode}
+            onChange={(value) => search({ mode: value })}
+          >
+            <option value="">Tất cả</option>
+            {EXERCISE_TYPES.map(([key, title]) => (
+              <option key={key} value={key}>
+                {title}
+              </option>
+            ))}
+          </Select>
+          <Select
+            label="Sắp xếp"
+            value={sort}
+            onChange={(value) => search({ sort: value })}
+          >
+            <option value="relevance">Phù hợp nhất</option>
+            <option value="newest">Mới cập nhật</option>
+          </Select>
+          <div className="flex justify-end gap-2">
+            <Btn icon="refresh" onClick={() => search({ mode: "", sort: "" })}>
+              Đặt lại bộ lọc
+            </Btn>
+            <Btn icon="check" onClick={() => setFilters(false)}>
+              Xong
+            </Btn>
+          </div>
+        </PracticeModal>
+      )}
+      {preview && (
+        <ExplorePreview
+          key={preview.id}
+          lang={lang}
+          node={preview}
+          onClose={() => setPreview(null)}
+        />
+      )}
     </Page>
   );
 }

@@ -1,4 +1,4 @@
-"""Practice Hub API: folder trees and standalone practice/theory, automatic grading and batch persistence."""
+"""Practice Hub API: folder trees and folder-based practice/theory, automatic grading and batch persistence."""
 from django.db import transaction
 from django.db.models import Q, Prefetch
 from django.http import JsonResponse
@@ -18,7 +18,7 @@ def visible(request):
 
 def node_data(n,user):
     progress=next((p for p in n.learning_progress.all() if p.user_id==user.pk and p.revision==n.updated_at.isoformat()),None)
-    return {'id':n.pk,'parent':n.parent_id,'kind':n.kind,'title':n.title,'payload':n.payload,'links':[r.pk for r in n.links.all()], 'visibility':n.visibility,'position':n.position,'can_edit':n.owner_id==user.pk,'updated_at':n.updated_at.isoformat(),'interaction':n.payload.get('presentation',{}).get('interaction') if n.kind=='exercise' else None,'progress':{'completed':progress.completed if progress else []}}
+    return {'id':n.pk,'parent':n.parent_id,'kind':n.kind,'title':n.title,'payload':n.payload,'tags':n.payload.get('tags',[]) if n.kind=='folder' and not n.parent_id else [],'links':[r.pk for r in n.links.all()], 'visibility':n.visibility,'position':n.position,'can_edit':n.owner_id==user.pk,'updated_at':n.updated_at.isoformat(),'interaction':n.payload.get('presentation',{}).get('interaction') if n.kind=='exercise' else None,'progress':{'completed':progress.completed if progress else []}}
 
 def validate_payload(kind,payload):
     if not isinstance(payload,dict):raise ValueError('Nội dung phải là đối tượng JSON.')
@@ -61,6 +61,7 @@ def save_node(request,data,node=None):
     if not isinstance(title,str) or not title.strip() or len(title)>200:raise ValueError('Tên nội dung cần 1–200 ký tự.')
     parent_id=data.get('parent',node.parent_id if node else None) or None
     parent=get_object_or_404(PracticeNode,pk=parent_id,owner=request.user,language=request.language,kind='folder') if parent_id else None
+    if kind=='exercise' and parent is None:raise ValueError('Chọn thư mục trước khi thêm hoặc di chuyển bài tập.')
     p=parent;depth=0;seen=set()
     while p:
         if p.pk in seen or (node and p.pk==node.pk):raise ValueError('Không chuyển thư mục vào chính nó hoặc con của nó.')
@@ -69,6 +70,15 @@ def save_node(request,data,node=None):
     if depth+height>3:raise ValueError('Tối đa 3 cấp thư mục, kể cả thư mục con được di chuyển.')
     previous_payload=deepcopy(node.payload) if node else None
     payload=validate_payload(kind,data.get('payload',node.payload if node else {}))
+    tags=data.get('tags',payload.get('tags',[]))
+    if not isinstance(tags,list) or len(tags)>12 or any(not isinstance(t,str) or not 1<=len(t.strip())<=40 for t in tags):raise ValueError('Tối đa 12 tag, mỗi tag 1–40 ký tự.')
+    if kind=='folder' and parent is None:
+        payload['tags']=list(dict.fromkeys(t.strip().casefold() for t in tags))
+    else:
+        if data.get('tags'):raise ValueError('Chỉ folde gốc có tag.')
+        payload.pop('tags',None)
+    from .practice_media import validated_attachments
+    attachments=validated_attachments(request,payload) if kind=='exercise' else []
     content_changed=not node or {k:v for k,v in payload.items() if k!='title'}!={k:v for k,v in previous_payload.items() if k!='title'}
     links=data.get('links',list(node.links.values_list('id',flat=True)) if node else [])
     if not isinstance(links,list) or len(links)>100:raise ValueError('Tối đa 100 liên kết.')
@@ -82,6 +92,7 @@ def save_node(request,data,node=None):
     n.full_clean()
     n.save() if content_changed else n.save(update_fields=['kind','parent','title','payload','visibility','position'])
     n.links.set(targets)
+    n.attachments.set(attachments)
     return n
 
 @endpoint
@@ -186,6 +197,9 @@ def search_text(value):
 @endpoint
 @require_http_methods(['GET'])
 def explore(request):
+    if request.GET.get('browse')=='1':
+        from .explore_discovery import browse
+        return browse(request)
     query = request.GET.get('q', '').strip()[:200]
     mode = request.GET.get('mode', '')
     kind = request.GET.get('kind', '')

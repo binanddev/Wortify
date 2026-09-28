@@ -14,7 +14,29 @@ import { motion } from "framer-motion";
 import { navigate, useAction } from "./core";
 export function Icon({ name = "cards", size = 20 }) {
   const paths = {
+    image: "M3 3h18v18H3z M3 17l6-6 4 4 3-3 5 5 M8 7h.01",
+    history: "M3 11a9 9 0 1 1 2 7 M3 4v7h7 M12 7v6l4 2",
+    eye: "M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12 M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
+    grid: "M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z",
+    list: "M3 5h2 M9 5h12 M3 12h2 M9 12h12 M3 19h2 M9 19h12",
+    more: "M4 12h1 M11 12h1 M18 12h1",
+    close: "m6 6 12 12 M6 18 18 6",
+    undo: "M8 4 3 9l5 5 M3 9h10a7 7 0 0 1 0 14",
+    upload: "M12 16V3 m-5 5 5-5 5 5 M4 15v6h16v-6",
+    download: "M12 3v13 m-5-5 5 5 5-5 M4 17v4h16v-4",
+    copy: "M8 8h13v13H8z M16 8V3H3v13h5",
+    save: "M4 3h13l4 4v14H3V3z M7 3v6h9V3 M7 21v-7h10v7",
+    trash: "M3 6h18 M9 6V3h6v3 M5 6l1 15h12l1-15 M10 10v7 M14 10v7",
+    refresh: "M20 8a9 9 0 1 0 1 7 M21 3v6h-6",
+    play: "m7 3 14 9-14 9z",
+    pause: "M6 3h3v18H6z M15 3h3v18h-3z",
+    print: "M7 8V3h10v5 M7 17H3V8h18v9h-4 M7 14h10v7H7z",
+    chevron_right: "m9 5 7 7-7 7",
+    chevron_down: "m5 9 7 7 7-7",
+    chevron_left: "m15 5-7 7 7 7",
     cards: "M8 4h12v14H8z M4 8v13h12",
+    exercise:
+      "M8 4H5v17h14V4h-3 M9 2h6v4H9z M8 11l1 1 2-2 M13 11h3 M8 16l1 1 2-2 M13 16h3",
     book: "M12 5C8 2 3 3 3 3v16s5-1 9 2c4-3 9-2 9-2V3s-5-1-9 2v16",
     folder: "M3 6h7l2 3h9v11H3z",
     edit: "m15 4 5 5 M4 20l5-1L21 7l-5-5L4 14z",
@@ -36,6 +58,7 @@ export function Icon({ name = "cards", size = 20 }) {
   };
   return (
     <svg
+      data-icon={name}
       width={size}
       height={size}
       viewBox="0 0 24 24"
@@ -50,16 +73,23 @@ export function Icon({ name = "cards", size = 20 }) {
     </svg>
   );
 }
-export function Btn({ children, primary = false, onClick, ...props }) {
+export function Btn({ children, primary = false, onClick, icon, ...props }) {
   return (
     <Button
       className={primary ? "btn primary" : "btn"}
       color={primary ? "primary" : "default"}
       variant={primary ? "solid" : "light"}
       onPress={onClick}
+      {...(icon
+        ? {
+            isIconOnly: true,
+            title: typeof children === "string" ? children : undefined,
+            "aria-label": typeof children === "string" ? children : undefined,
+          }
+        : {})}
       {...props}
     >
-      {children}
+      {icon ? <Icon name={icon} /> : children}
     </Button>
   );
 }
@@ -101,7 +131,13 @@ export function Page({ children }) {
     </motion.div>
   );
 }
-export function Heading({ eyebrow, title, description, contentDescription = false, actions }) {
+export function Heading({
+  eyebrow,
+  title,
+  description,
+  contentDescription = false,
+  actions,
+}) {
   return (
     <div className="heading">
       <div>
@@ -148,7 +184,9 @@ export function Loading({ resource, children }) {
     return (
       <Glass>
         <Status error={resource.error} />
-        <Btn onClick={resource.reload}>Thử lại</Btn>
+        <Btn icon="refresh" onClick={resource.reload}>
+          Thử lại
+        </Btn>
       </Glass>
     );
   return children(resource.data);
@@ -454,7 +492,7 @@ export function Choice({
       <legend className="sr-only">{label}</legend>
       {options.map((text, i) => (
         <label
-          className={`choice ${(multiple ? value?.includes(text) : value === text) ? "selected" : ""} ${graded ? text === correctAnswer ? "answer-correct" : value === text ? "answer-wrong" : "" : ""}`}
+          className={`choice ${(multiple ? value?.includes(text) : value === text) ? "selected" : ""} ${graded ? (text === correctAnswer ? "answer-correct" : value === text ? "answer-wrong" : "") : ""}`}
           key={text}
         >
           <input

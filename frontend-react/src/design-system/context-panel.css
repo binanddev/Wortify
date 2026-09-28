@@ -1,0 +1,319 @@
+/* Contextual face only. The primary navigation and flip mechanics are unchanged. */
+.nav-flip .context-panel {
+  @apply px-[22px] py-[24px] text-(--ink);
+}
+.nav-flip .context-panel > h2 {
+  @apply mb-[24px] text-[24px] font-bold tracking-tight;
+}
+.context-panel #workspace-tools {
+  @apply flex flex-col gap-[20px] w-full max-w-[360px] mx-auto;
+}
+.context-panel .sidebar-tools-group {
+  @apply flex flex-col gap-[16px] m-0 min-w-0;
+}
+.context-panel .sidebar-tools-group + .sidebar-tools-group {
+  @apply pt-[20px] [border-top:1px_solid_var(--line)];
+}
+.context-panel .context-section-title,
+.context-panel h3 {
+  @apply text-[16px] font-semibold text-(--ink) m-0;
+}
+.context-panel .studio-nav-heading {
+  @apply text-[15px] font-semibold text-(--ink) mt-[12px];
+}
+.context-panel .context-actions,
+.context-panel .context-filters {
+  @apply grid gap-[12px];
+}
+.context-panel .btn {
+  @apply min-h-[48px] rounded-[12px] text-[16px] font-semibold px-[14px] whitespace-normal;
+}
+.context-panel .context-help {
+  @apply text-[14px] font-medium text-(--muted) underline [text-underline-offset:4px];
+}
+.context-panel :is(.field-label, .select-field, .check-line, .range-label) {
+  @apply text-[16px] font-medium text-(--ink) [line-height:1.5];
+}
+.context-panel .native-field-wrap input,
+.context-panel .select-field select {
+  @apply text-[16px] min-h-[46px] rounded-[10px] [background:var(--solid)] [border-color:var(--line)];
+}
+.context-panel [data-slot="label"],
+.context-panel [data-slot="value"] {
+  @apply text-[15px] font-medium;
+}
+.context-panel .check-line {
+  @apply flex items-center gap-[12px] py-[6px];
+}
+.context-panel .practice-tree-row {
+  @apply min-h-[40px] rounded-[8px] text-(--ink);
+}
+.context-panel .practice-tree-row .tree-title {
+  @apply text-[16px] font-semibold py-[9px];
+}
+.context-panel .tree-icon {
+  @apply w-[28px] h-[32px];
+}
+.context-panel .learning-navigation {
+  @apply min-h-0 gap-[18px];
+}
+.context-panel .workspace-browse {
+  @apply mt-[20px] p-[12px] [border:1px_solid_var(--line)] rounded-[12px];
+}
+.context-panel .folder-tabs {
+  @apply gap-[6px];
+}
+.context-panel .folder-tabs button {
+  @apply text-[16px] font-medium p-[12px] rounded-[10px];
+}
+.context-panel .profile-index {
+  @apply flex flex-col gap-[6px];
+}
+.context-panel .profile-index a {
+  @apply p-[10px_12px] rounded-[10px] text-[16px] font-medium;
+}
+/* A centered reading stage with larger question text and restrained line length. */
+.page:has(> .learning-stage) > .heading {
+  @apply max-w-[920px] mx-auto text-center justify-center;
+}
+.exercise-workspace.learning-stage {
+  @apply w-full max-w-[920px] mx-auto my-[24px] text-(--ink);
+}
+.learning-stage .journey-topline {
+  @apply text-[17px] font-semibold;
+}
+.learning-stage .journey-question {
+  @apply min-h-[320px] flex flex-col justify-center gap-[24px] p-[clamp(24px,4vw,48px)] text-center;
+}
+.learning-stage .exercise-instruction {
+  @apply text-[20px] [line-height:1.65] font-medium text-center text-(--ink);
+}
+.learning-stage .work-prompt {
+  @apply text-[clamp(23px,2.5vw,30px)] font-semibold [line-height:1.6] text-(--ink);
+}
+.exercise-workspace.learning-stage :is(.fluid-passage, .clickable-passage) {
+  @apply text-[clamp(23px,2.5vw,29px)] font-medium [line-height:2.3] text-(--ink);
+}
+.learning-stage :is(.word-bank, .sentence-target, .clickable-passage) {
+  @apply justify-center;
+}
+.learning-stage
+  :is(.word-chip, .movable-token, .gap-drop, .inline-choice, .pair-card) {
+  @apply text-[20px] font-semibold;
+}
+.learning-stage .journey-feedback {
+  @apply text-[16px] font-medium [line-height:1.6] mt-[12px];
+}
+.learning-stage :is(textarea, input, .reading-document) {
+  @apply text-left;
+}
+.learning-stage :is(textarea, .gap-input) {
+  @apply text-[20px] [line-height:1.6];
+}
+@media (max-width: 760px) {
+  .nav-flip .context-panel {
+    @apply px-[16px] py-[20px];
+  }
+  .learning-stage .journey-question {
+    @apply min-h-[260px] p-[22px_16px];
+  }
+  .learning-stage .journey-topline {
+    @apply gap-[10px] text-[15px];
+  }
+}
+
+.context-panel .workspace-search {
+  @apply grid grid-cols-[minmax(0,1fr)_44px] items-end gap-2;
+}
+.context-panel .workspace-search .workspace-browse {
+  @apply m-0 h-11 w-11 self-end justify-center p-0;
+}
+.catalog-preview {
+  @apply min-w-0 cursor-pointer text-left text-lg font-semibold text-(--ink) wrap-anywhere hover:underline focus-visible:outline-2;
+}
+.practice-catalog .catalog-card:has(.catalog-preview) {
+  @apply grid-cols-[24px_minmax(0,1fr)_36px];
+}
+.practice-catalog .catalog-pin {
+  @apply col-start-3 row-start-1 h-9 w-9 justify-center p-0 rounded-xl hover:bg-(--surface) focus-visible:outline-2;
+}
+
+.welcome-page {
+  @apply relative isolate min-h-dvh max-w-none w-full overflow-hidden bg-[radial-gradient(ellipse_at_15%_20%,#e1dcff_0%,transparent_55%),radial-gradient(ellipse_at_90%_75%,#cdf3eb_0%,transparent_55%),linear-gradient(135deg,#f9f6ff,#eff8ff)] text-[#24334d];
+}
+.welcome-page::before {
+  @apply pointer-events-none absolute -top-24 -right-24 -z-10 h-96 w-96 rounded-full border-[40px] border-white/35 content-[''];
+}
+.welcome-page::after {
+  @apply pointer-events-none absolute -bottom-40 -left-24 -z-10 h-[32rem] w-[32rem] rounded-full border-[60px] border-white/30 content-[''];
+}
+.welcome-page .language-card {
+  @apply border border-white/80 bg-white/60 shadow-lg backdrop-blur-xl transition-transform duration-300 hover:-translate-y-2 motion-reduce:transform-none;
+}
+.welcome-page .page {
+  @apply relative bg-transparent pb-16;
+}
+
+.welcome-page > header,
+.welcome-page > .page {
+  @apply mx-auto w-full max-w-[1140px];
+}
+
+/* Create: distinct content types, compact contextual navigation. */
+.studio-nav-shortcuts {
+  @apply flex items-center gap-2 border-b border-(--line) pb-4;
+}
+.studio-nav-icon {
+  @apply inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-transparent text-(--muted) transition duration-200 hover:bg-(--surface) hover:text-(--accent) focus-visible:outline-2 focus-visible:outline-offset-2;
+}
+.studio-nav-icon.active {
+  @apply border-(--line) bg-(--surface) text-(--accent) shadow-sm;
+}
+.create-type-icon {
+  @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl;
+}
+.library-card[data-kind="folder"] .library-card-icon,
+.create-type-icon.folder {
+  @apply bg-amber-100 text-amber-800;
+}
+.library-card[data-kind="exercise"] .library-card-icon,
+.create-type-icon.exercise {
+  @apply bg-violet-100 text-violet-700;
+}
+.library-card[data-kind="theory"] .library-card-icon {
+  @apply bg-sky-100 text-sky-700;
+}
+.library-card .library-card-icon {
+  @apply transition-transform duration-200;
+}
+.library-card:hover .library-card-icon,
+.library-card:focus-within .library-card-icon {
+  @apply -rotate-6 scale-110;
+}
+.library-card[data-kind="folder"]:hover {
+  @apply border-amber-300;
+}
+.library-card[data-kind="exercise"]:hover {
+  @apply border-violet-300;
+}
+@media (prefers-reduced-motion: reduce) {
+  .library-card .library-card-icon,
+  .library-card:hover .library-card-icon,
+  .library-card:focus-within .library-card-icon {
+    @apply transform-none transition-none;
+  }
+}
+
+/* List mode keeps the same actions and selection state as the grid. */
+.library-view-list {
+  @apply grid-cols-1 gap-2;
+}
+.library-view-list .library-card {
+  @apply grid min-h-0 grid-cols-[80px_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 p-4;
+}
+.library-view-list .library-card-top {
+  @apply row-span-2 gap-2;
+}
+.library-view-list .library-card-title,
+.library-view-list .inline-rename {
+  @apply col-start-2 row-start-1 min-w-0 truncate;
+}
+.library-view-list .library-card > small {
+  @apply col-start-2 row-start-2;
+}
+.library-view-list .library-card-actions {
+  @apply col-start-3 row-start-1 row-span-2 pt-0;
+}
+@media (max-width: 600px) {
+  .library-view-list .library-card {
+    @apply grid-cols-[68px_minmax(0,1fr)] gap-x-2 p-3;
+  }
+  .library-view-list .library-card-actions {
+    @apply col-start-2 row-start-3 row-span-1;
+  }
+}
+.context-panel,
+.context-panel #workspace-tools,
+.context-panel nav,
+.practice-tree ul,
+.practice-tree li,
+.practice-tree-row {
+  @apply min-w-0 max-w-full;
+}
+.context-panel .practice-tree {
+  @apply max-h-[48dvh] overflow-y-auto overflow-x-hidden;
+}
+.context-panel .practice-tree-row .tree-title {
+  @apply w-0 flex-1 truncate;
+}
+.context-panel .folder-tabs button,
+.context-panel .study-outline a {
+  @apply min-w-0 max-w-full overflow-hidden text-ellipsis whitespace-nowrap;
+}
+.tree-overflow {
+  @apply flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-(--muted) hover:bg-(--surface) focus-visible:outline-2;
+}
+svg[data-icon] {
+  @apply shrink-0;
+}
+svg[data-icon="folder"] {
+  @apply text-amber-700;
+}
+svg[data-icon="exercise"] {
+  @apply text-violet-600;
+}
+[data-background="night"] svg[data-icon="folder"] {
+  @apply text-amber-300;
+}
+[data-background="night"] svg[data-icon="exercise"] {
+  @apply text-violet-300;
+}
+
+button[aria-pressed="true"].btn {
+  @apply bg-(--surface) text-(--accent) ring-1 ring-(--line);
+}
+
+/* Explore navigation must fit inside the flip card at every width. */
+.nav-flip .context-panel:has(.explore-nav) {
+  @apply box-border min-w-0 overflow-x-hidden px-4;
+}
+.explore-nav {
+  @apply flex w-full min-w-0 max-w-full flex-col gap-4;
+}
+.explore-nav .studio-nav-shortcuts {
+  @apply flex-wrap gap-2;
+}
+.context-panel .explore-nav .btn,
+.context-panel .explore-nav .studio-nav-icon {
+  @apply h-10 min-h-10 w-10 min-w-10 max-w-10 shrink-0 p-0 rounded-xl;
+}
+.explore-current {
+  @apply flex min-w-0 max-w-full items-center gap-2 rounded-xl bg-(--surface) p-3 text-sm;
+}
+.explore-current span {
+  @apply min-w-0 flex-1 truncate;
+}
+.explore-recent {
+  @apply min-w-0 max-w-full;
+}
+.explore-recent-list {
+  @apply m-0 grid min-w-0 list-none gap-1 p-0;
+}
+.explore-recent-list li {
+  @apply flex min-w-0 items-center gap-1 rounded-lg hover:bg-(--surface);
+}
+.explore-recent-query {
+  @apply flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-3 text-left text-sm focus-visible:outline-2;
+}
+.explore-recent-query > span {
+  @apply min-w-0 flex-1 truncate;
+}
+.explore-recent-query small {
+  @apply shrink-0 text-xs text-(--muted);
+}
+.explore-search {
+  @apply relative min-w-0;
+}
+.explore-suggestions {
+  @apply absolute inset-x-0 top-full z-30 mt-2 max-h-80 overflow-y-auto rounded-2xl border border-(--line) bg-(--solid) p-3 text-(--ink) shadow-xl;
+}

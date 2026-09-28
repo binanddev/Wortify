@@ -2,9 +2,15 @@ import { PracticeModal } from "./practice-workspace";
 import { useState } from "react";
 import { Page, Heading, Link, SidebarTools, Select, Btn } from "./ui";
 import { EXERCISE_TYPES, exerciseStylesOf } from "./exercise-types";
-import { TEXT_GUIDE, textTemplate } from "./practice-text";
+import {
+  TEXT_GUIDE,
+  textTemplate,
+  completePracticeGuide,
+} from "./practice-text";
 
 export function PracticeGuide({ lang }) {
+  const [copyNotice, setCopyNotice] = useState("");
+  const fullGuide = completePracticeGuide();
   const [templatesOpen, setTemplatesOpen] = useState(false);
   const [mode, setMode] = useState("cloze_drag_drop");
   const [style, setStyle] = useState("drag_drop");
@@ -15,10 +21,12 @@ export function PracticeGuide({ lang }) {
     <Page>
       <SidebarTools navOnly>
         <div className="studio-import-tools">
-          <Link to={`/${lang}/create`}>← Create</Link>
-          <Link to={`/${lang}/create/new`}>Nhập bài từ .txt</Link>
-          <Link to={`/${lang}/practice`}>Practice Hub · vào học</Link>
-          <Btn onClick={() => setTemplatesOpen(true)}>Chọn và tải mẫu .txt</Btn>
+          <Link className="btn primary" to={`/${lang}/create/new`}>
+            Tạo bài từ mẫu .txt
+          </Link>
+          <Btn icon="download" onClick={() => setTemplatesOpen(true)}>
+            Chọn và tải mẫu .txt
+          </Btn>
         </div>
       </SidebarTools>
       {templatesOpen && (
@@ -80,29 +88,73 @@ export function PracticeGuide({ lang }) {
           <article>
             <b>02 · Viết bài</b>
             <p>
-              Đổi tên bài, câu hỏi và đáp án. Thêm BAI để tạo nhiều bài trong
-              một tệp, hoặc chọn nhiều tệp cùng lúc.
+              Đổi tên bài, câu hỏi và đáp án. Thêm EXERCISE để tạo nhiều bài
+              trong một tệp, hoặc chọn nhiều tệp cùng lúc.
             </p>
           </article>
           <article>
             <b>03 · Thử và lưu</b>
             <p>
               Trong Create, chọn “Nhập bài từ .txt”, chọn tệp, kiểm tra và làm
-              thử. Chỉ khi mọi bài hợp lệ, toàn bộ lô mới được lưu vào thư mục
+              thử. Chỉ khi mọi bài hợp lệ, toàn bộ lô mới được lưu vào folde
               đang chọn.
             </p>
           </article>
         </div>
         <section>
+          <h2>Hướng dẫn đầy đủ và toàn bộ mẫu</h2>
+          <p>
+            Bản tiếng Anh gồm quy tắc, hướng dẫn và đủ 7 dạng · 11 style. Bạn có
+            thể nhập trực tiếp tệp này để thử tất cả mẫu.
+          </p>
+          <div className="flex flex-wrap gap-3 my-4">
+            <Btn
+              icon="copy"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(fullGuide);
+                  setCopyNotice("Đã sao chép toàn bộ hướng dẫn và mẫu.");
+                } catch {
+                  setCopyNotice(
+                    "Không thể sao chép tự động. Hãy chọn nội dung bên dưới để sao chép hoặc tải tệp.",
+                  );
+                }
+              }}
+            >
+              Sao chép toàn bộ
+            </Btn>
+            <a
+              className="btn"
+              download="practice-complete-guide.txt"
+              href={`data:text/plain;charset=utf-8,${encodeURIComponent(fullGuide)}`}
+            >
+              Tải toàn bộ .txt
+            </a>
+          </div>
+          <p role="status">{copyNotice}</p>
+          <details>
+            <summary>Đọc bản đầy đủ</summary>
+            <pre className="text-guide" tabIndex={0}>
+              {fullGuide}
+            </pre>
+          </details>
+        </section>
+        <section>
           <h2>Quy tắc chung</h2>
+          <p>
+            Sau khi kiểm tra .txt, bạn có thể thêm MP3 hoặc hình ảnh cho từng
+            bài (không bắt buộc, tổng tối đa 200 MB/bài). Dùng icon mắt để làm
+            thử trước khi lưu. Tệp đính kèm được lưu riêng, không nằm trong bản
+            xuất .txt.
+          </p>
           <pre className="text-guide">{TEXT_GUIDE}</pre>
           <p>
-            Có thể xuống dòng trong CAU, HUONG_DAN, NGU_CANH và GIAI_THICH bằng
-            một dòng mới bắt đầu với <code>&gt; </code>. Ví dụ:{" "}
+            Có thể xuống dòng trong QUESTION, INSTRUCTIONS, CONTEXT và
+            EXPLANATION bằng một dòng mới bắt đầu với <code>&gt; </code>. Ví dụ:{" "}
             <code>&gt; Đây là dòng tiếp theo.</code>
           </p>
           <p>
-            STYLE phải thuộc đúng DANG. Giữ các từ khóa viết hoa; nội dung phía
+            STYLE phải thuộc đúng TYPE. Giữ các từ khóa viết hoa; nội dung phía
             sau dấu hai chấm có thể dùng tiếng Việt, Anh hoặc Đức. Một lô nhập
             tối đa 100 bài, mỗi bài tối đa 100 câu và tổng tệp tối đa 2 MB.
           </p>
@@ -131,11 +183,11 @@ export function PracticeGuide({ lang }) {
         <section>
           <h2>Sắp xếp góc học của bạn</h2>
           <p>
-            Trong thanh Nav của Create, chọn các bài của bạn để di chuyển nhiều
-            bài hoặc gom thành một thư mục. Kéo thẻ vào thư mục để chuyển nhanh,
-            hoặc dùng “Di chuyển” rồi chạm thư mục đích trên điện thoại. Hai nút
-            mũi tên đổi thứ tự bài trong thư mục. Có thể hoàn tác lần di chuyển
-            gần nhất.
+            Trong màn hình chính của Create, mở folde rồi chọn các bài để di
+            chuyển nhiều bài hoặc gom thành một folde. Kéo thẻ vào folde để
+            chuyển nhanh, hoặc dùng “Di chuyển” rồi chạm folde đích trên điện
+            thoại. Hai nút mũi tên đổi thứ tự bài trong folde. Có thể hoàn tác
+            lần di chuyển gần nhất.
           </p>
           <p>
             Chỉ chủ sở hữu được sửa, đổi tên, di chuyển hoặc xóa bài. Sửa nội

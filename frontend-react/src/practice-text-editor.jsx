@@ -1,6 +1,7 @@
+import { MediaEditor } from "./exercise-media";
 import { PracticeModal } from "./practice-workspace";
 import { useState } from "react";
-import { Btn, Field, Select, Status, SidebarTools } from "./ui";
+import { Btn, Field, Select, Status, SidebarTools, Icon } from "./ui";
 import {
   EXERCISE_TYPES,
   exerciseStylesOf,
@@ -19,6 +20,15 @@ export function PracticeTextEditor({
   pending = false,
   lang = "en",
 }) {
+  const [media, setMedia] = useState({ existing: exercise?.attachments || [] });
+  const [mediaBusy, setMediaBusy] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState(null);
+  const keyFor = (node, index) =>
+    exercise ? "existing" : `${index}:${node.title}`;
+  const withMedia = (node, index) => ({
+    ...node,
+    payload: { ...node.payload, attachments: media[keyFor(node, index)] || [] },
+  });
   const [toolsOpen, setToolsOpen] = useState(!exercise);
   const [mode, setMode] = useState("cloze_drag_drop");
   const [style, setStyle] = useState("drag_drop");
@@ -35,7 +45,7 @@ export function PracticeTextEditor({
     setError("");
   };
   const loadFiles = async (incoming) => {
-    if (reading || pending) return;
+    if (reading || pending || mediaBusy) return;
     setReading(true);
     setChecked(null);
     setError("");
@@ -51,6 +61,7 @@ export function PracticeTextEditor({
         .join("\n\n");
       update(combined);
       setFiles(selected.map((file) => file.name));
+      setToolsOpen(false);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -60,15 +71,58 @@ export function PracticeTextEditor({
   return (
     <section className="practice-text-editor studio-content">
       <SidebarTools navOnly>
-        <Btn onClick={() => setToolsOpen(true)}>Công cụ bản soạn</Btn>
+        <h3 className="context-section-title">
+          {exercise ? "Chỉnh sửa bài" : "Tạo bài tập"}
+        </h3>
+        <Btn icon="upload" onClick={() => setToolsOpen(true)}>
+          Nhập tệp / chọn mẫu
+        </Btn>
+        <Status error={error} />
+        <Btn
+          icon="eye"
+          isDisabled={!text.trim() || reading || pending || mediaBusy}
+          onClick={() => {
+            try {
+              const data = parsePracticeText(text);
+              if (exercise && data.nodes.length !== 1)
+                throw new Error(
+                  "Khi sửa, tệp cần đúng một bài. Dùng nhập mới để tạo nhiều bài.",
+                );
+              setChecked(data);
+              setPreviewIndex(0);
+              setError("");
+            } catch (e) {
+              setChecked(null);
+              setError(e.message);
+            }
+          }}
+        >
+          Kiểm tra và xem trước
+        </Btn>
+        {checked && (
+          <>
+            <p role="status">
+              {checked.nodes.length} bài hợp lệ, sẵn sàng lưu.
+            </p>
+            <Btn
+              primary
+              isLoading={pending}
+              isDisabled={pending || mediaBusy}
+              onClick={() => onApply(checked.nodes.map(withMedia))}
+            >
+              {exercise ? "Lưu thay đổi" : `Tạo ${checked.nodes.length} bài`}
+            </Btn>
+          </>
+        )}
       </SidebarTools>
       {toolsOpen && (
         <PracticeModal
           title={exercise ? "Chỉnh sửa bài tập" : "Nhập bài tập .txt"}
-          pending={pending || reading}
+          pending={pending || reading || mediaBusy}
           onClose={() => setToolsOpen(false)}
         >
           <div className="studio-import-tools">
+            <Status error={error} />
             <h3>{exercise ? "Chỉnh sửa bài tập" : "Nhập bài tập .txt"}</h3>
             <a
               href={`/${lang}/create/guide`}
@@ -93,7 +147,7 @@ export function PracticeTextEditor({
                 type="file"
                 accept=".txt,text/plain"
                 multiple={!exercise}
-                disabled={pending || reading}
+                disabled={pending || reading || mediaBusy}
                 onChange={(event) => loadFiles(event.target.files || [])}
               />
             </label>
@@ -103,7 +157,7 @@ export function PracticeTextEditor({
               <Select
                 label="Dạng bài mẫu"
                 value={mode}
-                disabled={pending || reading}
+                disabled={pending || reading || mediaBusy}
                 onChange={(value) => {
                   setMode(value);
                   setStyle(exerciseStylesOf(value)[0][0]);
@@ -118,7 +172,7 @@ export function PracticeTextEditor({
               <Select
                 label="Style có sẵn"
                 value={style}
-                disabled={pending || reading}
+                disabled={pending || reading || mediaBusy}
                 onChange={setStyle}
               >
                 {exerciseStylesOf(mode).map(([key, title]) => (
@@ -135,8 +189,11 @@ export function PracticeTextEditor({
                 Tải tệp mẫu
               </a>
               <Btn
-                isDisabled={pending || reading}
-                onClick={() => update(textTemplate(mode, style))}
+                isDisabled={pending || reading || mediaBusy}
+                onClick={() => {
+                  update(textTemplate(mode, style));
+                  setToolsOpen(false);
+                }}
               >
                 Mở nội dung mẫu
               </Btn>
@@ -148,43 +205,6 @@ export function PracticeTextEditor({
             >
               Tải nội dung đang soạn
             </a>
-            <Status error={error} />
-            <Btn
-              isDisabled={!text.trim() || reading || pending}
-              onClick={() => {
-                try {
-                  const data = parsePracticeText(text);
-                  if (exercise && data.nodes.length !== 1)
-                    throw new Error(
-                      "Khi sửa, tệp cần đúng một bài. Dùng nhập mới để tạo nhiều bài.",
-                    );
-                  setChecked(data);
-                  setError("");
-                } catch (e) {
-                  setChecked(null);
-                  setError(e.message);
-                }
-              }}
-            >
-              Kiểm tra nội dung
-            </Btn>
-            {checked && (
-              <>
-                <p role="status">
-                  {checked.nodes.length} bài hợp lệ, sẵn sàng lưu.
-                </p>
-                <Btn
-                  primary
-                  isLoading={pending}
-                  isDisabled={pending}
-                  onClick={() => onApply(checked.nodes)}
-                >
-                  {exercise
-                    ? "Lưu thay đổi"
-                    : `Tạo ${checked.nodes.length} bài`}
-                </Btn>
-              </>
-            )}
           </div>
         </PracticeModal>
       )}
@@ -196,24 +216,66 @@ export function PracticeTextEditor({
         rows={24}
         value={text}
         onChange={update}
-        isDisabled={pending || reading}
+        isDisabled={pending || reading || mediaBusy}
       />
       {checked && (
         <section className="studio-preview-content">
-          <h2>Xem trước nội dung</h2>
           {checked.nodes.map((node, i) => (
-            <details className="import-preview" key={`${text}-${i}`}>
-              <summary>
-                {i + 1}. {node.title} · {node.payload.questions.length} câu
-              </summary>
-              <PracticeActivity
-                data={previewData(node.payload)}
-                preview
-                uiStyle={node.payload.presentation.style}
+            <article key={keyFor(node, i)} className="grid gap-3">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-lg font-semibold">{node.title}</h2>
+                <Btn
+                  isIconOnly
+                  title="Xem trước"
+                  aria-label={`Xem trước ${node.title}`}
+                  onClick={() => setPreviewIndex(i)}
+                >
+                  <Icon name="eye" />
+                </Btn>
+              </div>
+              <MediaEditor
+                lang={lang}
+                items={media[keyFor(node, i)] || []}
+                disabled={pending || mediaBusy}
+                onBusy={setMediaBusy}
+                onChange={(items) =>
+                  setMedia((previous) => ({
+                    ...previous,
+                    [keyFor(node, i)]: items,
+                  }))
+                }
               />
-            </details>
+            </article>
           ))}
         </section>
+      )}
+      {checked && previewIndex !== null && checked.nodes[previewIndex] && (
+        <PracticeModal
+          title="Xem trước bản soạn"
+          onClose={() => setPreviewIndex(null)}
+        >
+          {checked.nodes.length > 1 && (
+            <Select
+              label="Bài tập"
+              value={previewIndex}
+              onChange={(value) => setPreviewIndex(Number(value))}
+            >
+              {checked.nodes.map((node, i) => (
+                <option key={i} value={i}>
+                  {i + 1}. {node.title}
+                </option>
+              ))}
+            </Select>
+          )}
+          <h3>{checked.nodes[previewIndex].title}</h3>
+          <PracticeActivity
+            key={`${text}:${previewIndex}`}
+            data={previewData(
+              withMedia(checked.nodes[previewIndex], previewIndex).payload,
+            )}
+            preview
+          />
+        </PracticeModal>
       )}
     </section>
   );

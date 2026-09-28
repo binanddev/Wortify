@@ -39,7 +39,7 @@ export function legacyPracticeDestination(lang, section, segment) {
 }
 
 export function workspaceNodes(nodes, pinned) {
-  const included = new Set(pinned);
+  const included = new Set(workspaceRoots(nodes, pinned));
   let changed = true;
   while (changed) {
     changed = false;
@@ -54,4 +54,49 @@ export function workspaceNodes(nodes, pinned) {
     ...n,
     parent: visible.some((p) => p.id === n.parent) ? n.parent : null,
   }));
+}
+
+// Resolve only ancestors the API has authorized this user to see.
+export function workspaceRoot(nodes, id) {
+  const byId = new Map(nodes.map((node) => [node.id, node]));
+  let node = byId.get(id);
+  const seen = new Set();
+  while (node && byId.has(node.parent) && !seen.has(node.parent)) {
+    seen.add(node.id);
+    node = byId.get(node.parent);
+  }
+  return node;
+}
+export function workspaceRoots(nodes, pinned) {
+  return [
+    ...new Set(
+      pinned
+        .map((id) => workspaceRoot(nodes, id)?.id)
+        .filter((id) => id != null),
+    ),
+  ];
+}
+export function toggleWorkspaceRoot(nodes, pinned, id) {
+  const roots = workspaceRoots(nodes, pinned);
+  const root = workspaceRoot(nodes, id);
+  if (!root) return roots;
+  return roots.includes(root.id)
+    ? roots.filter((id) => id !== root.id)
+    : [...roots, root.id];
+}
+export function catalogRoots(nodes, query = "") {
+  const matches = new Set(
+    nodes
+      .filter((node) =>
+        node.title
+          .toLocaleLowerCase()
+          .includes(query.trim().toLocaleLowerCase()),
+      )
+      .map((node) => workspaceRoot(nodes, node.id)?.id),
+  );
+  return nodes.filter(
+    (node) =>
+      (!node.parent || !nodes.some((parent) => parent.id === node.parent)) &&
+      matches.has(node.id),
+  );
 }

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   parsePracticeText,
+  completePracticeGuide,
   textTemplate,
   exerciseToText,
 } from "../src/practice-text.js";
@@ -31,16 +32,16 @@ test("seven text formats round trip and grade through the existing engine", () =
 test("invalid text is rejected with useful line errors before saving", () => {
   for (const text of [
     "",
-    "CAU: Missing exercise",
-    textTemplate().replace("DANG:", "UNKNOWN:"),
+    "QUESTION: Missing exercise",
+    textTemplate().replace("TYPE:", "UNKNOWN:"),
     textTemplate().replace("{{2}}", "{{1}}"),
     textTemplate("inline_selection").replace(
       "is => is | are",
       "was => is | are",
     ),
-    textTemplate("categorization").replace("DAP_AN: Fruit", "DAP_AN: Other"),
+    textTemplate("categorization").replace("ANSWER: Fruit", "ANSWER: Other"),
     textTemplate().replace("STYLE: drag_drop", "STYLE: made_up"),
-    textTemplate() + "DAP_AN: a\nDAP_AN: b",
+    textTemplate() + "ANSWER: a\nANSWER: b",
   ]) {
     assert.throws(() => parsePracticeText(text), /Dòng/);
   }
@@ -73,14 +74,16 @@ test("all eleven styles parse and invalid cross-out and partial tasks are reject
   );
   assert.throws(
     () =>
-      parsePracticeText(textTemplate("short_answer").replace(/GOI_Y:.*\n/, "")),
-    /GOI_Y/,
+      parsePracticeText(
+        textTemplate("short_answer").replace(/PREFIX:.*\n/, ""),
+      ),
+    /PREFIX/,
   );
 });
 test("multiline context and question survive editing", () => {
   const text = textTemplate("short_answer").replace(
-    "CAU:",
-    "NGU_CANH: First line\n> Second line\nCAU:",
+    "QUESTION:",
+    "CONTEXT: First line\n> Second line\nQUESTION:",
   );
   const e = parsePracticeText(text).nodes[0].payload;
   e.questions[0].prompt += "\nAnother line";
@@ -102,4 +105,20 @@ test("progress merges across devices, excludes examples and obsolete IDs", () =>
   const qs = [{ id: "1" }, { id: "2" }, { id: "3", example: true }];
   assert.deepEqual(mergeProgress(qs, ["1"], ["2", "1", "3", "99"]), ["1", "2"]);
   assert.deepEqual(mergeProgress(qs, {}, null), []);
+});
+
+test("complete English guide imports all eleven styles and preserves legacy input", () => {
+  const result = parsePracticeText(completePracticeGuide());
+  assert.equal(result.nodes.length, 11);
+  assert.equal(
+    new Set(result.nodes.map((n) => n.payload.presentation.interaction)).size,
+    7,
+  );
+  const legacy =
+    "BAI: Legacy\nDANG: short_answer\nSTYLE: sentence_rewrite\nPHAN_BIET_HOA: co\nCAU: Write hello\nDAP_AN: Hello";
+  const e = parsePracticeText(legacy).nodes[0].payload;
+  assert.equal(e.ignore_case, false);
+  assert.match(exerciseToText(e), /CASE_SENSITIVE: yes/);
+  assert.match(exerciseToText(e), /QUESTION:/);
+  assert.deepEqual(parsePracticeText(exerciseToText(e)).nodes[0].payload, e);
 });

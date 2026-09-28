@@ -84,7 +84,9 @@ export default function App() {
         <Glass>
           <h1>Không thể kết nối</h1>
           <Status error={error} />
-          <Btn onClick={() => location.reload()}>Kết nối lại</Btn>
+          <Btn icon="refresh" onClick={() => location.reload()}>
+            Kết nối lại
+          </Btn>
         </Glass>
       </div>
     );
@@ -329,9 +331,6 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       window.dispatchEvent(new PopStateEvent("popstate"));
     }
   }, [legacyDestination]);
-  useEffect(() => {
-    if (["practice", "create", "explore"].includes(section)) setNavBack(true);
-  }, [section]);
   const contextItems = getContextItems(lang, section, parts);
   let content;
   if (section === "flashcard") {
@@ -460,10 +459,6 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                   <Link
                     key={id}
                     to={`/${lang}/${id}`}
-                    onClick={() => {
-                      if (["practice", "create", "explore"].includes(id))
-                        setNavBack(true);
-                    }}
                     className={`nav-link ${section === id ? "active" : ""}`}
                     aria-current={section === id ? "page" : undefined}
                   >
@@ -482,10 +477,6 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                   <Link
                     key={id}
                     to={`/${lang}/${id}`}
-                    onClick={() => {
-                      if (["practice", "create", "explore"].includes(id))
-                        setNavBack(true);
-                    }}
                     className={`nav-link ${section === id ? "active" : ""}`}
                     aria-current={section === id ? "page" : undefined}
                   >
@@ -539,7 +530,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
           <div className={`nav-face nav-back ${navBack ? "is-active" : ""}`}>
             <NavStatic navBack={navBack} setNavBack={setNavBack} />
             <aside
-              className="workspace-context open"
+              className="workspace-context context-panel open"
               aria-label="Công cụ và chỉ mục"
               inert={!navBack}
               aria-hidden={!navBack}

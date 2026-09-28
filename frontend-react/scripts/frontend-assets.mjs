@@ -5,11 +5,14 @@ export function frontendAssetPath(url) {
     : url;
 }
 export function frontendAssetAliases() {
-  const install = (server) =>
+  const install = (server) => {
+    // Vite treats a returned function as a post-install hook.
+    // Connect.use() returns its callable app, so do not return that value.
     server.middlewares.use((request, response, next) => {
       request.url = frontendAssetPath(request.url);
       next();
     });
+  };
   return {
     name: "wortify-frontend-asset-aliases",
     configureServer: install,

@@ -135,7 +135,7 @@ TTS_MODEL = os.environ.get('TTS_MODEL', 'tts-1')
 TTS_VOICE = os.environ.get('TTS_VOICE', 'alloy')
 RECORDING_MAX_BYTES = 10 * 1024 * 1024
 RECORDING_MAX_SECONDS = 60
-FILE_UPLOAD_HANDLERS = ['cards.uploads.AudioMemoryUploadHandler']
+FILE_UPLOAD_HANDLERS = ['practice.uploads.PracticeMediaUploadHandler', 'cards.uploads.AudioMemoryUploadHandler']
 DATA_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024
 
 
@@ -159,7 +159,7 @@ SECURE_SSL_REDIRECT = not DEBUG
 SECURE_CONTENT_TYPE_NOSNIFF = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-TEST_RUNNER = 'api.test_runner.PlatformRunner'
+TEST_RUNNER = 'api.tests.PlatformRunner'
 MIDDLEWARE += ['api.middleware.PrivateResponsesMiddleware']
 
 # Community features are available by default; deployments can disable them explicitly.

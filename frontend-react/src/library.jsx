@@ -1,3 +1,4 @@
+import { PracticeModal } from "./practice-workspace";
 import { SidebarTools } from "./ui";
 import { useEffect, useState } from "react";
 import {
@@ -48,11 +49,11 @@ function DeckOptions({ values, set, folders }) {
   return (
     <div className="grid two">
       <Select
-        label="Thư mục"
+        label="Folde"
         value={values.folder}
         onChange={(folder) => set({ ...values, folder })}
       >
-        <option value="">Chưa xếp thư mục</option>
+        <option value="">Chưa xếp folde</option>
         {folders.map((f) => (
           <option key={f.id} value={f.id}>
             {f.name}
@@ -91,7 +92,9 @@ function LibraryContent({ data, lang, reload }) {
     ),
     [sort, setSort] = useState("recent"),
     [edit, setEdit] = useState(null),
-    [remove, setRemove] = useState(null);
+    [remove, setRemove] = useState(null),
+    [panel, setPanel] = useState(null),
+    [layout, setLayout] = useState("grid");
   const action = useAction();
   const api = (p, m, d, s) => request(endpoint(lang, p), m, d, s);
   let decks = data.decks.filter(
@@ -104,113 +107,159 @@ function LibraryContent({ data, lang, reload }) {
   const selected = data.folders.find((f) => String(f.id) === folder);
   return (
     <Page>
-      <div className="stats-strip">
+      <div className="flash-library-heading">
         <div>
-          <strong>{data.decks.length}</strong>
-          <span>Bộ thẻ</span>
+          <h1>
+            {selected?.name ||
+              (folder === "" ? "Chưa xếp folde" : "My Flashcards")}
+          </h1>
         </div>
-        <div>
-          <strong>{data.decks.reduce((n, d) => n + d.count, 0)}</strong>
-          <span>Thuật ngữ</span>
+        <div className="flash-icon-row">
+          <Btn
+            icon="grid"
+            aria-pressed={layout === "grid"}
+            onClick={() => setLayout("grid")}
+          >
+            Dạng lưới
+          </Btn>
+          <Btn
+            icon="list"
+            aria-pressed={layout === "list"}
+            onClick={() => setLayout("list")}
+          >
+            Dạng danh sách
+          </Btn>
         </div>
-        <div>
-          <strong>{data.due}</strong>
-          <span>Thẻ đến hạn ôn</span>
-        </div>
-        <Btn
-          onClick={() =>
-            action.run(async (signal) => {
-              const s = await api(
-                "sessions/",
-                "POST",
-                { kind: "learn", today: true },
-                signal,
-              );
-              navigate(`/${lang}/flashcard/session/${s.token}`);
-            })
-          }
-          isLoading={action.pending}
-        >
-          <Icon name="spark" />
-          Ôn hôm nay <Icon name="arrow" />
-        </Btn>
       </div>
       <Status error={action.error} />
-      {data.resume && (
-        <Link
-          className="resume-banner"
-          to={`/${lang}/flashcard/session/${data.resume}`}
-        >
-          <span>↗ Tiếp tục buổi học còn dang dở</span>
-          <Icon name="arrow" />
-        </Link>
-      )}
       <SidebarTools>
-        <div className="library-tools">
-          <div className="folder-tabs">
-            <button
-              className={folder === "all" ? "active" : ""}
-              onClick={() => setFolder("all")}
-            >
-              Tất cả
-            </button>
-            <button
-              className={folder === "" ? "active" : ""}
-              onClick={() => setFolder("")}
-            >
-              Chưa xếp
-            </button>
-            {data.folders.map((f) => (
+        <div className="flash-nav">
+          <Field
+            label="Tìm bộ thẻ"
+            value={query}
+            onChange={setQuery}
+            startContent={<Icon name="search" />}
+          />
+          <div className="flash-icon-row">
+            <Btn primary icon="plus" onClick={() => setPanel("add")}>
+              Thêm mới
+            </Btn>
+            <Btn icon="settings" onClick={() => setPanel("settings")}>
+              Sắp xếp và quản lý
+            </Btn>
+            <Btn
+              icon="spark"
+              isDisabled={!data.due}
+              isLoading={action.pending}
+              onClick={() =>
+                action.run(async (signal) => {
+                  const session = await api(
+                    "sessions/",
+                    "POST",
+                    { kind: "learn", today: true },
+                    signal,
+                  );
+                  navigate(`/${lang}/flashcard/session/${session.token}`);
+                })
+              }
+            >{`Ôn hôm nay · ${data.due} thẻ`}</Btn>
+            {data.resume && (
+              <Link
+                className="btn flash-icon-link"
+                title="Tiếp tục buổi học"
+                aria-label="Tiếp tục buổi học"
+                to={`/${lang}/flashcard/session/${data.resume}`}
+              >
+                <Icon name="play" />
+              </Link>
+            )}
+          </div>
+          <div className="flash-folder-list" aria-label="Folde flashcard">
+            {[
+              { id: "all", name: "My Flashcards", icon: "home" },
+              { id: "", name: "Chưa xếp folde", icon: "cards" },
+              ...data.folders,
+            ].map((f) => (
               <button
                 key={f.id}
-                className={folder === String(f.id) ? "active" : ""}
+                title={f.name}
+                aria-current={folder === String(f.id) ? "page" : undefined}
                 onClick={() => setFolder(String(f.id))}
               >
-                <Icon name="folder" size={16} />
-                {f.name}
+                <Icon name={f.icon || "folder"} />
+                <span>{f.name}</span>
+                <small>
+                  {f.id === "all"
+                    ? data.decks.length
+                    : data.decks.filter(
+                        (d) => String(d.folder_id ?? "") === String(f.id),
+                      ).length}
+                </small>
               </button>
             ))}
           </div>
-          <div className="toolbar">
-            <Btn
-              primary
-              onClick={() => setEdit({ type: "deck" })}
-              className="library-create-btn"
-            >
-              <Icon name="plus" size={18} />
-              Tạo bộ thẻ
-            </Btn>
-            <Btn
-              onClick={() => setEdit({ type: "folder" })}
-              className="library-folder-btn"
-            >
-              <Icon name="folder" size={18} />
-              Thư mục mới
-            </Btn>
-            <Field
-              label="Tìm bộ thẻ"
-              value={query}
-              onChange={setQuery}
-              startContent={<Icon name="search" />}
-            />
-            <Select label="Sắp xếp" value={sort} onChange={setSort}>
-              <option value="recent">Mới cập nhật</option>
-              <option value="name">Tên A–Z</option>
-              <option value="count">Số lượng thẻ</option>
-            </Select>
-          </div>
         </div>
       </SidebarTools>
-      {selected && (
-        <div className="toolbar">
-          <Btn onClick={() => setEdit({ type: "folder", item: selected })}>
-            Đổi tên thư mục
-          </Btn>
-          <Btn onClick={() => setRemove(selected)}>Xóa thư mục</Btn>
-        </div>
+      {panel && (
+        <PracticeModal
+          title={panel === "add" ? "Thêm mới" : "Tùy chọn thư viện"}
+          size="md"
+          onClose={() => setPanel(null)}
+        >
+          {panel === "add" ? (
+            <div className="flash-action-menu">
+              <Btn
+                onClick={() => {
+                  setPanel(null);
+                  setEdit({ type: "deck" });
+                }}
+              >
+                <Icon name="cards" /> Bộ thẻ
+              </Btn>
+              <Btn
+                onClick={() => {
+                  setPanel(null);
+                  setEdit({ type: "folder" });
+                }}
+              >
+                <Icon name="folder" /> Folde
+              </Btn>
+            </div>
+          ) : (
+            <div className="flash-settings">
+              <Select label="Sắp xếp" value={sort} onChange={setSort}>
+                <option value="recent">Mới cập nhật</option>
+                <option value="name">Tên A–Z</option>
+                <option value="count">Số lượng thẻ</option>
+              </Select>
+              {selected && (
+                <div className="flash-action-menu">
+                  <Btn
+                    onClick={() => {
+                      setPanel(null);
+                      setEdit({ type: "folder", item: selected });
+                    }}
+                  >
+                    <Icon name="edit" /> Đổi tên folde
+                  </Btn>
+                  <Btn
+                    onClick={() => {
+                      setPanel(null);
+                      setRemove(selected);
+                    }}
+                  >
+                    <Icon name="trash" /> Xóa folde
+                  </Btn>
+                </div>
+              )}
+            </div>
+          )}
+        </PracticeModal>
       )}
-      <div className="deck-grid">
-        {decks.map((d, i) => (
+      <div
+        className={`deck-grid flash-library-grid ${layout === "list" ? "flash-library-list" : ""}`}
+      >
+        {decks.map((d) => (
           <Link
             className="deck-link"
             key={d.id}
@@ -222,9 +271,6 @@ function LibraryContent({ data, lang, reload }) {
                   <Icon name="cards" size={26} />
                 </span>
                 <span className="pill">{d.level}</span>
-              </div>
-              <div className="tile-number">
-                BỘ THẺ {String(i + 1).padStart(2, "0")}
               </div>
               <h3>{d.title}</h3>
               {d.description && <p>{d.description}</p>}
@@ -245,16 +291,15 @@ function LibraryContent({ data, lang, reload }) {
             </Glass>
           </Link>
         ))}
-        <button className="new-deck" onClick={() => setEdit({ type: "deck" })}>
-          <span className="new-icon">
-            <Icon name="plus" size={28} />
-          </span>
-          <strong>Tạo bộ thẻ</strong>
-          <span></span>
-        </button>
       </div>
-      {!decks.length && query && (
-        <Status>Không tìm thấy bộ thẻ phù hợp. Thử một từ khóa khác.</Status>
+      {!decks.length && (
+        <div className="flash-empty">
+          <Icon name={query ? "search" : "cards"} size={36} />
+          <p>{query ? "Không tìm thấy bộ thẻ." : "Chưa có bộ thẻ."}</p>
+          <Btn icon="plus" primary onClick={() => setEdit({ type: "deck" })}>
+            Tạo bộ thẻ
+          </Btn>
+        </div>
       )}
       {edit && (
         <Editor
@@ -262,13 +307,13 @@ function LibraryContent({ data, lang, reload }) {
             edit.type === "deck"
               ? "Tạo bộ thẻ"
               : edit.item
-                ? "Đổi tên thư mục"
-                : "Thư mục mới"
+                ? "Đổi tên folde"
+                : "Folde mới"
           }
           fields={
             edit.type === "deck"
               ? deckFields
-              : [{ name: "name", label: "Tên thư mục", isRequired: true }]
+              : [{ name: "name", label: "Tên folde", isRequired: true }]
           }
           initial={
             edit.item || { level: "A1", folder: folder === "all" ? "" : folder }
@@ -297,7 +342,7 @@ function LibraryContent({ data, lang, reload }) {
       )}
       {remove && (
         <Confirm
-          title="Xóa thư mục?"
+          title="Xóa folde?"
           description={`Các bộ thẻ trong “${remove.name}” vẫn được giữ lại.`}
           onClose={() => setRemove(null)}
           onConfirm={async (s) => {
@@ -333,7 +378,8 @@ function DeckContent({ lang, id, data, reload, sound }) {
     [flipped, setFlipped] = useState(false),
     [reverse, setReverse] = useState(false),
     [auto, setAuto] = useState(false),
-    [query, setQuery] = useState("");
+    [query, setQuery] = useState(""),
+    [toolPanel, setToolPanel] = useState(null);
   const action = useAction(),
     audio = useSound(sound, lang);
   const api = (p, m, d, s) => request(endpoint(lang, p), m, d, s);
@@ -352,7 +398,8 @@ function DeckContent({ lang, id, data, reload, sound }) {
         e.target.closest("input,textarea,select,[role=dialog]") ||
         edit ||
         importing ||
-        remove
+        remove ||
+        toolPanel
       )
         return;
       if (e.code === "Space" && e.target.closest("button")) return;
@@ -365,16 +412,16 @@ function DeckContent({ lang, id, data, reload, sound }) {
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [order.length, edit, importing, remove]);
+  }, [order.length, edit, importing, remove, toolPanel]);
   useEffect(() => {
-    if (!auto || !card) return;
+    if (!auto || !card || toolPanel || edit || importing || remove) return;
     const timer = setTimeout(() => {
       if (!flipped) setFlipped(true);
       else if (index < order.length - 1) step(1);
       else setAuto(false);
     }, 3000);
     return () => clearTimeout(timer);
-  }, [auto, flipped, index, card]);
+  }, [auto, flipped, index, card, toolPanel, edit, importing, remove]);
   const start = () =>
     action.run(async (signal) => {
       if (
@@ -395,35 +442,47 @@ function DeckContent({ lang, id, data, reload, sound }) {
     });
   return (
     <Page>
-      <Link className="back-library-link" to={`/${lang}/flashcard`}>
-        <Icon name="arrow" />
-        Thư viện
-      </Link>
       <Heading
         eyebrow={`${data.deck.level} · ${data.cards.length} THUẬT NGỮ`}
         title={data.deck.title}
         description={data.deck.description}
         contentDescription
-        actions={
-          <>
-            <Btn onClick={() => setImporting(true)}>Nhập danh sách</Btn>
-            <Btn onClick={() => setEdit({ type: "deck", item: data.deck })}>
-              Chỉnh sửa
-            </Btn>
-          </>
-        }
       />
       <SidebarTools>
-        <Btn onClick={() => setEdit({ type: "deck", item: data.deck })}>
-          Đổi tên bộ thẻ
-        </Btn>
-        <Btn aria-pressed={view === "cards"} onClick={() => setView("cards")}>
-          Học thẻ
-        </Btn>
-        <Btn aria-pressed={view === "terms"} onClick={() => setView("terms")}>
-          Danh sách thuật ngữ
-        </Btn>
-        <Btn onClick={() => setEdit({ type: "card" })}>Thêm thuật ngữ</Btn>
+        <div className="flash-icon-row">
+          <Btn icon="upload" onClick={() => setImporting(true)}>
+            Nhập danh sách
+          </Btn>
+          <Btn
+            icon="edit"
+            onClick={() => setEdit({ type: "deck", item: data.deck })}
+          >
+            Đổi tên bộ thẻ
+          </Btn>
+          <Btn
+            icon="cards"
+            aria-pressed={view === "cards"}
+            onClick={() => setView("cards")}
+          >
+            Học thẻ
+          </Btn>
+          <Btn
+            icon="list"
+            aria-pressed={view === "terms"}
+            onClick={() => setView("terms")}
+          >
+            Danh sách thuật ngữ
+          </Btn>
+          <Btn icon="plus" onClick={() => setEdit({ type: "card" })}>
+            Thêm thuật ngữ
+          </Btn>
+          <Btn icon="play" onClick={() => setToolPanel("study")}>
+            Thiết lập phiên học
+          </Btn>
+          <Btn icon="more" onClick={() => setToolPanel("manage")}>
+            Xuất và quản lý
+          </Btn>
+        </div>
       </SidebarTools>
       <div className="study-layout">
         {view === "cards" && (
@@ -443,7 +502,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                     isDisabled={!index}
                     onClick={() => step(-1)}
                   >
-                    ←
+                    <Icon name="chevron_left" />
                   </Btn>
                   <span>
                     {index + 1} <span className="muted">/ {order.length}</span>
@@ -453,38 +512,43 @@ function DeckContent({ lang, id, data, reload, sound }) {
                     isDisabled={index === order.length - 1}
                     onClick={() => step(1)}
                   >
-                    →
+                    <Icon name="chevron_right" />
                   </Btn>
                 </div>
                 <div className="toolbar centered">
                   <Btn
+                    icon="shuffle"
                     onClick={() => {
                       setOrder(shuffled(order));
                       setIndex(0);
                       setFlipped(false);
                     }}
                   >
-                    <Icon name="shuffle" />
                     Trộn thẻ
                   </Btn>
                   <Btn
+                    icon="flip"
+                    aria-pressed={reverse}
                     onClick={() => {
                       setReverse(!reverse);
                       setFlipped(false);
                     }}
                   >
-                    <Icon name="flip" />
                     Đảo mặt
                   </Btn>
                   <Btn
+                    icon="sound"
                     onClick={() =>
                       action.run(() => audio.speak(card.german_text))
                     }
                   >
-                    <Icon name="sound" />
                     Nghe
                   </Btn>
-                  <Btn onClick={() => setAuto(!auto)}>
+                  <Btn
+                    icon={auto ? "pause" : "play"}
+                    aria-pressed={auto}
+                    onClick={() => setAuto(!auto)}
+                  >
                     {auto ? "Ⅱ Dừng" : "▷ Tự chạy"}
                   </Btn>
                 </div>
@@ -493,75 +557,80 @@ function DeckContent({ lang, id, data, reload, sound }) {
               <Glass>
                 <h3>Bộ thẻ đang chờ từ đầu tiên</h3>
 
-                <Btn primary onClick={() => setEdit({ type: "card" })}>
+                <Btn
+                  icon="plus"
+                  primary
+                  onClick={() => setEdit({ type: "card" })}
+                >
                   Thêm thuật ngữ
                 </Btn>
               </Glass>
             )}
           </div>
         )}
-        <SidebarTools>
-          <Glass className="study-config">
-            <span className="tile-icon">
-              <Icon name="spark" size={26} />
-            </span>
-            <Select value={mode} onChange={setMode}>
-              {[
-                ["flash", "Flashcards · Tự đánh giá"],
-                ["learn", "Learn · Luyện ghi nhớ"],
-                ["test", "Test · Kiểm tra"],
-                ["quiz", "Trắc nghiệm"],
-                ["write", "Nhớ và viết"],
-                ["spell", "Nghe và chép"],
-                ["order", "Sắp xếp câu"],
-                ["match", "Ghép cặp"],
-                ["speak", "Luyện nói"],
-              ].map(([v, t]) => (
-                <option key={v} value={v}>
-                  {t}
-                </option>
-              ))}
-            </Select>
-            {["flash", "learn", "test"].includes(mode) && (
-              <Field
-                label="Số câu hỏi"
-                type="number"
-                min="1"
-                max="100"
-                value={count}
-                onChange={setCount}
-              />
-            )}
-            <Select label="Phạm vi thẻ" value={filter} onChange={setFilter}>
-              {[
-                ["all", "Tất cả thẻ"],
-                ["due", "Đến hạn"],
-                ["weak", "Cần luyện thêm"],
-                ["new", "Thẻ mới"],
-              ].map(([v, t]) => (
-                <option key={v} value={v}>
-                  {t}
-                </option>
-              ))}
-            </Select>
-            <Btn
-              primary
-              isDisabled={
-                !data.cards.length || !Number(count) || Number(count) > 100
-              }
-              isLoading={action.pending}
-              onClick={start}
-            >
-              Bắt đầu học <Icon name="arrow" />
-            </Btn>
-            <Status error={action.error} />
-            {/* <small>
-            {mode === "test"
-              ? "Đáp án chỉ xuất hiện sau khi nộp toàn bài."
-              : "Bạn chủ động chuyển câu sau khi xem phản hồi."}
-          </small> */}
-          </Glass>
-        </SidebarTools>
+        {toolPanel === "study" && (
+          <PracticeModal
+            title="Phiên học"
+            size="md"
+            onClose={() => setToolPanel(null)}
+          >
+            <div className="flash-settings">
+              <span className="tile-icon">
+                <Icon name="spark" size={26} />
+              </span>
+              <Select label="Chế độ học" value={mode} onChange={setMode}>
+                {[
+                  ["flash", "Flashcards · Tự đánh giá"],
+                  ["learn", "Learn · Luyện ghi nhớ"],
+                  ["test", "Test · Kiểm tra"],
+                  ["quiz", "Trắc nghiệm"],
+                  ["write", "Nhớ và viết"],
+                  ["spell", "Nghe và chép"],
+                  ["order", "Sắp xếp câu"],
+                  ["match", "Ghép cặp"],
+                  ["speak", "Luyện nói"],
+                ].map(([v, t]) => (
+                  <option key={v} value={v}>
+                    {t}
+                  </option>
+                ))}
+              </Select>
+              {["flash", "learn", "test"].includes(mode) && (
+                <Field
+                  label="Số câu hỏi"
+                  type="number"
+                  min="1"
+                  max="100"
+                  value={count}
+                  onChange={setCount}
+                />
+              )}
+              <Select label="Phạm vi thẻ" value={filter} onChange={setFilter}>
+                {[
+                  ["all", "Tất cả thẻ"],
+                  ["due", "Đến hạn"],
+                  ["weak", "Cần luyện thêm"],
+                  ["new", "Thẻ mới"],
+                ].map(([v, t]) => (
+                  <option key={v} value={v}>
+                    {t}
+                  </option>
+                ))}
+              </Select>
+              <Btn
+                primary
+                isDisabled={
+                  !data.cards.length || !Number(count) || Number(count) > 100
+                }
+                isLoading={action.pending}
+                onClick={start}
+              >
+                Bắt đầu học <Icon name="arrow" />
+              </Btn>
+              <Status error={action.error} />
+            </div>
+          </PracticeModal>
+        )}
       </div>
       {view === "terms" && (
         <>
@@ -569,8 +638,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
             <h2>
               Thuật ngữ <span className="count">{data.cards.length}</span>
             </h2>
-            <Btn primary onClick={() => setEdit({ type: "card" })}>
-              <Icon name="plus" />
+            <Btn icon="plus" primary onClick={() => setEdit({ type: "card" })}>
               Thêm thuật ngữ
             </Btn>
           </div>
@@ -601,10 +669,16 @@ function DeckContent({ lang, id, data, reload, sound }) {
                     >
                       ↕
                     </Btn>
-                    <Btn onClick={() => setEdit({ type: "card", item: c })}>
+                    <Btn
+                      icon="edit"
+                      onClick={() => setEdit({ type: "card", item: c })}
+                    >
                       Sửa
                     </Btn>
-                    <Btn onClick={() => setRemove({ type: "card", item: c })}>
+                    <Btn
+                      icon="trash"
+                      onClick={() => setRemove({ type: "card", item: c })}
+                    >
                       Xóa
                     </Btn>
                   </div>
@@ -613,16 +687,33 @@ function DeckContent({ lang, id, data, reload, sound }) {
           </div>
         </>
       )}
-      <SidebarTools>
-        {" "}
-        <div className="toolbar export-tools">
-          <a href={endpoint(lang, `decks/${id}/export/csv/`)}>Xuất CSV ↗</a>
-          <a href={endpoint(lang, `decks/${id}/export/json/`)}>Xuất JSON ↗</a>
-          <Btn onClick={() => setRemove({ type: "deck", item: data.deck })}>
-            Xóa bộ thẻ
-          </Btn>
-        </div>
-      </SidebarTools>{" "}
+      {toolPanel === "manage" && (
+        <PracticeModal
+          title="Quản lý bộ thẻ"
+          size="md"
+          onClose={() => setToolPanel(null)}
+        >
+          <div className="flash-action-menu">
+            <a className="btn" href={endpoint(lang, `decks/${id}/export/csv/`)}>
+              <Icon name="download" /> CSV
+            </a>
+            <a
+              className="btn"
+              href={endpoint(lang, `decks/${id}/export/json/`)}
+            >
+              <Icon name="download" /> JSON
+            </a>
+            <Btn
+              onClick={() => {
+                setToolPanel(null);
+                setRemove({ type: "deck", item: data.deck });
+              }}
+            >
+              <Icon name="trash" /> Xóa bộ thẻ
+            </Btn>
+          </div>
+        </PracticeModal>
+      )}
       {edit && (
         <Editor
           title={
@@ -766,7 +857,9 @@ function ImportCards({ api, id, reload, onClose }) {
                 {r.german_text} — {r.vietnamese_meaning}
               </p>
             ))}
-            <Btn onClick={() => setPreview(null)}>Sửa nội dung nhập</Btn>
+            <Btn icon="edit" onClick={() => setPreview(null)}>
+              Sửa nội dung nhập
+            </Btn>
           </div>
         ) : (
           <Select

@@ -75,9 +75,6 @@ function ProfileContent({ initial, lang }) {
           <Btn onClick={editGoal}>
             <Icon name="settings" /> Mục tiêu ngày
           </Btn>
-          <Link className="btn" to={`/${lang}/settings`}>
-            Cài đặt học tập
-          </Link>
         </SidebarTools>
         <header className="profile-identity" id="profile-overview">
           <div className="profile-avatar" aria-hidden="true">
@@ -410,7 +407,9 @@ function ProfileContent({ initial, lang }) {
                 })}
               </div>
               {timeline.length > limit && (
-                <Btn onClick={() => setLimit((v) => v + 8)}>Xem thêm</Btn>
+                <Btn icon="more" onClick={() => setLimit((v) => v + 8)}>
+                  Xem thêm
+                </Btn>
               )}
             </>
           ) : (

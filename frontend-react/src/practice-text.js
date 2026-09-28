@@ -1,35 +1,99 @@
 import { canFillGapBank } from "./gap-tokens.js";
 import { EXERCISE_TYPES, exerciseStylesOf } from "./exercise-types.js";
 
-export const TEXT_GUIDE = `Mỗi bài bắt đầu bằng BAI: tên bài. Các trường dùng dấu hai chấm.
-DANG: mã dạng bài; STYLE: mã kiểu tương tác (xem mẫu).
-HUONG_DAN: yêu cầu; NGU_CANH: bài đọc dùng chung; NHOM: các nhóm, phân cách bằng |.
-Mỗi câu bắt đầu bằng CAU: nội dung. DAP_AN: đáp án; dùng | cho các đáp án tương đương.
-Điền từ / chọn trong câu: đánh dấu {{1}}, {{2}}…; mỗi dòng O: đáp án => lựa chọn 1 | lựa chọn 2.
-TU: ngân hàng từ (điền từ) hoặc các mảnh theo đúng thứ tự đáp án (sắp xếp câu), phân cách bằng |.
-Mỗi từ trong TU chỉ dùng một lần; lặp lại từ trong TU nếu nhiều ô cần cùng một từ.
-GOI_Y: phần đầu câu viết lại; đáp án luôn là cả câu. GIAI_THICH: giải thích sau khi chấm.
-PHAN_BIET_HOA: co và GIU_DAU_CAU: co (trước CAU) bật chấm chính xác chữ hoa và dấu câu. Mặc định bỏ qua.
-VI_DU: co (sau CAU) đánh dấu câu ví dụ, không tính vào tiến độ; vẫn cần ít nhất một câu thực hành.
-Tìm/sửa lỗi và gạch từ thừa: DAP_AN là cả câu sau khi sửa.
-Nối cặp / phân loại: mỗi CAU là một thẻ, DAP_AN là thẻ ghép / tên nhóm.
-Dòng trống và dòng bắt đầu bằng # được bỏ qua. Dòng bắt đầu bằng > nối tiếp nội dung văn bản của trường trước.
-Không dùng | hay => bên trong một mục. Có thể nhập nhiều bài bằng nhiều dòng BAI.
-Giới hạn: 100 bài, 100 câu mỗi bài, 2 MB. Lỗi có số dòng để sửa.`;
+const LEGACY_FIELDS = {
+  BAI: "EXERCISE",
+  DANG: "TYPE",
+  HUONG_DAN: "INSTRUCTIONS",
+  NGU_CANH: "CONTEXT",
+  NHOM: "GROUPS",
+  CAU: "QUESTION",
+  DAP_AN: "ANSWER",
+  O: "BLANK",
+  TU: "WORDS",
+  GOI_Y: "PREFIX",
+  GIAI_THICH: "EXPLANATION",
+  PHAN_BIET_HOA: "CASE_SENSITIVE",
+  GIU_DAU_CAU: "KEEP_PUNCTUATION",
+  VI_DU: "EXAMPLE",
+};
+export const TEXT_GUIDE = `PRACTICE TEXT FORMAT — UTF-8 .txt
+Start each exercise with EXERCISE: title (maximum 200 characters).
+Use uppercase FIELD: value keywords. Content may be in any language.
+TYPE: one of the seven type identifiers below. STYLE: a supported style of that type.
+Put all exercise fields before the first QUESTION.
+INSTRUCTIONS: task instructions. CONTEXT: optional shared reading passage.
+GROUPS: category names separated by | (categorization only; at least two unique groups).
+CASE_SENSITIVE: yes/no. KEEP_PUNCTUATION: yes/no. Both default to no.
+QUESTION: starts a question. Each exercise needs 1–100 questions, including at least one non-example.
+ANSWER: accepted answer; separate equivalent answers with |.
+BLANK: answer 1 | equivalent answer => option 1 | option 2.
+Use {{1}}, {{2}}, etc. once each in the question, and one BLANK line per numbered blank, in order.
+WORDS: tokens separated by |. For cloze_drag_drop these form the word bank; each token can be used once.
+Repeat a token in WORDS when multiple blanks need it. If omitted, the bank uses the first answer of each blank.
+For sentence_building, WORDS must list every token in the correct answer order; duplicate words are allowed.
+PREFIX: beginning of the answer for short_answer. Every accepted answer must include that prefix.
+EXPLANATION: optional feedback after checking. EXAMPLE: yes/no after QUESTION marks a practice example.
+Blank lines and # comment lines are ignored. Use > at the start of a continuation line after QUESTION,
+INSTRUCTIONS, CONTEXT or EXPLANATION. Other fields must stay on one line.
+Do not put | or => inside an individual item. Repeat EXERCISE to import multiple exercises.
+Each field occurs once per exercise/question except BLANK, which repeats for each blank.
+Limits per import: 100 exercises, 100 questions per exercise, 2 MB total UTF-8 text.
+Save as .txt, open Create, choose or create a root folder, import files, validate, preview, then save.
+Optional attachments: add MP3, PNG, JPG, WebP or GIF in Create after validating the text.
+Up to 20 files, 200 MB total per exercise. Attachments are stored separately and are not embedded in .txt exports.
+Use preview to try each exercise before saving; preview does not save progress.
+Every exercise must belong to a folder. Loose exercises are not allowed. English and German spaces are independent.
+The whole batch is saved only after validation. Errors include line numbers.
+
+TYPES AND STYLES
+cloze_drag_drop: drag_drop (move word tiles), tap_fill (tap words to fill blanks).
+error_correction: click_edit (edit incorrect text), cross_out (remove extra words).
+  ANSWER is the entire corrected sentence. For cross_out, only remove words; do not add or reorder them.
+matching: tap_match (match cards). Each QUESTION is one card; ANSWER is its unique partner.
+sentence_building: tap_build (arrange tokens). WORDS defines the correct token order.
+categorization: drag_sort (sort cards). Each QUESTION is one card; ANSWER is exactly one GROUPS value.
+inline_selection: pill_toggle (toggle choices), inline_select (select a choice).
+  Every BLANK needs at least two options, including every accepted answer.
+short_answer: partial_input (complete a required PREFIX), sentence_rewrite (write the whole answer).
+  ANSWER always contains the entire sentence, including PREFIX when provided.
+
+WORKSPACE AND EDITING
+Only owners can edit, rename, move or delete their content. Use the folder cards and content tools on the Create main screen for these actions.
+Drag items into folders, or use the move/group tools to organize a selection.
+Download the current .txt before editing if you want a backup. Editing questions starts a new progress revision.
+Learners answer one question at a time, retry incorrect answers and save progress rather than scores.
+Preview does not change learning progress. Workspace pins include the highest accessible parent folder.
+
+ALL 7 TYPES AND 11 STYLES: complete importable samples follow. Lines beginning with # are documentation.`;
+
+export function completePracticeGuide() {
+  return (
+    TEXT_GUIDE.split("\n")
+      .map((line) => (line ? "# " + line : "#"))
+      .join("\n") +
+    "\n\n" +
+    EXERCISE_TYPES.flatMap(([mode]) =>
+      exerciseStylesOf(mode).map(
+        ([style]) => `# ${mode} / ${style}\n${textTemplate(mode, style)}`,
+      ),
+    ).join("\n")
+  );
+}
 
 const samples = {
   cloze_drag_drop:
-    "CAU: I {{1}} coffee in the {{2}}.\nO: drink => drink | eat\nO: morning => morning | evening\nTU: morning | drink | eat",
+    "QUESTION: I {{1}} coffee in the {{2}}.\nBLANK: drink => drink | eat\nBLANK: morning => morning | evening\nWORDS: morning | drink | eat",
   error_correction:
-    "CAU: He do not like sports.\nDAP_AN: He does not like sports.",
-  matching: "CAU: cat\nDAP_AN: mèo\nCAU: dog\nDAP_AN: chó",
+    "QUESTION: He do not like sports.\nANSWER: He does not like sports.",
+  matching: "QUESTION: cat\nANSWER: mèo\nQUESTION: dog\nANSWER: chó",
   sentence_building:
-    "CAU: Sắp xếp thành câu đúng.\nTU: She | is | reading | a book.",
+    "QUESTION: Sắp xếp thành câu đúng.\nWORDS: She | is | reading | a book.",
   categorization:
-    "NHOM: Fruit | Animals\nCAU: apple\nDAP_AN: Fruit\nCAU: cat\nDAP_AN: Animals",
-  inline_selection: "CAU: She {{1}} a doctor.\nO: is => is | are",
+    "GROUPS: Fruit | Animals\nQUESTION: apple\nANSWER: Fruit\nQUESTION: cat\nANSWER: Animals",
+  inline_selection: "QUESTION: She {{1}} a doctor.\nBLANK: is => is | are",
   short_answer:
-    "CAU: Rewrite: He began learning English two years ago.\nGOI_Y: He has\nDAP_AN: He has learned English for two years. | He has been learning English for two years.",
+    "QUESTION: Rewrite: He began learning English two years ago.\nPREFIX: He has\nANSWER: He has learned English for two years. | He has been learning English for two years.",
 };
 export function textTemplate(
   mode = "cloze_drag_drop",
@@ -37,9 +101,9 @@ export function textTemplate(
 ) {
   const sample =
     mode === "error_correction" && style === "cross_out"
-      ? "CAU: They discussed about the project yesterday.\nDAP_AN: They discussed the project yesterday."
+      ? "QUESTION: They discussed about the project yesterday.\nANSWER: They discussed the project yesterday."
       : samples[mode];
-  return `BAI: ${EXERCISE_TYPES.find((t) => t[0] === mode)?.[1] || "Bài luyện tập"}\nDANG: ${mode}\nSTYLE: ${style}\nHUONG_DAN: Hoàn thành các câu bên dưới.\n${sample}\n`;
+  return `EXERCISE: ${EXERCISE_TYPES.find((t) => t[0] === mode)?.[1] || "Bài luyện tập"}\nTYPE: ${mode}\nSTYLE: ${style}\nINSTRUCTIONS: Hoàn thành các câu bên dưới.\n${sample}\n`;
 }
 export function exerciseToText(e) {
   const mode = e.presentation?.interaction;
@@ -53,31 +117,31 @@ export function exerciseToText(e) {
   )
     ? e.presentation.style
     : fallback;
-  const lines = [`BAI: ${e.title}`, `DANG: ${mode}`, `STYLE: ${style}`];
-  if (e.ignore_case === false) lines.push("PHAN_BIET_HOA: co");
-  if (e.ignore_punctuation === false) lines.push("GIU_DAU_CAU: co");
-  if (e.instruction) lines.push(`HUONG_DAN: ${e.instruction}`);
-  if (e.context) lines.push(`NGU_CANH: ${e.context}`);
+  const lines = [`EXERCISE: ${e.title}`, `TYPE: ${mode}`, `STYLE: ${style}`];
+  if (e.ignore_case === false) lines.push("CASE_SENSITIVE: yes");
+  if (e.ignore_punctuation === false) lines.push("KEEP_PUNCTUATION: yes");
+  if (e.instruction) lines.push(`INSTRUCTIONS: ${e.instruction}`);
+  if (e.context) lines.push(`CONTEXT: ${e.context}`);
   if (e.presentation.categories?.length)
-    lines.push(`NHOM: ${e.presentation.categories.join(" | ")}`);
+    lines.push(`GROUPS: ${e.presentation.categories.join(" | ")}`);
   for (const q of e.questions || []) {
-    lines.push("", `CAU: ${q.prompt}`);
-    if (q.example) lines.push("VI_DU: co");
+    lines.push("", `QUESTION: ${q.prompt}`);
+    if (q.example) lines.push("EXAMPLE: yes");
     if (mode === "sentence_building")
       lines.push(
-        `TU: ${q.accepted_answers.map((id) => q.presentation.tokens.find((t) => t.id === id)?.text).join(" | ")}`,
+        `WORDS: ${q.accepted_answers.map((id) => q.presentation.tokens.find((t) => t.id === id)?.text).join(" | ")}`,
       );
     else if (q.accepted_answers?.length)
-      lines.push(`DAP_AN: ${q.accepted_answers.join(" | ")}`);
+      lines.push(`ANSWER: ${q.accepted_answers.join(" | ")}`);
     for (const b of q.blanks || [])
       lines.push(
-        `O: ${b.answers.join(" | ")}${b.options?.length ? " => " + b.options.join(" | ") : ""}`,
+        `BLANK: ${b.answers.join(" | ")}${b.options?.length ? " => " + b.options.join(" | ") : ""}`,
       );
     if (mode === "cloze_drag_drop" && q.presentation?.word_bank?.length)
-      lines.push(`TU: ${q.presentation.word_bank.join(" | ")}`);
-    if (q.presentation?.prefix) lines.push(`GOI_Y: ${q.presentation.prefix}`);
+      lines.push(`WORDS: ${q.presentation.word_bank.join(" | ")}`);
+    if (q.presentation?.prefix) lines.push(`PREFIX: ${q.presentation.prefix}`);
     if (q.presentation?.explanation)
-      lines.push(`GIAI_THICH: ${q.presentation.explanation}`);
+      lines.push(`EXPLANATION: ${q.presentation.explanation}`);
   }
   return lines.map((line) => line.replace(/\n/g, "\n> ")).join("\n");
 }
@@ -110,8 +174,14 @@ export function parsePracticeText(text) {
     continuation = null;
     const match = s.match(/^([A-Z_]+):\s*(.+)$/);
     if (!match) fail("Cần TÊN_TRƯỜNG: nội dung.");
-    const [, key, value] = match;
-    if (key === "BAI") {
+    const [, rawKey, rawValue] = match;
+    const key = LEGACY_FIELDS[rawKey] || rawKey;
+    const value = ["CASE_SENSITIVE", "KEEP_PUNCTUATION", "EXAMPLE"].includes(
+      key,
+    )
+      ? { co: "yes", khong: "no" }[rawValue] || rawValue
+      : rawValue;
+    if (key === "EXERCISE") {
       e = {
         title: value,
         instruction: "",
@@ -126,8 +196,8 @@ export function parsePracticeText(text) {
       if (nodes.length > 100) fail("Tối đa 100 bài.");
       continue;
     }
-    if (!e) fail("Bắt đầu bằng BAI: tên bài.");
-    if (key === "CAU") {
+    if (!e) fail("Bắt đầu bằng EXERCISE: tên bài.");
+    if (key === "QUESTION") {
       q = {
         prompt: value,
         accepted_answers: [],
@@ -141,69 +211,69 @@ export function parsePracticeText(text) {
       continue;
     }
     const isHeader = [
-      "DANG",
+      "TYPE",
       "STYLE",
-      "HUONG_DAN",
-      "NGU_CANH",
-      "NHOM",
-      "PHAN_BIET_HOA",
-      "GIU_DAU_CAU",
+      "INSTRUCTIONS",
+      "CONTEXT",
+      "GROUPS",
+      "CASE_SENSITIVE",
+      "KEEP_PUNCTUATION",
     ].includes(key);
-    if (isHeader && q) fail("Đặt thông tin bài trước CAU đầu tiên.");
+    if (isHeader && q) fail("Đặt thông tin bài trước QUESTION đầu tiên.");
     const target = isHeader ? e : q;
-    if (!target) fail("Đặt trường này sau CAU.");
-    if (key !== "O") {
+    if (!target) fail("Đặt trường này sau QUESTION.");
+    if (key !== "BLANK") {
       const keys = seen.get(target) || new Set();
       if (keys.has(key)) fail(`Trường ${key} bị lặp.`);
       keys.add(key);
       seen.set(target, keys);
     }
     switch (key) {
-      case "DANG":
+      case "TYPE":
         e.presentation.interaction = value;
         break;
       case "STYLE":
         e.presentation.style = value;
         break;
-      case "HUONG_DAN":
+      case "INSTRUCTIONS":
         e.instruction = value;
         continuation = [e, "instruction"];
         break;
-      case "NGU_CANH":
+      case "CONTEXT":
         e.context = value;
         continuation = [e, "context"];
         break;
-      case "NHOM":
+      case "GROUPS":
         e.presentation.categories = list(value);
         break;
-      case "PHAN_BIET_HOA":
-        if (!["co", "khong"].includes(value)) fail("Dùng co hoặc khong.");
-        e.ignore_case = value === "khong";
+      case "CASE_SENSITIVE":
+        if (!["yes", "no"].includes(value)) fail("Dùng yes hoặc no.");
+        e.ignore_case = value === "no";
         break;
-      case "GIU_DAU_CAU":
-        if (!["co", "khong"].includes(value)) fail("Dùng co hoặc khong.");
-        e.ignore_punctuation = value === "khong";
+      case "KEEP_PUNCTUATION":
+        if (!["yes", "no"].includes(value)) fail("Dùng yes hoặc no.");
+        e.ignore_punctuation = value === "no";
         break;
-      case "VI_DU":
-        if (!["co", "khong"].includes(value)) fail("Dùng co hoặc khong.");
-        q.example = value === "co";
+      case "EXAMPLE":
+        if (!["yes", "no"].includes(value)) fail("Dùng yes hoặc no.");
+        q.example = value === "yes";
         break;
-      case "DAP_AN":
+      case "ANSWER":
         q.accepted_answers = list(value);
         break;
-      case "TU":
+      case "WORDS":
         q.presentation.word_bank = list(value);
         break;
-      case "GOI_Y":
+      case "PREFIX":
         q.presentation.prefix = value;
         break;
-      case "GIAI_THICH":
+      case "EXPLANATION":
         q.presentation.explanation = value;
         continuation = [q.presentation, "explanation"];
         break;
-      case "O": {
+      case "BLANK": {
         const parts = value.split("=>");
-        if (parts.length > 2) fail("Mỗi O chỉ dùng một dấu =>.");
+        if (parts.length > 2) fail("Mỗi BLANK chỉ dùng một dấu =>.");
         q.blanks.push({
           answers: list(parts[0]),
           options: parts[1] ? list(parts[1]) : [],
@@ -220,7 +290,7 @@ export function parsePracticeText(text) {
     const mode = e.presentation.interaction;
     const type = EXERCISE_TYPES.find((t) => t[0] === mode);
     if (e.title.length > 200) fail("Tên bài tối đa 200 ký tự.");
-    if (!type) fail(`Bài ${e.title}: DANG không hợp lệ.`);
+    if (!type) fail(`Bài ${e.title}: TYPE không hợp lệ.`);
     e.kind = type[3];
     e.check_mode = "auto_check";
     if (
@@ -231,7 +301,7 @@ export function parsePracticeText(text) {
     if (!e.questions.length || e.questions.length > 100)
       fail("Mỗi bài cần 1–100 câu.");
     if (e.questions.every((q) => q.example))
-      fail("Cần ít nhất một câu thực hành, không phải VI_DU.");
+      fail("Cần ít nhất một câu thực hành, không phải EXAMPLE.");
     const pairs = e.questions.map((q) => q.accepted_answers[0]);
     if (mode === "matching" && new Set(pairs).size !== pairs.length)
       fail("Nối cặp cần các đáp án khác nhau.");
@@ -243,7 +313,8 @@ export function parsePracticeText(text) {
       q.position = i + 1;
       q.kind = e.kind;
       if (mode === "sentence_building") {
-        if (!q.presentation.word_bank?.length) fail("Cần TU theo thứ tự đúng.");
+        if (!q.presentation.word_bank?.length)
+          fail("Cần WORDS theo thứ tự đúng.");
         q.presentation.tokens = q.presentation.word_bank.map((text, i) => ({
           id: String(i + 1),
           text,
@@ -256,7 +327,7 @@ export function parsePracticeText(text) {
           q.options.length < 2 ||
           new Set(q.options).size !== q.options.length
         )
-          fail("Cần ít nhất hai NHOM khác nhau.");
+          fail("Cần ít nhất hai GROUPS khác nhau.");
       }
       if (mode === "matching") q.options = pairs;
       if (
@@ -274,7 +345,7 @@ export function parsePracticeText(text) {
           JSON.stringify(marks) !==
             JSON.stringify(q.blanks.map((_, i) => i + 1))
         )
-          fail("Các ô {{1}}… phải khớp số dòng O, không lặp ô.");
+          fail("Các ô {{1}}… phải khớp số dòng BLANK, không lặp ô.");
         if (
           mode === "inline_selection" &&
           q.blanks.some(
@@ -283,7 +354,7 @@ export function parsePracticeText(text) {
               b.answers.some((a) => !b.options.includes(a)),
           )
         )
-          fail("Mỗi O cần ít nhất hai lựa chọn, có chứa đáp án.");
+          fail("Mỗi BLANK cần ít nhất hai lựa chọn, có chứa đáp án.");
         if (mode === "cloze_drag_drop")
           q.presentation.word_bank ||= q.blanks.flatMap((b) =>
             b.answers.slice(0, 1),
@@ -293,21 +364,21 @@ export function parsePracticeText(text) {
           !canFillGapBank(q.blanks, q.presentation.word_bank)
         )
           fail(
-            "TU phải đủ từ cho mọi ô; nếu dùng một từ hai lần, hãy ghi từ đó hai lần.",
+            "WORDS phải đủ từ cho mọi ô; nếu dùng một từ hai lần, hãy ghi từ đó hai lần.",
           );
-      } else if (q.blanks.length) fail("Dạng này không dùng O.");
-      if (!q.blanks.length && !q.accepted_answers.length) fail("Cần DAP_AN.");
+      } else if (q.blanks.length) fail("Dạng này không dùng BLANK.");
+      if (!q.blanks.length && !q.accepted_answers.length) fail("Cần ANSWER.");
       if (
         q.presentation.prefix &&
         q.accepted_answers.some((a) => !a.startsWith(q.presentation.prefix))
       )
-        fail("Đáp án phải bắt đầu bằng GOI_Y.");
+        fail("Đáp án phải bắt đầu bằng PREFIX.");
       if (
         mode === "short_answer" &&
         e.presentation.style === "partial_input" &&
         !q.presentation.prefix
       )
-        fail("Kiểu viết tiếp câu cần GOI_Y.");
+        fail("Kiểu viết tiếp câu cần PREFIX.");
       if (mode === "error_correction" && e.presentation.style === "cross_out") {
         const original = q.prompt.split(/\s+/);
         if (

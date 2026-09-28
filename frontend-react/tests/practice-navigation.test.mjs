@@ -2,6 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   workspaceNodes,
+  catalogRoots,
+  workspaceRoots,
+  toggleWorkspaceRoot,
   supportedPracticeNodes,
   ownedPracticeNodes,
   folderItems,
@@ -97,5 +100,29 @@ test("workspace is opt-in, includes folder descendants, and never invents inacce
       [2],
     ),
     [],
+  );
+});
+
+test("catalog and pins resolve nested matches to accessible roots", () => {
+  const tree = [
+    ...nodes,
+    { id: 5, kind: "folder", parent: 1, title: "Nested" },
+    { id: 6, kind: "exercise", parent: 5, title: "Grammar" },
+    { id: 7, kind: "exercise", parent: 999, title: "Shared orphan" },
+  ];
+  assert.deepEqual(
+    catalogRoots(tree, "Grammar").map((n) => n.id),
+    [1],
+  );
+  assert.deepEqual(
+    catalogRoots(tree).map((n) => n.id),
+    [1, 3, 4, 7],
+  );
+  assert.deepEqual(workspaceRoots(tree, [6, 5, 2, 1, 7, 999]), [1, 7]);
+  assert.deepEqual(toggleWorkspaceRoot(tree, [6, 7], 2), [7]);
+  assert.deepEqual(toggleWorkspaceRoot(tree, [7], 6), [7, 1]);
+  assert.deepEqual(
+    workspaceNodes(tree, [6]).map((n) => n.id),
+    [1, 2, 5, 6],
   );
 });

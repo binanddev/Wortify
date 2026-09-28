@@ -1,0 +1,112 @@
+/* Flashcard library and contextual controls use the shared design tokens. */
+.flash-library-heading {
+  @apply flex items-center justify-between gap-4 flex-wrap mb-7;
+}
+.flash-library-heading h1 {
+  @apply text-[clamp(24px,3vw,34px)] font-bold text-(--ink) wrap-anywhere;
+}
+.flash-library-heading p {
+  @apply mt-2 text-sm text-(--muted);
+}
+.flash-icon-row {
+  @apply flex flex-wrap items-center gap-2 min-w-0;
+}
+.flash-icon-row .btn,
+.context-panel .flash-icon-row .btn {
+  @apply w-11 min-w-11 h-11 min-h-11 p-0 shrink-0 rounded-xl;
+}
+.flash-icon-link {
+  @apply inline-flex items-center justify-center;
+}
+.flash-icon-row [aria-pressed="true"],
+.flash-mode-picker [aria-pressed="true"] {
+  @apply bg-(--accent) text-white shadow-sm;
+}
+.flash-nav,
+.flash-settings {
+  @apply flex flex-col gap-5 min-w-0;
+}
+.flash-folder-list {
+  @apply flex flex-col gap-1 min-w-0;
+}
+.flash-folder-list > button:not(.btn) {
+  @apply flex items-center gap-3 min-h-11 px-3 py-2 rounded-xl text-left text-base font-semibold text-(--ink) transition-colors;
+}
+.flash-folder-list > button:hover,
+.flash-folder-list > button[aria-current="page"] {
+  @apply bg-(--surface);
+}
+.flash-folder-list svg {
+  @apply shrink-0 text-(--accent);
+}
+.flash-folder-list span {
+  @apply truncate min-w-0 flex-1;
+}
+.flash-folder-list small {
+  @apply shrink-0 text-xs text-(--muted) tabular-nums;
+}
+.flash-mode-picker {
+  @apply grid grid-cols-3 gap-2 min-w-0;
+}
+.flash-mode-picker button {
+  @apply flex flex-col items-center justify-center gap-2 py-3 px-1 rounded-xl text-sm font-semibold min-w-0 transition-colors;
+}
+.flash-action-menu {
+  @apply flex flex-col gap-2 pb-3;
+}
+.flash-action-menu .btn {
+  @apply flex items-center justify-start gap-3 min-h-12 px-4;
+}
+.flash-library-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3;
+}
+.flash-library-grid .deck-tile .glass-body {
+  @apply min-h-[240px] p-6;
+}
+.flash-library-grid .deck-tile h3 {
+  @apply text-xl font-bold;
+}
+.flash-library-grid .deck-tile .tile-icon {
+  @apply text-(--accent) bg-(--surface);
+}
+.flash-library-grid .deck-tile p {
+  @apply line-clamp-2 text-sm;
+}
+.flash-library-grid .deck-tile small,
+.flash-library-grid .tile-bottom {
+  @apply text-sm;
+}
+.flash-library-list {
+  @apply grid-cols-1;
+}
+.flash-library-list .deck-tile .glass-body {
+  @apply min-h-0 grid gap-x-5 gap-y-2 grid-cols-[auto_1fr] items-center;
+}
+.flash-library-list .tile-top {
+  @apply row-span-3 flex-col gap-2 mb-0;
+}
+.flash-library-list .deck-tile p {
+  @apply m-0 line-clamp-1;
+}
+.flash-library-list .tile-bottom {
+  @apply pt-0;
+}
+.flash-library-list .thin-progress,
+.flash-library-list small {
+  @apply col-start-2 m-0;
+}
+.page:has(.studio-flash) > .heading {
+  @apply text-center justify-center;
+}
+.studio-flash {
+  @apply w-full max-w-[900px] mx-auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flash-library-grid .deck-tile {
+    @apply transition-none transform-none;
+  }
+}
+
+.flash-empty {
+  @apply flex flex-col items-center justify-center gap-4 py-16 text-(--muted);
+}

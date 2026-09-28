@@ -81,6 +81,7 @@ function Content({ lang, section, id, data, reload }) {
           ) : data.manage ? (
             <>
               <Btn
+                icon="edit"
                 onClick={() =>
                   setEdit({
                     title: "Đổi tên lớp",
@@ -93,7 +94,9 @@ function Content({ lang, section, id, data, reload }) {
               >
                 Đổi tên
               </Btn>
-              <Btn onClick={() => setRemove({ classroom: true })}>Xóa lớp</Btn>
+              <Btn icon="trash" onClick={() => setRemove({ classroom: true })}>
+                Xóa lớp
+              </Btn>
             </>
           ) : null
         }
@@ -131,7 +134,9 @@ function Content({ lang, section, id, data, reload }) {
                 {data.members.map((m) => (
                   <div className="history-row" key={m.id}>
                     {m.username}
-                    <Btn onClick={() => setRemove(m)}>Xóa khỏi lớp</Btn>
+                    <Btn icon="trash" onClick={() => setRemove(m)}>
+                      Xóa khỏi lớp
+                    </Btn>
                   </div>
                 ))}
               </details>

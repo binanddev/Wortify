@@ -19,6 +19,10 @@ import {
   supportedPracticeNodes,
   practiceRoutes,
   workspaceNodes,
+  workspaceRoot,
+  workspaceRoots,
+  toggleWorkspaceRoot,
+  catalogRoots,
 } from "./practice-navigation";
 
 export function PracticeHub({ lang, id, userId, sound }) {
@@ -32,14 +36,13 @@ export function PracticeHub({ lang, id, userId, sound }) {
     const value = readPreference(workspaceKey, []);
     return Array.isArray(value) ? value : [];
   });
+  const [previewId, setPreviewId] = useState(null);
   const [setting, setSetting] = useState(null);
   const [catalogQuery, setCatalogQuery] = useState("");
   const all = id === "all";
   const togglePin = (node) =>
     setPinned((previous) => {
-      const next = previous.includes(node.id)
-        ? previous.filter((v) => v !== node.id)
-        : [...previous, node.id];
+      const next = toggleWorkspaceRoot(nodes, previous, node.id);
       savePreference(workspaceKey, next);
       return next;
     });
@@ -69,20 +72,25 @@ export function PracticeHub({ lang, id, userId, sound }) {
   );
   const current = nodes.find((node) => String(node.id) === String(id));
   const workspace = workspaceNodes(nodes, pinned);
-  const catalog = nodes.filter((node) =>
-    node.title
-      .toLocaleLowerCase()
-      .includes(catalogQuery.trim().toLocaleLowerCase()),
-  );
+  const catalog = catalogRoots(nodes, catalogQuery);
+  const roots = workspaceRoots(nodes, pinned);
+  const isPinned = (node) => roots.includes(workspaceRoot(nodes, node.id)?.id);
+  const preview = nodes.find((node) => node.id === previewId);
   return (
     <Page>
       <SidebarTools navOnly>
         <div className="learning-navigation">
-          <Field label="Tìm bài để học" value={query} onChange={setQuery} />
-          <Link to={practiceRoutes(lang).learn}>Workspace của tôi</Link>
-          <Link to={practiceRoutes(lang).explore}>
-            Explore · tìm bài học công khai
-          </Link>
+          <div className="workspace-search">
+            <Field label="Tìm bài để học" value={query} onChange={setQuery} />
+            <Link
+              to={`${practiceRoutes(lang).learn}/all`}
+              className="workspace-browse"
+              title="Kho bài tập của bạn"
+              aria-label="Kho bài tập của bạn"
+            >
+              <Icon name="cards" size={20} />
+            </Link>
+          </div>
           <Status error={resource.error} />
           <nav aria-label="Danh sách bài học">
             <PracticeTree
@@ -95,8 +103,8 @@ export function PracticeHub({ lang, id, userId, sound }) {
           </nav>
           {!resource.loading && !workspace.length && (
             <p>
-              Thêm thư mục hoặc bài học từ “Hiển thị tất cả” vào workspace của
-              bạn.
+              Thêm thư mục hoặc bài học từ “Kho bài tập của bạn” vào workspace
+              của bạn.
             </p>
           )}
           {current?.links?.length > 0 && (
@@ -117,23 +125,85 @@ export function PracticeHub({ lang, id, userId, sound }) {
               })}
             </div>
           )}
-          <Link
-            to={`${practiceRoutes(lang).learn}/all`}
-            className="workspace-browse"
-            title="Hiển thị tất cả"
-            aria-label="Hiển thị tất cả"
-          >
-            <Icon name="cards" size={20} />
-          </Link>
         </div>
       </SidebarTools>
       {current?.kind === "exercise" && <Status error={sync.error} />}
+      {preview && (
+        <PracticeModal title={preview.title} onClose={() => setPreviewId(null)}>
+          <div className="flex flex-wrap items-center gap-3">
+            {nodes.some((node) => node.id === preview.parent) && (
+              <Btn onClick={() => setPreviewId(preview.parent)}>
+                ← Thư mục cha
+              </Btn>
+            )}
+            <Btn
+              isIconOnly
+              title={
+                isPinned(preview) ? "Bỏ khỏi workspace" : "Thêm vào workspace"
+              }
+              aria-label={
+                isPinned(preview) ? "Bỏ khỏi workspace" : "Thêm vào workspace"
+              }
+              onClick={() => togglePin(preview)}
+            >
+              <Icon name={isPinned(preview) ? "check" : "plus"} />
+            </Btn>
+            <Link
+              className="btn primary"
+              to={`${practiceRoutes(lang).learn}/${preview.id}`}
+              onClick={() => setPreviewId(null)}
+            >
+              Vào học
+            </Link>
+          </div>
+          <p className="text-sm text-(--muted)">
+            Xem thử nội dung; tiến độ học của bạn không thay đổi.
+          </p>
+          {preview.kind === "folder" ? (
+            <div className="grid gap-2">
+              {nodes
+                .filter((node) => node.parent === preview.id)
+                .map((node) => (
+                  <button
+                    type="button"
+                    key={node.id}
+                    className="flex items-center gap-3 rounded-xl border border-(--line) p-4 text-left font-semibold hover:bg-(--surface)"
+                    onClick={() => setPreviewId(node.id)}
+                  >
+                    <Icon
+                      name={
+                        node.kind === "folder"
+                          ? "folder"
+                          : node.kind === "exercise"
+                            ? "exercise"
+                            : "book"
+                      }
+                    />
+                    {node.title}
+                  </button>
+                ))}
+              {!nodes.some((node) => node.parent === preview.id) && (
+                <p>Chưa có nội dung bạn có thể xem trong thư mục này.</p>
+              )}
+            </div>
+          ) : preview.kind === "exercise" ? (
+            <PracticeActivity
+              key={preview.id}
+              preview
+              data={previewData(preview.payload)}
+              sound={sound}
+            />
+          ) : (
+            <TheoryActivity payload={preview.payload} />
+          )}
+        </PracticeModal>
+      )}
       {setting && (
         <PracticeModal title={setting.title} onClose={() => setSetting(null)}>
           <p>
-            {pinned.includes(setting.id)
-              ? "Bỏ khỏi workspace sẽ không xóa nội dung hoặc tiến độ học."
-              : "Ghim riêng nội dung này để luôn thấy trong workspace."}
+            {isPinned(setting)
+              ? "Bỏ thư mục gốc khỏi workspace sẽ không xóa nội dung hoặc tiến độ học."
+              : "Thêm thư mục gốc chứa nội dung này vào workspace."}
           </p>
           <Btn
             onClick={() => {
@@ -141,9 +211,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
               setSetting(null);
             }}
           >
-            {pinned.includes(setting.id)
-              ? "Bỏ khỏi workspace"
-              : "Thêm vào workspace"}
+            {isPinned(setting) ? "Bỏ khỏi workspace" : "Thêm vào workspace"}
           </Btn>
         </PracticeModal>
       )}
@@ -152,8 +220,8 @@ export function PracticeHub({ lang, id, userId, sound }) {
       ) : all ? (
         <section className="practice-catalog">
           <Heading
-            title="Khám phá nội dung"
-            description="Tất cả thư mục, bài tập và nội dung bạn có quyền xem."
+            title="Kho bài tập của bạn"
+            description="Các thư mục gốc chứa bài tập bạn có quyền xem. Mở thẻ để xem trước nội dung."
           />
           <Field
             label="Tìm trong tất cả nội dung"
@@ -169,12 +237,16 @@ export function PracticeHub({ lang, id, userId, sound }) {
                       ? "folder"
                       : node.kind === "theory"
                         ? "book"
-                        : "cards"
+                        : "exercise"
                   }
                 />
-                <Link to={`${practiceRoutes(lang).learn}/${node.id}`}>
+                <button
+                  type="button"
+                  className="catalog-preview"
+                  onClick={() => setPreviewId(node.id)}
+                >
                   {node.title}
-                </Link>
+                </button>
                 <small>
                   {node.kind === "folder"
                     ? "Thư mục"
@@ -188,15 +260,14 @@ export function PracticeHub({ lang, id, userId, sound }) {
                 <button
                   type="button"
                   className="catalog-pin"
-                  aria-label={`${pinned.includes(node.id) ? "Bỏ" : "Thêm"} ${node.title} ${pinned.includes(node.id) ? "khỏi" : "vào"} workspace`}
-                  aria-pressed={pinned.includes(node.id)}
+                  aria-label={`${isPinned(node) ? "Bỏ" : "Thêm"} ${node.title} ${isPinned(node) ? "khỏi" : "vào"} workspace`}
+                  title={
+                    isPinned(node) ? "Bỏ khỏi workspace" : "Thêm vào workspace"
+                  }
+                  aria-pressed={isPinned(node)}
                   onClick={() => togglePin(node)}
                 >
-                  <Icon
-                    name={pinned.includes(node.id) ? "check" : "plus"}
-                    size={17}
-                  />
-                  {pinned.includes(node.id) ? "Đã thêm" : "Workspace"}
+                  <Icon name={isPinned(node) ? "check" : "plus"} size={17} />
                 </button>
               </article>
             ))}
@@ -211,7 +282,15 @@ export function PracticeHub({ lang, id, userId, sound }) {
               .filter((n) => n.parent === current.id)
               .map((node) => (
                 <article className="catalog-card" key={node.id}>
-                  <Icon name={node.kind === "folder" ? "folder" : "book"} />
+                  <Icon
+                    name={
+                      node.kind === "folder"
+                        ? "folder"
+                        : node.kind === "exercise"
+                          ? "exercise"
+                          : "book"
+                    }
+                  />
                   <Link to={`${practiceRoutes(lang).learn}/${node.id}`}>
                     {node.title}
                   </Link>

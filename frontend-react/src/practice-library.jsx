@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Btn, Link } from "./ui";
+import { PracticeModal } from "./practice-workspace";
+import { Btn, Link, Icon, SidebarTools, Status, Field } from "./ui";
 
 export function DestinationPicker({ nodes, ids, onChoose, onClose, pending }) {
   const excluded = new Set(ids);
@@ -26,21 +27,18 @@ export function DestinationPicker({ nodes, ids, onChoose, onClose, pending }) {
   return (
     <div
       className="destination-picker"
-      role="dialog"
-      aria-modal="false"
       aria-label="Chọn nơi đặt bài"
       onKeyDown={(event) => {
         if (event.key === "Escape") onClose();
       }}
     >
-      <div className="toolbar">
-        <h3>Đặt bài ở đâu nhỉ?</h3>
-        <Btn onClick={onClose}>Đóng</Btn>
-      </div>
-      <p>Chạm một thư mục để di chuyển ngay.</p>
-      <button type="button" disabled={pending} onClick={() => onChoose(null)}>
-        ⌂ Tất cả nội dung
-      </button>
+      {!ids.some(
+        (id) => nodes.find((node) => node.id === id)?.kind === "exercise",
+      ) && (
+        <button type="button" disabled={pending} onClick={() => onChoose(null)}>
+          My Exercise Library
+        </button>
+      )}
       {nodes
         .filter((n) => n.kind === "folder" && n.can_edit && !excluded.has(n.id))
         .map((node) => (
@@ -50,7 +48,10 @@ export function DestinationPicker({ nodes, ids, onChoose, onClose, pending }) {
             disabled={pending}
             onClick={() => onChoose(node.id)}
           >
-            📁 {path(node)}
+            <span className="create-type-icon folder">
+              <Icon name="folder" />
+            </span>{" "}
+            {path(node)}
           </button>
         ))}
     </div>
@@ -65,10 +66,25 @@ export function PracticeLibrary({
   onOrganize,
   onRename,
   onEdit,
+  onCreate,
+  onPreview,
+  view = "grid",
+  onSettings,
   pending,
+  error,
   searching,
   routeBase = "create",
 }) {
+  const [menuId, setMenuId] = useState(null);
+  const [groupName, setGroupName] = useState("Folde mới");
+  const [grouping, setGrouping] = useState(false);
+  const menu = nodes.find((node) => node.id === menuId);
+  const menuSiblings = menu
+    ? nodes
+        .filter((node) => node.can_edit && node.parent === menu.parent)
+        .sort((a, b) => a.position - b.position || a.id - b.id)
+    : [];
+  const menuIndex = menuSiblings.findIndex((node) => node.id === menuId);
   const [selected, setSelected] = useState([]);
   const [destination, setDestination] = useState(false);
   const [renaming, setRenaming] = useState(null);
@@ -81,6 +97,11 @@ export function PracticeLibrary({
     setDestination(false);
     setUndo(null);
   }, [parent]);
+  const availableIds = nodes.map((node) => node.id).join(",");
+  useEffect(() => {
+    const available = new Set(availableIds.split(",").map(Number));
+    setSelected((previous) => previous.filter((id) => available.has(id)));
+  }, [availableIds]);
   const toggle = (id) =>
     setSelected((ids) =>
       ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id],
@@ -95,18 +116,15 @@ export function PracticeLibrary({
       action,
       ids,
       parent: target,
-      ...(action === "group" ? { title: "Nhóm bài mới" } : {}),
+      ...(action === "group" ? { title: groupName.trim() || "Folde mới" } : {}),
     });
     if (ok) {
       setUndo(placements);
       setSelected([]);
       setDestination(false);
-      setMessage(
-        action === "group"
-          ? "Đã gom bài vào “Nhóm bài mới”. Bạn có thể đổi tên ngay trên thẻ."
-          : "Đã chuyển bài. Góc học gọn hơn rồi!",
-      );
+      setMessage(action === "group" ? "Đã tạo folde." : "Đã di chuyển.");
     }
+    return ok;
   };
   const reorder = async (node, offset) => {
     const siblings = nodes
@@ -120,67 +138,236 @@ export function PracticeLibrary({
       setMessage("Đã đổi thứ tự bài.");
   };
   return (
-    <section className="practice-library" aria-label="Nội dung trong thư mục">
-      <div className="library-heading">
-        <h2>Nội dung của bạn</h2>
-        <span>{items.length} nội dung</span>
-      </div>
-      {selected.length > 0 && (
-        <div className="selection-bar">
-          <strong>Đã chọn {selected.length}</strong>
-          <Btn isDisabled={pending} onClick={() => setDestination(true)}>
-            Di chuyển
-          </Btn>
-          <Btn
-            isDisabled={pending}
-            onClick={() => move(selected, parent, "group")}
+    <section className="practice-library" aria-label="Nội dung folde">
+      {(selected.length > 0 || undo) && (
+        <SidebarTools navOnly>
+          <div
+            className="border-t border-(--line) pt-4"
+            aria-label="Công cụ mục đã chọn"
           >
-            Gom thành nhóm
+            {selected.length > 0 && (
+              <>
+                <p className="mb-3 text-sm font-semibold">
+                  Đã chọn {selected.length}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Btn
+                    isIconOnly
+                    title="Di chuyển"
+                    aria-label="Di chuyển mục đã chọn"
+                    isDisabled={pending}
+                    onClick={() => setDestination(true)}
+                  >
+                    <Icon name="arrow" />
+                  </Btn>
+                  <Btn
+                    isIconOnly
+                    title="Gom thành folde"
+                    aria-label="Gom thành folde"
+                    isDisabled={pending}
+                    onClick={() => setGrouping(true)}
+                  >
+                    <Icon name="folder" />
+                  </Btn>
+                  <Btn
+                    isIconOnly
+                    title="Bỏ chọn"
+                    aria-label="Bỏ chọn tất cả"
+                    isDisabled={pending}
+                    onClick={() => setSelected([])}
+                  >
+                    <Icon name="close" />
+                  </Btn>
+                </div>
+              </>
+            )}
+            {undo && (
+              <Btn
+                isIconOnly
+                title="Hoàn tác"
+                aria-label="Hoàn tác di chuyển"
+                isDisabled={pending}
+                onClick={async () => {
+                  if (
+                    await onOrganize({
+                      action: "restore",
+                      ids: undo.map((node) => node.id),
+                      placements: undo,
+                    })
+                  ) {
+                    setUndo(null);
+                    setMessage("Đã hoàn tác.");
+                  }
+                }}
+              >
+                <Icon name="undo" />
+              </Btn>
+            )}
+          </div>
+        </SidebarTools>
+      )}
+      {grouping && (
+        <PracticeModal
+          title="Gom thành folde"
+          pending={pending}
+          onClose={() => setGrouping(false)}
+        >
+          <Status error={error} />
+          <Field
+            label="Tên folde"
+            value={groupName}
+            onChange={setGroupName}
+            maxLength={200}
+          />
+          <Btn
+            primary
+            isDisabled={pending || !groupName.trim()}
+            onClick={async () => {
+              if (await move(selected, parent, "group")) setGrouping(false);
+            }}
+          >
+            Gom {selected.length} mục
           </Btn>
-          <Btn onClick={() => setSelected([])}>Bỏ chọn</Btn>
-        </div>
+        </PracticeModal>
+      )}
+      {renaming !== null && nodes.some((node) => node.id === renaming) && (
+        <PracticeModal
+          title="Đổi tên"
+          size="sm"
+          pending={pending}
+          onClose={() => setRenaming(null)}
+        >
+          <Status error={error} />
+          <Field
+            autoFocus
+            label="Tên mới"
+            value={title}
+            maxLength={200}
+            onChange={setTitle}
+            onKeyDown={async (event) => {
+              if (
+                event.key !== "Enter" ||
+                event.nativeEvent.isComposing ||
+                pending ||
+                !title.trim()
+              )
+                return;
+              event.preventDefault();
+              if (
+                await onRename(
+                  nodes.find((node) => node.id === renaming),
+                  title.trim(),
+                )
+              )
+                setRenaming(null);
+            }}
+          />
+          <Btn
+            icon="check"
+            title="Lưu tên"
+            aria-label="Lưu tên"
+            isDisabled={pending || !title.trim()}
+            onClick={async () => {
+              if (
+                await onRename(
+                  nodes.find((node) => node.id === renaming),
+                  title.trim(),
+                )
+              )
+                setRenaming(null);
+            }}
+          >
+            Lưu tên
+          </Btn>
+        </PracticeModal>
+      )}
+      {menu && (
+        <PracticeModal
+          title={menu.title}
+          size="sm"
+          pending={pending}
+          onClose={() => setMenuId(null)}
+        >
+          <Status error={error} />
+          <div className="grid gap-2 [&>button]:w-full [&>button]:justify-start">
+            <Btn
+              isDisabled={pending}
+              onClick={() => {
+                setRenaming(menu.id);
+                setTitle(menu.title);
+                setMenuId(null);
+              }}
+            >
+              <Icon name="edit" />
+              Đổi tên
+            </Btn>
+            <Btn
+              isDisabled={pending}
+              onClick={() => {
+                setSelected([menu.id]);
+                setDestination(true);
+                setMenuId(null);
+              }}
+            >
+              <Icon name="arrow" />
+              Di chuyển
+            </Btn>
+            {onSettings && (
+              <Btn
+                isDisabled={pending}
+                onClick={() => {
+                  setMenuId(null);
+                  onSettings(menu);
+                }}
+              >
+                <Icon name="settings" />
+                Chia sẻ và xóa
+              </Btn>
+            )}
+            {!searching && (
+              <>
+                <Btn
+                  isDisabled={pending || menuIndex <= 0}
+                  onClick={() => reorder(menu, -1)}
+                >
+                  <Icon name="chevron_left" /> Đưa lên trước
+                </Btn>
+                <Btn
+                  isDisabled={pending || menuIndex >= menuSiblings.length - 1}
+                  onClick={() => reorder(menu, 1)}
+                >
+                  <Icon name="chevron_right" /> Đưa ra sau
+                </Btn>
+              </>
+            )}
+          </div>
+        </PracticeModal>
       )}
       <div className="library-notice" role="status">
         {message}
-        {undo && (
-          <button
-            type="button"
-            disabled={pending}
-            onClick={async () => {
-              if (
-                await onOrganize({
-                  action: "restore",
-                  ids: undo.map((n) => n.id),
-                  placements: undo,
-                })
-              ) {
-                setUndo(null);
-                setMessage("Đã hoàn tác di chuyển.");
-              }
-            }}
-          >
-            Hoàn tác
-          </button>
-        )}
       </div>
       {destination && (
-        <DestinationPicker
-          {...{ nodes, pending }}
-          ids={selected}
+        <PracticeModal
+          title="Di chuyển"
+          pending={pending}
           onClose={() => setDestination(false)}
-          onChoose={(target) => move(selected, target)}
-        />
+        >
+          <Status error={error} />
+          <DestinationPicker
+            {...{ nodes, pending }}
+            ids={selected}
+            onClose={() => setDestination(false)}
+            onChoose={(target) => move(selected, target)}
+          />
+        </PracticeModal>
       )}
-      <div className="hub-grid">
+      <div className={`hub-grid library-view-${view}`}>
         {items.map((node) => {
           const folder = node.kind === "folder";
-          const siblings = nodes
-            .filter((n) => n.can_edit && n.parent === node.parent)
-            .sort((a, b) => a.position - b.position || a.id - b.id);
-          const index = siblings.findIndex((n) => n.id === node.id);
           return (
             <article
               key={node.id}
+              data-kind={node.kind}
               className={`hub-tile library-card ${selected.includes(node.id) ? "is-selected" : ""} ${hover === node.id ? "is-drop-target" : ""}`}
               draggable={node.can_edit && !pending && renaming !== node.id}
               onDragStart={(event) => {
@@ -225,7 +412,16 @@ export function PracticeLibrary({
             >
               <div className="library-card-top">
                 <span className="library-card-icon" aria-hidden="true">
-                  {folder ? "📁" : node.kind === "theory" ? "📖" : "🌼"}
+                  <Icon
+                    name={
+                      folder
+                        ? "folder"
+                        : node.kind === "exercise"
+                          ? "exercise"
+                          : "book"
+                    }
+                    size={24}
+                  />
                 </span>
                 {node.can_edit && (
                   <input
@@ -237,37 +433,15 @@ export function PracticeLibrary({
                   />
                 )}
               </div>
-              {renaming === node.id ? (
-                <div className="inline-rename">
-                  <input
-                    autoFocus
-                    aria-label="Tên mới"
-                    maxLength={200}
-                    value={title}
-                    onChange={(event) => setTitle(event.target.value)}
-                    onKeyDown={async (event) => {
-                      if (event.key === "Escape") setRenaming(null);
-                      if (
-                        event.key === "Enter" &&
-                        title.trim() &&
-                        (await onRename(node, title.trim()))
-                      )
-                        setRenaming(null);
-                    }}
-                  />
-                  <button
-                    type="button"
-                    disabled={pending || !title.trim()}
-                    onClick={async () => {
-                      if (await onRename(node, title.trim())) setRenaming(null);
-                    }}
-                  >
-                    ✓
-                  </button>
-                  <button type="button" onClick={() => setRenaming(null)}>
-                    ×
-                  </button>
-                </div>
+              {!folder && onPreview ? (
+                <button
+                  type="button"
+                  className="library-card-title text-left"
+                  title={`Xem trước ${node.title}`}
+                  onClick={() => onPreview(node)}
+                >
+                  {node.title}
+                </button>
               ) : (
                 <Link
                   to={`/${lang}/${routeBase}/${node.id}`}
@@ -280,60 +454,52 @@ export function PracticeLibrary({
                 {folder
                   ? `${nodes.filter((n) => n.parent === node.id).length} nội dung`
                   : node.kind === "theory"
-                    ? "Đọc một chút, hiểu thêm một chút"
-                    : `${node.progress?.completed?.length || 0} câu đã hoàn thành`}
+                    ? "Nội dung đọc"
+                    : `${node.payload?.questions?.length || 0} câu`}
               </small>
               {node.can_edit && (
                 <div className="library-card-actions">
-                  <button
-                    type="button"
-                    disabled={pending}
-                    onClick={() => {
-                      setRenaming(node.id);
-                      setTitle(node.title);
-                    }}
-                  >
-                    Đổi tên
-                  </button>
-                  {node.kind !== "folder" && (
-                    <button
-                      type="button"
-                      disabled={pending}
+                  {folder && onCreate && (
+                    <Btn
+                      isIconOnly
+                      title="Thêm"
+                      aria-label={`Thêm vào ${node.title}`}
+                      isDisabled={pending}
+                      onClick={() => onCreate(node)}
+                    >
+                      <Icon name="plus" />
+                    </Btn>
+                  )}
+                  {!folder && onPreview && (
+                    <Btn
+                      isIconOnly
+                      title="Xem trước"
+                      aria-label={`Xem trước ${node.title}`}
+                      onClick={() => onPreview(node)}
+                    >
+                      <Icon name="eye" />
+                    </Btn>
+                  )}
+                  {!folder && (
+                    <Btn
+                      isIconOnly
+                      title="Sửa bài"
+                      aria-label={`Sửa ${node.title}`}
+                      isDisabled={pending}
                       onClick={() => onEdit(node)}
                     >
-                      Sửa
-                    </button>
+                      <Icon name="edit" />
+                    </Btn>
                   )}
-                  <button
-                    type="button"
-                    disabled={pending}
-                    onClick={() => {
-                      setSelected([node.id]);
-                      setDestination(true);
-                    }}
+                  <Btn
+                    isIconOnly
+                    title="Tùy chọn"
+                    aria-label={`Tùy chọn ${node.title}`}
+                    isDisabled={pending}
+                    onClick={() => setMenuId(node.id)}
                   >
-                    Chuyển
-                  </button>
-                  {!searching && (
-                    <>
-                      <button
-                        type="button"
-                        aria-label={`Đưa ${node.title} lên trước`}
-                        disabled={pending || index <= 0}
-                        onClick={() => reorder(node, -1)}
-                      >
-                        ←
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={`Đưa ${node.title} ra sau`}
-                        disabled={pending || index >= siblings.length - 1}
-                        onClick={() => reorder(node, 1)}
-                      >
-                        →
-                      </button>
-                    </>
-                  )}
+                    <Icon name="more" />
+                  </Btn>
                 </div>
               )}
             </article>
@@ -344,9 +510,7 @@ export function PracticeLibrary({
         <div className="library-empty">
           <span aria-hidden="true">🌱</span>
           <p>
-            {searching
-              ? "Chưa tìm thấy bài phù hợp."
-              : "Một góc nhỏ đang chờ bài học đầu tiên của bạn."}
+            {searching ? "Chưa tìm thấy bài phù hợp." : "Chưa có nội dung."}
           </p>
         </div>
       )}

@@ -1,3 +1,4 @@
+import { ExerciseMedia } from "./exercise-media";
 import { useEffect, useRef, useState } from "react";
 import { gradeExercise } from "./local-learning";
 import { TypeQuestion, MatchPairs, Categories } from "./exercise-interactions";
@@ -129,7 +130,11 @@ export function PracticeActivity({
   };
   if (!questions.length) return <Status>Chưa có câu hỏi trong bài này.</Status>;
   return (
-    <div className="exercise-workspace practice-journey" data-ui-style={style}>
+    <div
+      className="exercise-workspace practice-journey learning-stage"
+      data-ui-style={style}
+    >
+      <ExerciseMedia items={e.attachments || []} />
       <div className="journey-topline">
         <span>
           {index >= questions.length

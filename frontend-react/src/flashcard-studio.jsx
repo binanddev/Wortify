@@ -1,3 +1,4 @@
+import { PracticeModal } from "./practice-workspace";
 import { useLearningSync, pendingLearning } from "./learning-sync";
 import { useEffect, useRef, useState } from "react";
 import { endpoint, useResource, readPreference, savePreference } from "./core";
@@ -74,7 +75,9 @@ function Studio({ lang, id, userId, sound, data }) {
   const initialProgress = { ...data.learning?.progress };
   waiting.forEach((e) => {
     if (e.kind === "reset") {
-      Object.keys(initialProgress).forEach((key) => delete initialProgress[key]);
+      Object.keys(initialProgress).forEach(
+        (key) => delete initialProgress[key],
+      );
     } else if (e.kind === "review") {
       initialProgress[e.payload.card] = advanceProgress(
         initialProgress[e.payload.card],
@@ -102,6 +105,7 @@ function Studio({ lang, id, userId, sound, data }) {
     frontVoice:
       initialOptions.frontVoice || (lang === "de" ? "de-DE" : "en-US"),
   }));
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [stars, setStars] = useState(() => [...initialStars]),
     [progress, setProgress] = useState(() => initialProgress);
   const [order, setOrder] = useState(() => data.cards),
@@ -192,7 +196,9 @@ function Studio({ lang, id, userId, sound, data }) {
     const listener = (e) => {
       if (
         e.target.closest("input,textarea,select,button,a") ||
-        options.mode !== "flash"
+        options.mode !== "flash" ||
+        settingsOpen ||
+        resetLearning
       )
         return;
       if (e.code === "Space") {
@@ -204,7 +210,7 @@ function Studio({ lang, id, userId, sound, data }) {
     };
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
-  }, [index, order.length, options.mode]);
+  }, [index, order.length, options.mode, settingsOpen, resetLearning]);
   const speak = (text, voice) => {
     if (!window.speechSynthesis) {
       setError("Trình duyệt chưa hỗ trợ giọng đọc.");
@@ -288,14 +294,7 @@ function Studio({ lang, id, userId, sound, data }) {
     setRunning(true);
     setCompleted(false);
     if (options.mode === "test") {
-      setTest(
-        createTest(
-          pool,
-          pool.length,
-          options.types,
-          options.answerWith,
-        ),
-      );
+      setTest(createTest(pool, pool.length, options.types, options.answerWith));
       setTestAnswers({});
       setTestChecked({});
       setTestResult(null);
@@ -410,193 +409,238 @@ function Studio({ lang, id, userId, sound, data }) {
   };
   return (
     <Page>
-      <Heading
-        title={data.deck.title}
-        description="Học theo cách bạn thấy thoải mái nhất."
-      />
+      <Heading title={data.deck.title} />
       <SidebarTools>
         <Status error={sync.error} />
-        <Link
-          className="btn manage-terms-link"
-          to={`/${lang}/flashcard/deck/${id}/edit`}
-        >
-          Quản lý thuật ngữ
-        </Link>
-        <Select
-          label="Chế độ học"
-          value={options.mode}
-          onChange={(mode) => patch({ mode })}
-        >
-          <option value="flash">Thẻ ghi nhớ</option>
-          <option value="learn">Học · Learn</option>
-          <option value="test">Kiểm tra · Test</option>
-        </Select>
-        <label className="check-line">
-          <input
-            type="checkbox"
-            checked={options.starredOnly}
-            onChange={(e) => patch({ starredOnly: e.target.checked })}
-          />
-          Chỉ thẻ gắn sao ({stars.length})
-        </label>
-        <label className="check-line">
-          <input
-            type="checkbox"
-            checked={options.shuffle}
-            onChange={(e) => patch({ shuffle: e.target.checked })}
-          />
-          Trộn ngẫu nhiên
-        </label>
-        {options.mode === "flash" ? (
-          <>
-            <Select
-              label="Mặt xuất hiện trước"
-              value={options.direction}
-              onChange={(direction) => patch({ direction })}
+        <div className="flash-mode-picker" aria-label="Chế độ học">
+          {[
+            ["flash", "cards", "Thẻ"],
+            ["learn", "spark", "Học"],
+            ["test", "exercise", "Kiểm tra"],
+          ].map(([mode, icon, label]) => (
+            <button
+              key={mode}
+              aria-pressed={options.mode === mode}
+              onClick={() => patch({ mode })}
             >
-              <option value="front">Thuật ngữ</option>
-              <option value="back">Định nghĩa</option>
-              <option value="random">Ngẫu nhiên từng thẻ</option>
-            </Select>
+              <Icon name={icon} />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+        <div className="flash-icon-row">
+          <Btn
+            icon="star"
+            aria-pressed={options.starredOnly}
+            onClick={() => patch({ starredOnly: !options.starredOnly })}
+          >{`Chỉ thẻ gắn sao · ${stars.length}`}</Btn>
+          <Btn
+            icon="shuffle"
+            aria-pressed={options.shuffle}
+            onClick={() => patch({ shuffle: !options.shuffle })}
+          >
+            Trộn thẻ
+          </Btn>
+          <Btn icon="settings" onClick={() => setSettingsOpen(true)}>
+            Tùy chọn học
+          </Btn>
+          <Link
+            className="btn flash-icon-link"
+            title="Quản lý thuật ngữ"
+            aria-label="Quản lý thuật ngữ"
+            to={`/${lang}/flashcard/deck/${id}/edit`}
+          >
+            <Icon name="edit" />
+          </Link>
+          {options.mode !== "flash" && (
+            <Btn primary icon={running ? "refresh" : "play"} onClick={begin}>
+              {running ? "Tạo lại phiên học" : "Bắt đầu học"}
+            </Btn>
+          )}
+          {options.mode === "test" && test.length > 0 && (
+            <Btn icon="print" onClick={() => window.print()}>
+              In đề / Lưu PDF
+            </Btn>
+          )}
+        </div>
+      </SidebarTools>
+      {settingsOpen && (
+        <PracticeModal
+          title="Tùy chọn học"
+          size="lg"
+          onClose={() => setSettingsOpen(false)}
+        >
+          <div className="flash-settings">
             <label className="check-line">
               <input
                 type="checkbox"
-                checked={options.autoSpeak}
-                onChange={(e) => patch({ autoSpeak: e.target.checked })}
+                checked={options.starredOnly}
+                onChange={(e) => patch({ starredOnly: e.target.checked })}
               />
-              Tự động đọc âm thanh
+              Chỉ thẻ gắn sao ({stars.length})
             </label>
-            {[
-              ["frontVoice", "Giọng mặt thuật ngữ"],
-              ["backVoice", "Giọng mặt định nghĩa"],
-            ].map(([k, label]) => (
-              <Select
-                key={k}
-                label={label}
-                value={options[k]}
-                onChange={(v) => patch({ [k]: v })}
-              >
-                {[
-                  ["en-US", "English"],
-                  ["de-DE", "Deutsch"],
-                  ["vi-VN", "Tiếng Việt"],
-                ].map(([v, t]) => (
-                  <option key={v} value={v}>
-                    {t}
-                  </option>
-                ))}
-              </Select>
-            ))}
-          </>
-        ) : (
-          <>
-            <Select
-              label="Trả lời bằng"
-              value={options.answerWith}
-              onChange={(answerWith) => patch({ answerWith })}
-            >
-              <option value="term">Thuật ngữ · Hiện định nghĩa trước</option>
-              <option value="definition">
-                Định nghĩa · Hiện thuật ngữ trước
-              </option>
-              <option value="random">Cả hai · Ngẫu nhiên</option>
-            </Select>
-            <fieldset>
-              <legend>Dạng câu hỏi</legend>
-              {TYPES.filter(
-                ([t]) => options.mode === "test" || t !== "matching",
-              ).map(([type, title]) => (
-                <label className="check-line" key={type}>
-                  <input
-                    type="checkbox"
-                    checked={options.types.includes(type)}
-                    onChange={(e) =>
-                      patch({
-                        types: e.target.checked
-                          ? [...options.types, type]
-                          : options.types.filter((t) => t !== type),
-                      })
-                    }
-                  />
-                  {title}
-                </label>
-              ))}
-            </fieldset>
-            {options.mode === "learn" && (
+            <label className="check-line">
+              <input
+                type="checkbox"
+                checked={options.shuffle}
+                onChange={(e) => patch({ shuffle: e.target.checked })}
+              />
+              Trộn ngẫu nhiên
+            </label>
+            {options.mode === "flash" ? (
               <>
                 <Select
-                  label="Mục tiêu học"
-                  value={options.goal}
-                  onChange={(goal) => patch({ goal })}
+                  label="Mặt xuất hiện trước"
+                  value={options.direction}
+                  onChange={(direction) => patch({ direction })}
                 >
-                  <option value="quick">
-                    Cơ bản
-                  </option>
-                  <option value="comprehensive">
-                    Học thông minh
-                  </option>
+                  <option value="front">Thuật ngữ</option>
+                  <option value="back">Định nghĩa</option>
+                  <option value="random">Ngẫu nhiên từng thẻ</option>
                 </Select>
-                <Field
-                  label="Mục tiêu thời gian (phút)"
-                  type="number"
-                  min="1"
-                  max="180"
-                  value={options.minutes}
-                  onChange={(minutes) =>
-                    patch({
-                      minutes: Math.max(1, Math.min(180, Number(minutes) || 1)),
-                    })
-                  }
-                />
-                <Btn onClick={() => setResetLearning(true)}>
-                  Đặt lại tiến độ học
-                </Btn>
+                <label className="check-line">
+                  <input
+                    type="checkbox"
+                    checked={options.autoSpeak}
+                    onChange={(e) => patch({ autoSpeak: e.target.checked })}
+                  />
+                  Tự động đọc âm thanh
+                </label>
+                {[
+                  ["frontVoice", "Giọng mặt thuật ngữ"],
+                  ["backVoice", "Giọng mặt định nghĩa"],
+                ].map(([k, label]) => (
+                  <Select
+                    key={k}
+                    label={label}
+                    value={options[k]}
+                    onChange={(v) => patch({ [k]: v })}
+                  >
+                    {[
+                      ["en-US", "English"],
+                      ["de-DE", "Deutsch"],
+                      ["vi-VN", "Tiếng Việt"],
+                    ].map(([v, t]) => (
+                      <option key={v} value={v}>
+                        {t}
+                      </option>
+                    ))}
+                  </Select>
+                ))}
+              </>
+            ) : (
+              <>
+                <Select
+                  label="Trả lời bằng"
+                  value={options.answerWith}
+                  onChange={(answerWith) => patch({ answerWith })}
+                >
+                  <option value="term">
+                    Thuật ngữ · Hiện định nghĩa trước
+                  </option>
+                  <option value="definition">
+                    Định nghĩa · Hiện thuật ngữ trước
+                  </option>
+                  <option value="random">Cả hai · Ngẫu nhiên</option>
+                </Select>
+                <fieldset>
+                  <legend>Dạng câu hỏi</legend>
+                  {TYPES.filter(
+                    ([t]) => options.mode === "test" || t !== "matching",
+                  ).map(([type, title]) => (
+                    <label className="check-line" key={type}>
+                      <input
+                        type="checkbox"
+                        checked={options.types.includes(type)}
+                        onChange={(e) =>
+                          patch({
+                            types: e.target.checked
+                              ? [...options.types, type]
+                              : options.types.filter((t) => t !== type),
+                          })
+                        }
+                      />
+                      {title}
+                    </label>
+                  ))}
+                </fieldset>
+                {options.mode === "learn" && (
+                  <>
+                    <Select
+                      label="Mục tiêu học"
+                      value={options.goal}
+                      onChange={(goal) => patch({ goal })}
+                    >
+                      <option value="quick">Cơ bản</option>
+                      <option value="comprehensive">Học thông minh</option>
+                    </Select>
+                    <Field
+                      label="Mục tiêu thời gian (phút)"
+                      type="number"
+                      min="1"
+                      max="180"
+                      value={options.minutes}
+                      onChange={(minutes) =>
+                        patch({
+                          minutes: Math.max(
+                            1,
+                            Math.min(180, Number(minutes) || 1),
+                          ),
+                        })
+                      }
+                    />
+                    <Btn
+                      icon="refresh"
+                      onClick={() => {
+                        setSettingsOpen(false);
+                        setResetLearning(true);
+                      }}
+                    >
+                      Đặt lại tiến độ học
+                    </Btn>
+                  </>
+                )}
+                {options.mode === "learn" && (
+                  <label className="check-line">
+                    <input
+                      type="checkbox"
+                      checked={options.speakAfterCorrect}
+                      onChange={(e) =>
+                        patch({ speakAfterCorrect: e.target.checked })
+                      }
+                    />
+                    Đọc thuật ngữ sau khi trả lời đúng
+                  </label>
+                )}
+                <label className="check-line">
+                  <input
+                    type="checkbox"
+                    checked={options.ignore_case}
+                    onChange={(e) => patch({ ignore_case: e.target.checked })}
+                  />
+                  Bỏ qua hoa/thường
+                </label>
+                <label className="check-line">
+                  <input
+                    type="checkbox"
+                    checked={options.ignore_punctuation}
+                    onChange={(e) =>
+                      patch({ ignore_punctuation: e.target.checked })
+                    }
+                  />
+                  Bỏ qua dấu câu
+                </label>
               </>
             )}
-            {options.mode === "learn" && (
-              <label className="check-line">
-                <input
-                  type="checkbox"
-                  checked={options.speakAfterCorrect}
-                  onChange={(e) =>
-                    patch({ speakAfterCorrect: e.target.checked })
-                  }
-                />
-                Đọc thuật ngữ sau khi trả lời đúng
-              </label>
-            )}
-            <label className="check-line">
-              <input
-                type="checkbox"
-                checked={options.ignore_case}
-                onChange={(e) => patch({ ignore_case: e.target.checked })}
-              />
-              Bỏ qua hoa/thường
-            </label>
-            <label className="check-line">
-              <input
-                type="checkbox"
-                checked={options.ignore_punctuation}
-                onChange={(e) =>
-                  patch({ ignore_punctuation: e.target.checked })
-                }
-              />
-              Bỏ qua dấu câu
-            </label>
-            <Btn primary onClick={begin}>
-              {running ? "Tạo lại phiên học" : "Bắt đầu"}
-            </Btn>
-            {options.mode === "test" && test.length > 0 && (
-              <Btn onClick={() => window.print()}>In đề / Lưu PDF</Btn>
-            )}
-          </>
-        )}
-      </SidebarTools>
+          </div>
+        </PracticeModal>
+      )}
       <Status error={error} />
       {options.mode === "flash" ? (
         active ? (
           <div className="studio-flash">
             <Btn
+              icon="star"
               className="star-button"
               aria-label={stars.includes(active.id) ? "Bỏ gắn sao" : "Gắn sao"}
               aria-pressed={stars.includes(active.id)}
@@ -615,20 +659,28 @@ function Studio({ lang, id, userId, sound, data }) {
               }}
             />
             <div className="toolbar centered">
-              <Btn isDisabled={index === 0} onClick={() => step(-1)}>
+              <Btn
+                icon="chevron_left"
+                isDisabled={index === 0}
+                onClick={() => step(-1)}
+              >
                 ← Trước
               </Btn>
               <span>
                 {index + 1}/{order.length}
               </span>
               <Btn
+                icon="chevron_right"
                 isDisabled={index === order.length - 1}
                 onClick={() => step(1)}
               >
                 Tiếp →
               </Btn>
-              <Btn onClick={() => setFlipped((v) => !v)}>Lật thẻ · Space</Btn>
+              <Btn icon="flip" onClick={() => setFlipped((v) => !v)}>
+                Lật thẻ · Space
+              </Btn>
               <Btn
+                icon="sound"
                 onClick={() =>
                   speak(
                     flipped ? active.vietnamese_meaning : active.german_text,
@@ -647,22 +699,16 @@ function Studio({ lang, id, userId, sound, data }) {
         <>
           {completed && !running ? (
             <section className="learning-complete" role="status">
-              <div className="learning-complete-icon" aria-hidden="true">🎉</div>
+              <div className="learning-complete-icon" aria-hidden="true">
+                🎉
+              </div>
               <h2>Chúc mừng!</h2>
               <p>Bạn đã hoàn thành các thẻ cần học trong phiên này.</p>
-              <Btn primary onClick={begin}>Học lại</Btn>
+              <Btn icon="refresh" primary onClick={begin}>
+                Học lại
+              </Btn>
             </section>
           ) : null}
-          {data.deck.folder_id && (
-            <Link
-              className="study-folder-back"
-              to={`/${lang}/flashcard?folder=${data.deck.folder_id}`}
-            >
-              <Icon name="arrow" /> Về thư mục {data.folders?.find(
-                (f) => String(f.id) === String(data.deck.folder_id),
-              )?.name || ""}
-            </Link>
-          )}
           <p>
             Hôm nay đã luyện{" "}
             {
@@ -694,10 +740,12 @@ function Studio({ lang, id, userId, sound, data }) {
                 · Lượt {turn + 1}
               </p>
               <Btn
+                icon="star"
                 className="star-button"
                 aria-label={
                   stars.includes(question.id) ? "Bỏ gắn sao" : "Gắn sao"
                 }
+                aria-pressed={stars.includes(question.id)}
                 onClick={() => star(question.card)}
               >
                 {stars.includes(question.id) ? "★" : "☆"}
@@ -721,6 +769,7 @@ function Studio({ lang, id, userId, sound, data }) {
               <div className="session-controls">
                 <Btn
                   primary
+                  icon="arrow"
                   className="next-question"
                   aria-label="Câu tiếp theo"
                   title="Câu tiếp theo"
@@ -731,6 +780,7 @@ function Studio({ lang, id, userId, sound, data }) {
                   <Icon name="arrow" />
                 </Btn>
                 <Btn
+                  icon="close"
                   className="end-session"
                   aria-label="Kết thúc buổi học"
                   title="Kết thúc buổi học"
@@ -752,7 +802,7 @@ function Studio({ lang, id, userId, sound, data }) {
             <section className="work-paper">
               <h2>Bài kiểm tra</h2>
 
-              <Btn primary onClick={begin}>
+              <Btn primary icon="play" onClick={begin}>
                 Tạo đề
               </Btn>
             </section>
@@ -798,7 +848,9 @@ function Studio({ lang, id, userId, sound, data }) {
                     {testResult.filter(Boolean).length}/{test.length} câu đúng
                   </h2>
 
-                  <Btn onClick={begin}>Tạo đề mới</Btn>
+                  <Btn icon="refresh" onClick={begin}>
+                    Tạo đề mới
+                  </Btn>
                 </section>
               ) : null}
             </div>

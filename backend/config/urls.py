@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path,re_path
 from django.http import JsonResponse
-from api import views,sessions,community,management,practice_hub,learning_sync
+from api import views,sessions,community,management,practice_hub,learning_sync,practice_media
 from api.common import legacy_json,namespace
 from users.views import session
 from api import card_learning as cards
@@ -18,6 +18,7 @@ urlpatterns=[path('api/health/',health),path('api/session/',session),path('admin
 def route(pattern,view):urlpatterns.append(path('api/<str:language>/'+pattern,namespace(view)))
 for pattern,view in [
  ('profile/',community.profile),('classes/',community.classes),('classes/<int:pk>/',community.classroom),('classes/<int:pk>/assignments/',community.classroom_assignments),
+ ('practice-hub/media/',practice_media.upload),('practice-hub/media/<uuid:pk>/',practice_media.content),
  ('practice-hub/explore/',practice_hub.explore),('practice-hub/nodes/',practice_hub.nodes),('practice-hub/nodes/<int:pk>/',practice_hub.node),('practice-hub/import/',practice_hub.import_nodes),('practice-hub/organize/',practice_hub.organize),
  ('learning/sync/',learning_sync.sync),('decks/<int:pk>/learning/',learning_sync.deck_state),
  ('settings/',views.preferences),('decks/',views.decks),('decks/<int:pk>/',views.deck),('study-pack/',views.study_pack),

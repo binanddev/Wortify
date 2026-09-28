@@ -152,16 +152,14 @@ function SessionContent({ initial, lang, token, sound }) {
   }[session.kind];
   return (
     <Page>
-      <Link
-        className="breadcrumb"
-        to={
-          session.deck
-            ? `/${lang}/flashcard/deck/${session.deck}`
-            : `/${lang}/flashcard`
-        }
-      >
-        ← Trở về bộ thẻ
-      </Link>
+      {session.deck && (
+        <Link
+          className="breadcrumb"
+          to={`/${lang}/flashcard/deck/${session.deck}`}
+        >
+          ← Trở về bộ thẻ
+        </Link>
+      )}
       <Heading
         eyebrow={
           session.kind === "flash"
@@ -369,7 +367,10 @@ function SessionContent({ initial, lang, token, sound }) {
                   <Answer
                     question={q}
                     value={answer}
-                    onChange={v=>{setAnswer(v);if(q.options?.length)send(v);}}
+                    onChange={(v) => {
+                      setAnswer(v);
+                      if (q.options?.length) send(v);
+                    }}
                     feedback={feedback}
                     disabled={!!feedback || action.pending}
                   />
@@ -409,7 +410,11 @@ function Answer({ question, value, onChange, disabled, feedback }) {
       disabled={disabled}
       label="Chọn đáp án"
       graded={!!feedback}
-      correctAnswer={question.mode==='quiz'?question.card.vietnamese_meaning:question.target}
+      correctAnswer={
+        question.mode === "quiz"
+          ? question.card.vietnamese_meaning
+          : question.target
+      }
     />
   ) : (
     <Field
@@ -525,7 +530,9 @@ function LocalPractice({ pack, lang, params, sound }) {
     } else {
       const actual =
         mode === "order"
-          ? submitted.map((id) => items.find((t) => t.id === id)?.text).join(" ")
+          ? submitted
+              .map((id) => items.find((t) => t.id === id)?.text)
+              .join(" ")
           : submitted;
       setResult(
         gradeCard(
@@ -545,11 +552,7 @@ function LocalPractice({ pack, lang, params, sound }) {
   };
   return (
     <Page>
-      <Link
-        to={deck ? `/${lang}/flashcard/deck/${deck}` : `/${lang}/flashcard`}
-      >
-        ← Bộ thẻ
-      </Link>
+      {deck && <Link to={`/${lang}/flashcard/deck/${deck}`}>← Bộ thẻ</Link>}
       <Heading
         title={
           {
@@ -583,7 +586,9 @@ function LocalPractice({ pack, lang, params, sound }) {
                     : c.vietnamese_meaning}
             </h2>
             {["spell", "speak"].includes(mode) && (
-              <Btn onClick={() => audio.speak(target)}>Nghe mẫu</Btn>
+              <Btn icon="sound" onClick={() => audio.speak(target)}>
+                Nghe mẫu
+              </Btn>
             )}
             {mode === "match" ? (
               <LocalMatching
@@ -621,7 +626,10 @@ function LocalPractice({ pack, lang, params, sound }) {
                 key={index}
                 options={options}
                 answer={answer}
-                setAnswer={v=>{setAnswer(v);check(v);}}
+                setAnswer={(v) => {
+                  setAnswer(v);
+                  check(v);
+                }}
                 correctAnswer={c.vietnamese_meaning}
                 disabled={!!result}
               />
@@ -634,7 +642,7 @@ function LocalPractice({ pack, lang, params, sound }) {
               />
             )}
             {!result && mode !== "speak" && mode !== "quiz" && (
-              <Btn primary onClick={()=>check()}>
+              <Btn primary onClick={() => check()}>
                 Kiểm tra
               </Btn>
             )}

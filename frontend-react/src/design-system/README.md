@@ -24,10 +24,15 @@ CSS declarations outside `@apply` are limited to custom properties and keyframes
 ## Build and verification
 
 - `npm run build`: builds the independent React distribution.
+- `npm run dev`: serves React with Vite HMR and proxies API/admin requests to Django.
+- `npm run test:styles`: compiles the React modules and checks the migration baseline.
 - `npm test`: style checks plus existing interaction, parsing, persistence and navigation tests.
+- `npm run styles:baseline`: accepts a reviewed, intentional design change. Do not refresh the baseline just to hide a failing test.
 
 The baselines were produced from the original application styles, then matched against the Tailwind output. They track declaration order within overlapping property families, selector structure, importance, media conditions, custom properties and keyframes. They are a code-level regression guard, not a claim that browser appearance or accessibility has been visually tested.
 
 The migration retained the existing responsive and print behavior, reduced-motion/reduced-transparency handling, active/disabled/focus/error states, and theme preference hooks. New business logic or component replacement was not part of the stylesheet migration.
 
 Django has no application styles or templates. The previous server stylesheet and build generator have been removed; only installed Django admin assets remain outside the frontend.
+
+`context-panel.css` owns the contextual (back) navigation face and the centered learning stage. It is intentionally scoped to `.context-panel` / `.learning-stage` so primary navigation and flip behavior retain their styling. Page-wide links live on the primary face; the contextual face contains local tools, filters and content only.
