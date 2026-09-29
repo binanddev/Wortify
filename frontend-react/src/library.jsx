@@ -1,7 +1,13 @@
+import {
+  FolderTree,
+  folderPath,
+  folderAncestors,
+} from "./flashcard-navigation";
 import { PracticeModal } from "./practice-workspace";
 import { SidebarTools } from "./ui";
 import { useEffect, useState } from "react";
 import {
+  useRoute,
   endpoint,
   request,
   useResource,
@@ -53,10 +59,10 @@ function DeckOptions({ values, set, folders }) {
         value={values.folder}
         onChange={(folder) => set({ ...values, folder })}
       >
-        <option value="">Chưa xếp folde</option>
+        <option value="">My Flashcards</option>
         {folders.map((f) => (
           <option key={f.id} value={f.id}>
-            {f.name}
+            {folderPath(folders, f)}
           </option>
         ))}
       </Select>
@@ -86,10 +92,14 @@ export function Library({ lang }) {
   );
 }
 function LibraryContent({ data, lang, reload }) {
+  const route = useRoute();
+  const folder =
+    new URLSearchParams(route.split("?")[1]).get("folder") || "all";
+  const setFolder = (value) =>
+    navigate(
+      `/${lang}/flashcard${value === "all" ? "" : `?folder=${encodeURIComponent(value)}`}`,
+    );
   const [query, setQuery] = useState(""),
-    [folder, setFolder] = useState(
-      () => new URLSearchParams(window.location.search).get("folder") || "all",
-    ),
     [sort, setSort] = useState("recent"),
     [edit, setEdit] = useState(null),
     [remove, setRemove] = useState(null),
@@ -99,20 +109,41 @@ function LibraryContent({ data, lang, reload }) {
   const api = (p, m, d, s) => request(endpoint(lang, p), m, d, s);
   let decks = data.decks.filter(
     (d) =>
-      (folder === "all" || String(d.folder_id ?? "") === folder) &&
+      String(d.folder_id ?? "all") === folder &&
       `${d.title} ${d.description}`.toLowerCase().includes(query.toLowerCase()),
   );
   if (sort === "name") decks.sort((a, b) => a.title.localeCompare(b.title));
   if (sort === "count") decks.sort((a, b) => b.count - a.count);
   const selected = data.folders.find((f) => String(f.id) === folder);
+  const createHere = (type) => {
+    if (folder !== "all" && !selected) return;
+    setPanel(null);
+    setEdit({ type, location: selected ? String(selected.id) : "" });
+  };
+  const search = query.trim().toLowerCase();
+  const visibleFolders = data.folders.filter(
+    (f) =>
+      (f.parent_id ?? null) === (selected?.id ?? null) &&
+      (!search ||
+        data.folders.some(
+          (child) =>
+            folderAncestors(data.folders, child).some((a) => a.id === f.id) &&
+            (child.name.toLowerCase().includes(search) ||
+              data.decks.some(
+                (d) =>
+                  d.folder_id === child.id &&
+                  `${d.title} ${d.description}`.toLowerCase().includes(search),
+              )),
+        )),
+  );
+  if (sort === "name")
+    visibleFolders.sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <Page>
       <div className="flash-library-heading">
         <div>
-          <h1>
-            {selected?.name ||
-              (folder === "" ? "Chưa xếp folde" : "My Flashcards")}
-          </h1>
+          <h1>{selected?.name || "My Flashcards"}</h1>
         </div>
         <div className="flash-icon-row">
           <Btn
@@ -132,10 +163,33 @@ function LibraryContent({ data, lang, reload }) {
         </div>
       </div>
       <Status error={action.error} />
+      <div
+        className={`mb-5 grid gap-3 ${layout === "list" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"}`}
+      >
+        {selected?.parent_id && (
+          <Btn
+            icon="undo"
+            onClick={() => setFolder(String(selected.parent_id))}
+          >
+            Về folde chứa
+          </Btn>
+        )}
+        {visibleFolders.map((f) => (
+          <button
+            key={f.id}
+            onClick={() => setFolder(String(f.id))}
+            title={folderPath(data.folders, f)}
+            className="flex items-center gap-3 rounded-2xl border border-(--line) bg-(--surface) px-4 py-3 font-semibold transition hover:-translate-y-0.5 hover:bg-(--solid)"
+          >
+            <Icon name="folder" />
+            <span>{f.name}</span>
+          </button>
+        ))}
+      </div>
       <SidebarTools>
         <div className="flash-nav">
           <Field
-            label="Tìm bộ thẻ"
+            label="Tìm folde hoặc bộ thẻ"
             value={query}
             onChange={setQuery}
             startContent={<Icon name="search" />}
@@ -175,11 +229,7 @@ function LibraryContent({ data, lang, reload }) {
             )}
           </div>
           <div className="flash-folder-list" aria-label="Folde flashcard">
-            {[
-              { id: "all", name: "My Flashcards", icon: "home" },
-              { id: "", name: "Chưa xếp folde", icon: "cards" },
-              ...data.folders,
-            ].map((f) => (
+            {[{ id: "all", name: "My Flashcards", icon: "home" }].map((f) => (
               <button
                 key={f.id}
                 title={f.name}
@@ -197,12 +247,23 @@ function LibraryContent({ data, lang, reload }) {
                 </small>
               </button>
             ))}
+            <FolderTree
+              folders={data.folders}
+              decks={data.decks}
+              lang={lang}
+              selected={folder}
+              onSelect={setFolder}
+            />
           </div>
         </div>
       </SidebarTools>
       {panel && (
         <PracticeModal
-          title={panel === "add" ? "Thêm mới" : "Tùy chọn thư viện"}
+          title={
+            panel === "add"
+              ? `Thêm vào ${selected?.name || "My Flashcards"}`
+              : "Tùy chọn thư viện"
+          }
           size="md"
           onClose={() => setPanel(null)}
         >
@@ -210,16 +271,14 @@ function LibraryContent({ data, lang, reload }) {
             <div className="flash-action-menu">
               <Btn
                 onClick={() => {
-                  setPanel(null);
-                  setEdit({ type: "deck" });
+                  createHere("deck");
                 }}
               >
                 <Icon name="cards" /> Bộ thẻ
               </Btn>
               <Btn
                 onClick={() => {
-                  setPanel(null);
-                  setEdit({ type: "folder" });
+                  createHere("folder");
                 }}
               >
                 <Icon name="folder" /> Folde
@@ -240,7 +299,7 @@ function LibraryContent({ data, lang, reload }) {
                       setEdit({ type: "folder", item: selected });
                     }}
                   >
-                    <Icon name="edit" /> Đổi tên folde
+                    <Icon name="edit" /> Chỉnh sửa folde
                   </Btn>
                   <Btn
                     onClick={() => {
@@ -292,22 +351,29 @@ function LibraryContent({ data, lang, reload }) {
           </Link>
         ))}
       </div>
-      {!decks.length && (
+      {!decks.length && !visibleFolders.length && (
         <div className="flash-empty">
           <Icon name={query ? "search" : "cards"} size={36} />
-          <p>{query ? "Không tìm thấy bộ thẻ." : "Chưa có bộ thẻ."}</p>
-          <Btn icon="plus" primary onClick={() => setEdit({ type: "deck" })}>
-            Tạo bộ thẻ
+          <p>
+            {query
+              ? "Không tìm thấy nội dung."
+              : folder === "all"
+                ? "Chưa có folde."
+                : "Folde đang trống."}
+          </p>
+          <Btn icon="plus" primary onClick={() => setPanel("add")}>
+            Thêm mới
           </Btn>
         </div>
       )}
       {edit && (
         <Editor
+          key={`${edit.type}:${edit.item?.id ?? "new"}:${edit.location ?? ""}`}
           title={
             edit.type === "deck"
               ? "Tạo bộ thẻ"
               : edit.item
-                ? "Đổi tên folde"
+                ? "Chỉnh sửa folde"
                 : "Folde mới"
           }
           fields={
@@ -316,7 +382,13 @@ function LibraryContent({ data, lang, reload }) {
               : [{ name: "name", label: "Tên folde", isRequired: true }]
           }
           initial={
-            edit.item || { level: "A1", folder: folder === "all" ? "" : folder }
+            edit.item
+              ? { ...edit.item, parent: edit.item.parent_id ?? "" }
+              : {
+                  level: "A1",
+                  parent: edit.location ?? "",
+                  folder: edit.location ?? "",
+                }
           }
           onClose={() => setEdit(null)}
           onSave={async (v, s) => {
@@ -325,7 +397,15 @@ function LibraryContent({ data, lang, reload }) {
                 ? "decks/"
                 : `folders/${edit.item ? edit.item.id + "/" : ""}`,
               edit.item ? "PATCH" : "POST",
-              v,
+              edit.item
+                ? v
+                : {
+                    ...v,
+                    [edit.type === "folder" ? "parent" : "folder"]:
+                      v[edit.type === "folder" ? "parent" : "folder"] ??
+                      edit.location ??
+                      "",
+                  },
               s,
             );
             if (edit.type === "deck")
@@ -337,7 +417,27 @@ function LibraryContent({ data, lang, reload }) {
             ? (values, set) => (
                 <DeckOptions {...{ values, set, folders: data.folders }} />
               )
-            : null}
+            : (values, set) => (
+                <Select
+                  label="Trong folde"
+                  value={values.parent ?? ""}
+                  onChange={(parent) => set({ ...values, parent })}
+                >
+                  <option value="">My Flashcards</option>
+                  {data.folders
+                    .filter(
+                      (f) =>
+                        !folderAncestors(data.folders, f).some(
+                          (v) => v.id === edit.item?.id,
+                        ),
+                    )
+                    .map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {folderPath(data.folders, f)}
+                      </option>
+                    ))}
+                </Select>
+              )}
         </Editor>
       )}
       {remove && (

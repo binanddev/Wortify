@@ -1,0 +1,31 @@
+/* Translucent fill and independent edge highlights keep clear glass visible. */
+body {
+  @apply [font-weight:var(--text-weight,500)];
+}
+body
+  :is(
+    input,
+    textarea,
+    select,
+    .nav-link,
+    .tree-title,
+    .flash-folder-list button,
+    .field-label
+  ) {
+  @apply [font-weight:var(--text-weight,500)]!;
+}
+:is(.glass, .nav-face, .flip-face, .work-paper, .hub-tile) {
+  @apply [background-color:var(--surface)]! [background-image:linear-gradient(115deg,rgb(255_255_255/0.22),transparent_14%,transparent_86%,rgb(255_255_255/0.16))]!;
+  @apply [border:1px_solid_rgb(210_231_255/0.5)] [backdrop-filter:blur(22px)_saturate(160%)];
+  @apply [box-shadow:inset_2px_0_2px_rgb(255_255_255/0.48),inset_-2px_0_3px_rgb(167_209_249/0.32),inset_0_1px_0_rgb(255_255_255/0.65),0_12px_36px_rgb(20_45_80/0.12)]!;
+}
+@media (prefers-reduced-transparency: reduce) {
+  :is(.glass, .nav-face, .flip-face, .work-paper, .hub-tile) {
+    @apply backdrop-filter-none;
+  }
+}
+@media print {
+  :is(.glass, .nav-face, .flip-face, .work-paper, .hub-tile) {
+    @apply bg-white! bg-none! shadow-none! backdrop-filter-none;
+  }
+}

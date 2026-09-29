@@ -1,11 +1,15 @@
-/* One continuous glass sidebar; fixed controls sit above either rotating face. */
+/* Both complete faces rotate together, including their frame and header. */
 .nav-flip {
-  @apply w-[422px] [border:1px_solid_var(--line)];
+  @apply w-[var(--nav-width,422px)] [border:0] [background:transparent] [box-shadow:none];
+  @apply [touch-action:pan-y];
+}
+.nav-face {
+  @apply [border:1px_solid_var(--line)];
   @apply rounded-[24px] [background:var(--surface)] [backdrop-filter:blur(24px)_saturate(145%)] [box-shadow:inset_0_1px_0_#ffffff80,0_16px_40px_#21395814] [transition:transform_0.25s_ease];
   @apply [touch-action:pan-y];
 }
 .main-shell {
-  @apply ml-[450px] [transition:margin-left_0.25s_ease];
+  @apply ml-[calc(var(--nav-width,422px)+28px)];
 }
 .nav-static {
   @apply absolute inset-[0_0_auto] h-[76px] z-5 flex items-center gap-[10px] p-[14px_18px] [border-bottom:1px_solid_var(--line)];
@@ -166,4 +170,27 @@
 .folder-inline button {
   @apply h-[44px] [border:0] [background:var(--solid)];
   @apply rounded-[8px] cursor-pointer text-(--ink);
+}
+
+.nav-resize {
+  @apply absolute right-[-7px] top-4 bottom-4 z-10 w-3 cursor-col-resize touch-none rounded-full outline-none;
+  @apply hover:bg-(--accent)/20 focus-visible:bg-(--accent)/30;
+}
+.main-shell .studio-flash,
+.main-shell .practice-journey,
+.main-shell .flash-question,
+.main-shell .learn-stages,
+.main-shell .test-summary {
+  @apply mx-auto w-full max-w-[960px];
+}
+.flash-route-nav {
+  @apply min-w-0 shrink-0;
+}
+.flash-route-nav svg {
+  @apply shrink-0;
+}
+@media (max-width: 760px) {
+  .nav-resize {
+    @apply hidden;
+  }
 }

@@ -3,6 +3,8 @@ from django.conf import settings
 from django.db import models
 
 class Profile(models.Model):
+    background_image = models.FileField(upload_to="users/backgrounds/", blank=True)
+    background_updated_at = models.DateTimeField(null=True, blank=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=100, blank=True)
     bio = models.TextField(blank=True)
@@ -26,3 +28,14 @@ class ClassroomAssignment(models.Model):
     class Meta:
         constraints = [models.UniqueConstraint(fields=['classroom', 'node'], name='unique_classroom_assignment')]
 
+
+
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+from django.db import transaction
+
+@receiver(post_delete, sender=Profile)
+def delete_personal_background(sender, instance, **kwargs):
+    if instance.background_image:
+        storage, name = instance.background_image.storage, instance.background_image.name
+        transaction.on_commit(lambda: storage.delete(name))

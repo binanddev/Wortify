@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { endpoint, request, useResource } from "./core";
 import { useLearningSync, pendingLearning } from "./learning-sync";
 import { useAnswerClock } from "./use-answer-clock";
-import { Btn, Icon, Status, Field, SidebarTools } from "./ui";
+import { Btn, Icon, Status, Field, SidebarTools, FlipCard } from "./ui";
 import { PracticeModal } from "./practice-workspace";
 const labels = ["Chưa nhớ", "Khó", "Nhớ", "Dễ"];
 const icons = ["refresh", "history", "check", "spark"];
@@ -29,6 +29,7 @@ export default function SpacedReview({ lang, id, userId }) {
       )
       .map((e) => e.payload.card),
   );
+  const [flipped, setFlipped] = useState(false);
   const [revealed, setRevealed] = useState(false),
     [settings, setSettings] = useState(false),
     [stats, setStats] = useState(false),
@@ -44,6 +45,7 @@ export default function SpacedReview({ lang, id, userId }) {
   }, []);
   useEffect(() => {
     setRevealed(false);
+    setFlipped(false);
     duration.current = null;
   }, [card?.id]);
   return (
@@ -92,28 +94,20 @@ export default function SpacedReview({ lang, id, userId }) {
         <Status>Đang mở lịch ôn…</Status>
       ) : card ? (
         <>
-          <div
-            ref={timer.root}
-            className="grid min-h-72 place-content-center gap-6 rounded-3xl border border-(--line) bg-(--surface) p-8 text-center"
-          >
-            <h2 className="text-3xl font-bold">{card.front}</h2>
-            {revealed ? (
-              <>
-                <p className="text-2xl">{card.back}</p>
-                {card.example && <p>{card.example}</p>}
-              </>
-            ) : (
-              <Btn
-                icon="eye"
-                primary
-                onClick={() => {
+          <div ref={timer.root}>
+            <FlipCard
+              front={card.front}
+              back={card.back}
+              example={card.example}
+              flipped={flipped}
+              setFlipped={(value) => {
+                if (value && !revealed) {
                   duration.current = timer.read();
                   setRevealed(true);
-                }}
-              >
-                Hiện đáp án
-              </Btn>
-            )}
+                }
+                setFlipped(value);
+              }}
+            />
           </div>
           {revealed && (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -134,6 +128,8 @@ export default function SpacedReview({ lang, id, userId }) {
                       response_ms: duration.current,
                       goal: "comprehensive",
                     });
+                    setRevealed(false);
+                    setFlipped(false);
                     setReviewed((previous) => [...previous, card.id]);
                     sync.flush();
                   }}

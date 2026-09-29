@@ -7,6 +7,7 @@ from django.utils import timezone
 
 
 class Folder(models.Model):
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.SET_NULL, related_name="children")
     language = models.CharField(max_length=2, default='de', choices=[('de', 'Tiếng Đức'), ('en', 'Tiếng Anh')])
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField('Tên thư mục', max_length=100)

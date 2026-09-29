@@ -1,13 +1,6 @@
 import { useRef, useState } from "react";
-import { request, useResource, useAction } from "../../frontend-react/src/core";
-import {
-  Btn,
-  Glass,
-  Heading,
-  Loading,
-  Page,
-  Status,
-} from "../../frontend-react/src/ui";
+import { request, useResource, useAction } from "../core";
+import { Btn, Glass, Heading, Loading, Page, Status } from "../ui";
 
 export default function Appearance() {
   const resource = useResource("/api/manage/appearance/"),
@@ -23,12 +16,14 @@ export default function Appearance() {
       await request("/api/manage/appearance/", "POST", body, signal);
       setSelected(null);
       resource.reload();
+      window.dispatchEvent(new Event("appearance-updated"));
     });
 
   const remove = () =>
     action.run(async (signal) => {
       await request("/api/manage/appearance/", "DELETE", undefined, signal);
       resource.reload();
+      window.dispatchEvent(new Event("appearance-updated"));
     });
 
   return (
@@ -45,7 +40,11 @@ export default function Appearance() {
               <div className="appearance-heading">
                 <div>
                   <span className="eyebrow">ẢNH NỀN HIỆN TẠI</span>
-                  <h2>{data.background_image ? "Đang sử dụng ảnh nền chung" : "Đang dùng nền mặc định"}</h2>
+                  <h2>
+                    {data.background_image
+                      ? "Đang sử dụng ảnh nền chung"
+                      : "Đang dùng nền mặc định"}
+                  </h2>
                 </div>
                 <span className="appearance-status">
                   {data.background_image ? "Đã bật" : "Mặc định"}
@@ -68,15 +67,20 @@ export default function Appearance() {
                   accept="image/png,image/jpeg,image/webp"
                   onChange={(e) => setSelected(e.target.files?.[0] || null)}
                 />
-                <Btn onClick={() => input.current?.click()}>
-                  Chọn ảnh mới
-                </Btn>
+                <Btn onClick={() => input.current?.click()}>Chọn ảnh mới</Btn>
                 <span className="appearance-file">
-                  {selected ? selected.name : "PNG, JPG hoặc WebP · tối đa 8 MB"}
+                  {selected
+                    ? selected.name
+                    : "PNG, JPG hoặc WebP · tối đa 8 MB"}
                 </span>
               </div>
               <div className="toolbar">
-                <Btn primary isLoading={action.pending} isDisabled={!selected} onClick={upload}>
+                <Btn
+                  primary
+                  isLoading={action.pending}
+                  isDisabled={!selected}
+                  onClick={upload}
+                >
                   Lưu ảnh nền
                 </Btn>
                 {data.background_image && (
@@ -92,7 +96,9 @@ export default function Appearance() {
               <h2>Gợi ý hình ảnh</h2>
               <ul>
                 <li>Chọn ảnh ngang, ít chi tiết để chữ vẫn dễ đọc.</li>
-                <li>Ảnh được áp dụng chung cho tất cả tài khoản đã đăng nhập.</li>
+                <li>
+                  Ảnh được áp dụng chung cho tất cả tài khoản đã đăng nhập.
+                </li>
                 <li>Thay đổi có hiệu lực sau khi người dùng tải lại trang.</li>
               </ul>
             </Glass>

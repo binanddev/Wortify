@@ -9,7 +9,7 @@ Tài liệu kiến trúc hiện tại. Yêu cầu trực tiếp của người d
 - `practice.PracticeAttempt` lưu bài làm/kết quả server. `practice/schema.py` kiểm tra payload, `learning/grading.py` chấm lại khi lưu.
 - `cards`: Deck/Card/Folder, StudySettings, StudyProgress, StudySession; DeckLearningState lưu options/progress/stars; LearningEvent ghi batch idempotent bằng UUID.
 - `users.Profile` lưu preferences giao diện/âm thanh và timestamp theo từng trường. StudySettings lưu cài đặt học theo ngôn ngữ. Classroom/ClassroomAssignment giao PracticeNode cho thành viên, cho phép truy cập cây con được giao.
-- User và staff cùng quyền học/tạo nội dung cá nhân. Superuser có toàn bộ tính năng thường và quản trị người dùng. Staff không có quyền admin Django, quản trị tài khoản hoặc nền toàn hệ thống.
+- User, staff và superuser đều có tính năng học/tạo nội dung cá nhân. Staff quản lý tài khoản thường và dữ liệu của họ; không quản lý staff/superuser, không nâng quyền, không vào Django admin hoặc sửa nền hệ thống. Superuser có dashboard hệ thống và toàn bộ quản trị.
 - `content` chỉ còn SiteAppearance. Không còn Book, Chapter, Review, import sách hoặc API tương thích.
 
 ## Runtime và mã nguồn
@@ -21,7 +21,7 @@ Tài liệu kiến trúc hiện tại. Yêu cầu trực tiếp của người d
 - Sidebar trước điều hướng chính, sau công cụ theo trang. Header cố định có Brand, icon xoay và thu gọn/ghim. Sidebar liền khối352px, hỗ trợ vuốt ngang (ngưỡng65px, bỏ cử chỉ cuộn dọc) và hover mép trái khi thu gọn. navPinned lưu vào preferences server. `SidebarTools` portal vào mặt sau. Không có topbar, chữ quảng bá hoặc hướng dẫn thường trực. Practice Hub tự mở mặt cây: ＋ ở root/folder, folder tạo inline chỉ nhập tên, bài/theory nhận parent hiện tại. Di chuyển dùng hộp thoại riêng; cây hiển thị icon, nhánh và đường nối.
 - `practice-hub.jsx`: cây, CRUD, JSON, đọc lý thuyết; `exercise-authoring.jsx`: tạo câu; `practice-activity.jsx`: luyện và chấm tại máy; `exercise-interactions.jsx`: chín dạng tương tác.
 - `flashcard-studio.jsx` + `flashcard-engine.js`: Flashcards/Learn/Test cho bộ thẻ; chọn choice/truefalse chấm ngay, written dùng Enter/↵, matching chấm khi đủ. Test tự lưu khi mọi câu được trả lời. Phản hồi có vùng giữ sẵn, xanh/đỏ và ký hiệu đúng/sai. Gắn sao không reset thứ tự/index; `study.jsx`: ôn liên bộ bằng StudySession và luyện thêm. Luyện nói thu âm/nghe lại tại máy, không chấm phát âm tự động.
-- `learning.jsx`: Settings; `community.jsx`: hồ sơ/lớp. `frontend-admin/src/Admin.jsx`: chỉ quản trị người dùng; Appearance.jsx: nền hệ thống dành superuser.
+- `learning.jsx`: Settings; `community.jsx`: hồ sơ/lớp. `frontend-react/src/admin/`: Admin.jsx quản trị người dùng/dashboard hệ thống, UserData.jsx quản lý dữ liệu từng người dùng, Appearance.jsx nền hệ thống dành superuser.
 - `Soundscape.jsx`: Web Audio sinh âm nền/tương tác, không tải âm khi bấm. TTS phụ thuộc giọng trình duyệt.
 
 ## API
@@ -32,7 +32,7 @@ Tài liệu kiến trúc hiện tại. Yêu cầu trực tiếp của người d
 - `/api/{lang}/learning/sync/`: POST1–100 sự kiện practice/review/test/star/options/preferences/study_settings. Mỗi sự kiện transaction riêng, retry UUID không ghi trùng; một sự kiện lỗi không chặn các sự kiện khác.
 - `/api/{lang}/sessions/`, `sessions/{token}/finish/`: phiên ôn liên bộ; hoàn thành tự gửi đáp án cả phiên, server chấm/SRS idempotent.
 - `/api/{lang}/settings/`, `profile/`, `classes/`: cài đặt, lịch sử và lớp.
-- `/api/manage/users/`, `users/{id}/`: superuser tạo, sửa, đổi role/password, khóa, xóa, thu hồi phiên, audit. Chặn tự khóa/xóa/hạ quyền. Không ghi mật khẩu vào audit.
+- `/api/manage/users/`, `users/{id}/`: superuser quản trị tài khoản; staff chỉ quản lý tài khoản thường. Chặn tự khóa/xóa/hạ quyền. Không ghi mật khẩu vào audit. `users/{id}/data/` tổng hợp/xóa dữ liệu (xác nhận username), `data/{kind}/{id}/` CRUD theo whitelist và quyền sở hữu. `/api/manage/overview/` chỉ superuser, dashboard số lượng, DB/runtime/migrations/audit.
 - `/api/site/appearance/`: đọc nền; `/api/manage/appearance/`: superuser sửa.
 
 ## Hiệu suất và lưu dữ liệu

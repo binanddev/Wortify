@@ -1,3 +1,7 @@
+import { applyAppearance } from "./appearance-preferences";
+import { useBackendMonitor } from "./backend-monitor";
+import FlashcardNavigation from "./flashcard-navigation";
+import { NavResize, useNavWidth } from "./nav-resize";
 import { Explore } from "./explore";
 import { ExerciseStudio } from "./exercise-studio";
 import { legacyPracticeDestination } from "./practice-navigation";
@@ -11,7 +15,7 @@ import FlashcardStudio from "./flashcard-studio";
 import Soundscape from "./Soundscape";
 import { PracticeHub } from "./practice-hub";
 import { useEffect, useState, lazy, Suspense } from "react";
-const Admin = lazy(() => import("../../frontend-admin/src/Admin.jsx"));
+const Admin = lazy(() => import("./admin/Admin.jsx"));
 import {
   request,
   useAction,
@@ -30,17 +34,9 @@ export default function App() {
     [user, setUser] = useState(undefined),
     [appearance, setAppearance] = useState({ background_url: "" }),
     [error, setError] = useState("");
+  useBackendMonitor(user?.id);
   useEffect(() => {
-    const p = user?.preferences || {};
-    document.documentElement.dataset.background = p.background || "mist";
-    document.documentElement.style.setProperty(
-      "--glass-alpha",
-      String(1 - Math.min(85, Math.max(0, Number(p.transparency ?? 25))) / 100),
-    );
-    document.documentElement.style.setProperty(
-      "--ui-font",
-      `${Math.min(22, Math.max(16, Number(p.textSize) || 18))}px`,
-    );
+    applyAppearance(user?.preferences);
   }, [user]);
   useEffect(() => {
     const c = new AbortController();
@@ -57,14 +53,29 @@ export default function App() {
     };
   }, []);
   useEffect(() => {
-    if (!user) return undefined;
-    const c = new AbortController();
-    request("/api/site/appearance/", "GET", undefined, c.signal)
-      .then(setAppearance)
-      .catch((e) => {
-        if (e.name !== "AbortError") setAppearance({ background_url: "" });
-      });
-    return () => c.abort();
+    if (!user) {
+      setAppearance({ background_url: "" });
+      return;
+    }
+    const controller = new AbortController();
+    const load = async () => {
+      try {
+        const [shared, personal] = await Promise.all([
+          request("/api/site/appearance/", "GET", undefined, controller.signal),
+          request("/api/me/background/", "GET", undefined, controller.signal),
+        ]);
+        if (!controller.signal.aborted)
+          setAppearance(personal.background_url ? personal : shared);
+      } catch (error) {
+        if (error.name !== "AbortError") setAppearance({ background_url: "" });
+      }
+    };
+    load();
+    window.addEventListener("appearance-updated", load);
+    return () => {
+      controller.abort();
+      window.removeEventListener("appearance-updated", load);
+    };
   }, [user?.id]);
   useEffect(() => {
     document.documentElement.style.setProperty(
@@ -215,7 +226,9 @@ function Welcome({ user, setUser }) {
     <div className="welcome-page">
       <header>
         <Brand />
-        {user.superuser && <Link to="/manage">Quản trị người dùng ↗</Link>}
+        {(user.superuser || user.staff) && (
+          <Link to="/manage">Quản trị người dùng ↗</Link>
+        )}
         <Btn
           onClick={() =>
             action.run(async (s) => {
@@ -281,7 +294,10 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         sound: p?.sound === true,
         ambient: p?.ambient === true,
         volume: Math.min(1, Math.max(0, Number(p?.volume ?? 0.25))),
-        transparency: Math.min(85, Math.max(0, Number(p?.transparency ?? 25))),
+        transparency: Math.min(100, Math.max(0, Number(p?.transparency ?? 25))),
+        textWeight: Math.min(700, Math.max(400, Number(p.textWeight) || 500)),
+        textContrast: Math.min(100, Math.max(0, Number(p.textContrast ?? 80))),
+        textColor: /^#[0-9a-f]{6}$/i.test(p.textColor) ? p.textColor : "auto",
         textSize: Math.min(22, Math.max(16, Number(p?.textSize) || 18)),
         background: ["mist", "paper", "night"].includes(p?.background)
           ? p.background
@@ -289,6 +305,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       };
     }),
     [navBack, setNavBack] = useState(false);
+  const [navWidth, setNavWidth] = useNavWidth(user.id);
   const setPrefs = (v) => {
     setLocalPrefs(v);
     savePreference(prefKey, v);
@@ -302,19 +319,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
   };
   const action = useAction();
   useEffect(() => {
-    document.documentElement.dataset.background = prefs.background;
-    document.documentElement.style.setProperty(
-      "--glass-alpha",
-      String(1 - prefs.transparency / 100),
-    );
-    document.documentElement.style.setProperty(
-      "--ui-font",
-      `${prefs.textSize}px`,
-    );
-    document.documentElement.style.setProperty(
-      "--card-font",
-      `${prefs.font}px`,
-    );
+    applyAppearance(prefs);
   }, [prefs]);
   useEffect(() => {
     document.querySelector("#main-content")?.focus();
@@ -403,13 +408,14 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
   else if (section === "classes")
     content = <Community key={route} {...{ lang, section, id: parts[2] }} />;
   else if (section === "admin")
-    content = user.superuser ? (
-      <Suspense fallback={<p>Đang mở quản trị…</p>}>
-        <Admin user={user} />
-      </Suspense>
-    ) : (
-      <Status error="Chỉ superuser được quản trị người dùng." />
-    );
+    content =
+      user.superuser || user.staff ? (
+        <Suspense fallback={<p>Đang mở quản trị…</p>}>
+          <Admin user={user} />
+        </Suspense>
+      ) : (
+        <Status error="Bạn không có quyền quản trị." />
+      );
   else if (section === "settings")
     content = (
       <Settings
@@ -426,7 +432,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       </Page>
     );
   return (
-    <div className="app-shell">
+    <div className="app-shell" style={{ "--nav-width": `${navWidth}px` }}>
       <Soundscape
         interactions={prefs.sound}
         ambient={prefs.ambient}
@@ -436,8 +442,13 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         Đến nội dung chính
       </a>
       <div className="nav-flip">
+        <NavResize width={navWidth} setWidth={setNavWidth} />
         <div className={`nav-flip-inner ${navBack ? "is-flipped" : ""}`}>
-          <div className={`nav-face nav-front ${navBack ? "" : "is-active"}`}>
+          <div
+            inert={navBack}
+            aria-hidden={navBack}
+            className={`nav-face nav-front ${navBack ? "" : "is-active"}`}
+          >
             <NavStatic navBack={navBack} setNavBack={setNavBack} />
             <aside
               className="sidebar open"
@@ -487,9 +498,9 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                 ))}
               </nav>
               <div className="sidebar-bottom">
-                {user.superuser && (
+                {(user.superuser || user.staff) && (
                   <Link className="nav-link" to={`/${lang}/admin`}>
-                    Quản trị người dùng
+                    <Icon name="settings" /> Quản trị
                   </Link>
                 )}
                 <Link
@@ -528,7 +539,11 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
               </div>
             </aside>
           </div>
-          <div className={`nav-face nav-back ${navBack ? "is-active" : ""}`}>
+          <div
+            inert={!navBack}
+            aria-hidden={!navBack}
+            className={`nav-face nav-back ${navBack ? "is-active" : ""}`}
+          >
             <NavStatic navBack={navBack} setNavBack={setNavBack} />
             <aside
               className="workspace-context context-panel open"
@@ -537,6 +552,14 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
               aria-hidden={!navBack}
             >
               <h2>{contextItems.title}</h2>
+              {section === "flashcard" && (
+                <FlashcardNavigation
+                  key={`${user.id}:${lang}`}
+                  lang={lang}
+                  userId={user.id}
+                  route={route}
+                />
+              )}
               <div id="workspace-tools" />
             </aside>
           </div>

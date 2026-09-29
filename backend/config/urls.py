@@ -1,4 +1,4 @@
-from api import spaced_review
+from api import spaced_review, management_data, personal_appearance, monitoring
 from django.contrib import admin
 from django.urls import path,re_path
 from django.http import JsonResponse
@@ -6,7 +6,7 @@ from api import views,sessions,community,management,practice_hub,learning_sync,p
 from api.common import legacy_json,namespace
 from users.views import session
 from api import card_learning as cards
-# The low-level admin is also superuser-only; staff is currently a normal learner.
+# Django admin remains superuser-only; staff uses the scoped React management tools.
 admin.site.has_permission=lambda request: request.user.is_active and request.user.is_superuser
 def health(request):
     import hashlib
@@ -14,6 +14,15 @@ def health(request):
     identity=hashlib.sha256(str(settings.BASE_DIR.parent).lower().encode()).hexdigest()[:16]
     return JsonResponse({'app':'Wortify','workspace':identity})
 urlpatterns=[path('api/health/',health),path('api/session/',session),path('admin/',admin.site.urls),
+ path('api/health/check/',monitoring.probe),
+ path('api/monitor/',monitoring.report),
+ path('api/manage/monitor/',monitoring.logs),
+ path('api/me/background/',personal_appearance.background),
+ path('api/me/background/image/',personal_appearance.image),
+ path('api/manage/overview/',management_data.overview),
+ path('api/manage/users/<int:pk>/data/',management_data.user_data),
+ path('api/manage/users/<int:pk>/data/<str:kind>/',management_data.records),
+ path('api/manage/users/<int:pk>/data/<str:kind>/<str:item_id>/',management_data.records),
  path('api/manage/users/',management.users),path('api/manage/users/<int:pk>/',management.user_detail),
  path('api/manage/appearance/',management.site_appearance),path('api/site/appearance/',management.public_appearance),path('api/site/appearance/image/',management.site_appearance_image)]
 def route(pattern,view):urlpatterns.append(path('api/<str:language>/'+pattern,namespace(view)))

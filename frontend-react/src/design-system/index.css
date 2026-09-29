@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @plugin "../hero.js";
 @source "../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
-@source "../../../frontend-admin/src";
 @custom-variant dark (&:is(.dark *));
 @theme {
   --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -31,3 +30,5 @@
 @import "./context-panel.css";
 
 @import "./flashcard-workspace.css";
+
+@import "./personal-appearance.css";

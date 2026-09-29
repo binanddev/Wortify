@@ -532,9 +532,9 @@ class SyncAndRolesTests(TestCase):
             result=grade_payload(payload,answers);self.assertEqual(result['score'],result['total']);count+=1
         self.assertEqual(count,9)
 
-    def test_staff_has_no_admin_privileges_but_can_author(self):
+    def test_staff_manages_users_but_not_site_and_can_author(self):
         self.client.force_login(self.staff)
-        self.assertEqual(self.client.get('/api/manage/users/').status_code,403)
+        self.assertEqual(self.client.get('/api/manage/users/').status_code,200)
         self.assertEqual(self.client.get('/api/manage/appearance/').status_code,403)
         self.assertEqual(self.client.post('/api/en/practice-hub/nodes/',json.dumps({'kind':'folder','title':'My folder'}),content_type='application/json').status_code,201)
         self.assertEqual(self.client.get('/api/manage/books/').status_code,404)
@@ -935,3 +935,262 @@ class SpacedReviewTests(TestCase):
             result=self.sync(self.event(**patch))
             self.assertEqual(len(result['errors']),1)
             self.assertFalse(StudyProgress.objects.filter(card=self.card).exists())
+
+
+class FlashcardFolderTreeTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user('folder-tree')
+        self.other = get_user_model().objects.create_user('folder-other')
+        self.client.force_login(self.user)
+        self.root = Folder.objects.create(owner=self.user, language='de', name='Root')
+
+    def write(self, data, pk=None):
+        path = f'/api/de/folders/{str(pk) + "/" if pk else ""}'
+        return getattr(self.client, 'patch' if pk else 'post')(path, data=json.dumps(data), content_type='application/json')
+
+    def test_nested_create_rename_move_and_serialization(self):
+        result = self.write({'name': 'Child', 'parent': self.root.pk})
+        self.assertEqual(result.status_code, 200)
+        child = Folder.objects.get(pk=result.json()['id'])
+        self.assertEqual(child.parent_id, self.root.pk)
+        self.assertEqual(self.write({'name': 'Renamed'}, child.pk).status_code, 200)
+        child.refresh_from_db()
+        self.assertEqual(child.parent_id, self.root.pk)
+        rows = self.client.get('/api/de/decks/').json()['folders']
+        self.assertEqual(next(f for f in rows if f['id'] == child.pk)['parent_id'], self.root.pk)
+        self.assertEqual(self.write({'parent': None}, child.pk).status_code, 200)
+        child.refresh_from_db()
+        self.assertIsNone(child.parent_id)
+
+    def test_reject_cycles_foreign_owner_and_language(self):
+        child = Folder.objects.create(owner=self.user, language='de', name='Child', parent=self.root)
+        stranger = Folder.objects.create(owner=self.other, language='de', name='Other')
+        english = Folder.objects.create(owner=self.user, language='en', name='English')
+        for parent in [self.root, child, stranger, english]:
+            self.assertEqual(self.write({'parent': parent.pk}, self.root.pk).status_code, 400)
+        self.root.refresh_from_db()
+        self.assertIsNone(self.root.parent_id)
+
+    def test_depth_checks_whole_subtree(self):
+        parent = self.root
+        for level in range(2, 11):
+            result = self.write({'name': f'Level {level}', 'parent': parent.pk})
+            self.assertEqual(result.status_code, 200)
+            parent = Folder.objects.get(pk=result.json()['id'])
+        self.assertEqual(self.write({'name': 'Too deep', 'parent': parent.pk}).status_code, 400)
+        branch = Folder.objects.create(owner=self.user, language='de', name='Branch')
+        Folder.objects.create(owner=self.user, language='de', name='Leaf', parent=branch)
+        self.assertEqual(self.write({'parent': parent.parent_id}, branch.pk).status_code, 400)
+
+    def test_delete_preserves_children_and_decks(self):
+        child = Folder.objects.create(owner=self.user, language='de', name='Child', parent=self.root)
+        deck = Deck.objects.create(owner=self.user, language='de', title='Keep', folder=self.root)
+        nested = Deck.objects.create(owner=self.user, language='de', title='Nested', folder=child)
+        self.assertEqual(self.client.delete(f'/api/de/folders/{self.root.pk}/').status_code, 200)
+        child.refresh_from_db(); deck.refresh_from_db(); nested.refresh_from_db()
+        self.assertIsNone(child.parent_id)
+        self.assertIsNone(deck.folder_id)
+        self.assertEqual(nested.folder_id, child.pk)
+
+
+class ManagementAccessTests(TestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.root = User.objects.create_superuser('manage-root', password='Original!47380')
+        self.staff = User.objects.create_user('manage-staff', is_staff=True)
+        self.user = User.objects.create_user('manage-user', password='Original!47380')
+        self.other = User.objects.create_user('manage-other')
+        self.deck = Deck.objects.create(owner=self.user, language='en', title='Owned')
+        self.card = Card.objects.create(deck=self.deck, german_text='word', vietnamese_meaning='meaning')
+        self.foreign = Deck.objects.create(owner=self.root, language='en', title='Protected')
+        self.client.force_login(self.staff)
+        self.base = f'/api/manage/users/{self.user.pk}/'
+
+    def write(self, path, data, method='patch'):
+        return getattr(self.client, method)(path, json.dumps(data), content_type='application/json')
+
+    def test_regular_users_cannot_manage_and_staff_cannot_target_privileged_users(self):
+        ids = {u['id'] for u in self.client.get('/api/manage/users/').json()['users']}
+        self.assertNotIn(self.root.pk, ids); self.assertNotIn(self.staff.pk, ids)
+        for target in (self.root, self.staff):
+            path = f'/api/manage/users/{target.pk}/'
+            for suffix in ('', 'data/', 'data/decks/'):
+                self.assertEqual(self.client.get(path + suffix).status_code, 404)
+            self.assertEqual(self.write(path, {'password': 'Changed!384940'}).status_code, 404)
+            self.assertEqual(self.client.delete(path).status_code, 404)
+            self.assertEqual(self.write(path+'data/', {'confirm': target.username}, 'delete').status_code, 404)
+        self.root.refresh_from_db();self.assertTrue(self.root.check_password('Original!47380'))
+        self.assertEqual(self.client.get('/api/manage/overview/').status_code, 403)
+        self.assertEqual(self.client.get('/api/manage/appearance/').status_code, 403)
+        self.client.force_login(self.user)
+        self.assertEqual(self.client.get('/api/manage/users/').status_code, 403)
+        self.assertEqual(self.client.get(self.base+'data/').status_code, 403)
+
+    def test_staff_can_edit_regular_user_but_cannot_escalate(self):
+        self.assertEqual(self.write(self.base, {'email':'new@example.com','password':'Revised!384940'}).status_code, 200)
+        self.user.refresh_from_db();self.assertTrue(self.user.check_password('Revised!384940'))
+        for data in ({'role':'superuser'},{'role':'staff'},{'is_superuser':True},{'groups':[1]},{'user_permissions':[1]}):
+            self.assertEqual(self.write(self.base, data).status_code, 403)
+        self.user.refresh_from_db();self.assertFalse(self.user.is_staff)
+        self.assertEqual(self.write('/api/manage/users/', {'username':'new-root','password':'Secure!484940','role':'superuser'}, 'post').status_code, 403)
+        self.assertFalse(get_user_model().objects.filter(username='new-root').exists())
+        self.assertEqual(self.write('/api/manage/users/', {'username':'new-regular','password':'Secure!484940','role':'user'}, 'post').status_code, 201)
+
+    def test_data_crud_ownership_and_content_validation(self):
+        url = self.base+'data/decks/'
+        self.assertEqual(self.client.get(url).json()['total'], 1)
+        self.assertEqual(self.write(url+f'{self.deck.pk}/', {'title':'Edited'}).status_code, 200)
+        self.deck.refresh_from_db();self.assertEqual(self.deck.title,'Edited')
+        self.assertEqual(self.write(url+f'{self.deck.pk}/', {'owner':self.root.pk}).status_code, 400)
+        self.assertEqual(self.write(url+f'{self.foreign.pk}/', {'title':'No'}).status_code, 404)
+        cards = self.base+'data/cards/'
+        self.assertEqual(self.write(cards+f'{self.card.pk}/', {'deck':self.foreign.pk}).status_code, 400)
+        self.assertEqual(self.write(cards, {'deck':self.deck.pk,'german_text':'new','vietnamese_meaning':'mới'}, 'post').status_code, 201)
+        self.assertEqual(self.write(self.base+'data/folders/', {'name':'Parent','language':'en'}, 'post').status_code, 201)
+        self.assertEqual(self.write(self.base+'data/practice/', {'title':'Invalid','kind':'exercise','language':'en'}, 'post').status_code, 400)
+        self.assertEqual(self.client.get(self.base+'data/auth/').status_code, 404)
+        self.assertEqual(self.client.delete(cards+f'{self.card.pk}/').status_code, 200)
+        self.assertTrue(Deck.objects.filter(pk=self.foreign.pk).exists())
+
+    def test_practice_edit_changes_revision_and_rejects_cycles(self):
+        root = PracticeNode.objects.create(owner=self.user,language='en',kind='folder',title='Parent')
+        child = PracticeNode.objects.create(owner=self.user,language='en',kind='theory',parent=root,title='Theory',payload={'format':'markdown','content':'Old'})
+        before = child.updated_at
+        url = self.base+f'data/practice/{child.pk}/'
+        self.assertEqual(self.write(url, {'payload':{'format':'markdown','content':'New'}}).status_code, 200)
+        child.refresh_from_db();self.assertGreater(child.updated_at,before)
+        self.assertEqual(self.write(self.base+f'data/practice/{root.pk}/',{'parent':root.pk}).status_code, 400)
+        self.assertEqual(self.write(url, {'language':'de'}).status_code, 400)
+
+    def test_purge_keeps_account_and_other_users_and_audits(self):
+        from django.contrib.admin.models import LogEntry
+        Profile.objects.create(user=self.user,bio='Remove')
+        StudyProgress.objects.create(user=self.user,card=self.card)
+        folder = PracticeNode.objects.create(owner=self.user,language='de',kind='folder',title='Delete')
+        classroom = Classroom.objects.create(owner=self.other,language='de',title='Keep')
+        classroom.members.add(self.user)
+        ClassroomAssignment.objects.create(classroom=classroom,node=folder,assigned_by=self.user)
+        self.assertEqual(self.write(self.base+'data/',{'confirm':'wrong'},'delete').status_code,400)
+        self.assertTrue(Deck.objects.filter(pk=self.deck.pk).exists())
+        self.assertEqual(self.write(self.base+'data/',{'confirm':self.user.username},'delete').status_code,200)
+        self.user.refresh_from_db();self.assertTrue(self.user.check_password('Original!47380'))
+        self.assertFalse(Deck.objects.filter(owner=self.user).exists())
+        self.assertFalse(Profile.objects.filter(user=self.user).exists())
+        self.assertFalse(StudyProgress.objects.filter(user=self.user).exists())
+        self.assertFalse(PracticeNode.objects.filter(owner=self.user).exists())
+        self.assertFalse(classroom.members.filter(pk=self.user.pk).exists())
+        self.assertTrue(Deck.objects.filter(pk=self.foreign.pk).exists())
+        self.assertTrue(Classroom.objects.filter(pk=classroom.pk).exists())
+        self.assertTrue(LogEntry.objects.filter(user=self.staff,object_id=str(self.user.pk)).exists())
+
+    def test_superuser_dashboard_and_learner_features_remain(self):
+        self.client.force_login(self.root)
+        result = self.client.get('/api/manage/overview/')
+        self.assertEqual(result.status_code,200)
+        self.assertEqual(result.json()['users']['total'],4)
+        self.assertTrue(result.json()['system']['database_ok'])
+        self.assertEqual(self.client.get('/api/en/decks/').status_code,200)
+        self.assertEqual(self.client.get('/api/de/practice-hub/nodes/').status_code,200)
+
+
+    def test_catalogs_and_classes_members_are_scoped(self):
+        summary = self.client.get(self.base+'data/').json()
+        for entry in summary['collections']:
+            result = self.client.get(self.base+f"data/{entry['key']}/")
+            self.assertEqual(result.status_code,200,entry['key'])
+        room = Classroom.objects.create(owner=self.user,language='de',title='Room')
+        url = self.base+f'data/classes/{room.pk}/'
+        self.assertEqual(self.write(url,{'members':[self.other.pk]}).status_code,200)
+        self.assertEqual(self.write(url,{'members':[self.root.pk]}).status_code,400)
+        self.assertEqual(list(room.members.values_list('pk',flat=True)),[self.other.pk])
+        public = PracticeNode.objects.create(owner=self.root,language='en',kind='folder',title='Public',visibility='public')
+        progress = PracticeProgress.objects.create(user=self.user,node=public,revision='v1')
+        self.assertEqual(self.write(self.base+f'data/practice-progress/{progress.pk}/',{'completed':['1']}).status_code,200)
+
+
+    def test_create_learning_record_with_empty_defaults_and_nullable_fields(self):
+        result = self.write(self.base+'data/attempts/', {'card':self.card.pk,'mode':'written'}, 'post')
+        self.assertEqual(result.status_code,201,result.content)
+        attempt = StudyAttempt.objects.get(pk=result.json()['id'])
+        self.assertEqual(attempt.user,self.user)
+        self.assertEqual(attempt.question,{})
+        self.assertIsNone(attempt.completed_at)
+
+
+class PersonalAppearanceAndMonitoringTests(TestCase):
+    def setUp(self):
+        import tempfile
+        from django.test import override_settings
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        override = override_settings(MEDIA_ROOT=self.temp.name)
+        override.enable(); self.addCleanup(override.disable)
+        self.user = get_user_model().objects.create_user('appearance-user')
+        self.other = get_user_model().objects.create_user('appearance-other')
+        self.staff = get_user_model().objects.create_user('appearance-staff', is_staff=True)
+        self.root = get_user_model().objects.create_superuser('appearance-root', password='Testing!673802')
+        self.client.force_login(self.user)
+
+    def test_background_private_upload_replace_delete(self):
+        result = self.client.post('/api/me/background/', {'image': PracticeMediaTests.image(self)})
+        self.assertEqual(result.status_code, 200, result.content)
+        url = result.json()['background_url']
+        self.assertTrue(url)
+        profile = Profile.objects.get(user=self.user)
+        old = profile.background_image.path
+        response = self.client.get(url)
+        self.assertEqual(response.status_code,200)
+        self.assertTrue(b''.join(response.streaming_content).startswith(b'\x89PNG'))
+        response.close()
+        self.client.force_login(self.other)
+        self.assertEqual(self.client.get('/api/me/background/').json()['background_url'],'')
+        self.assertEqual(self.client.get(url).status_code,404)
+        self.client.force_login(self.user)
+        with self.captureOnCommitCallbacks(execute=True):
+            self.assertEqual(self.client.post('/api/me/background/',{'image':PracticeMediaTests.image(self)}).status_code,200)
+        self.assertFalse(Path(old).exists())
+        with self.captureOnCommitCallbacks(execute=True):
+            self.assertEqual(self.client.delete('/api/me/background/').status_code,200)
+        self.assertEqual(self.client.get(url).status_code,404)
+
+    def test_bad_images_and_preference_limits(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from users.preferences import validate_preferences
+        for name, content in [('image.png',b'<html>bad</html>'),('image.svg',b'<svg/>'),('big.jpg',b'x'*(8*1024*1024+1))]:
+            self.assertEqual(self.client.post('/api/me/background/',{'image':SimpleUploadedFile(name,content)}).status_code,400)
+        values={'transparency':100,'textWeight':700,'textContrast':100,'textColor':'#192838'}
+        self.assertEqual(validate_preferences(values),values)
+        for values in ({'transparency':101},{'textWeight':900},{'textContrast':-1},{'textColor':'url(example)'},{'textWeight':True}):
+            with self.assertRaises(ValueError):validate_preferences(values)
+
+    def test_monitor_probe_reporting_idempotency_and_access(self):
+        from content.models import BackendCheck
+        self.assertEqual(Client().get('/api/health/check/').json(),{'ok':True})
+        check={'token':str(uuid.uuid4()),'at':timezone.now().isoformat(),'ok':False,'latency_ms':15000,'error':'timeout'}
+        send=lambda: self.client.post('/api/monitor/',json.dumps({'checks':[check]}),content_type='application/json')
+        self.assertEqual(send().status_code,200)
+        self.assertEqual(send().status_code,200)
+        self.assertEqual(BackendCheck.objects.count(),1)
+        self.assertEqual(BackendCheck.objects.get().user,self.user)
+        self.assertEqual(self.client.get('/api/manage/monitor/').status_code,403)
+        self.client.force_login(self.staff)
+        self.assertEqual(self.client.get('/api/manage/monitor/').status_code,403)
+        self.client.force_login(self.root)
+        result=self.client.get('/api/manage/monitor/?failures=1').json()
+        self.assertEqual(result['total'],1)
+        self.assertEqual(result['logs'][0]['error'],'timeout')
+        self.assertEqual(result['logs'][0]['user'],self.user.username)
+
+    def test_monitor_validation_retention_and_database_failure(self):
+        from content.models import BackendCheck
+        from django.db import DatabaseError
+        old=BackendCheck.objects.create(token=uuid.uuid4(),user=self.user,checked_at=timezone.now()-timedelta(days=31),ok=True,latency_ms=1)
+        good={'token':str(uuid.uuid4()),'at':timezone.now().isoformat(),'ok':True,'latency_ms':3,'error':''}
+        for changes in ({'ok':'yes'},{'error':'secret dump'},{'latency_ms':-1},{'at':'invalid'}):
+            self.assertEqual(self.client.post('/api/monitor/',json.dumps({'checks':[{**good,**changes}]}),content_type='application/json').status_code,400)
+        self.assertEqual(self.client.post('/api/monitor/',json.dumps({'checks':[good]}),content_type='application/json').status_code,200)
+        self.assertFalse(BackendCheck.objects.filter(pk=old.pk).exists())
+        with patch('api.monitoring.connection.cursor',side_effect=DatabaseError('internal path')):
+            result=Client().get('/api/health/check/')
+        self.assertEqual(result.status_code,503)
+        self.assertEqual(result.json(),{'ok':False})

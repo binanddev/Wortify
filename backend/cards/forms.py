@@ -6,7 +6,38 @@ from .models import Deck, Card, StudySettings, Folder
 class FolderForm(forms.ModelForm):
     class Meta:
         model = Folder
-        fields = ['name', 'theory_format', 'theory_content']
+        fields = ['name', 'parent', 'theory_format', 'theory_content']
+
+    def __init__(self, *args, user, language, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['parent'].queryset = Folder.objects.filter(owner=user, language=language)
+
+    def clean_parent(self):
+        parent = self.cleaned_data.get('parent')
+        seen = {self.instance.pk} if self.instance.pk else set()
+        cursor = parent
+        depth = 1
+        while cursor:
+            if cursor.pk in seen:
+                raise forms.ValidationError('Không thể chuyển folde vào chính nó hoặc folde bên trong nó.')
+            seen.add(cursor.pk)
+            cursor = cursor.parent
+            depth += 1
+        children = {}
+        for pk, parent_id in self.fields['parent'].queryset.values_list('pk', 'parent_id'):
+            children.setdefault(parent_id, []).append(pk)
+        frontier = [self.instance.pk] if self.instance.pk else []
+        height = 0
+        visited = set()
+        while frontier:
+            height += 1
+            if visited.intersection(frontier):
+                raise forms.ValidationError('Cấu trúc folde không hợp lệ.')
+            visited.update(frontier)
+            frontier = [child for pk in frontier for child in children.get(pk, [])]
+        if depth + max(0, height - 1) > 10:
+            raise forms.ValidationError('Folde hỗ trợ tối đa 10 cấp.')
+        return parent
 
 
 class DeckForm(forms.ModelForm):

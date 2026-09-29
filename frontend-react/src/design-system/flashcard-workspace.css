@@ -29,11 +29,11 @@
 .flash-folder-list {
   @apply flex flex-col gap-1 min-w-0;
 }
-.flash-folder-list > button:not(.btn) {
-  @apply flex items-center gap-3 min-h-11 px-3 py-2 rounded-xl text-left text-base font-semibold text-(--ink) transition-colors;
+.flash-folder-list button:not(.btn):not(.flash-tree-toggle) {
+  @apply flex w-full items-center gap-3 min-h-11 px-3 py-2 rounded-xl text-left text-base font-semibold text-(--ink) transition-colors;
 }
-.flash-folder-list > button:hover,
-.flash-folder-list > button[aria-current="page"] {
+.flash-folder-list button:hover,
+.flash-folder-list button[aria-current="page"] {
   @apply bg-(--surface);
 }
 .flash-folder-list svg {
@@ -109,4 +109,31 @@
 
 .flash-empty {
   @apply flex flex-col items-center justify-center gap-4 py-16 text-(--muted);
+}
+
+.main-shell .page {
+  @apply max-w-[1280px] mx-auto;
+}
+.main-shell
+  .page:has(.studio-flash, .flash-question, .practice-journey, .flip-stage) {
+  @apply max-w-[1040px];
+}
+.main-shell
+  .page:has(.studio-flash, .flash-question, .practice-journey, .flip-stage)
+  > .heading {
+  @apply justify-center text-center;
+}
+.context-panel #workspace-tools {
+  @apply max-w-none;
+}
+
+.flash-folder-list .flash-tree-toggle {
+  @apply grid h-7 w-6 shrink-0 place-items-center rounded-md text-(--muted) hover:bg-(--surface);
+}
+.flash-tree-toggle svg {
+  @apply transition-transform;
+}
+
+.flash-tree-toggle[aria-expanded="true"] svg {
+  @apply rotate-90;
 }

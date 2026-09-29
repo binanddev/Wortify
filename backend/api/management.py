@@ -21,7 +21,7 @@ def management(permission):
         @endpoint
         @wraps(view)
         def wrapped(request,*args,**kwargs):
-            if not request.user.is_active or not request.user.is_superuser:
+            if not request.user.is_active or not (request.user.is_superuser or (request.user.is_staff and permission.startswith('auth.'))):
                 return JsonResponse({'error':'Bạn không có quyền quản trị mục này.'},status=403)
             return view(request,*args,**kwargs)
         return wrapped
@@ -86,25 +86,27 @@ def audit(request,obj,message,created=False):
 def users(request):
     User=get_user_model()
     if request.method=='POST':
-        if not request.user.has_perm('auth.add_user'):return JsonResponse({'error':'Không có quyền tạo tài khoản.'},status=403)
+        if not (request.user.is_staff or request.user.is_superuser):return JsonResponse({'error':'Không có quyền tạo tài khoản.'},status=403)
         data=body(request);username=data.get('username','')
         if not isinstance(username,str) or not username.strip():raise ValueError('Nhập tên tài khoản.')
         user=User(username=username,email=data.get('email',''));user.full_clean(exclude=['password']);validate_password(data.get('password',''),user)
         role=data.get('role','user')
         if role not in ('user','staff','superuser'):raise ValueError('Vai trò không hợp lệ.')
+        if not request.user.is_superuser and role != 'user':return JsonResponse({'error':'Staff chỉ được tạo tài khoản thường.'},status=403)
         user.is_staff=role in ('staff','superuser');user.is_superuser=role=='superuser'
         user.set_password(data['password']);user.save();audit(request,user,'Tạo tài khoản từ quản trị.',True)
         return JsonResponse({'id':user.pk},status=201)
     q=request.GET.get('q','')[:100];qs=User.objects.filter(Q(username__icontains=q)|Q(email__icontains=q)).order_by('username')
+    if not request.user.is_superuser:qs=qs.filter(is_staff=False,is_superuser=False)
     page=max(1,int(request.GET.get('page',1)));total=qs.count()
-    return JsonResponse({'users':list(qs[(page-1)*50:page*50].values('id','username','email','is_active','is_staff','is_superuser','last_login','date_joined')),'total':total,'page':page,'can_add':request.user.has_perm('auth.add_user'),'can_edit':request.user.has_perm('auth.change_user'),'superuser':request.user.is_superuser})
+    return JsonResponse({'users':list(qs[(page-1)*50:page*50].values('id','username','email','is_active','is_staff','is_superuser','last_login','date_joined')),'total':total,'page':page,'can_add':True,'can_edit':True,'superuser':request.user.is_superuser})
 
 @management('auth.change_user')
 @require_http_methods(['GET','PATCH','DELETE'])
 @transaction.atomic
 def user_detail(request,pk):
     User=get_user_model()
-    user=get_object_or_404(User.objects.select_for_update(),pk=pk)
+    user=managed_user(request, pk, lock=True)
     if request.method=='GET':
         logs=LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(User),object_id=str(pk)).order_by('-action_time')[:30]
         return JsonResponse({'logs':[{'at':l.action_time.isoformat(),'message':l.change_message,'actor':l.user.username} for l in logs]})
@@ -120,6 +122,9 @@ def user_detail(request,pk):
         if key in data:
             if not isinstance(data[key],str):raise ValueError('Thông tin tài khoản không hợp lệ.')
             setattr(user,key,data[key])
+    if not request.user.is_superuser and (data.get('role', 'user') != 'user' or any(k in data for k in ('is_staff','is_superuser','groups','user_permissions'))):
+        return JsonResponse({'error':'Không có quyền thay đổi quyền quản trị.'},status=403)
+    was_active_superuser = user.is_superuser and user.is_active
     if 'role' in data:
         if data['role'] not in ('user','staff','superuser'):raise ValueError('Vai trò không hợp lệ.')
         if user.pk==request.user.pk and data['role']!='superuser':raise ValueError('Không tự gỡ quyền quản trị hiện tại.')
@@ -131,6 +136,8 @@ def user_detail(request,pk):
     if data.get('password'):
         if not isinstance(data['password'],str):raise ValueError('Mật khẩu không hợp lệ.')
         validate_password(data['password'],user);user.set_password(data['password'])
+    if was_active_superuser and not (user.is_superuser and user.is_active) and not User.objects.filter(is_superuser=True,is_active=True).exclude(pk=user.pk).exists():
+        raise ValueError('Cần giữ ít nhất một superuser hoạt động.')
     user.full_clean();user.save()
     if data.get('revoke_sessions') or not user.is_active:revoke_sessions(user)
     if user.pk==request.user.pk and data.get('password'):update_session_auth_hash(request,user)
@@ -142,3 +149,12 @@ def revoke_sessions(user):
     from django.utils import timezone
     for session in Session.objects.filter(expire_date__gt=timezone.now()):
         if session.get_decoded().get('_auth_user_id')==str(user.pk):session.delete()
+
+
+def managed_user(request, pk, lock=False):
+    qs = get_user_model().objects.all()
+    if lock:
+        qs = qs.select_for_update()
+    if not request.user.is_superuser:
+        qs = qs.filter(is_superuser=False, is_staff=False)
+    return get_object_or_404(qs, pk=pk)

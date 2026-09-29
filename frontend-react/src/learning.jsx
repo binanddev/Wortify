@@ -1,5 +1,6 @@
+import PersonalBackground from "./personal-background";
 import { useLearningSync, pendingLearning } from "./learning-sync";
-import Appearance from "../../frontend-admin/src/Appearance";
+import Appearance from "./admin/Appearance";
 import { useState } from "react";
 import { endpoint, request, useResource, useAction } from "./core";
 import {
@@ -49,12 +50,65 @@ function SettingsContent({ lang, prefs, setPrefs, data, superuser, userId }) {
       <div className="grid two">
         <Glass>
           <h2>Hiển thị & âm thanh</h2>
+          <PersonalBackground />
+          <div className="flex items-center gap-3">
+            <Field
+              label="Màu chữ"
+              type="color"
+              value={
+                prefs.textColor === "auto"
+                  ? prefs.background === "night"
+                    ? "#f0f5ff"
+                    : "#152740"
+                  : prefs.textColor
+              }
+              onChange={(textColor) => setPrefs({ ...prefs, textColor })}
+            />
+            <Btn
+              icon="undo"
+              onClick={() =>
+                setPrefs({
+                  ...prefs,
+                  textColor: "auto",
+                  textWeight: 500,
+                  textContrast: 80,
+                })
+              }
+            >
+              Khôi phục chữ mặc định
+            </Btn>
+          </div>
+          <label className="range-label">
+            Độ đậm chữ <strong>{prefs.textWeight}</strong>
+            <input
+              type="range"
+              min="400"
+              max="700"
+              step="50"
+              value={prefs.textWeight}
+              onChange={(e) =>
+                setPrefs({ ...prefs, textWeight: Number(e.target.value) })
+              }
+            />
+          </label>
+          <label className="range-label">
+            Độ tương phản chữ <strong>{prefs.textContrast}%</strong>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={prefs.textContrast}
+              onChange={(e) =>
+                setPrefs({ ...prefs, textContrast: Number(e.target.value) })
+              }
+            />
+          </label>
           <label className="range-label">
             Độ trong suốt của kính <strong>{prefs.transparency}%</strong>
             <input
               type="range"
               min="0"
-              max="85"
+              max="100"
               step="5"
               value={prefs.transparency}
               onChange={(e) =>

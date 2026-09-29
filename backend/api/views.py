@@ -41,7 +41,7 @@ def decks(request):
         counts = per_deck.get(row['id'], {})
         row.update(mastered=counts.get('mastered',0), due=counts.get('due',0))
     recent = StudySession.objects.filter(user=request.user,language=request.language,completed_at__isnull=True).order_by('-created_at').first()
-    return JsonResponse({'decks':rows, 'folders':list(Folder.objects.filter(owner=request.user,language=request.language).values('id','name')), 'due':progress.filter(due_at__lte=timezone.now()).count(), 'resume':str(recent.token) if recent else None})
+    return JsonResponse({'decks':rows, 'folders':list(Folder.objects.filter(owner=request.user,language=request.language).values('id','name','parent_id')), 'due':progress.filter(due_at__lte=timezone.now()).count(), 'resume':str(recent.token) if recent else None})
 
 @endpoint
 @require_http_methods(['GET', 'PATCH', 'DELETE'])
@@ -58,7 +58,7 @@ def deck(request, pk):
     from .learning_sync import state_payload
     state,_=DeckLearningState.objects.get_or_create(user=request.user,deck=item)
     preferences,_=StudySettings.objects.get_or_create(user=request.user,language=request.language)
-    return JsonResponse({'study_defaults':model_to_dict(preferences,exclude=['id','user','language']), 'learning':{**state_payload(state),'applied':[str(t) for t in LearningEvent.objects.filter(user=request.user,language=request.language,payload__deck=pk).order_by('-id').values_list('token',flat=True)[:100]]}, 'deck': model_to_dict(item, exclude=['owner']), 'cards': [model_to_dict(c) for c in item.cards.all()], 'folders': list(Folder.objects.filter(owner=request.user, language=request.language).values('id', 'name'))})
+    return JsonResponse({'study_defaults':model_to_dict(preferences,exclude=['id','user','language']), 'learning':{**state_payload(state),'applied':[str(t) for t in LearningEvent.objects.filter(user=request.user,language=request.language,payload__deck=pk).order_by('-id').values_list('token',flat=True)[:100]]}, 'deck': model_to_dict(item, exclude=['owner']), 'cards': [model_to_dict(c) for c in item.cards.all()], 'folders': list(Folder.objects.filter(owner=request.user, language=request.language).values('id', 'name', 'parent_id'))})
 
 @endpoint
 @require_http_methods(['POST', 'PATCH', 'DELETE'])
@@ -79,17 +79,21 @@ def card(request, deck_id, pk=None):
 
 @endpoint
 @require_http_methods(['POST', 'PATCH', 'DELETE'])
+@transaction.atomic
 def folder(request, pk=None):
+    # Serialize tree mutations for one owner to prevent concurrent cyclic moves.
+    from django.contrib.auth import get_user_model
+    get_user_model().objects.select_for_update().get(pk=request.user.pk)
     item = get_object_or_404(Folder, pk=pk, owner=request.user, language=request.language) if pk else None
     if request.method == 'DELETE':
         if not item:
             raise ValueError('Chưa chọn thư mục.')
         item.delete()
         return JsonResponse({'ok': True})
-    data = body(request)
+    data = {**(model_to_dict(item) if item else {}), **body(request)}
     if Folder.objects.filter(owner=request.user, language=request.language, name=data.get('name')).exclude(pk=pk).exists():
         raise ValueError('Thư mục đã tồn tại.')
-    item = form_save(FolderForm(data, instance=item), owner=request.user, language=request.language)
+    item = form_save(FolderForm(data, instance=item, user=request.user, language=request.language), owner=request.user, language=request.language)
     return JsonResponse({'id': item.pk})
 
 @endpoint
