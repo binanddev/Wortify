@@ -1,3 +1,4 @@
+import { SkipButton } from "./skip-controls";
 import { useEffect, useRef, useState } from "react";
 import { endpoint, request, useResource } from "./core";
 import { useLearningSync, pendingLearning } from "./learning-sync";
@@ -29,6 +30,7 @@ export default function SpacedReview({ lang, id, userId }) {
       )
       .map((e) => e.payload.card),
   );
+  const [skipped, setSkipped] = useState(false);
   const [flipped, setFlipped] = useState(false);
   const [revealed, setRevealed] = useState(false),
     [settings, setSettings] = useState(false),
@@ -44,10 +46,29 @@ export default function SpacedReview({ lang, id, userId }) {
     sync.flush().then(() => resource.reload());
   }, []);
   useEffect(() => {
+    setSkipped(false);
     setRevealed(false);
     setFlipped(false);
     duration.current = null;
   }, [card?.id]);
+  const rate = (index) => {
+    if (rated.current.has(card.id)) return;
+    rated.current.add(card.id);
+    setNextDue(card.choices[String(index + 1)]);
+    sync.enqueue("review", {
+      deck: Number(id),
+      card: card.id,
+      type: "flash",
+      correct: index !== 0,
+      rating: index + 1,
+      response_ms: duration.current,
+      goal: "comprehensive",
+    });
+    setRevealed(false);
+    setFlipped(false);
+    setReviewed((previous) => [...previous, card.id]);
+    sync.flush();
+  };
   return (
     <section className="mx-auto grid w-full max-w-3xl gap-5">
       <SidebarTools navOnly>
@@ -109,29 +130,30 @@ export default function SpacedReview({ lang, id, userId }) {
               }}
             />
           </div>
-          {revealed && (
+          <div className="flex justify-center">
+            {skipped ? (
+              <Btn icon="arrow" primary onClick={() => rate(0)}>
+                Tiếp tục
+              </Btn>
+            ) : (
+              <SkipButton
+                onClick={() => {
+                  duration.current ??= timer.read();
+                  setRevealed(true);
+                  setFlipped(true);
+                  setSkipped(true);
+                }}
+              />
+            )}
+          </div>
+          {revealed && !skipped && (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {labels.map((label, index) => (
                 <Btn
                   key={label}
                   className="btn flex h-auto flex-col gap-2 py-4"
                   onClick={() => {
-                    if (rated.current.has(card.id)) return;
-                    rated.current.add(card.id);
-                    setNextDue(card.choices[String(index + 1)]);
-                    sync.enqueue("review", {
-                      deck: Number(id),
-                      card: card.id,
-                      type: "flash",
-                      correct: index !== 0,
-                      rating: index + 1,
-                      response_ms: duration.current,
-                      goal: "comprehensive",
-                    });
-                    setRevealed(false);
-                    setFlipped(false);
-                    setReviewed((previous) => [...previous, card.id]);
-                    sync.flush();
+                    rate(index);
                   }}
                 >
                   <Icon name={icons[index]} />

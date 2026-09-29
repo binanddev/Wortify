@@ -1,0 +1,14 @@
+# Tested production dependency constraints; update deliberately and rerun checks.
+Django==5.2.17
+channels==4.3.2
+av==18.1.0
+fsrs==6.3.2
+gunicorn==23.0.0
+psycopg==3.3.6
+psycopg-binary==3.3.6
+whitenoise==6.12.0
+asgiref==3.12.1
+sqlparse==0.6.0
+typing_extensions==4.16.0
+tzdata==2026.4
+packaging==26.3

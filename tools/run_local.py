@@ -30,6 +30,9 @@ def check():
 
 def main():
     os.chdir(ROOT)
+    sys.path.insert(0, str(ROOT/'backend'))
+    from config.environment import load_environment
+    load_environment()
     state=check()
     if '--check' in sys.argv:return state
     if state==1:return 1

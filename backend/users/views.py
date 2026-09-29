@@ -1,3 +1,4 @@
+import uuid
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
@@ -27,10 +28,13 @@ def session(request):
         if user is None:
             return JsonResponse({'error': 'Tên đăng nhập hoặc mật khẩu không đúng.'}, status=400)
         login(request, user)
+        request.session["appearance_session"] = uuid.uuid4().hex
     user = request.user
     preferences={}
     if user.is_authenticated:
         from .models import Profile
         profile,_=Profile.objects.get_or_create(user=user)
         preferences=profile.preferences
-    return JsonResponse({'user': {'id': user.pk, 'username': user.username, 'staff': user.is_staff, 'superuser': user.is_superuser, 'preferences':preferences} if user.is_authenticated else None})
+        if not request.session.get("appearance_session"):
+            request.session["appearance_session"] = uuid.uuid4().hex
+    return JsonResponse({'user': {'id': user.pk, 'username': user.username, 'staff': user.is_staff, 'superuser': user.is_superuser, 'preferences':preferences, 'appearance_session':request.session.get('appearance_session')} if user.is_authenticated else None})

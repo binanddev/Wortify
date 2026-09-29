@@ -1,3 +1,6 @@
+import { PracticeRichText } from "./practice-rich-text";
+import { SkipButton, AnswerReveal } from "./skip-controls";
+import { exerciseSolution } from "./skip-learning";
 import { ExerciseMedia } from "./exercise-media";
 import { useEffect, useRef, useState } from "react";
 import { gradeExercise } from "./local-learning";
@@ -39,6 +42,8 @@ export function PracticeActivity({
     const next = questions.findIndex((q) => !done.includes(String(q.id)));
     return next < 0 ? questions.length : next;
   });
+  const [revealed, setRevealed] = useState(false);
+  const [skipped, setSkipped] = useState([]);
   const [answers, setAnswers] = useState({});
   const [feedback, setFeedback] = useState(null);
   const [composing, setComposing] = useState(false);
@@ -72,6 +77,7 @@ export function PracticeActivity({
   useEffect(() => {
     if (
       !question ||
+      revealed ||
       composing ||
       feedback?.correct ||
       !readyToCheck(question, answers)
@@ -94,25 +100,27 @@ export function PracticeActivity({
       typed ? 1400 : 250,
     );
     return () => clearTimeout(timer);
-  }, [answers, question, composing, feedback?.correct]);
+  }, [answers, question, composing, feedback?.correct, revealed]);
+  const advance = () => {
+    const next = replaying
+      ? index + 1
+      : questions.findIndex(
+          (q, i) => i > index && !completed.includes(String(q.id)),
+        );
+    setIndex(next < 0 ? questions.length : next);
+    setAnswers({});
+    setFeedback(null);
+    setRevealed(false);
+    checked.current = "";
+    if (next < 0 && !skipped.length && !revealed) sounds.applause();
+  };
   useEffect(() => {
-    if (!feedback?.correct) return;
-    const timer = setTimeout(() => {
-      const next = replaying
-        ? index + 1
-        : questions.findIndex(
-            (q, i) => i > index && !completed.includes(String(q.id)),
-          );
-      setIndex(next < 0 ? questions.length : next);
-      setAnswers({});
-      setFeedback(null);
-      checked.current = "";
-      if (index === questions.length - 1) sounds.applause();
-    }, 1000);
+    if (!feedback?.correct || revealed) return;
+    const timer = setTimeout(advance, 1000);
     return () => clearTimeout(timer);
-  }, [feedback?.correct, index]);
+  }, [feedback?.correct, index, revealed]);
   const update = (key, value) => {
-    if (feedback?.correct) return;
+    if (feedback?.correct || revealed) return;
     if (JSON.stringify(answers[key]) === JSON.stringify(value)) return;
     setAnswers((current) => ({ ...current, [key]: value }));
     setFeedback(null);
@@ -124,7 +132,7 @@ export function PracticeActivity({
     q: question,
     answers,
     onAnswer: update,
-    disabled: Boolean(feedback?.correct),
+    disabled: Boolean(feedback?.correct || revealed),
     uiStyle: style,
     rows: feedback?.rows || [],
   };
@@ -148,7 +156,9 @@ export function PracticeActivity({
       <div className="journey-topline">
         <span>
           {index >= questions.length
-            ? "Chặng học hoàn tất"
+            ? skipped.length
+              ? "Đã xem hết lượt"
+              : "Chặng học hoàn tất"
             : `Câu ${index + 1} / ${questions.length}`}
         </span>
         <progress
@@ -175,13 +185,20 @@ export function PracticeActivity({
           <span className="finish-mascot" aria-hidden="true">
             🌷
           </span>
-          <h2>Bạn đã làm được rồi!</h2>
+          <h2>
+            {skipped.length
+              ? "Mình đã xem hết lượt này"
+              : "Bạn đã làm được rồi!"}
+          </h2>
           <p>
-            Mỗi câu đã hoàn thành là một bước tiến nhỏ. Hẹn bạn ở bài tiếp theo
-            nhé.
+            {skipped.length
+              ? `${skipped.length} câu đã xem đáp án. Bạn có thể luyện lại để tự trả lời nhé.`
+              : "Mỗi câu đã hoàn thành là một bước tiến nhỏ. Hẹn bạn ở bài tiếp theo nhé."}
           </p>
           <Btn
             onClick={() => {
+              setSkipped([]);
+              setRevealed(false);
               setReplaying(true);
               setIndex(0);
               setAnswers({});
@@ -195,9 +212,15 @@ export function PracticeActivity({
       ) : (
         <>
           {e.instruction && (
-            <p className="exercise-instruction">{e.instruction}</p>
+            <p className="exercise-instruction">
+              <PracticeRichText>{e.instruction}</PracticeRichText>
+            </p>
           )}
-          {e.context && <aside className="reading-document">{e.context}</aside>}
+          {e.context && (
+            <aside className="reading-document">
+              <PracticeRichText>{e.context}</PracticeRichText>
+            </aside>
+          )}
           <section
             ref={paper}
             tabIndex={-1}
@@ -209,7 +232,11 @@ export function PracticeActivity({
             {!question.blanks?.length &&
               !["error_correction", "matching", "categorization"].includes(
                 mode,
-              ) && <p className="work-prompt">{question.prompt}</p>}
+              ) && (
+                <p className="work-prompt">
+                  <PracticeRichText>{question.prompt}</PracticeRichText>
+                </p>
+              )}
             {mode === "matching" ? (
               <MatchPairs {...props} />
             ) : mode === "categorization" ? (
@@ -217,20 +244,50 @@ export function PracticeActivity({
             ) : (
               <TypeQuestion {...props} />
             )}
+            {revealed && (
+              <AnswerReveal
+                answers={exerciseSolution(e, question)}
+                explanation={question.presentation?.explanation}
+              />
+            )}
+            <div className="flex justify-center gap-3 my-3">
+              {revealed ? (
+                <Btn icon="arrow" primary onClick={advance}>
+                  Tiếp tục
+                </Btn>
+              ) : (
+                <SkipButton
+                  disabled={feedback?.correct}
+                  onClick={() => {
+                    setRevealed(true);
+                    setFeedback(null);
+                    setSkipped((previous) => [
+                      ...new Set([...previous, String(question.id)]),
+                    ]);
+                  }}
+                />
+              )}
+            </div>
             <div
               className={`journey-feedback ${feedback ? (feedback.correct ? "right" : "wrong") : ""}`}
               aria-live="polite"
               aria-atomic="true"
             >
-              {feedback
-                ? feedback.correct
-                  ? "✨ Đúng rồi! Mình sang câu tiếp nhé."
-                  : "🌱 Gần tới rồi! Sửa một chút và thử lại nhé."
-                : typed
-                  ? "Viết xong, dừng một chút để tự kiểm tra."
-                  : "Hoàn thành câu này, mình sẽ tự kiểm tra cho bạn."}
+              {revealed
+                ? "Đã xem đáp án. Nhấn tiếp tục khi bạn sẵn sàng."
+                : feedback
+                  ? feedback.correct
+                    ? "✨ Đúng rồi! Mình sang câu tiếp nhé."
+                    : "🌱 Gần tới rồi! Sửa một chút và thử lại nhé."
+                  : typed
+                    ? "Viết xong, dừng một chút để tự kiểm tra."
+                    : "Hoàn thành câu này, mình sẽ tự kiểm tra cho bạn."}
               {feedback?.correct && question.presentation?.explanation && (
-                <p>{question.presentation.explanation}</p>
+                <p>
+                  <PracticeRichText>
+                    {question.presentation.explanation}
+                  </PracticeRichText>
+                </p>
               )}
             </div>
           </section>

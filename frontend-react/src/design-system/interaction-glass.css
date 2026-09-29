@@ -1,0 +1,161 @@
+/* One transparent interaction treatment, shared by native controls and HeroUI. */
+body
+  :is(
+    button,
+    a,
+    summary,
+    [role="button"],
+    [role="option"],
+    [role="tab"],
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    select,
+    textarea,
+    .native-field-wrap,
+    .glass,
+    .library-card,
+    .hub-tile,
+    .deck-tile,
+    .language-card,
+    [data-slot="input-wrapper"]
+  ) {
+  @apply [border-radius:var(--control-radius,18px)]!;
+}
+body
+  :is(
+    button,
+    a,
+    summary,
+    [role="button"],
+    [role="option"],
+    [role="tab"],
+    .practice-tree-row,
+    .hub-tree-row,
+    .library-card,
+    .hub-tile,
+    .deck-tile,
+    .language-card,
+    .outline-row,
+    .category-bin
+  ):not(:disabled):not([aria-disabled="true"]):is(
+    :hover,
+    :active,
+    :focus-visible,
+    [data-hover="true"],
+    [data-pressed="true"],
+    [data-focus-visible="true"]
+  ),
+body
+  :is(
+    .selected,
+    .is-selected,
+    .gap-drop.is-active,
+    .exercise-type-card.is-active,
+    .active,
+    [aria-selected="true"],
+    [aria-current="page"],
+    [aria-pressed="true"],
+    [data-selected="true"]
+  ),
+body :is(input, textarea, select):focus,
+body
+  :is(
+    .native-field-wrap,
+    .field-wrap,
+    [data-slot="input-wrapper"]
+  ):focus-within {
+  @apply [background:transparent]! text-(--ink)!;
+  @apply [backdrop-filter:blur(var(--glass-lens-blur,2px))_saturate(125%)]!;
+  @apply [box-shadow:inset_1px_1px_1px_rgb(255_255_255/0.65),inset_-1px_-1px_2px_rgb(80_135_185/0.35),0_2px_8px_rgb(20_45_80/0.09)]!;
+  @apply [border-radius:var(--control-radius,18px)]!;
+}
+body
+  :is(button, a, summary, [role="button"], [role="option"], [role="tab"]):not(
+    :disabled
+  ):not([aria-disabled="true"]):is(:hover, [data-hover="true"]) {
+  @apply [scale:var(--glass-lens-scale,1.008)] [transition:scale_160ms_ease,box-shadow_160ms_ease];
+}
+body :is(button, a, summary, [role="button"]):not(:disabled):active {
+  @apply scale-[0.99];
+}
+body
+  :is(
+    .selected,
+    .is-selected,
+    .gap-drop.is-active,
+    .exercise-type-card.is-active,
+    .active,
+    [aria-selected="true"],
+    [aria-current="page"],
+    [aria-pressed="true"],
+    [data-selected="true"]
+  ) {
+  @apply [outline:1px_solid_var(--accent)] [outline-offset:-1px];
+}
+body
+  :is(
+    button,
+    a,
+    summary,
+    input,
+    select,
+    textarea,
+    [role="button"],
+    [role="option"],
+    [role="tab"]
+  ):is(:focus-visible, [data-focus-visible="true"]) {
+  @apply [outline:2px_solid_var(--accent)]! outline-offset-2!;
+}
+body
+  :is(button, a, [role="button"]):is(
+    :hover,
+    :active,
+    :focus-visible,
+    [data-hover="true"],
+    [data-pressed="true"],
+    [aria-selected="true"]
+  )::before,
+body
+  :is(button, a, [role="button"]):is(
+    :hover,
+    :active,
+    :focus-visible,
+    [data-hover="true"],
+    [data-pressed="true"],
+    [aria-selected="true"]
+  )::after {
+  @apply bg-transparent!;
+}
+@media (prefers-reduced-motion: reduce) {
+  body
+    :is(button, a, summary, [role="button"], [role="option"], [role="tab"]):is(
+      :hover,
+      :active,
+      [data-hover="true"]
+    ) {
+    @apply scale-100! transition-none!;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  body
+    :is(button, a, summary, input, textarea, select, [role="button"]):is(
+      :hover,
+      :focus,
+      :active
+    ) {
+    @apply backdrop-filter-none!;
+  }
+}
+@media (forced-colors: active) {
+  body
+    :is(
+      .selected,
+      .is-selected,
+      .gap-drop.is-active,
+      .exercise-type-card.is-active,
+      [aria-selected="true"],
+      [aria-current="page"],
+      [aria-pressed="true"]
+    ) {
+    @apply [outline:2px_solid_Highlight]!;
+  }
+}

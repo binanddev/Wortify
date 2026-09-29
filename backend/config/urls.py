@@ -1,4 +1,4 @@
-from api import spaced_review, management_data, personal_appearance, monitoring
+from api import spaced_review, management_data, personal_appearance, monitoring, themes
 from django.contrib import admin
 from django.urls import path,re_path
 from django.http import JsonResponse
@@ -17,6 +17,12 @@ urlpatterns=[path('api/health/',health),path('api/session/',session),path('admin
  path('api/health/check/',monitoring.probe),
  path('api/monitor/',monitoring.report),
  path('api/manage/monitor/',monitoring.logs),
+ path('api/themes/',themes.themes),
+ path('api/themes/select/',themes.select_theme),
+ path('api/themes/<int:pk>/',themes.themes),
+ path('api/themes/<int:pk>/delete/',themes.delete_theme),
+ path('api/themes/<int:pk>/image/',themes.theme_image),
+ path('api/me/appearance/',themes.manifest),
  path('api/me/background/',personal_appearance.background),
  path('api/me/background/image/',personal_appearance.image),
  path('api/manage/overview/',management_data.overview),

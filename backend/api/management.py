@@ -48,10 +48,8 @@ def site_appearance(request):
         upload = request.FILES.get('background_image')
         if not upload:
             raise ValueError('Chọn một ảnh nền.')
-        if not upload.content_type or not upload.content_type.startswith('image/'):
-            raise ValueError('Chỉ nhận tệp hình ảnh.')
-        if upload.size > 8 * 1024 * 1024:
-            raise ValueError('Ảnh nền không được vượt quá 8 MB.')
+        from .themes import validate_image
+        validate_image(upload)
         if item.background_image:
             item.background_image.delete(save=False)
         item.background_image = upload

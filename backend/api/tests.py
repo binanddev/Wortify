@@ -1123,7 +1123,7 @@ class PersonalAppearanceAndMonitoringTests(TestCase):
         from django.test import override_settings
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        override = override_settings(MEDIA_ROOT=self.temp.name)
+        override = override_settings(MEDIA_ROOT=self.temp.name, BACKEND_MONITOR_SECRET='test-server-monitor-key')
         override.enable(); self.addCleanup(override.disable)
         self.user = get_user_model().objects.create_user('appearance-user')
         self.other = get_user_model().objects.create_user('appearance-other')
@@ -1167,11 +1167,12 @@ class PersonalAppearanceAndMonitoringTests(TestCase):
         from content.models import BackendCheck
         self.assertEqual(Client().get('/api/health/check/').json(),{'ok':True})
         check={'token':str(uuid.uuid4()),'at':timezone.now().isoformat(),'ok':False,'latency_ms':15000,'error':'timeout'}
-        send=lambda: self.client.post('/api/monitor/',json.dumps({'checks':[check]}),content_type='application/json')
+        send=lambda: self.client.post('/api/monitor/',json.dumps({'checks':[check]}),content_type='application/json',HTTP_X_WORTIFY_MONITOR_KEY='test-server-monitor-key')
         self.assertEqual(send().status_code,200)
         self.assertEqual(send().status_code,200)
         self.assertEqual(BackendCheck.objects.count(),1)
-        self.assertEqual(BackendCheck.objects.get().user,self.user)
+        self.assertIsNone(BackendCheck.objects.get().user)
+        self.assertEqual(BackendCheck.objects.get().source,'frontend-server')
         self.assertEqual(self.client.get('/api/manage/monitor/').status_code,403)
         self.client.force_login(self.staff)
         self.assertEqual(self.client.get('/api/manage/monitor/').status_code,403)
@@ -1179,7 +1180,8 @@ class PersonalAppearanceAndMonitoringTests(TestCase):
         result=self.client.get('/api/manage/monitor/?failures=1').json()
         self.assertEqual(result['total'],1)
         self.assertEqual(result['logs'][0]['error'],'timeout')
-        self.assertEqual(result['logs'][0]['user'],self.user.username)
+        self.assertEqual(result['logs'][0]['source'],'Máy chủ frontend')
+        self.assertNotIn('user',result['logs'][0])
 
     def test_monitor_validation_retention_and_database_failure(self):
         from content.models import BackendCheck
@@ -1187,10 +1189,183 @@ class PersonalAppearanceAndMonitoringTests(TestCase):
         old=BackendCheck.objects.create(token=uuid.uuid4(),user=self.user,checked_at=timezone.now()-timedelta(days=31),ok=True,latency_ms=1)
         good={'token':str(uuid.uuid4()),'at':timezone.now().isoformat(),'ok':True,'latency_ms':3,'error':''}
         for changes in ({'ok':'yes'},{'error':'secret dump'},{'latency_ms':-1},{'at':'invalid'}):
-            self.assertEqual(self.client.post('/api/monitor/',json.dumps({'checks':[{**good,**changes}]}),content_type='application/json').status_code,400)
-        self.assertEqual(self.client.post('/api/monitor/',json.dumps({'checks':[good]}),content_type='application/json').status_code,200)
+            self.assertEqual(self.client.post('/api/monitor/',json.dumps({'checks':[{**good,**changes}]}),content_type='application/json',HTTP_X_WORTIFY_MONITOR_KEY='test-server-monitor-key').status_code,400)
+        self.assertEqual(self.client.post('/api/monitor/',json.dumps({'checks':[good]}),content_type='application/json',HTTP_X_WORTIFY_MONITOR_KEY='test-server-monitor-key').status_code,200)
         self.assertFalse(BackendCheck.objects.filter(pk=old.pk).exists())
         with patch('api.monitoring.connection.cursor',side_effect=DatabaseError('internal path')):
             result=Client().get('/api/health/check/')
         self.assertEqual(result.status_code,503)
         self.assertEqual(result.json(),{'ok':False})
+
+class DeploymentEnvironmentTests(SimpleTestCase):
+    def test_explicit_env_file_preserves_process_values_and_literal_secrets(self):
+        import os
+        import tempfile
+        from config.environment import load_environment
+        with tempfile.TemporaryDirectory() as directory:
+            filename = Path(directory) / 'app.env'
+            filename.write_text('# comment\nEXISTING=file\nSECRET="a$literal=value#hash"\n', encoding='utf-8-sig')
+            with patch.dict(os.environ, {'WORTIFY_ENV_FILE': str(filename), 'EXISTING': 'process'}, clear=True):
+                load_environment()
+                self.assertEqual(os.environ['EXISTING'], 'process')
+                self.assertEqual(os.environ['SECRET'], 'a$literal=value#hash')
+            filename.write_text('invalid line', encoding='utf-8')
+            with patch.dict(os.environ, {'WORTIFY_ENV_FILE': str(filename)}, clear=True):
+                with self.assertRaises(ValueError):
+                    load_environment()
+
+class ThemeTests(TestCase):
+    def setUp(self):
+        PersonalAppearanceAndMonitoringTests.setUp(self)
+
+    def create_theme(self, **extra):
+        return self.client.post('/api/themes/', {'name': 'Quiet', 'preferences': json.dumps({'textSize': 20, 'curvature': 24}), **extra})
+
+    def test_private_themes_quota_and_access(self):
+        from users.models import Theme
+        for _ in range(5): self.assertEqual(self.create_theme().status_code, 201)
+        self.assertEqual(self.create_theme().status_code, 400)
+        theme = Theme.objects.filter(owner=self.user).first()
+        self.client.force_login(self.other)
+        self.assertEqual(self.client.get('/api/themes/').json()['themes'], [])
+        self.assertEqual(self.client.get(f'/api/themes/{theme.pk}/image/').status_code, 404)
+        self.assertEqual(self.client.post(f'/api/themes/{theme.pk}/', {'name':'hijack'}).status_code, 403)
+        self.assertEqual(self.client.delete(f'/api/themes/{theme.pk}/delete/').status_code, 403)
+        self.assertEqual(self.client.post('/api/themes/select/', json.dumps({'theme_id':theme.pk,'scope':'both'}), content_type='application/json').status_code, 404)
+        self.client.force_login(self.user)
+        self.assertEqual(self.client.delete(f'/api/themes/{theme.pk}/delete/').status_code, 200)
+        self.assertEqual(self.create_theme().status_code, 201)
+
+    def test_system_themes_hide_creator_and_require_staff(self):
+        self.assertEqual(self.create_theme(shared='true').status_code, 403)
+        self.client.force_login(self.staff)
+        result = self.create_theme(shared='true', image=PracticeMediaTests.image(self))
+        self.assertEqual(result.status_code, 201, result.content)
+        pk = result.json()['id']
+        self.client.force_login(self.user)
+        rows = self.client.get('/api/themes/').json()['themes']
+        self.assertEqual(len(rows), 1)
+        self.assertTrue(rows[0]['system']); self.assertFalse(rows[0]['can_edit'])
+        self.assertNotIn('owner', rows[0]); self.assertNotIn('username', rows[0])
+        image = self.client.get(f'/api/themes/{pk}/image/')
+        self.assertEqual(image.status_code, 200); image.close()
+        self.assertEqual(self.client.post(f'/api/themes/{pk}/', {'name':'change'}).status_code, 403)
+        self.assertEqual(Client().get('/api/themes/').status_code, 401)
+        self.assertEqual(Client().get(f'/api/themes/{pk}/image/').status_code, 401)
+
+    def test_language_selection_unpublish_and_delete(self):
+        from users.models import Theme
+        self.client.force_login(self.staff)
+        pk = self.create_theme(shared='true').json()['id']
+        self.client.force_login(self.user)
+        def select(scope, theme_id=pk):
+            return self.client.post('/api/themes/select/', json.dumps({'theme_id':theme_id,'scope':scope}), content_type='application/json')
+        self.assertEqual(select('de').status_code,200)
+        manifest = self.client.get('/api/me/appearance/').json()
+        self.assertEqual(manifest['de']['theme_id'],pk)
+        self.assertEqual(manifest['de']['preferences']['textSize'],20)
+        self.assertIsNone(manifest['en']['theme_id'])
+        self.assertEqual(select('both').status_code,200)
+        self.client.force_login(self.staff)
+        self.assertEqual(self.client.post(f'/api/themes/{pk}/', {'name':'Private', 'preferences':'{}', 'shared':'false'}).status_code,200)
+        profile=Profile.objects.get(user=self.user)
+        self.assertIsNone(profile.theme_de_id); self.assertIsNone(profile.theme_en_id)
+        self.client.force_login(self.user)
+        own=self.create_theme().json()['id']
+        self.assertEqual(select('both',own).status_code,200)
+        self.assertEqual(select('en',None).status_code,200)
+        self.assertEqual(Profile.objects.get(user=self.user).theme_de_id,own)
+        self.assertEqual(self.client.delete(f'/api/themes/{own}/delete/').status_code,200)
+        self.assertIsNone(Profile.objects.get(user=self.user).theme_de_id)
+        self.assertTrue(Theme.objects.filter(pk=pk).exists())
+
+    def test_upload_over_recorder_limit_and_30_mb_boundary(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        png = PracticeMediaTests.image(self).read()
+        large = png + b'\0' * (30 * 1024 * 1024 - len(png))
+        result=self.client.post('/api/me/background/', {'image':SimpleUploadedFile('large.png',large,'image/png')})
+        self.assertEqual(result.status_code,200,result.content)
+        self.assertEqual(Profile.objects.get(user=self.user).background_image.size,30*1024*1024)
+        oversized=SimpleUploadedFile('large.png',large+b'x','image/png')
+        self.assertEqual(self.client.post('/api/me/background/',{'image':oversized}).status_code,400)
+        response=self.create_theme(image_mode='upload',image=SimpleUploadedFile('large.png',large+b'x','image/png'))
+        self.assertEqual(response.status_code,400,response.content)
+        result=self.create_theme(image_mode='upload',image=SimpleUploadedFile('large.png',large,'image/png'))
+        self.assertEqual(result.status_code,201,result.content)
+
+    def test_theme_copies_image_and_replacement_cleans_old_file(self):
+        from users.models import Theme
+        self.client.post('/api/me/background/',{'image':PracticeMediaTests.image(self)})
+        pk=self.create_theme(image_mode='current',language='de').json()['id']
+        theme=Theme.objects.get(pk=pk)
+        path=theme.background_image.path
+        self.assertNotEqual(theme.background_image.name,Profile.objects.get(user=self.user).background_image.name)
+        with self.captureOnCommitCallbacks(execute=True):
+            self.client.delete('/api/me/background/')
+        self.assertTrue(Path(path).exists())
+        with self.captureOnCommitCallbacks(execute=True):
+            response=self.client.post(f'/api/themes/{pk}/',{'name':'Updated','preferences':'{}','image_mode':'remove'})
+        self.assertEqual(response.status_code,200)
+        self.assertFalse(Path(path).exists())
+
+    def test_login_cache_identity_is_stable_until_new_login(self):
+        self.user.set_password('Testing!883392');self.user.save();self.client.force_login(self.user)
+        first=self.client.get('/api/session/').json()['user']['appearance_session']
+        self.assertEqual(first,self.client.get('/api/session/').json()['user']['appearance_session'])
+        self.client.delete('/api/session/')
+        response=self.client.post('/api/session/',json.dumps({'username':self.user.username,'password':'Testing!883392'}),content_type='application/json')
+        second=response.json()['user']['appearance_session']
+        self.assertNotEqual(first,second)
+        self.assertEqual(second,self.client.get('/api/session/').json()['user']['appearance_session'])
+
+    def test_theme_validation_and_csrf(self):
+        for prefs in ('[]','bad',json.dumps({'sound':True}),json.dumps({'curvature':33}),json.dumps({'glassLens':-1})):
+            self.assertEqual(self.create_theme(preferences=prefs).status_code,400)
+        self.assertEqual(self.create_theme(name=' ').status_code,400)
+        self.assertEqual(self.create_theme(image_mode='upload').status_code,400)
+        strict=Client(enforce_csrf_checks=True);strict.force_login(self.user)
+        self.assertEqual(strict.post('/api/themes/',{'name':'No CSRF'}).status_code,403)
+
+class ServerMonitoringAndSkipTests(TestCase):
+    def setUp(self):
+        self.user=get_user_model().objects.create_user('skip-learner')
+        self.deck=Deck.objects.create(owner=self.user,title='Skip deck',language='en')
+        self.card=Card.objects.create(deck=self.deck,german_text='house',vietnamese_meaning='nhà')
+        self.client.force_login(self.user)
+
+    def test_server_report_requires_secret_not_user_or_csrf_session(self):
+        from content.models import BackendCheck
+        payload=json.dumps({'checks':[{'token':str(uuid.uuid4()),'at':timezone.now().isoformat(),'ok':True,'latency_ms':3,'error':''}]})
+        with self.settings(BACKEND_MONITOR_SECRET='server-test-secret'):
+            self.assertEqual(self.client.post('/api/monitor/',payload,content_type='application/json').status_code,403)
+            server=Client(enforce_csrf_checks=True)
+            self.assertEqual(server.post('/api/monitor/',payload,content_type='application/json',HTTP_X_WORTIFY_MONITOR_KEY='wrong').status_code,403)
+            self.assertEqual(server.post('/api/monitor/',payload,content_type='application/json',HTTP_X_WORTIFY_MONITOR_KEY='server-test-secret').status_code,200)
+            self.assertIsNone(BackendCheck.objects.get().user_id)
+            self.assertEqual(BackendCheck.objects.get().source,'frontend-server')
+        with self.settings(BACKEND_MONITOR_SECRET=''):
+            self.assertEqual(server.post('/api/monitor/',payload,content_type='application/json').status_code,403)
+
+    def test_skipped_sessions_save_as_incorrect_once_and_allow_finish(self):
+        for kind in ('flash','learn','test'):
+            created=self.client.post('/api/en/sessions/',json.dumps({'deck':self.deck.pk,'kind':kind,'count':1}),content_type='application/json')
+            self.assertEqual(created.status_code,201,created.content)
+            session=created.json();question=session['questions'][0]
+            payload={'answers':{question['token']:'__wortify_skipped__'},'timings':{question['token']:1000}}
+            url=f"/api/en/sessions/{session['token']}/finish/"
+            result=self.client.post(url,json.dumps(payload),content_type='application/json')
+            self.assertEqual(result.status_code,200,result.content)
+            self.assertEqual(result.json()['result']['correct'],0)
+            self.assertTrue(result.json()['result']['rows'][0]['skipped'])
+            progress=StudyProgress.objects.get(user=self.user,card=self.card)
+            incorrect=progress.incorrect_count
+            self.assertEqual(self.client.post(url,json.dumps(payload),content_type='application/json').status_code,200)
+            progress.refresh_from_db();self.assertEqual(progress.incorrect_count,incorrect)
+            self.assertEqual(progress.correct_count,0)
+
+    def test_individual_skip_reveals_correct_answer_without_awarding_success(self):
+        created=self.client.post('/api/en/sessions/',json.dumps({'deck':self.deck.pk,'kind':'learn','count':1}),content_type='application/json').json()
+        result=self.client.post(f"/api/en/sessions/{created['token']}/answer/",json.dumps({'question':created['questions'][0]['token'],'answer':'__wortify_skipped__','response_ms':1500}),content_type='application/json')
+        self.assertEqual(result.status_code,200,result.content)
+        self.assertFalse(result.json()['feedback']['is_correct'])
+        self.assertEqual(result.json()['feedback']['target'],'house')

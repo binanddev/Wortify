@@ -1,52 +1,240 @@
 # Wortify
 
-Ứng dụng học tiếng Anh/Đức: React 19, Vite, Django 5.2, SQLite.
+Web học tiếng Anh/Đức: React 19 + Vite + Tailwind/HeroUI, Django 5.2 cung cấp API và admin mặc định. Frontend gồm cả quản trị trong `frontend-react/src/admin`. Development dùng SQLite; cấu hình deploy bên dưới dùng PostgreSQL, Gunicorn và Nginx.
 
 ## Chạy trên Windows
+
+Cần Python 3.12+, Node.js 22.12+ và Internet để cài thư viện.
 
 ```powershell
 Set-Location -LiteralPath 'E:\code\bigmywweb'
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\start.ps1
 ```
 
-Hoặc nhấp đúp `start.cmd`. Backend mặc định **8000**, frontend **5173**. Mở http://127.0.0.1:5173. Giữ terminal chạy; Ctrl+C dừng các dịch vụ được cửa sổ này khởi động. Script tự dùng lại đúng Wortify của workspace nếu đã chạy; không tắt chương trình khác chiếm cổng. Có thể đổi bằng `WORTIFY_BACKEND_PORT` và `WORTIFY_FRONTEND_PORT`.
+Hoặc mở `start.cmd`. Frontend: http://127.0.0.1:5173; API: http://127.0.0.1:8000/api/health/. Giữ terminal chạy, Ctrl+C dừng những dịch vụ do nó khởi động. Script không tắt dịch vụ lạ chiếm cổng. Đổi cổng bằng `WORTIFY_FRONTEND_PORT` và `WORTIFY_BACKEND_PORT`. Linux/macOS phát triển: `bash start.sh`.
 
-Cần Python 3.12+, Node.js 22.12+ và Internet để cài thư viện lần đầu. Bash/Linux/macOS: `bash start.sh`.
+Tùy chọn file môi trường development:
 
-## Dữ liệu thử
+```powershell
+Copy-Item .env.example .env
+$env:WORTIFY_ENV_FILE = (Resolve-Path .env).Path
+.\.venv\Scripts\python.exe --version
+```
+
+Đường dẫn Python thực tế của dự án là **`.\.venv\Scripts\python.exe`**. Không bắt buộc tạo `.env` để chạy local; khi dùng file, đặt `WORTIFY_ENV_FILE` trước lệnh Django/start. Biến đã có trong môi trường tiến trình được ưu tiên hơn file. Loader nhận `KEY=value`, dấu nháy bao ngoài và dòng chú thích, không thực thi shell hoặc nội suy biến. Vite local dùng `DJANGO_DEV_ORIGIN` khi cần trỏ API khác; không đưa secret vào biến `VITE_*`.
+
+## Tự tạo superuser
+
+Chạy ở thư mục gốc, đúng môi trường/database đang dùng:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py createsuperuser
+```
+
+Nhập username, email (có thể bỏ trống) và mật khẩu hai lần. Terminal không hiện ký tự khi gõ mật khẩu. Sau đó đăng nhập giao diện web và mở `/de/admin`, `/en/admin` hoặc `/manage`. Superuser vẫn có đầy đủ Flashcard, Practice Hub, Explore và Create để kiểm thử. Django admin mặc định ở `/admin/` trên cùng website khi deploy; local có thể mở http://127.0.0.1:8000/admin/.
+
+Đổi mật khẩu tài khoản đã tồn tại:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py changepassword ten_tai_khoan
+```
+
+Tạo staff: đăng nhập superuser → Quản trị → Người dùng → icon `+` → vai trò Staff. Staff quản lý tài khoản thường và dữ liệu của họ; không sửa/xóa staff hoặc superuser, không tự nâng quyền và không dùng Django admin.
+
+Trong container production, dùng `dc exec backend python manage.py createsuperuser` sau khi đã định nghĩa hàm `dc` theo kịch bản dưới đây. Tạo superuser trên database mới bằng lệnh này, không đưa mật khẩu vào image, README hay Git.
+
+## Chức năng và dữ liệu thử
+
+- `/{en|de}/flashcard`: thư viện folde, bộ thẻ, Flash/Learn/Test và ôn cách quãng. Hai ngôn ngữ độc lập.
+- `/{lang}/practice`: học từng câu, tự kiểm tra, làm lại đến đúng và lưu tiến độ.
+- `/{lang}/explore`: tìm nội dung công khai; `/{lang}/create`: quản lý folde và nhập `.txt`, xem trước và thêm media. Hướng dẫn tại `/{lang}/create/guide`. Có 7 dạng bài, 11 styles; `giaodien.html` chỉ là tham khảo.
+- Cài đặt: ảnh nền riêng JPG/PNG/WebP tối đa 30 MB; màu, độ đậm, tương phản chữ; kính 0–100% giữ viền sáng. Áp dụng cho tài khoản ở mọi trang và cả EN/DE.
+- Theme: Cài đặt → Theme → icon `+`, lưu ảnh nền cùng màu/cỡ/độ đậm/tương phản chữ, độ trong suốt, độ cong và độ lúp kính. Mỗi tài khoản tối đa 5 theme cá nhân hoặc theme do mình tạo; theme hệ thống của người khác không tính vào giới hạn này. Chọn icon ✓ để áp dụng cho DE, EN hoặc cả hai. Icon bút/thùng rác sửa/xóa theme của mình. Staff/superuser có lựa chọn công bố thành theme hệ thống; người học không thấy người tạo.
+- Ảnh nền được tải một lần cho mỗi lần đăng nhập, lưu Blob trong IndexedDB và hiển thị qua URL nội bộ trình duyệt. Hai không gian dùng cùng ảnh chỉ tải một bản. Reload/đổi trang/đổi ngôn ngữ dùng bản lưu, không gọi lại ảnh hay manifest. Cập nhật ảnh, chọn hoặc sửa theme có hiệu lực sau đăng xuất/đăng nhập lại; giao diện hiển thị thông báo. Đăng xuất xóa cache nền. Nếu trình duyệt chặn lưu trữ/hết dung lượng hoặc tải lỗi, báo lỗi trong Cài đặt và yêu cầu đăng nhập lại, không tự tải lặp lại trên mỗi reload. Xóa dữ liệu website có thể làm mất cache.
+- Hover/active/selected/focus dùng nền trong suốt, viền kính và focus ring; Cài đặt có độ cong 0–32 px và độ lúp 0–100. Giảm chuyển động theo tùy chọn hệ điều hành. Điều chỉnh hiển thị trực tiếp vẫn có hiệu lực trong phiên; lưu thành theme để tái sử dụng.
+- Âm nền là các nốt nhẹ có khoảng nghỉ, chỉ khởi động sau thao tác của người dùng; tạm im khi nghe audio/video/TTS hoặc ẩn tab. Không có sóng trầm chạy liên tục. Âm lượng thay đổi không tạo lại audio context.
+- Máy chủ frontend kiểm tra backend ngay khi khởi động và mỗi 10 phút, kể cả khi không có ai mở web. Local: tiến trình Vite chạy monitor; production: service `frontend-monitor` chạy trên máy frontend. Trình duyệt không chạy health probe hoặc gửi log. Báo cáo có khóa server riêng `BACKEND_MONITOR_SECRET`, không gắn user; superuser xem tại Quản trị → Hệ thống. Log giữ 30 ngày; lúc backend lỗi, hàng đợi được lưu trên máy frontend (tối đa 7 ngày/1008 bản ghi), gửi lại khi kết nối phục hồi.
+- Practice Hub và các chế độ Flashcard có icon **Bỏ qua** để hiện đáp án, sau đó icon **Tiếp tục**. Câu bỏ qua không được tính là trả lời đúng: Practice Hub vẫn để câu đó chưa hoàn thành; Flashcard ghi nhận chưa nhớ để ôn lại. Bài kiểm tra giữ cách hiển thị hiện có, icon tiếp tục chuyển focus tới câu kế tiếp hoặc tổng kết/nút nộp bài.
+
+Dữ liệu demo chỉ dùng development:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py seed_development_demo
 ```
 
-Lệnh chỉ chạy trong DEBUG, không nhân bản khi chạy lại. Tài khoản `demo` (superuser), `learner` (user), `staff` (staff), mật khẩu ban đầu `WortifyDemo2026!`. Nội dung mẫu của demo gồm hai cây Practice Hub có bảy dạng bài mới và lý thuyết; mỗi cây có thêm thư mục **Sân tập UI/UX** với nhiều câu hỏi mẫu cho từng dạng, cùng hai bộ thẻ EN/DE. Bộ văn bản để nhập bài: `frontend-react/public/templates/practice-hub.txt`. User và staff có cùng tính năng học, tạo/sửa nội dung của mình; superuser thêm quản trị người dùng tại `/en/admin` hoặc `/manage`.
+Lệnh yêu cầu DEBUG và chạy lại không nhân bản. Tài khoản demo mặc định được mô tả trong [kiến trúc](docs/AGENTS.md). Không chạy seed hoặc dùng các tài khoản test trên production.
 
-## Tạo bài học
+## Môi trường deploy
 
-Ứng dụng tách hai khu: **Practice Hub** (`/en/practice`, `/de/practice`) chỉ để chọn bài và học; **Xưởng bài tập** (`/en/exercise-studio`, `/de/exercise-studio`) để tạo và quản lý nội dung thuộc sở hữu của mình. Các công cụ tìm, nhập tệp, sửa, đổi tên, chia sẻ, xóa, nhóm và di chuyển đều nằm trong thanh Nav bên cạnh. Màn hình chính chỉ hiển thị nội dung bài học, bản soạn hoặc nội dung xem trước. Người học không chọn lại dạng/style: bài được hiển thị theo cấu hình cố định do người tạo khai báo.
+Bộ mẫu trong [deploy](deploy):
 
-Bài tập bắt buộc có đáp án, chấm ngay tại máy rồi tự lưu kết quả lên tài khoản. Không có bài viết dài hoặc chấm thủ công. Lý thuyết nhận HTML/Markdown; có liên kết học tiếp tùy chọn tới bài/lý thuyết/folder.
+- Development: `.env.example`, SQLite, Vite + Django runserver.
+- Staging: `deploy/.env.staging.example`, DEBUG tắt, database/volume/secret/domain riêng, frontend cổng loopback 8081.
+- Production: `deploy/.env.production.example`, DEBUG tắt, PostgreSQL 17, Gunicorn, Nginx, HTTPS; frontend loopback 8080.
+- Máy frontend riêng: `deploy/.env.frontend.example`, không chứa mật khẩu database hoặc secret Django.
 
-Practice Hub hiện có **7 dạng bài, 11 kiểu tương tác** theo mẫu UI: điền từ (kéo/chạm), sửa lỗi (sửa từ/gạch từ thừa), nối cặp, sắp xếp câu, phân loại, chọn trong câu (nút/danh sách), viết lại câu (gợi ý đầu câu/khung tự mở rộng). `giaodien.html` chỉ là tài liệu tham khảo, không được nạp vào hệ thống.
+Các bước deploy dưới đây dùng **Linux + Docker Engine/Compose v2**, chạy ở thư mục gốc repository. Đây là cấu hình chuẩn bị, không tự triển khai lên máy chủ. Máy frontend cần Nginx trên host và chứng chỉ TLS. Không dùng `runserver`, `vite dev` hoặc `vite preview` phục vụ production.
 
-Người học làm **từng câu**, không nộp bài. Câu đủ dữ liệu tự kiểm tra; câu gõ chờ 1,4 giây sau lần nhập cuối và không chấm giữa lúc bộ gõ đang ghép chữ. Đúng tự sang câu tiếp sau phản hồi ngắn, sai làm lại tới khi đúng. Có âm báo bật/tắt, hiệu ứng nhẹ, hỗ trợ giảm chuyển động. Chỉ lưu danh sách câu hoàn thành, không gửi đáp án hay điểm cho luồng mới. Tiến độ được lưu ở thiết bị và đồng bộ vào `PracticeProgress`; nhập lại bài đã sửa bắt đầu tiến độ theo phiên bản mới. Đổi tên/di chuyển giữ tiến độ. Lịch sử dữ liệu cũ được giữ nguyên.
+Hai kịch bản đều giữ một origin cho trình duyệt: `https://learn.example.com/api/...`. Frontend Nginx chuyển API về backend, vì vậy cookie đăng nhập và CSRF hoạt động cùng origin; không cần CORS, không đặt `SameSite=None`, không public thư mục media. Django chỉ phục vụ API và admin mặc định; WhiteNoise chỉ phục vụ static của admin.
 
-**Nhập bài từ .txt** trong Xưởng bài tập nhận nhiều tệp UTF-8. Một tệp có thể chứa nhiều khối `BAI`. Kiểm tra toàn bộ và xem trước rồi lưu nguyên tử tối đa 100 bài, 100 câu/bài, 2 MB/lô. Trang hướng dẫn: `/en/exercise-studio/guide` hoặc `/de/exercise-studio/guide`. Mẫu đủ 11 kiểu: `frontend-react/public/templates/practice-hub.txt`; quy tắc và ví dụ nằm trong `practice-text-guide.txt`. Trình tạo bài bằng form được giữ trong mã nguồn nhưng không hiển thị. Các đường dẫn tạo bài/hướng dẫn cũ trong Practice Hub chuyển sang Xưởng bài tập.
+### Chuẩn bị domain, secret và HTTPS
 
-Trong thanh Nav của Xưởng bài tập, chủ sở hữu sửa nội dung bằng văn bản, tải bản hiện tại, đổi tên, chọn nhiều bài để gom nhóm/chuyển, kéo thẻ vào thư mục, dùng nút mũi tên đổi thứ tự và hoàn tác di chuyển. Máy chủ kiểm tra quyền, chu trình và giới hạn ba cấp thư mục trong một giao dịch. Nội dung công khai của người khác chỉ có thao tác học.
+1. Trỏ DNS domain về máy frontend. Cho phép TCP 80/443; cổng database 5432 không public. Dùng domain staging riêng khi thử nghiệm.
+2. Sao chép mẫu, thay `PUBLIC_HOST` bằng domain không có scheme/path, sinh **ba secret khác nhau**:
 
-Khi cập nhật phiên bản này, chạy `python manage.py migrate` để tạo bảng tiến độ mới.
+```bash
+cp deploy/.env.production.example deploy/.env.production.local
+chmod 600 deploy/.env.production.local
+python3 -c 'import secrets; print(secrets.token_urlsafe(64))'
+python3 -c 'import secrets; print(secrets.token_urlsafe(32))'
+python3 -c 'import secrets; print(secrets.token_urlsafe(48))'
+```
 
-## Học và tự lưu
+Dán kết quả lần lượt vào `DJANGO_SECRET_KEY`, `DJANGO_DB_PASSWORD` và `BACKEND_MONITOR_SECRET` trong file local. Không đưa kết quả vào Git. Compose sẽ từ chối chạy nếu bỏ trống. `.env.*.local` đã được gitignore. `COMPOSE_PROJECT_NAME` phải ổn định để dùng lại đúng volume; đổi tên project có thể khiến hệ thống trông như mất dữ liệu vì tạo volume mới.
 
-- Flashcards: trộn, chiều mặt, sao, phím tắt, TTS từng mặt.
-- Learn: lặp thẻ sai, tiến độ chưa học/quen thuộc/thành thạo, chọn dạng câu, chiều trả lời, mục tiêu số thẻ/thời gian.
-- Learn/Test: chọn đáp án là chấm ngay, viền và đáp án xanh/đỏ, sai hiện đáp án đúng. Câu viết dùng Enter/nút ↵; nối cặp chấm khi nối đủ. Test tự lưu khi hoàn thành câu cuối, có thống kê và in/lưu PDF. Gắn sao chỉ dùng icon và không làm nhảy thẻ.
-- Cài đặt giao diện, âm thanh, học tập, cấu hình bộ thẻ, sao và tiến độ đều lưu server. Thay đổi gom thành đợt tự động, có hàng đợi tại thiết bị và tự thử lại khi mất mạng. Không cần nút đồng bộ.
-- Tải toàn bộ bộ thẻ và tải nền Practice Hub; lật thẻ, nhập đáp án và phản hồi tại máy. Practice Hub chỉ đồng bộ các câu đã hoàn thành, không lưu điểm.
-- Giao diện Liquid Glass, độ trong suốt/cỡ chữ tùy chỉnh; âm thanh tương tác và nền tạo bằng Web Audio. TTS dùng giọng trình duyệt/hệ điều hành.
+3. Lấy chứng chỉ TLS theo nhà cung cấp của bạn. Ví dụ máy Linux mới dùng Certbot standalone, DNS đã trỏ đúng và cổng 80 tạm trống:
 
-## Phát triển
+```bash
+sudo systemctl stop nginx
+sudo certbot certonly --standalone -d learn.example.com
+```
+
+Lệnh yêu cầu đã cài Nginx/Certbot; nếu máy đang phục vụ website khác, dùng phương án xác thực webroot/DNS của Certbot để không dừng chúng.
+
+4. Sao chép [edge.conf.example](deploy/nginx/edge.conf.example) vào cấu hình host Nginx, thay domain và đường dẫn certificate. Nginx host kết thúc TLS rồi chuyển vào frontend container tại `127.0.0.1:8080`. Bỏ server default bị trùng nếu máy đã có cấu hình default. Nếu staging dùng 8081, đổi `proxy_pass` của vhost staging tương ứng.
+
+```bash
+sudo nginx -t
+sudo systemctl enable --now nginx
+sudo systemctl reload nginx
+```
+
+Sau lần cấp cert standalone đầu tiên, cấu hình phương thức gia hạn phù hợp với cổng 80 đang được Nginx dùng (webroot/DNS hoặc hook stop/start có kế hoạch) và kiểm tra `certbot renew --dry-run`. Không chỉ cấp cert rồi bỏ qua gia hạn.
+
+`DJANGO_TRUST_PROXY=1` chỉ an toàn vì cổng backend bị cô lập và frontend proxy tự ghi đè `X-Forwarded-Proto`. Không publish backend trực tiếp ra Internet. HSTS mặc định 3600 giây, không ép mọi subdomain; tăng dần sau khi HTTPS ổn định. `check --deploy` có thể khuyến nghị bật includeSubDomains và preload; chỉ bật khi toàn bộ subdomain thực sự dùng HTTPS.
+
+### A. Frontend và backend chung một máy chủ
+
+```bash
+set -euo pipefail
+# Chạy tại thư mục gốc repository; file env đã điền secret/domain.
+dc() { docker compose --env-file deploy/.env.production.local -f deploy/compose.backend.yml -f deploy/compose.single.yml "$@"; }
+dc config --quiet
+dc build
+dc up -d db
+dc run --rm backend python manage.py migrate
+dc run --rm backend python manage.py check --deploy
+dc run --rm backend python manage.py createsuperuser
+dc up -d
+dc ps
+curl --fail https://learn.example.com/api/health/check/
+```
+
+Nếu cần nhập dữ liệu cũ, thực hiện bước chuyển dữ liệu bên dưới **trước** createsuperuser. Container backend thu gom static admin khi khởi động. Volume `database` giữ PostgreSQL, `media` giữ ảnh/audio riêng tư. Chỉ frontend publish cổng `127.0.0.1:8080`; API và database nằm trong mạng Compose.
+
+### B. Frontend và backend trên hai máy chủ
+
+Giả sử mạng riêng hoặc WireGuard: frontend `10.20.0.1`, backend `10.20.0.2`. Kênh giữa hai máy phải là mạng tin cậy/VPN mã hóa; không chuyển cookie, mật khẩu qua HTTP trên Internet công cộng.
+
+**Máy backend:** dùng repo có backend và thư mục deploy, cấu hình `deploy/.env.production.local` như trên, `PUBLIC_HOST=learn.example.com`, `BACKEND_BIND_IP=10.20.0.2` (địa chỉ thực sự có trên máy).
+
+```bash
+set -euo pipefail
+dc() { docker compose --env-file deploy/.env.production.local -f deploy/compose.backend.yml -f deploy/compose.split-backend.yml "$@"; }
+dc config --quiet
+dc build
+dc up -d db
+dc run --rm backend python manage.py migrate
+dc run --rm backend python manage.py check --deploy
+dc run --rm backend python manage.py createsuperuser
+dc up -d
+dc ps
+```
+
+Giới hạn cổng `10.20.0.2:8000` chỉ cho IP frontend bằng firewall/cloud security group. Với Docker, kiểm tra cả quy tắc firewall của Docker/DOCKER-USER; không mặc định rằng UFW một mình đã chặn port publish. PostgreSQL không publish cổng. Backend không cần public domain hay public TLS riêng khi kênh này đi qua VPN. Nếu thay cổng host, đặt `BACKEND_PORT` và sửa `BACKEND_ORIGIN` trên frontend cho khớp.
+
+**Máy frontend:** cần source frontend, Dockerfile và deploy config. Chỉ chia sẻ khóa giám sát `BACKEND_MONITOR_SECRET` với backend; không sao chép secret Django hoặc mật khẩu database. Đặt cùng giá trị khóa giám sát trong hai file env của hai máy, giữ khóa ở phía server, tuyệt đối không dùng tiền tố `VITE_`.
+
+```bash
+cp deploy/.env.frontend.example deploy/.env.frontend.local
+# PUBLIC_HOST=learn.example.com
+# BACKEND_MONITOR_SECRET=<cùng khóa giám sát với backend>
+# BACKEND_ORIGIN=http://10.20.0.2:8000   (không có dấu / ở cuối)
+dc() { docker compose --env-file deploy/.env.frontend.local -f deploy/compose.frontend.yml "$@"; }
+dc config --quiet
+dc up -d --build
+dc ps
+curl --fail https://learn.example.com/api/health/check/
+```
+
+Nginx host/TLS giống kịch bản A. `/api/`, `/admin/` và `/static/admin/` đi về máy backend. `/assets/` và route React phục vụ tại frontend. Upload MP3 200 MB đi qua hai lớp proxy với giới hạn 201 MB để chừa multipart overhead; backend vẫn kiểm tra định dạng/kích thước. Media riêng tư luôn đi qua API có xác thực, không mount thành thư mục static công khai.
+
+Nếu đã deploy bằng cấu hình cũ, thêm `BACKEND_MONITOR_SECRET` mới cho backend và monitor, chạy migration rồi build/up lại. Volume `monitor-state` giữ các kiểm tra chưa gửi qua mỗi lần restart. Khi đổi khóa, cập nhật cả hai máy cùng đợt; 403 trong log monitor thường nghĩa là hai khóa chưa khớp. Local dùng khóa development mặc định, hoặc đặt biến môi trường giống nhau cho Django và Vite nếu khởi động chúng riêng.
+
+### Staging độc lập
+
+Sao chép `.env.staging.example` thành `.env.staging.local`, điền secret mới, dùng domain khác. Thay đường dẫn env trong hàm `dc`. Project `wortify-staging` có volume riêng; frontend bind 8081 nên có thể cùng host với production, Nginx staging proxy vào 8081. Không dùng chung volume/secret hoặc dữ liệu người dùng thật để test. Với hai máy, điều chỉnh IP/cổng backend staging riêng.
+
+### Chuyển dữ liệu development sang PostgreSQL
+
+Nếu muốn giữ dữ liệu hiện có, dừng ghi dữ liệu trên môi trường nguồn trong thời gian xuất/copy. Sao lưu database và media trước. Không copy nguyên SQLite vào volume PostgreSQL.
+
+```powershell
+New-Item -ItemType Directory -Force .development-backups | Out-Null
+.\.venv\Scripts\python.exe -X utf8 manage.py dumpdata --natural-foreign --exclude contenttypes --exclude auth.permission --exclude sessions --exclude admin.logentry --output .development-backups/data.json
+```
+
+File này chứa dữ liệu cá nhân và hash mật khẩu: chuyển bằng kênh an toàn, không commit, bảo quản như database backup. Sao chép toàn bộ `backend/private_media` nguồn thành archive `media.tar` có **nội dung media tại gốc archive**, giữ nguyên đường dẫn tương đối.
+
+Trên máy backend đích đã migrate nhưng chưa tạo tài khoản trùng:
+
+```bash
+# backup/data.json và backup/media.tar đã được chuyển riêng, không nằm trong image.
+dc run --rm -T backend python manage.py loaddata --format=json - < backup/data.json
+dc run --rm -T backend tar -xf - -C /app/private_media < backup/media.tar
+```
+
+Kiểm tra tài khoản, EN/DE, số bộ thẻ/bài tập, file ảnh/audio và tiến độ trước khi đổi DNS. Không mang các tài khoản demo/test công khai sang production: loại bỏ hoặc khóa chúng trước khi mở dịch vụ; giữ một superuser thực sự do bạn quản lý.
+
+### Backup, cập nhật và rollback
+
+Định nghĩa `dc` đúng kịch bản/máy backend. Dùng shell Bash để chuyển hướng dữ liệu nhị phân của `pg_dump`:
+
+```bash
+set -euo pipefail
+mkdir -p backup
+chmod 700 backup
+dc exec -T db sh -c 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' > backup/database.dump
+dc run --rm -T --no-deps backend tar -cf - -C /app/private_media . > backup/media.tar
+```
+
+Các lệnh dùng stdin/stdout để không phải mở quyền thư mục backup cho container. Với backup nhất quán DB + media, tạm dừng thao tác ghi của người dùng. Lưu thêm file env/secrets ở kho bí mật, mã release/image tag và bản frontend; giữ bản backup ngoài máy chủ và thử restore định kỳ. Không dùng `docker compose down -v` khi muốn giữ dữ liệu.
+
+Cập nhật: backup → checkout release đã kiểm tra → `dc build` → `dc run --rm backend python manage.py migrate` → `dc up -d` → kiểm tra health/đăng nhập/ảnh/media. Máy frontend riêng chạy lại build/up tại đó. Không tự sinh migration trong production.
+
+Rollback dùng image/release cũ; nếu migration không tương thích ngược, khôi phục cả DB và media từ cặp backup cùng thời điểm trên môi trường đã dừng ghi. Không chạy ngược migration tùy tiện. Ví dụ restore PostgreSQL trên database đích đã được chuẩn bị và bảo trì:
+
+```bash
+# Thao tác ghi đè: chỉ thực hiện sau khi xác nhận đúng môi trường và backup.
+dc exec -T db sh -c 'pg_restore --clean --if-exists --no-owner -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < backup/database.dump
+```
+
+Xem log server: `dc logs --tail=100 backend`, `dc logs --tail=100 frontend` (trên máy frontend nếu tách), `dc logs --tail=100 db`. Xem tiến trình giám sát: `dc logs --tail=100 frontend-monitor` trên máy frontend. Log kiểm tra từ máy chủ frontend nằm trong Quản trị → Hệ thống; bảng này chỉ tải khi mở hoặc nhấn cập nhật. Chạy định kỳ `dc exec backend python manage.py clearsessions` bằng scheduler của hệ thống.
+
+### Kiểm tra trước khi mở cho người dùng
+
+- `dc config --quiet`, `dc run --rm backend python manage.py check --deploy`, `dc ps` và `sudo nginx -t`.
+- HTTPS, đăng nhập/đăng xuất, CSRF, route React khi reload trực tiếp, static Django admin.
+- Đăng nhập để tải ảnh nền đã chọn, reload/đổi ngôn ngữ phải dùng cache; cập nhật nền rồi đăng nhập lại; audio/ảnh bài tập, upload lớn, lỗi 413/502 nếu giới hạn proxy sai.
+- Staff không sửa superuser; dữ liệu riêng tư không mở được bằng tài khoản khác.
+- Health `/api/health/check/` trả `{"ok":true}`; backup/restore, disk space và gia hạn TLS đã được thử.
+
+Cấu hình được chuẩn bị để kiểm thử deploy; không thể xác nhận container/Nginx/TLS chạy thực tế nếu máy kiểm tra chưa có Docker/Nginx và chưa có domain/chứng chỉ.
+
+Tham khảo chính thức: [Django deployment checklist](https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/), [trusted proxy header](https://docs.djangoproject.com/en/5.2/ref/settings/#secure-proxy-ssl-header), [Docker Compose production](https://docs.docker.com/compose/how-tos/production/), [Nginx proxy module](https://nginx.org/en/docs/http/ngx_http_proxy_module.html).
+
+## Kiểm tra mã nguồn
 
 ```powershell
 npm.cmd test
@@ -55,31 +243,18 @@ npm.cmd run build
 .\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
 ```
 
-Đã bỏ Book/Chapter và API tương thích. Migrations phát triển gồm bốn baseline cùng migration bổ sung cài đặt tài khoản. Database trước khi reset được sao lưu tại `.development-backups/` (gitignored). Không fake baseline lên database cũ. Chỉ thay schema mới cần migration; build không sinh migration.
-
-Xem [kiến trúc dự án](docs/AGENTS.md).
+Frontend CSS chỉ có một entry: `frontend-react/src/design-system/index.css`; style dùng utility Tailwind, biến theme và keyframe. Backend API tests gom trong `backend/api/tests.py`. Build/test logic không thay thế việc người dùng kiểm tra trực quan. Khi sửa CSS có chủ đích, cập nhật baseline bằng `npm --prefix frontend-react run styles:baseline`.
 
 
-### Explore, Create và thư viện giao diện
-
-- `/{lang}/explore`: tìm kiếm nội dung công khai theo tiêu đề, hướng dẫn, ngữ cảnh, câu hỏi và tác giả; bỏ dấu khi tìm, hỗ trợ một số tên thì tiếng Anh/Việt, lọc dạng bài và phân trang. Đây là tìm kiếm từ khóa, không phải tìm kiếm ngữ nghĩa. API không trả nội dung riêng tư hay toàn bộ đáp án.
-- `/{lang}/create`: tạo và quản lý nội dung sở hữu; `new` nhập `.txt`, `guide` hướng dẫn. Đường dẫn `exercise-studio` cũ được chuyển sang `create` và giữ phần đường dẫn còn lại.
-- Practice Hub vẫn là khu vực học. Explore thêm bài công khai vào cùng workspace của Practice Hub.
-- Frontend đã có Tailwind CSS v4, HeroUI và Framer Motion. Explore dùng utility Tailwind, Card/Input/Select/Pagination/Skeleton của HeroUI và chuyển động có tôn trọng reduced-motion. Toàn bộ stylesheet cũ đã chuyển thành module Tailwind trong `frontend-react/src/design-system`; CSS thuần chỉ còn biến theme và keyframe. Django không chứa giao diện ứng dụng.
-- Tìm kiếm hiện chuẩn hóa và xếp hạng trên máy chủ với tập nội dung công khai trong ngôn ngữ đang học. Khi thư viện tăng lớn, cần chỉ mục tìm kiếm chuyên dụng để tránh quét toàn bộ tập dữ liệu mỗi truy vấn.
-
-
-### Bảo trì giao diện
-
-Entry duy nhất: `frontend-react/src/design-system/index.css`. Màu và biến giao diện nằm trong `tokens.css`; component HeroUI dùng chung trong `src/ui.jsx`. Style theo khu vực được viết bằng utility Tailwind (`@apply` cho selector/trạng thái hiện hữu). Không còn import `styles.css`, `glass.css`, `practice-ux.css` hoặc `profile.css` cũ.
-
-`npm run build` tạo frontend độc lập trong `frontend-react/dist`. Django không đọc manifest hoặc phục vụ React. `npm test` gồm kiểm tra CSS sau biên dịch và logic tương tác; không thay thế kiểm tra trực quan.
-
-### Django chỉ phục vụ API và admin
-
-- React/Vite sở hữu toàn bộ route ứng dụng, trang đăng nhập và tài nguyên giao diện. Mở frontend ở cổng 5173 khi phát triển. `npm --prefix frontend-react run preview` phục vụ bản build ở cổng 4173 và proxy API/admin tới Django.
-- Django cổng 8000 chỉ xử lý `/api/…` và `/admin/…`. Các đường dẫn trang như `/`, `/login`, `/en/practice` trên cổng backend trả JSON 404. CSRF được khởi tạo qua `/api/session/`.
-- Template, static CSS/JS, view dựng trang cũ, React shell và cấu hình `REACT_DIST` đã được gỡ. Các API học, chấm, âm thanh, xuất dữ liệu và kiểm tra quyền vẫn hoạt động. Django ModelForm còn dùng để xác thực payload, không render giao diện.
-- Admin mặc định của Django được giữ, gồm đăng nhập và static đi kèm thư viện Django; không còn template override branding. `collectstatic` chỉ cần cho admin, không thu gom frontend.
-- Khi triển khai, phục vụ `frontend-react/dist` bằng web server và fallback route React về `index.html`; proxy `/api/` và `/admin/` tới Django trên cùng origin. Ví dụ tại `frontend-react/deploy/nginx.conf`. Điều chỉnh tên miền, đường dẫn và HTTPS; chỉ bật `DJANGO_TRUST_PROXY=1` khi Django đứng sau proxy tin cậy tự thiết lập `X-Forwarded-Proto`.
-- Các URL media `/static/react/…` đã lưu từ trước được frontend nhận và chuyển về tài nguyên frontend. Django không còn xử lý những URL này.
+## Tài khoản Supeuse
+```
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py createsuperuser
+```
+## Tài khoản hiện có
+```
+Superuser: test_superuser_1 — Pb-VReCcWxiDX0QW!9
+Superuser: test_superuser_2 — 6BQwxqNxAv_t1MXr!9
+Staff: test_staff_1 — 9BxsP_SE_TXFo5WB!9
+Staff: test_staff_2 — ethZ2bO6TzkJzRTs!9
+```

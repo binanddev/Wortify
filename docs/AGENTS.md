@@ -54,3 +54,25 @@ Bốn baseline0001 cho cards/content/practice/users; users0002 thêm preferences
 `seed_development_demo` DEBUG-only: demo(superuser), learner(user), staff(staff), mật khẩu ban đầu WortifyDemo2026!; demo sở hữu hai bộ12thẻ EN/DE và hai cây đủ mười dạng. Seed chạy lại không nhân bản.
 
 Kiểm tra: npm test, npm run build, manage.py test, manage.py makemigrations --check --dry-run. Test tự tạo dữ liệu. Không dùng dữ liệu seed làm fixture bắt buộc. Khi sửa tương tác cần kiểm tra tạo/sửa/nộp thực tế và trạng thái lưu server, ngoài build.
+
+
+## Deployment và appearance (2026-09-29)
+
+- README là hướng dẫn triển khai hiện hành: development, staging và production; Compose chung host hoặc frontend/backend qua private network/VPN. Django API/admin chạy Gunicorn, PostgreSQL; React chạy Nginx, proxy cùng origin. Private media có volume riêng, không public static.
+- `WORTIFY_ENV_FILE` là tùy chọn rõ ràng cho CLI local; môi trường tiến trình luôn ưu tiên. Production dependencies nằm trong requirements-production.txt và constraints tương ứng. Không đưa secret/database/backup vào image hoặc Git.
+- Ảnh nền cá nhân được áp dụng qua shorthand `background` ở surfaces.css: `--page-bg` chứa cả màu cuối nên không được ghép vào thuộc tính background-image. App lấy snapshot theo phiên đăng nhập, lưu Blob vào IndexedDB và thu hồi object URL khi đổi tài khoản; upload không tải lại nền.
+- Soundscape dùng nốt hữu hạn, envelope về 0 và stop/disconnect; không dùng oscillator trầm chạy liên tục. Âm nền tạm im khi media/TTS phát hoặc tab ẩn. Thay volume không tạo lại AudioContext.
+
+
+## Theme và cache đăng nhập (2026-09-29)
+
+- `users.Theme` có owner, shared, preferences và file ảnh riêng; mỗi owner tối đa 5, tạo được khóa theo user để chống vượt quota do request đồng thời. User chỉ công bố riêng; staff/superuser có shared. API không trả owner/username. Profile chọn theme_de/theme_en, xóa theme đặt lựa chọn về null. Ngừng chia sẻ loại bỏ lựa chọn của người khác.
+- `api/themes.py`: danh sách/tạo/sửa, chọn cho de/en/both, xóa, ảnh có xác thực và manifest đăng nhập. Theme media không public. Upload ảnh riêng/theme/system tối đa 30 MB, handler users.uploads lưu tạm trên đĩa; không đi qua giới hạn audio recorder 10 MB.
+- `/api/session/` trả appearance_session ngẫu nhiên ổn định trong phiên và thay sau mỗi POST login. `appearance-cache.js` lưu manifest + Blob trong IndexedDB, khóa tải trùng giữa các tab khi Web Locks có sẵn. App dùng object URL và thu hồi khi logout; không nghe appearance-updated để tải ảnh lại. Lỗi tải được lưu để tránh retry mỗi reload. Theme thay đổi có hiệu lực từ đăng nhập sau.
+- `theme-library.jsx` dùng modal, nút icon và lựa chọn phạm vi EN/DE; không tự tải thumbnail từ server. `interaction-glass.css` là lớp trạng thái chung cuối design-system, giữ kính trong và focus ring; curvature/glassLens được validate và dùng qua CSS variables.
+
+
+## Server monitor và bỏ qua (2026-09-29)
+
+- Không còn hook health/monitor ở trình duyệt. Vite plugin chỉ chạy trong tiến trình Node server; production có service frontend-monitor ở máy frontend. Worker scripts/backend-monitor.mjs probe ngay khi khởi động và mỗi 600000 ms, persist hàng đợi khi backend lỗi, gửi token idempotent qua X-Wortify-Monitor-Key. Secret chỉ ở môi trường server. BackendCheck.source phân biệt frontend-server với các log browser cũ; dashboard chỉ hiện server và không gắn user.
+- PracticeActivity có trạng thái revealed độc lập đáp án/progress: bỏ qua hủy chấm tự động, hiện đáp án, chờ icon tiếp tục; không thêm vào completed. Flashcard learn/test/review/flash và ExtraStudy có bỏ qua; ghi correct=false/Again để không tăng thành thạo. StudySession dùng giá trị reserved __wortify_skipped__ được chấm false cả frontend/backend và lưu idempotent. Test dạng danh sách giữ bố cục, tiếp tục focus câu kế/tổng kết/nút nộp.

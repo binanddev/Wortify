@@ -1,202 +1,284 @@
-import { PracticeModal } from "./practice-workspace";
 import { useState } from "react";
-import { Page, Heading, Link, SidebarTools, Select, Btn } from "./ui";
+import { PracticeModal } from "./practice-workspace";
+import { Page, Heading, Link, SidebarTools, Select, Btn, Icon } from "./ui";
 import { EXERCISE_TYPES, exerciseStylesOf } from "./exercise-types";
 import {
   TEXT_GUIDE,
   textTemplate,
   completePracticeGuide,
 } from "./practice-text";
+import { PracticeRichText, TEXT_COLORS } from "./practice-rich-text";
 
+const panel =
+  "glass rounded-3xl border border-(--line) bg-(--surface) p-5 sm:p-7 backdrop-blur-xl shadow-sm";
+function Download({ text, name, label }) {
+  return (
+    <a
+      className="btn"
+      title={label}
+      aria-label={label}
+      download={name}
+      href={`data:text/plain;charset=utf-8,${encodeURIComponent(text)}`}
+    >
+      <Icon name="download" />
+    </a>
+  );
+}
 export function PracticeGuide({ lang }) {
-  const [copyNotice, setCopyNotice] = useState("");
-  const fullGuide = completePracticeGuide();
-  const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [dialog, setDialog] = useState(null);
   const [mode, setMode] = useState("cloze_drag_drop");
   const [style, setStyle] = useState("drag_drop");
-  const bundle = EXERCISE_TYPES.flatMap(([mode]) =>
-    exerciseStylesOf(mode).map(([style]) => textTemplate(mode, style)),
-  ).join("\n");
+  const [color, setColor] = useState("blue");
+  const fullGuide = completePracticeGuide();
+  const template = textTemplate(mode, style);
+  const colorExample = `[color=${color}]Your text[/color]`;
+  const copy = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setNotice("Đã sao chép.");
+    } catch {
+      setNotice("Chưa sao chép được. Bạn có thể chọn văn bản hoặc tải tệp.");
+    }
+  };
+  const code = (text) => (
+    <pre
+      className="my-3 max-h-[55vh] overflow-auto whitespace-pre-wrap wrap-anywhere rounded-2xl border border-(--line) bg-transparent p-4 text-sm leading-7"
+      tabIndex={0}
+    >
+      {text}
+    </pre>
+  );
   return (
     <Page>
       <SidebarTools navOnly>
-        <div className="studio-import-tools">
-          <Link className="btn primary" to={`/${lang}/create/new`}>
-            Tạo bài từ mẫu .txt
+        <div className="flex flex-wrap gap-2">
+          <Link
+            className="btn"
+            to={`/${lang}/create`}
+            title="My Exercise Library"
+            aria-label="My Exercise Library"
+          >
+            <Icon name="home" />
           </Link>
-          <Btn icon="download" onClick={() => setTemplatesOpen(true)}>
-            Chọn và tải mẫu .txt
+          <Link
+            className="btn"
+            to={`/${lang}/create/new`}
+            title="Tạo bài tập"
+            aria-label="Tạo bài tập"
+          >
+            <Icon name="plus" />
+          </Link>
+          <Btn icon="download" onClick={() => setDialog("full")}>
+            Hướng dẫn và tất cả mẫu
           </Btn>
         </div>
       </SidebarTools>
-      {templatesOpen && (
-        <PracticeModal
-          title="Thư viện mẫu bài tập"
-          onClose={() => setTemplatesOpen(false)}
-        >
-          {" "}
-          <a
-            className="btn"
-            download="7-dang-11-style.txt"
-            href={`data:text/plain;charset=utf-8,${encodeURIComponent(bundle)}`}
-          >
-            Tải đủ 7 dạng · 11 style
-          </a>
-          <Select
-            label="Dạng bài"
-            value={mode}
-            onChange={(value) => {
-              setMode(value);
-              setStyle(exerciseStylesOf(value)[0][0]);
-            }}
-          >
-            {EXERCISE_TYPES.map(([key, title]) => (
-              <option value={key} key={key}>
-                {title}
-              </option>
-            ))}
-          </Select>
-          <Select label="Style" value={style} onChange={setStyle}>
-            {exerciseStylesOf(mode).map(([key, title]) => (
-              <option value={key} key={key}>
-                {title}
-              </option>
-            ))}
-          </Select>
-          <a
-            className="btn"
-            download={`${mode}-${style}.txt`}
-            href={`data:text/plain;charset=utf-8,${encodeURIComponent(textTemplate(mode, style))}`}
-          >
-            Tải mẫu đã chọn
-          </a>
-        </PracticeModal>
-      )}
-      <div className="practice-guide">
-        <Heading
-          title="Tự tạo một chặng học ✨"
-          description="Một tệp văn bản nhỏ, thật nhiều điều để khám phá."
-        />
-        <div className="guide-steps">
-          <article>
-            <b>01 · Chọn mẫu</b>
-            <p>
-              Tải mẫu .txt ở thanh Nav bên cạnh. Mở bằng Notepad hoặc trình soạn
-              văn bản, lưu mã hóa UTF-8.
-            </p>
-          </article>
-          <article>
-            <b>02 · Viết bài</b>
-            <p>
-              Đổi tên bài, câu hỏi và đáp án. Thêm EXERCISE để tạo nhiều bài
-              trong một tệp, hoặc chọn nhiều tệp cùng lúc.
-            </p>
-          </article>
-          <article>
-            <b>03 · Thử và lưu</b>
-            <p>
-              Trong Create, chọn “Nhập bài từ .txt”, chọn tệp, kiểm tra và làm
-              thử. Chỉ khi mọi bài hợp lệ, toàn bộ lô mới được lưu vào folde
-              đang chọn.
-            </p>
-          </article>
-        </div>
-        <section>
-          <h2>Hướng dẫn đầy đủ và toàn bộ mẫu</h2>
-          <p>
-            Bản tiếng Anh gồm quy tắc, hướng dẫn và đủ 7 dạng · 11 style. Bạn có
-            thể nhập trực tiếp tệp này để thử tất cả mẫu.
-          </p>
-          <div className="flex flex-wrap gap-3 my-4">
-            <Btn
-              icon="copy"
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(fullGuide);
-                  setCopyNotice("Đã sao chép toàn bộ hướng dẫn và mẫu.");
-                } catch {
-                  setCopyNotice(
-                    "Không thể sao chép tự động. Hãy chọn nội dung bên dưới để sao chép hoặc tải tệp.",
-                  );
-                }
-              }}
-            >
-              Sao chép toàn bộ
-            </Btn>
-            <a
-              className="btn"
-              download="practice-complete-guide.txt"
-              href={`data:text/plain;charset=utf-8,${encodeURIComponent(fullGuide)}`}
-            >
-              Tải toàn bộ .txt
-            </a>
-          </div>
-          <p role="status">{copyNotice}</p>
-          <details>
-            <summary>Đọc bản đầy đủ</summary>
-            <pre className="text-guide" tabIndex={0}>
-              {fullGuide}
-            </pre>
-          </details>
-        </section>
-        <section>
-          <h2>Quy tắc chung</h2>
-          <p>
-            Sau khi kiểm tra .txt, bạn có thể thêm MP3 hoặc hình ảnh cho từng
-            bài (không bắt buộc, tổng tối đa 200 MB/bài). Dùng icon mắt để làm
-            thử trước khi lưu. Tệp đính kèm được lưu riêng, không nằm trong bản
-            xuất .txt.
-          </p>
-          <pre className="text-guide">{TEXT_GUIDE}</pre>
-          <p>
-            Có thể xuống dòng trong QUESTION, INSTRUCTIONS, CONTEXT và
-            EXPLANATION bằng một dòng mới bắt đầu với <code>&gt; </code>. Ví dụ:{" "}
-            <code>&gt; Đây là dòng tiếp theo.</code>
-          </p>
-          <p>
-            STYLE phải thuộc đúng TYPE. Giữ các từ khóa viết hoa; nội dung phía
-            sau dấu hai chấm có thể dùng tiếng Việt, Anh hoặc Đức. Một lô nhập
-            tối đa 100 bài, mỗi bài tối đa 100 câu và tổng tệp tối đa 2 MB.
-          </p>
-        </section>
-        <section>
-          <h2>Mẫu cho từng dạng</h2>
-          <p>
-            Đáp án dùng để tự kiểm tra. Câu sai được làm lại, câu đúng tự chuyển
-            tiếp; người học chỉ lưu tiến độ, không lưu điểm.
-          </p>
-          {EXERCISE_TYPES.map(([mode, title, number]) => (
-            <article className="guide-example" key={mode}>
-              <h3>
-                {number} · {title}
-              </h3>
-              {exerciseStylesOf(mode).map(([style, name, hint]) => (
-                <details key={style}>
-                  <summary>{name}</summary>
-                  <p>{hint}</p>
-                  <pre className="text-guide">{textTemplate(mode, style)}</pre>
-                </details>
-              ))}
+      <div className="mx-auto grid w-full max-w-5xl gap-6 text-(--ink)">
+        <Heading title="Hướng dẫn tạo bài tập" />
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            [
+              "01",
+              "Chọn mẫu",
+              "7 dạng bài, 11 style. Chọn mẫu bên dưới để bắt đầu.",
+            ],
+            [
+              "02",
+              "Viết nội dung",
+              "Lưu tệp .txt dạng UTF-8. Thêm EXERCISE: để viết nhiều bài trong cùng tệp.",
+            ],
+            [
+              "03",
+              "Preview & lưu",
+              "Nhập tệp vào folde trong Create, kiểm tra rồi lưu. Có thể bổ sung ảnh và MP3.",
+            ],
+          ].map(([n, title, body]) => (
+            <article key={n} className={panel}>
+              <span className="text-sm font-bold text-(--accent)">{n}</span>
+              <h2 className="my-2 text-lg font-semibold">{title}</h2>
+              <p className="leading-7">{body}</p>
             </article>
           ))}
+        </div>
+        <section className={panel}>
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-xl font-semibold">Thư viện mẫu</h2>
+            <Btn icon="download" onClick={() => setDialog("full")}>
+              Tải toàn bộ hướng dẫn và mẫu
+            </Btn>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {EXERCISE_TYPES.map(([key, title, number]) => (
+              <button
+                type="button"
+                key={key}
+                className="flex items-center gap-4 rounded-2xl border border-(--line) bg-transparent p-4 text-left transition-transform hover:scale-[1.01] focus-visible:outline-2 focus-visible:outline-(--accent)"
+                onClick={() => {
+                  setMode(key);
+                  setStyle(exerciseStylesOf(key)[0][0]);
+                  setDialog("template");
+                }}
+              >
+                <span className="font-bold text-(--accent)">{number}</span>
+                <span className="flex-1 font-semibold">{title}</span>
+                <Icon name="arrow" />
+              </button>
+            ))}
+          </div>
         </section>
-        <section>
-          <h2>Sắp xếp góc học của bạn</h2>
-          <p>
-            Trong màn hình chính của Create, mở folde rồi chọn các bài để di
-            chuyển nhiều bài hoặc gom thành một folde. Kéo thẻ vào folde để
-            chuyển nhanh, hoặc dùng “Di chuyển” rồi chạm folde đích trên điện
-            thoại. Hai nút mũi tên đổi thứ tự bài trong folde. Có thể hoàn tác
-            lần di chuyển gần nhất.
+        <section className={panel}>
+          <h2 className="text-xl font-semibold">Định dạng nội dung</h2>
+          <p className="mt-2 leading-7">
+            Dùng trong hướng dẫn, đoạn đọc, giải thích và câu hỏi. Giữ đáp án và
+            từ tương tác ở dạng văn bản thuần.
           </p>
-          <p>
-            Chỉ chủ sở hữu được sửa, đổi tên, di chuyển hoặc xóa bài. Sửa nội
-            dung câu hỏi bắt đầu một tiến độ mới; đổi tên và di chuyển vẫn giữ
-            tiến độ đã học. Khi mở bài để sửa, tải bản .txt hiện tại để có bản
-            sao trước khi chỉnh.
+          <div className="my-4 grid gap-3 sm:grid-cols-2">
+            {["**Bold text**", "*Italic text*"].map((text) => (
+              <div
+                key={text}
+                className="flex items-center justify-between gap-3 rounded-2xl border border-(--line) p-4"
+              >
+                <div>
+                  <code className="text-sm">{text}</code>
+                  <p className="mt-2">
+                    <PracticeRichText>{text}</PracticeRichText>
+                  </p>
+                </div>
+                <Btn icon="copy" onClick={() => copy(text)}>
+                  Sao chép cú pháp
+                </Btn>
+              </div>
+            ))}
+          </div>
+          <div
+            className="grid grid-cols-5 gap-2 sm:grid-cols-10"
+            role="group"
+            aria-label="20 màu văn bản"
+          >
+            {Object.entries(TEXT_COLORS).map(([name, hex]) => (
+              <button
+                key={name}
+                type="button"
+                aria-pressed={color === name}
+                title={name}
+                aria-label={`Màu ${name}`}
+                onClick={() => setColor(name)}
+                className={`grid justify-items-center gap-2 rounded-xl border p-2 text-xs ${color === name ? "border-(--accent)" : "border-transparent"}`}
+              >
+                <span
+                  className="h-5 w-5 rounded-full ring-1 ring-current"
+                  style={{ backgroundColor: hex }}
+                />
+                {name}
+              </button>
+            ))}
+          </div>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-(--line) p-4">
+            <div>
+              <code className="text-sm">{colorExample}</code>
+              <p className="mt-2">
+                <PracticeRichText>{colorExample}</PracticeRichText>
+              </p>
+            </div>
+            <Btn icon="copy" onClick={() => copy(colorExample)}>
+              Sao chép màu đã chọn
+            </Btn>
+          </div>
+          <p className="mt-4 text-sm leading-7">
+            Đóng định dạng trước mỗi ô trống. Riêng dạng sửa lỗi, giữ câu hỏi ở
+            dạng thuần để người học chỉnh từng từ. Chọn màu phù hợp với nền bài
+            học.
           </p>
         </section>
+        <section className={panel}>
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-xl font-semibold">Quy tắc & tài liệu</h2>
+            <div className="flex gap-2">
+              <Btn icon="copy" onClick={() => copy(fullGuide)}>
+                Sao chép toàn bộ hướng dẫn và mẫu
+              </Btn>
+              <Download
+                text={fullGuide}
+                name="practice-complete-guide.txt"
+                label="Tải toàn bộ hướng dẫn và mẫu"
+              />
+              <Btn icon="eye" onClick={() => setDialog("rules")}>
+                Đọc quy tắc
+              </Btn>
+            </div>
+          </div>
+          <p className="mt-3 leading-7">
+            Từ khóa và cú pháp bằng tiếng Anh; nội dung có thể dùng bất kỳ ngôn
+            ngữ nào. Tối đa 100 bài mỗi lượt nhập, 100 câu mỗi bài, 2 MB văn
+            bản.
+          </p>
+          <p className="mt-2 leading-7">
+            Ảnh và MP3 là tùy chọn, tổng tối đa 200 MB/bài. Gắn cho cả bài hoặc
+            từng câu trong Media; tệp đính kèm không nằm trong bản .txt.
+          </p>
+        </section>
+        <p role="status" className="text-sm">
+          {notice}
+        </p>
       </div>
+      {dialog && (
+        <PracticeModal
+          title={
+            dialog === "template"
+              ? "Mẫu bài tập"
+              : dialog === "rules"
+                ? "Quy tắc .txt"
+                : "Hướng dẫn đầy đủ"
+          }
+          onClose={() => setDialog(null)}
+        >
+          {dialog === "template" && (
+            <Select label="Style" value={style} onChange={setStyle}>
+              {exerciseStylesOf(mode).map(([key, title]) => (
+                <option key={key} value={key}>
+                  {title}
+                </option>
+              ))}
+            </Select>
+          )}
+          <div className="flex gap-2">
+            <Btn
+              icon="copy"
+              onClick={() =>
+                copy(
+                  dialog === "template"
+                    ? template
+                    : dialog === "rules"
+                      ? TEXT_GUIDE
+                      : fullGuide,
+                )
+              }
+            >
+              Sao chép nội dung
+            </Btn>
+            <Download
+              text={dialog === "template" ? template : fullGuide}
+              name={
+                dialog === "template"
+                  ? `${mode}-${style}.txt`
+                  : "practice-complete-guide.txt"
+              }
+              label="Tải tệp .txt"
+            />
+          </div>
+          <p role="status" className="text-sm">
+            {notice}
+          </p>
+          {code(
+            dialog === "template"
+              ? template
+              : dialog === "rules"
+                ? TEXT_GUIDE
+                : fullGuide,
+          )}
+        </PracticeModal>
+      )}
     </Page>
   );
 }

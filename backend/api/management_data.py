@@ -71,12 +71,13 @@ def user_data(request, pk):
         if body(request).get('confirm') != user.username:
             raise ValueError('Nhập đúng tên tài khoản để xác nhận.')
         # Keep credentials and audit history; remove owned and personal learning data.
-        from users.models import Classroom, ClassroomAssignment
+        from users.models import Classroom, ClassroomAssignment, Theme
         ClassroomAssignment.objects.filter(assigned_by=user).delete()
         Classroom.members.through.objects.filter(user_id=user.pk).delete()
         counts = {kind: collection(kind, user).count() for kind in DATA}
         for kind in DATA:
             collection(kind, user).delete()
+        Theme.objects.filter(owner=user).delete()
         revoke_sessions(user)
         audit(request, user, 'Xóa toàn bộ dữ liệu học tập và hồ sơ; giữ tài khoản. ' + str(counts))
         return JsonResponse({'ok': True, 'deleted': counts})

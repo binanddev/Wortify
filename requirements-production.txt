@@ -1,0 +1,6 @@
+-c requirements-production.lock
+-r requirements.txt
+# Linux production server; development on Windows still uses requirements.txt.
+gunicorn>=23,<24
+psycopg[binary]>=3.2,<4
+whitenoise>=6.9,<7

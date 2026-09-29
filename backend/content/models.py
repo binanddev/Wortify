@@ -8,6 +8,7 @@ class SiteAppearance(models.Model):
 
 class BackendCheck(models.Model):
     """Browser observations, distinct from server error/audit logs."""
+    source = models.CharField(max_length=32, default='browser')
     token = models.UUIDField(unique=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
     checked_at = models.DateTimeField(db_index=True)

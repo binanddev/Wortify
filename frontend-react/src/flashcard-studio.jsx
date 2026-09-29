@@ -1,3 +1,5 @@
+import { SkipButton, AnswerReveal } from "./skip-controls";
+import { cardSolution } from "./skip-learning";
 import SpacedReview from "./spaced-review";
 import { useAnswerClock } from "./use-answer-clock";
 import { PracticeModal } from "./practice-workspace";
@@ -121,6 +123,9 @@ function Studio({ lang, id, userId, sound, data }) {
     [started, setStarted] = useState(0),
     [elapsed, setElapsed] = useState(0),
     [completed, setCompleted] = useState(false);
+  const [flashSkipped, setFlashSkipped] = useState(false);
+  const [flashEnded, setFlashEnded] = useState(false);
+  const [testSkipped, setTestSkipped] = useState({});
   const [test, setTest] = useState([]),
     [testAnswers, setTestAnswers] = useState({}),
     [testResult, setTestResult] = useState(null),
@@ -135,6 +140,11 @@ function Studio({ lang, id, userId, sound, data }) {
     (c) => !options.starredOnly || stars.includes(c.id),
   );
   const active = order[index];
+  const flashClock = useAnswerClock(
+    active?.id,
+    options.mode === "flash" && !flashSkipped,
+  );
+  useEffect(() => setFlashSkipped(false), [active?.id]);
   useEffect(() => {
     if (!options.starredOnly) return;
     setOrder((previous) => {
@@ -192,9 +202,14 @@ function Studio({ lang, id, userId, sound, data }) {
     return () => clearInterval(timer);
   }, [running, started, options.mode]);
   useEffect(() => {
-    if (running && options.mode === "learn" && elapsed >= options.minutes * 60)
+    if (
+      running &&
+      options.mode === "learn" &&
+      elapsed >= options.minutes * 60 &&
+      !feedback?.skipped
+    )
       setRunning(false);
-  }, [elapsed, options.minutes, running, options.mode]);
+  }, [elapsed, options.minutes, running, options.mode, feedback?.skipped]);
   useEffect(() => {
     const listener = (e) => {
       if (
@@ -237,11 +252,16 @@ function Studio({ lang, id, userId, sound, data }) {
       options: { ...options, ...v },
     });
     setOptions((o) => ({ ...o, ...v }));
-    if (v.mode) {
+    if (v.mode || v.types || v.answerWith || v.goal) {
+      setFlashEnded(false);
+      setFlashSkipped(false);
       setStarted(0);
       setElapsed(0);
       setRunning(false);
       setQuestion(null);
+      setFeedback(null);
+      setValue("");
+      setCompleted(false);
       setTest([]);
       setTestResult(null);
       setError("");
@@ -267,9 +287,16 @@ function Studio({ lang, id, userId, sound, data }) {
     setTurn(0);
     setResetLearning(false);
   };
+  const learningGoal = options.types.includes("written")
+    ? options.goal
+    : "quick";
   const chooseType = (card, records, t = 0) => {
     const p = records[card.id];
-    if (options.goal === "comprehensive" && (p?.misses || p?.streak >= 2))
+    if (
+      options.types.includes("written") &&
+      options.goal === "comprehensive" &&
+      (p?.misses || p?.streak >= 2)
+    )
       return "written";
     const enabled = options.types.filter((t) => t !== "matching");
     return enabled[t % enabled.length] || "written";
@@ -298,6 +325,7 @@ function Studio({ lang, id, userId, sound, data }) {
     setCompleted(false);
     if (options.mode === "test") {
       setTest(createTest(pool, pool.length, options.types, options.answerWith));
+      setTestSkipped({});
       setTestAnswers({});
       setTestChecked({});
       setTestResult(null);
@@ -313,9 +341,10 @@ function Studio({ lang, id, userId, sound, data }) {
       );
     }
   };
-  const submitLearn = (submittedValue = value) => {
-    if (!question || feedback?.correct) return;
-    const correct = checkQuestion(question, submittedValue, options),
+  const submitLearn = (submittedValue = value, skipped = false) => {
+    if (!question || feedback?.correct || feedback?.skipped) return;
+    const correct =
+        !skipped && checkQuestion(question, submittedValue, options),
       records = {
         ...progress,
         [question.id]: advanceProgress(
@@ -323,7 +352,7 @@ function Studio({ lang, id, userId, sound, data }) {
           correct,
           question.type,
           turn,
-          options.goal,
+          learningGoal,
         ),
       };
     records[question.id].lastStudied = new Date().toLocaleDateString("en-CA");
@@ -332,12 +361,12 @@ function Studio({ lang, id, userId, sound, data }) {
       card: question.id,
       correct,
       type: question.type,
-      goal: options.goal,
+      goal: learningGoal,
       response_ms: questionTimers.current[question.id]?.() ?? null,
     });
     setProgress(records);
     setValue(submittedValue);
-    setFeedback({ correct, expected: question.expected });
+    setFeedback({ correct, expected: question.expected, skipped });
     audio.feedback(correct);
     if (correct && options.speakAfterCorrect) {
       try {
@@ -348,6 +377,12 @@ function Studio({ lang, id, userId, sound, data }) {
     }
   };
   const next = () => {
+    if (elapsed >= options.minutes * 60) {
+      setRunning(false);
+      setFeedback(null);
+      sync.flush();
+      return;
+    }
     const t = turn + 1;
     setTurn(t);
     setFeedback(null);
@@ -369,27 +404,30 @@ function Studio({ lang, id, userId, sound, data }) {
       ),
     );
   };
-  const answerTest = (i, v, commit = false) => {
+  const answerTest = (i, v, commit = false, skipped = false) => {
     if (Object.hasOwn(testChecked, i) || testResult) return;
     const answers = { ...testAnswers, [i]: v };
     setTestAnswers(answers);
     const q = test[i];
     const complete =
+      skipped ||
       q.type === "choice" ||
       q.type === "truefalse" ||
       (q.type === "matching" && q.left.every((l) => v?.[l.id])) ||
       (q.type === "written" && commit && String(v || "").trim());
     if (!complete) return;
-    const correct = checkQuestion(q, v, options),
+    const correct = !skipped && checkQuestion(q, v, options),
       checked = { ...testChecked, [i]: correct };
     setTestChecked(checked);
+    if (skipped) setTestSkipped((previous) => ({ ...previous, [i]: true }));
     const observed =
       q.type === "matching"
         ? q.left.map((item) => ({
             id: Number(item.id),
             correct:
+              !skipped &&
               q.right.find((row) => row.id === v?.[item.id])?.text ===
-              q.right.find((row) => row.id === item.id)?.text,
+                q.right.find((row) => row.id === item.id)?.text,
           }))
         : [{ id: q.id, correct }];
     observed.forEach((item) =>
@@ -398,7 +436,7 @@ function Studio({ lang, id, userId, sound, data }) {
         card: item.id,
         correct: item.correct,
         type: q.type,
-        goal: options.goal,
+        goal: learningGoal,
         source: "test",
         response_ms:
           q.type === "matching"
@@ -656,8 +694,22 @@ function Studio({ lang, id, userId, sound, data }) {
       {options.mode === "review" ? (
         <SpacedReview lang={lang} id={id} userId={userId} />
       ) : options.mode === "flash" ? (
-        active ? (
-          <div className="studio-flash">
+        flashEnded ? (
+          <section className="work-paper">
+            <h2>Đã xem hết lượt thẻ</h2>
+            <Btn
+              icon="refresh"
+              onClick={() => {
+                setFlashEnded(false);
+                setIndex(0);
+                setFlashSkipped(false);
+              }}
+            >
+              Xem lại
+            </Btn>
+          </section>
+        ) : active ? (
+          <div className="studio-flash" ref={flashClock.root}>
             <Btn
               icon="star"
               className="star-button"
@@ -678,6 +730,44 @@ function Studio({ lang, id, userId, sound, data }) {
               }}
             />
             <div className="toolbar centered">
+              {flashSkipped ? (
+                <Btn
+                  icon="arrow"
+                  primary
+                  onClick={() => {
+                    if (index === order.length - 1) setFlashEnded(true);
+                    else step(1);
+                  }}
+                >
+                  Tiếp tục
+                </Btn>
+              ) : (
+                <SkipButton
+                  onClick={() => {
+                    setFlashSkipped(true);
+                    setFlipped(true);
+                    sync.enqueue("review", {
+                      deck: Number(id),
+                      card: active.id,
+                      correct: false,
+                      type: "flash",
+                      rating: 1,
+                      response_ms: flashClock.read(),
+                      goal: learningGoal,
+                    });
+                    setProgress((previous) => ({
+                      ...previous,
+                      [active.id]: advanceProgress(
+                        previous[active.id],
+                        false,
+                        "flash",
+                        0,
+                        learningGoal,
+                      ),
+                    }));
+                  }}
+                />
+              )}
               <Btn
                 icon="chevron_left"
                 isDisabled={index === 0}
@@ -786,9 +876,15 @@ function Studio({ lang, id, userId, sound, data }) {
                 }}
                 onCommit={() => submitLearn()}
                 feedback={feedback?.correct}
-                disabled={feedback?.correct}
+                disabled={feedback?.correct || feedback?.skipped}
               />
+              {feedback?.skipped && (
+                <AnswerReveal answers={cardSolution(question)} />
+              )}
               <div className="session-controls">
+                {!feedback?.correct && !feedback?.skipped && (
+                  <SkipButton onClick={() => submitLearn("", true)} />
+                )}
                 <Btn
                   primary
                   icon="arrow"
@@ -796,7 +892,7 @@ function Studio({ lang, id, userId, sound, data }) {
                   aria-label="Câu tiếp theo"
                   title="Câu tiếp theo"
                   onClick={next}
-                  isDisabled={!feedback?.correct}
+                  isDisabled={!feedback?.correct && !feedback?.skipped}
                 >
                   <span className="next-label">Tiếp tục</span>
                   <Icon name="arrow" />
@@ -835,7 +931,12 @@ function Studio({ lang, id, userId, sound, data }) {
                 Họ tên: ____________________ Ngày: ____________
               </p>
               {test.map((q, i) => (
-                <section className="work-paper" key={`${q.id}:${i}`}>
+                <section
+                  className="work-paper"
+                  id={`studio-test-${i}`}
+                  tabIndex={-1}
+                  key={`${q.id}:${i}`}
+                >
                   <h3>
                     Câu {i + 1} · {TYPES.find(([k]) => k === q.type)?.[1]}
                   </h3>
@@ -850,10 +951,35 @@ function Studio({ lang, id, userId, sound, data }) {
                     feedback={testChecked[i]}
                     disabled={Object.hasOwn(testChecked, i)}
                   />
+                  {testSkipped[i] && <AnswerReveal answers={cardSolution(q)} />}
+                  {!Object.hasOwn(testChecked, i) ? (
+                    <SkipButton onClick={() => answerTest(i, "", true, true)} />
+                  ) : (
+                    testSkipped[i] && (
+                      <Btn
+                        icon="arrow"
+                        onClick={() =>
+                          document
+                            .getElementById(
+                              i + 1 < test.length
+                                ? `studio-test-${i + 1}`
+                                : "studio-test-summary",
+                            )
+                            ?.focus()
+                        }
+                      >
+                        Tiếp tục
+                      </Btn>
+                    )
+                  )}
                 </section>
               ))}
               {testResult ? (
-                <section className="test-summary">
+                <section
+                  className="test-summary"
+                  id="studio-test-summary"
+                  tabIndex={-1}
+                >
                   <div
                     role="img"
                     aria-label={`${testResult.filter(Boolean).length}/${test.length} câu đúng`}

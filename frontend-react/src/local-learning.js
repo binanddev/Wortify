@@ -1,3 +1,4 @@
+export const SKIPPED_ANSWER = "__wortify_skipped__";
 export function normalize(value, options = {}, card = false) {
   let text = String(value ?? "").normalize("NFC").trim();
   if (options.ignore_case !== false) text = text.toLowerCase();
@@ -6,6 +7,7 @@ export function normalize(value, options = {}, card = false) {
   return text.replace(/\s+/gu, " ").trim();
 }
 export function gradeCard(q, answer) {
+  if (answer === SKIPPED_ANSWER) return {is_correct:false, skipped:true, target:q.target, card:q.card, card_id:q.card?.id, answer};
   const correct = q.mode === "flash" ? answer === "remember" : q.mode === "quiz" ? answer === q.meaning : [q.target, ...(q.alternatives || [])].some(v => normalize(v, q.grading, true) === normalize(answer, q.grading, true));
   return {is_correct:correct, target:q.target, card:q.card, answer, card_id:q.card?.id};
 }

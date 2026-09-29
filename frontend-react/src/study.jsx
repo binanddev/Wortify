@@ -1,3 +1,5 @@
+import { SkipButton } from "./skip-controls";
+import { SKIPPED_ANSWER } from "./skip-learning";
 import { useAnswerClock } from "./use-answer-clock";
 import { useLearningSync } from "./learning-sync";
 import { gradeCard } from "./local-learning";
@@ -110,6 +112,7 @@ function SessionContent({ initial, lang, token, sound }) {
     };
   }, [session.result, synced]);
   const send = (value) => {
+    if (!q || feedback) return;
     timings.current[q.token] = clock.read();
     savePreference(`${draftKey}:timings`, timings.current);
     const values = { ...answers, [q.token]: value };
@@ -234,11 +237,13 @@ function SessionContent({ initial, lang, token, sound }) {
                 </strong>
                 <p>
                   Bạn trả lời:{" "}
-                  {r.answer === "remember"
-                    ? "Đã nhớ"
-                    : r.answer === "again"
-                      ? "Cần ôn"
-                      : r.answer}
+                  {r.answer === SKIPPED_ANSWER
+                    ? "Đã xem đáp án"
+                    : r.answer === "remember"
+                      ? "Đã nhớ"
+                      : r.answer === "again"
+                        ? "Cần ôn"
+                        : r.answer}
                 </p>
                 <Feedback row={r} />
               </Glass>
@@ -249,7 +254,10 @@ function SessionContent({ initial, lang, token, sound }) {
             onSubmit={(e) => {
               e.preventDefault();
               for (const question of session.questions)
-                if (timers.current[question.token])
+                if (
+                  timers.current[question.token] &&
+                  answers[question.token] !== SKIPPED_ANSWER
+                )
                   timings.current[question.token] =
                     timers.current[question.token]();
               savePreference(`${draftKey}:timings`, timings.current);
@@ -264,23 +272,68 @@ function SessionContent({ initial, lang, token, sound }) {
               <TimedArea
                 key={question.token}
                 id={question.token}
-                enabled={!session.result}
+                enabled={
+                  !session.result && answers[question.token] !== SKIPPED_ANSWER
+                }
                 onTimer={(read) => {
                   timers.current[question.token] = read;
                 }}
               >
-                <Glass>
+                <Glass id={`session-test-${i}`} tabIndex={-1}>
                   <span className="eyebrow">CÂU {i + 1}</span>
                   <h2 className="question-text">{question.prompt}</h2>
                   <Answer
                     question={question}
-                    value={answers[question.token] || ""}
+                    value={
+                      answers[question.token] === SKIPPED_ANSWER
+                        ? ""
+                        : answers[question.token] || ""
+                    }
                     onChange={(v) =>
                       setAnswers({ ...answers, [question.token]: v })
                     }
-                    disabled={action.pending || !!session.result}
+                    disabled={
+                      action.pending ||
+                      !!session.result ||
+                      answers[question.token] === SKIPPED_ANSWER
+                    }
                   />
-                  <Feedback row={session.result?.rows[i]} />
+                  <Feedback
+                    row={
+                      session.result?.rows[i] ||
+                      (answers[question.token] === SKIPPED_ANSWER
+                        ? gradeCard(question, SKIPPED_ANSWER)
+                        : null)
+                    }
+                  />
+                  {answers[question.token] === SKIPPED_ANSWER ? (
+                    <Btn
+                      icon="arrow"
+                      onClick={() =>
+                        document
+                          .getElementById(
+                            i + 1 < session.questions.length
+                              ? `session-test-${i + 1}`
+                              : "session-test-submit",
+                          )
+                          ?.focus()
+                      }
+                    >
+                      Tiếp tục
+                    </Btn>
+                  ) : (
+                    <SkipButton
+                      onClick={() => {
+                        timings.current[question.token] =
+                          timers.current[question.token]?.() ?? null;
+                        savePreference(`${draftKey}:timings`, timings.current);
+                        setAnswers((previous) => ({
+                          ...previous,
+                          [question.token]: SKIPPED_ANSWER,
+                        }));
+                      }}
+                    />
+                  )}
                 </Glass>
               </TimedArea>
             ))}
@@ -318,6 +371,7 @@ function SessionContent({ initial, lang, token, sound }) {
               <Btn
                 primary
                 type="submit"
+                id="session-test-submit"
                 isLoading={action.pending}
                 isDisabled={
                   Object.values(answers).filter((v) => v.trim()).length !==
@@ -409,9 +463,17 @@ function SessionContent({ initial, lang, token, sound }) {
                 </form>
               </Glass>
             )}
+            {!feedback && (
+              <SkipButton
+                onClick={() => {
+                  setFlipped(true);
+                  send(SKIPPED_ANSWER);
+                }}
+              />
+            )}
             <Feedback row={feedback} />
             {feedback && (
-              <Btn primary onClick={continueSession}>
+              <Btn primary icon="arrow" onClick={continueSession}>
                 {next?.result ? "Xem tổng kết" : "Tiếp tục"}{" "}
                 <Icon name="arrow" />
               </Btn>
@@ -539,7 +601,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
         if (rec.state === "recording") rec.stop();
       }, 60000);
     });
-  const check = (submitted = answer) => {
+  const check = (submitted = answer, skipped = false) => {
     if (result) return;
     const observe = (card, correct, type, response_ms) =>
       sync.enqueue("review", {
@@ -552,7 +614,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
       });
     if (mode === "match") {
       const rows = group.map((v) => ({
-        is_correct: submitted[String(v.id)] === String(v.id),
+        is_correct: !skipped && submitted[String(v.id)] === String(v.id),
         term: v.german_text,
         meaning: v.vietnamese_meaning,
       }));
@@ -582,11 +644,15 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
         },
         actual,
       );
+      if (skipped) {
+        graded.is_correct = false;
+        graded.skipped = true;
+      }
       setResult(graded);
       observe(
         c,
         graded.is_correct,
-        mode === "quiz" ? "choice" : mode,
+        mode === "quiz" ? "choice" : mode === "speak" ? "flash" : mode,
         clock.read(),
       );
     }
@@ -688,6 +754,17 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
                 Kiểm tra
               </Btn>
             )}
+            {!result && (
+              <SkipButton
+                disabled={recording || action.pending}
+                onClick={() =>
+                  check(
+                    mode === "match" ? {} : mode === "order" ? [] : "",
+                    true,
+                  )
+                }
+              />
+            )}
             {result && (
               <>
                 {mode === "match" ? (
@@ -704,6 +781,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
                 )}
                 <Btn
                   primary
+                  icon="arrow"
                   onClick={() => {
                     setIndex((i) => i + (mode === "match" ? group.length : 1));
                     setAnswer(

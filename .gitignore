@@ -21,3 +21,7 @@ frontend-react/.vite/
 # Source digitization files are staging material, not deployment assets.
 book/
 .development-backups/
+
+# Deployment backups and local secrets
+backup/
+deploy/secrets/

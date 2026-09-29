@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import { navigate, useAction } from "./core";
 export function Icon({ name = "cards", size = 20 }) {
   const paths = {
+    skip: "M4 4l10 8-10 8V4z M18 4v16",
     image: "M3 3h18v18H3z M3 17l6-6 4 4 3-3 5 5 M8 7h.01",
     history: "M3 11a9 9 0 1 1 2 7 M3 4v7h7 M12 7v6l4 2",
     eye: "M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12 M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
@@ -604,15 +605,17 @@ export function Feedback({ row }) {
       transition={{ duration: 0.28 }}
       role="status"
     >
-      {row.is_correct === undefined
-        ? row.correct === null
-          ? "Đã lưu • Chờ người chấm"
-          : row.correct
-            ? "✓ Chính xác"
-            : "↻ Cần luyện thêm"
-        : row.is_correct
-          ? "✓ Đã ghi nhớ"
-          : "↻ Cần luyện thêm"}
+      {row.skipped
+        ? "Đã xem đáp án · Cần ôn lại"
+        : row.is_correct === undefined
+          ? row.correct === null
+            ? "Đã lưu • Chờ người chấm"
+            : row.correct
+              ? "✓ Chính xác"
+              : "↻ Cần luyện thêm"
+          : row.is_correct
+            ? "✓ Đã ghi nhớ"
+            : "↻ Cần luyện thêm"}
       {row.target && (
         <>
           <br />

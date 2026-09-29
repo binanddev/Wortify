@@ -1,21 +1,24 @@
-import { useRef } from "react";
-import { request, useResource, useAction } from "./core";
+import { useEffect, useRef, useState } from "react";
+import { request, useAction } from "./core";
 import { Btn, Status } from "./ui";
-export default function PersonalBackground() {
-  const resource = useResource("/api/me/background/"),
-    action = useAction(),
+export default function PersonalBackground({ backgroundUrl = "" }) {
+  const action = useAction(),
     input = useRef(null);
-  const changed = () => {
-    resource.reload();
-    window.dispatchEvent(new Event("appearance-updated"));
-  };
+  const [notice, setNotice] = useState(""),
+    [preview, setPreview] = useState("");
+  useEffect(
+    () => () => {
+      if (preview) URL.revokeObjectURL(preview);
+    },
+    [preview],
+  );
   return (
     <section className="grid gap-3">
-      <h3 className="font-semibold">Ảnh nền của bạn</h3>
-      {resource.data?.background_url && (
+      <h3 className="font-semibold">Nền mặc định cá nhân</h3>
+      {(preview || backgroundUrl) && (
         <img
-          src={resource.data.background_url}
-          alt="Ảnh nền riêng"
+          src={preview || backgroundUrl}
+          alt="Nền của phiên hiện tại hoặc ảnh vừa chọn"
           className="h-36 w-full rounded-2xl object-cover"
         />
       )}
@@ -29,37 +32,49 @@ export default function PersonalBackground() {
           e.target.value = "";
           if (!file) return;
           action.run(async (signal) => {
-            if (file.size > 8 * 1024 * 1024)
-              throw new Error("Ảnh tối đa 8 MB.");
+            if (file.size > 30 * 1024 * 1024)
+              throw new Error("Ảnh tối đa 30 MB.");
             const data = new FormData();
             data.append("image", file);
             await request("/api/me/background/", "POST", data, signal);
-            changed();
+            setPreview(URL.createObjectURL(file));
+            setNotice(
+              "Đã lưu. Hãy đăng xuất rồi đăng nhập lại để cập nhật nền. Nếu đang dùng theme, chọn nền mặc định trong mục Theme để dùng ảnh này.",
+            );
           });
         }}
       />
-      <div className="flash-icon-row">
+      <div className="flex items-center gap-2">
         <Btn
           icon="image"
           isLoading={action.pending}
           onClick={() => input.current.click()}
         >
-          Tải ảnh nền · JPG, PNG, WebP · tối đa 8 MB
+          Tải ảnh nền · JPG, PNG, WebP · tối đa 30 MB
         </Btn>
         <Btn
           icon="trash"
-          isDisabled={!resource.data?.background_url || action.pending}
+          isDisabled={action.pending}
           onClick={() =>
             action.run(async (signal) => {
               await request("/api/me/background/", "DELETE", undefined, signal);
-              changed();
+              setPreview("");
+              setNotice(
+                "Đã bỏ ảnh nền riêng. Hãy đăng xuất rồi đăng nhập lại để cập nhật.",
+              );
             })
           }
         >
-          Bỏ ảnh nền riêng
+          Bỏ nền mặc định cá nhân
         </Btn>
+        <span className="text-sm text-(--muted)">JPG · PNG · WebP · 30 MB</span>
       </div>
-      <Status error={action.error || resource.error} />
+      {notice && (
+        <p role="status" className="text-sm">
+          {notice}
+        </p>
+      )}
+      <Status error={action.error} />
     </section>
   );
 }

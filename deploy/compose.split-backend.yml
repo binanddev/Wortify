@@ -1,0 +1,6 @@
+# Combine with compose.backend.yml on the backend machine.
+# Bind a private/VPN address, never 0.0.0.0; firewall it to the frontend host.
+services:
+  backend:
+    ports:
+      - "${BACKEND_BIND_IP:?Set private BACKEND_BIND_IP}:${BACKEND_PORT:-8000}:8000"

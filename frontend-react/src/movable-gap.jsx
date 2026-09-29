@@ -1,3 +1,4 @@
+import { PracticeRichText } from "./practice-rich-text";
 import { useRef, useState, useEffect, useId } from "react";
 import { createPortal } from "react-dom";
 import { motion, LayoutGroup, useReducedMotion } from "framer-motion";
@@ -131,7 +132,12 @@ export function MovableGap({
         <div className="fluid-passage">
           {q.prompt.split(/(\{\{\d+\}\})/g).map((part, i) => {
             const match = part.match(/^\{\{(\d+)\}\}$/);
-            if (!match) return <span key={i}>{part}</span>;
+            if (!match)
+              return (
+                <span key={i}>
+                  <PracticeRichText>{part}</PracticeRichText>
+                </span>
+              );
             const index = Number(match[1]) - 1;
             const token = slots[index];
             const held = token && drag?.token.id === token.id;

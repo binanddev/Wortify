@@ -1,3 +1,4 @@
+import { PracticeRichText } from "./practice-rich-text";
 import { MovableGap } from "./movable-gap";
 import { useState, useEffect, useRef } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
@@ -212,7 +213,12 @@ export function GapPassage({
       <div className="fluid-passage">
         {text.map((t, i) => {
           const m = t.match(/^\{\{(\d+)\}\}$/);
-          if (!m) return <span key={i}>{t}</span>;
+          if (!m)
+            return (
+              <span key={i}>
+                <PracticeRichText>{t}</PracticeRichText>
+              </span>
+            );
           const n = Number(m[1]) - 1,
             key = `${q.id}_${n}`,
             row = rows.find((r) => r.key === key);
@@ -421,7 +427,9 @@ export function ErrorTokens({ q, value = [], onChange, disabled, uiStyle }) {
             {token.text}
           </button>
         ) : (
-          <span key={i}>{t}</span>
+          <span key={i}>
+            <PracticeRichText>{t}</PracticeRichText>
+          </span>
         );
       })}
     </div>
@@ -527,7 +535,7 @@ export function Categories({
                     disabled={disabled}
                     onClick={() => onAnswer(String(q.id), "")}
                   >
-                    {q.prompt} ×
+                    <PracticeRichText>{q.prompt}</PracticeRichText> ×
                   </Chip>
                 ))}
             </div>
@@ -545,7 +553,7 @@ export function Categories({
               disabled={disabled}
               onClick={() => setPicked(String(q.id))}
             >
-              {q.prompt}
+              <PracticeRichText>{q.prompt}</PracticeRichText>
             </Chip>
           ))}
       </div>
@@ -586,7 +594,7 @@ export function MatchPairs({
           >
             <b>{i + 1}</b>
             <span>
-              {q.prompt}
+              <PracticeRichText>{q.prompt}</PracticeRichText>
               {answers[q.id] && <small>↔ {answers[q.id]}</small>}
             </span>
           </button>

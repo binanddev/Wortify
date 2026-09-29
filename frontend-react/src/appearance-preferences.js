@@ -5,6 +5,18 @@ export function applyAppearance(p = {}) {
       hi,
       Math.max(lo, Number.isFinite(Number(v)) ? Number(v) : fallback),
     );
+  root.style.setProperty(
+    "--control-radius",
+    `${clamp(p.curvature ?? 18, 0, 32, 18)}px`,
+  );
+  root.style.setProperty(
+    "--glass-lens-scale",
+    String(1 + clamp(p.glassLens ?? 40, 0, 100, 40) / 5000),
+  );
+  root.style.setProperty(
+    "--glass-lens-blur",
+    `${clamp(p.glassLens ?? 40, 0, 100, 40) / 20}px`,
+  );
   const night = p.background === "night";
   root.dataset.background = p.background || "mist";
   root.style.setProperty(

@@ -1,5 +1,5 @@
+import { loadLoginSnapshot, clearLoginAppearance } from "./appearance-cache";
 import { applyAppearance } from "./appearance-preferences";
-import { useBackendMonitor } from "./backend-monitor";
 import FlashcardNavigation from "./flashcard-navigation";
 import { NavResize, useNavWidth } from "./nav-resize";
 import { Explore } from "./explore";
@@ -34,7 +34,6 @@ export default function App() {
     [user, setUser] = useState(undefined),
     [appearance, setAppearance] = useState({ background_url: "" }),
     [error, setError] = useState("");
-  useBackendMonitor(user?.id);
   useEffect(() => {
     applyAppearance(user?.preferences);
   }, [user]);
@@ -52,41 +51,69 @@ export default function App() {
       window.removeEventListener("session-expired", expire);
     };
   }, []);
+  const appearanceKey = user ? `${user.id}:${user.appearance_session}` : "";
+  const activeLanguage =
+    route.startsWith("/en") || route.startsWith("/manage") ? "en" : "de";
   useEffect(() => {
     if (!user) {
       setAppearance({ background_url: "" });
+      if (user === null) void clearLoginAppearance();
       return;
     }
-    const controller = new AbortController();
-    const load = async () => {
-      try {
-        const [shared, personal] = await Promise.all([
-          request("/api/site/appearance/", "GET", undefined, controller.signal),
-          request("/api/me/background/", "GET", undefined, controller.signal),
-        ]);
-        if (!controller.signal.aborted)
-          setAppearance(personal.background_url ? personal : shared);
-      } catch (error) {
-        if (error.name !== "AbortError") setAppearance({ background_url: "" });
-      }
-    };
-    load();
-    window.addEventListener("appearance-updated", load);
+    let disposed = false;
+    const urls = [];
+    loadLoginSnapshot(
+      appearanceKey,
+      () =>
+        request(
+          "/api/me/appearance/",
+          "GET",
+          undefined,
+          AbortSignal.timeout(20000),
+        ),
+      (url) =>
+        fetch(url, {
+          credentials: "same-origin",
+          cache: "no-store",
+          signal: AbortSignal.timeout(120000),
+        }),
+    )
+      .then((snapshot) => {
+        if (disposed) return;
+        const data = {};
+        for (const [lang, item] of Object.entries(snapshot.data)) {
+          const blob = snapshot.images[item.background_url];
+          const background_url = blob ? URL.createObjectURL(blob) : "";
+          if (background_url) urls.push(background_url);
+          data[lang] = { ...item, background_url };
+        }
+        setAppearance({ key: appearanceKey, data, warning: snapshot.warning });
+      })
+      .catch(() => {
+        if (!disposed)
+          setAppearance({
+            key: appearanceKey,
+            data: {},
+            warning: "Không thể lưu theme trên trình duyệt. Hãy đăng nhập lại.",
+          });
+      });
     return () => {
-      controller.abort();
-      window.removeEventListener("appearance-updated", load);
+      disposed = true;
+      urls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [user?.id]);
+  }, [appearanceKey, user === null]);
   useEffect(() => {
+    const url =
+      appearance.key === appearanceKey
+        ? appearance.data?.[activeLanguage]?.background_url
+        : "";
     document.documentElement.style.setProperty(
       "--site-bg-image",
-      appearance.background_url
-        ? `url("${appearance.background_url}")`
-        : "none",
+      url ? `url("${url}")` : "none",
     );
     return () =>
       document.documentElement.style.removeProperty("--site-bg-image");
-  }, [appearance.background_url]);
+  }, [appearance, appearanceKey, activeLanguage]);
   const parts = route.split("?")[0].split("/").filter(Boolean),
     lang = ["en", "de"].includes(parts[0]) ? parts[0] : null;
   if (error)
@@ -109,6 +136,13 @@ export default function App() {
       </div>
     );
   if (!user) return <Login onLogin={setUser} />;
+  if (appearance.key !== appearanceKey)
+    return (
+      <div className="welcome">
+        <span className="loader" />
+        <p>Đang chuẩn bị không gian…</p>
+      </div>
+    );
   if (parts[0] === "manage")
     return (
       <Workspace
@@ -287,8 +321,15 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       const p = {
         ...user.preferences,
         ...Object.assign({}, ...pending.map((e) => e.payload)),
+        ...appearance.data?.[lang]?.preferences,
+        ...readPreference(
+          `wortify:${user.id}:${user.appearance_session}:${lang}:live-display`,
+          {},
+        ),
       };
       return {
+        curvature: p.curvature ?? 18,
+        glassLens: p.glassLens ?? 40,
         navPinned: p.navPinned !== false,
         font: Math.min(60, Math.max(24, Number(p?.font) || 36)),
         sound: p?.sound === true,
@@ -309,6 +350,10 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
   const setPrefs = (v) => {
     setLocalPrefs(v);
     savePreference(prefKey, v);
+    savePreference(
+      `wortify:${user.id}:${user.appearance_session}:${lang}:live-display`,
+      v,
+    );
     setUser((u) => ({ ...u, preferences: v }));
     sync.enqueue(
       "preferences",
@@ -422,6 +467,8 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         {...{ lang, prefs, setPrefs }}
         userId={user.id}
         superuser={user.superuser}
+        staff={user.staff}
+        appearance={appearance}
       />
     );
   else

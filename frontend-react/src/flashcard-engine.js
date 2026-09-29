@@ -64,7 +64,7 @@ export function makeQuestion(
       ],
       random,
     );
-    if (q.options.length < 2) q.type = "written";
+    // Keep the selected format even when the deck has no distinct distractors.
   }
   if (type === "truefalse") {
     const others = cards.filter(
@@ -73,10 +73,7 @@ export function makeQuestion(
     q.truth = random() > 0.5 || !others.length;
     q.proposed = q.truth
       ? side.expected
-      : sides(
-          others[Math.floor(random() * others.length)],
-          selectedAnswerWith,
-        )
+      : sides(others[Math.floor(random() * others.length)], selectedAnswerWith)
           .expected;
   }
   if (type === "matching") {

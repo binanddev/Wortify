@@ -46,6 +46,18 @@ Use preview to try each exercise before saving; preview does not save progress.
 Every exercise must belong to a folder. Loose exercises are not allowed. English and German spaces are independent.
 The whole batch is saved only after validation. Errors include line numbers.
 
+TEXT FORMATTING
+Use **bold text**, *italic text*, and [color=blue]colored text[/color].
+Available colors: red, rose, pink, magenta, purple, violet, indigo, blue, sky, cyan,
+teal, emerald, green, lime, yellow, amber, orange, coral, slate, gray.
+Formatting is supported in INSTRUCTIONS, CONTEXT, EXPLANATION and display QUESTION text.
+Keep QUESTION plain for error_correction: its words are editable answer data.
+Keep ANSWER, BLANK, WORDS, PREFIX, GROUPS and titles plain (no formatting markers).
+Close formatting before each {{1}} blank; do not wrap a blank in formatting.
+Example: QUESTION: Choose the **correct verb**: She {{1}} [color=teal]every day[/color].
+Example: EXPLANATION: Use *-s* with [color=blue]he, she, it[/color].
+You can combine color with bold or italic; do not nest colors. HTML is not supported.
+
 TYPES AND STYLES
 cloze_drag_drop: drag_drop (move word tiles), tap_fill (tap words to fill blanks).
 error_correction: click_edit (edit incorrect text), cross_out (remove extra words).

@@ -336,8 +336,8 @@ input:-webkit-autofill {
   @apply [background:color-mix(in_srgb,var(--accent)_15%,transparent)] text-(--accent);
 }
 body {
-  @apply [background-image:var(--site-bg-image,none),var(--page-bg)];
-  @apply bg-cover;
+  @apply [background:var(--site-bg-image,none),var(--page-bg)];
+  @apply bg-cover bg-center bg-no-repeat [background-blend-mode:normal];
   @apply bg-fixed;
 }
 .sidebar::before {

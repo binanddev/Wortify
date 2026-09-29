@@ -1,0 +1,26 @@
+# Frontend-only machine. The browser still uses the public frontend origin for /api/.
+services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/frontend.Dockerfile
+    restart: unless-stopped
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST:?Set PUBLIC_HOST}
+      BACKEND_ORIGIN: ${BACKEND_ORIGIN:?Set private backend origin}
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-8080}:80"
+
+  frontend-monitor:
+    build:
+      context: ..
+      dockerfile: deploy/monitor.Dockerfile
+    restart: unless-stopped
+    environment:
+      BACKEND_ORIGIN: ${BACKEND_ORIGIN:?Set private backend origin}
+      PUBLIC_HOST: ${PUBLIC_HOST:?Set PUBLIC_HOST}
+      BACKEND_MONITOR_SECRET: ${BACKEND_MONITOR_SECRET:?Set BACKEND_MONITOR_SECRET}
+    volumes:
+      - monitor-state:/state
+volumes:
+  monitor-state:

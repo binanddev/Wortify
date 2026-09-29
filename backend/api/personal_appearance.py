@@ -23,8 +23,8 @@ def background(request):
     storage = profile.background_image.storage
     if request.method == 'POST':
         source = request.FILES.get('image')
-        if not source or not 0 < source.size <= 8 * 1024 * 1024:
-            raise ValueError('Chọn ảnh JPG, PNG hoặc WebP, tối đa 8 MB.')
+        if not source or not 0 < source.size <= 30 * 1024 * 1024:
+            raise ValueError('Chọn ảnh JPG, PNG hoặc WebP, tối đa 30 MB.')
         extension = source.name.rsplit('.', 1)[-1].lower()
         formats = {'jpg': ('jpeg_pipe','mjpeg'), 'jpeg': ('jpeg_pipe','mjpeg'), 'png': ('png_pipe','png'), 'webp': ('webp_pipe','webp')}
         if extension not in formats: raise ValueError('Chỉ nhận JPG, PNG hoặc WebP.')

@@ -38,6 +38,9 @@ def payload(session):
     return data
 
 def calculate(attempt, value):
+    if value == '__wortify_skipped__':
+        q = attempt.question
+        return {'is_correct': False, 'skipped': True, 'target': q['target'], 'card': q['card'], 'answer': value}
     if not isinstance(value, str) or not value.strip() or len(value) > 4000:
         raise ValueError('Hãy nhập câu trả lời hợp lệ.')
     q = attempt.question

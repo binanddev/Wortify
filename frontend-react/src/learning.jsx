@@ -1,3 +1,4 @@
+import ThemeLibrary from "./theme-library";
 import PersonalBackground from "./personal-background";
 import { useLearningSync, pendingLearning } from "./learning-sync";
 import Appearance from "./admin/Appearance";
@@ -14,20 +15,46 @@ import {
   Select,
 } from "./ui";
 export { Community } from "./community";
-export function Settings({ lang, prefs, setPrefs, superuser, userId }) {
+export function Settings({
+  lang,
+  prefs,
+  setPrefs,
+  superuser,
+  userId,
+  staff,
+  appearance,
+}) {
   const resource = useResource(endpoint(lang, "settings/"));
   return (
     <Loading resource={resource}>
       {(data) => (
         <SettingsContent
-          {...{ lang, prefs, setPrefs, data, superuser, userId }}
+          {...{
+            lang,
+            prefs,
+            setPrefs,
+            data,
+            superuser,
+            userId,
+            staff,
+            appearance,
+          }}
         />
       )}
     </Loading>
   );
 }
 
-function SettingsContent({ lang, prefs, setPrefs, data, superuser, userId }) {
+function SettingsContent({
+  lang,
+  prefs,
+  setPrefs,
+  data,
+  superuser,
+  userId,
+  staff,
+  appearance,
+}) {
   const sync = useLearningSync(userId, lang);
   const [values, setValues] = useState(() => ({
     ...data,
@@ -50,7 +77,28 @@ function SettingsContent({ lang, prefs, setPrefs, data, superuser, userId }) {
       <div className="grid two">
         <Glass>
           <h2>Hiển thị & âm thanh</h2>
-          <PersonalBackground />
+          <ThemeLibrary {...{ prefs, lang }} staff={staff || superuser} />
+          <PersonalBackground
+            backgroundUrl={appearance?.data?.[lang]?.background_url}
+          />
+          <Status error={appearance?.warning} />
+          {[
+            ["curvature", "Độ cong", 32, 18],
+            ["glassLens", "Độ lúp kính", 100, 40],
+          ].map(([key, label, max, fallback]) => (
+            <label className="range-label" key={key}>
+              {label} <strong>{prefs[key] ?? fallback}</strong>
+              <input
+                type="range"
+                min="0"
+                max={max}
+                value={prefs[key] ?? fallback}
+                onChange={(e) =>
+                  setPrefs({ ...prefs, [key]: Number(e.target.value) })
+                }
+              />
+            </label>
+          ))}
           <div className="flex items-center gap-3">
             <Field
               label="Màu chữ"
@@ -235,7 +283,9 @@ function SettingsContent({ lang, prefs, setPrefs, data, superuser, userId }) {
           </div>
         </Glass>
       </div>
-      {superuser && <Appearance />}
+      {superuser && (
+        <Appearance backgroundUrl={appearance?.data?.[lang]?.background_url} />
+      )}
     </Page>
   );
 }

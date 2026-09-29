@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useResource } from "../core";
 import { Btn, Loading } from "../ui";
 export default function BackendLogs() {
@@ -7,10 +7,6 @@ export default function BackendLogs() {
   const resource = useResource(
     `/api/manage/monitor/?page=${page}&failures=${failures ? 1 : 0}`,
   );
-  useEffect(() => {
-    const timer = setInterval(resource.reload, 600000);
-    return () => clearInterval(timer);
-  }, []);
   const labels = {
     timeout: "Quá thời gian chờ",
     network: "Lỗi mạng",
@@ -38,8 +34,8 @@ export default function BackendLogs() {
         </div>
       </div>
       <p className="text-sm text-(--muted)">
-        Trình duyệt đang mở kiểm tra mỗi 10 phút. Đây là báo cáo kết nối từ
-        thiết bị, không phải nhật ký lỗi nội bộ server. Giữ log 30 ngày.
+        Máy chủ frontend kiểm tra backend mỗi 10 phút, không phụ thuộc người
+        dùng. Giữ log 30 ngày.
       </p>
       <Loading resource={resource}>
         {(data) => (
@@ -51,7 +47,7 @@ export default function BackendLogs() {
                   className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--line) p-3"
                 >
                   <div>
-                    <strong>{log.user}</strong>
+                    <strong>{log.source}</strong>
                     <p className="text-sm">
                       {new Date(log.at).toLocaleString("vi-VN")}
                     </p>

@@ -82,13 +82,15 @@ export function PracticeHub({ lang, id, userId, sound }) {
         <div className="learning-navigation">
           <div className="workspace-search">
             <Field label="Tìm bài để học" value={query} onChange={setQuery} />
+          </div>
+          <div className="flex justify-start">
             <Link
               to={`${practiceRoutes(lang).learn}/all`}
               className="workspace-browse"
               title="Kho bài tập của bạn"
               aria-label="Kho bài tập của bạn"
             >
-              <Icon name="cards" size={20} />
+              <Icon name="home" size={22} />
             </Link>
           </div>
           <Status error={resource.error} />
