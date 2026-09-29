@@ -1,3 +1,5 @@
+import SpacedReview from "./spaced-review";
+import { useAnswerClock } from "./use-answer-clock";
 import { PracticeModal } from "./practice-workspace";
 import { useLearningSync, pendingLearning } from "./learning-sync";
 import { useEffect, useRef, useState } from "react";
@@ -126,6 +128,7 @@ function Studio({ lang, id, userId, sound, data }) {
     [error, setError] = useState(""),
     [sessionCards, setSessionCards] = useState([]),
     [resetLearning, setResetLearning] = useState(false);
+  const questionTimers = useRef({});
   const audio = useSound(sound, lang),
     startSides = useRef({});
   const pool = data.cards.filter(
@@ -330,6 +333,7 @@ function Studio({ lang, id, userId, sound, data }) {
       correct,
       type: question.type,
       goal: options.goal,
+      response_ms: questionTimers.current[question.id]?.() ?? null,
     });
     setProgress(records);
     setValue(submittedValue);
@@ -348,20 +352,7 @@ function Studio({ lang, id, userId, sound, data }) {
     setTurn(t);
     setFeedback(null);
     setValue("");
-    const nextProgress = {
-      ...progress,
-      ...(question
-        ? {
-            [question.id]: advanceProgress(
-              progress[question.id],
-              feedback?.correct,
-              question.type,
-              turn,
-              options.goal,
-            ),
-          }
-        : {}),
-    };
+    const nextProgress = progress;
     if (sessionCards.every((c) => nextProgress[c.id]?.stage === "mastered")) {
       setRunning(false);
       setCompleted(true);
@@ -392,6 +383,29 @@ function Studio({ lang, id, userId, sound, data }) {
     const correct = checkQuestion(q, v, options),
       checked = { ...testChecked, [i]: correct };
     setTestChecked(checked);
+    const observed =
+      q.type === "matching"
+        ? q.left.map((item) => ({
+            id: Number(item.id),
+            correct:
+              q.right.find((row) => row.id === v?.[item.id])?.text ===
+              q.right.find((row) => row.id === item.id)?.text,
+          }))
+        : [{ id: q.id, correct }];
+    observed.forEach((item) =>
+      sync.enqueue("review", {
+        deck: Number(id),
+        card: item.id,
+        correct: item.correct,
+        type: q.type,
+        goal: options.goal,
+        source: "test",
+        response_ms:
+          q.type === "matching"
+            ? null
+            : (questionTimers.current[`test:${i}`]?.() ?? null),
+      }),
+    );
     audio.feedback(correct);
     if (Object.keys(checked).length === test.length) {
       const results = test.map((_, j) => checked[j]);
@@ -417,6 +431,7 @@ function Studio({ lang, id, userId, sound, data }) {
             ["flash", "cards", "Thẻ"],
             ["learn", "spark", "Học"],
             ["test", "exercise", "Kiểm tra"],
+            ["review", "history", "Ôn đến hạn"],
           ].map(([mode, icon, label]) => (
             <button
               key={mode}
@@ -428,41 +443,43 @@ function Studio({ lang, id, userId, sound, data }) {
             </button>
           ))}
         </div>
-        <div className="flash-icon-row">
-          <Btn
-            icon="star"
-            aria-pressed={options.starredOnly}
-            onClick={() => patch({ starredOnly: !options.starredOnly })}
-          >{`Chỉ thẻ gắn sao · ${stars.length}`}</Btn>
-          <Btn
-            icon="shuffle"
-            aria-pressed={options.shuffle}
-            onClick={() => patch({ shuffle: !options.shuffle })}
-          >
-            Trộn thẻ
-          </Btn>
-          <Btn icon="settings" onClick={() => setSettingsOpen(true)}>
-            Tùy chọn học
-          </Btn>
-          <Link
-            className="btn flash-icon-link"
-            title="Quản lý thuật ngữ"
-            aria-label="Quản lý thuật ngữ"
-            to={`/${lang}/flashcard/deck/${id}/edit`}
-          >
-            <Icon name="edit" />
-          </Link>
-          {options.mode !== "flash" && (
-            <Btn primary icon={running ? "refresh" : "play"} onClick={begin}>
-              {running ? "Tạo lại phiên học" : "Bắt đầu học"}
+        {options.mode !== "review" && (
+          <div className="flash-icon-row">
+            <Btn
+              icon="star"
+              aria-pressed={options.starredOnly}
+              onClick={() => patch({ starredOnly: !options.starredOnly })}
+            >{`Chỉ thẻ gắn sao · ${stars.length}`}</Btn>
+            <Btn
+              icon="shuffle"
+              aria-pressed={options.shuffle}
+              onClick={() => patch({ shuffle: !options.shuffle })}
+            >
+              Trộn thẻ
             </Btn>
-          )}
-          {options.mode === "test" && test.length > 0 && (
-            <Btn icon="print" onClick={() => window.print()}>
-              In đề / Lưu PDF
+            <Btn icon="settings" onClick={() => setSettingsOpen(true)}>
+              Tùy chọn học
             </Btn>
-          )}
-        </div>
+            <Link
+              className="btn flash-icon-link"
+              title="Quản lý thuật ngữ"
+              aria-label="Quản lý thuật ngữ"
+              to={`/${lang}/flashcard/deck/${id}/edit`}
+            >
+              <Icon name="edit" />
+            </Link>
+            {options.mode !== "flash" && (
+              <Btn primary icon={running ? "refresh" : "play"} onClick={begin}>
+                {running ? "Tạo lại phiên học" : "Bắt đầu học"}
+              </Btn>
+            )}
+            {options.mode === "test" && test.length > 0 && (
+              <Btn icon="print" onClick={() => window.print()}>
+                In đề / Lưu PDF
+              </Btn>
+            )}
+          </div>
+        )}
       </SidebarTools>
       {settingsOpen && (
         <PracticeModal
@@ -636,7 +653,9 @@ function Studio({ lang, id, userId, sound, data }) {
         </PracticeModal>
       )}
       <Status error={error} />
-      {options.mode === "flash" ? (
+      {options.mode === "review" ? (
+        <SpacedReview lang={lang} id={id} userId={userId} />
+      ) : options.mode === "flash" ? (
         active ? (
           <div className="studio-flash">
             <Btn
@@ -753,6 +772,9 @@ function Studio({ lang, id, userId, sound, data }) {
               <QuestionUI
                 key={`${turn}:${question.id}`}
                 q={question}
+                onTimer={(read) => {
+                  questionTimers.current[question.id] = read;
+                }}
                 value={value}
                 onChange={(v) => {
                   setValue(v);
@@ -819,6 +841,9 @@ function Studio({ lang, id, userId, sound, data }) {
                   </h3>
                   <QuestionUI
                     q={q}
+                    onTimer={(read) => {
+                      questionTimers.current[`test:${i}`] = read;
+                    }}
                     value={testAnswers[i]}
                     onChange={(v) => answerTest(i, v)}
                     onCommit={() => answerTest(i, testAnswers[i], true)}
@@ -868,12 +893,25 @@ function Studio({ lang, id, userId, sound, data }) {
     </Page>
   );
 }
-function QuestionUI({ q, value, onChange, disabled, feedback, onCommit }) {
+function QuestionUI({
+  q,
+  value,
+  onChange,
+  disabled,
+  feedback,
+  onCommit,
+  onTimer,
+}) {
+  const clock = useAnswerClock(q.id, !disabled);
+  useEffect(() => {
+    onTimer?.(clock.read);
+  });
   const checked = typeof feedback === "boolean";
   const answerClass = (answer, correct) =>
     `answer-option ${checked && correct ? "answer-correct" : checked && value === answer ? "answer-wrong" : value === answer ? "selected" : ""}`;
   return (
     <div
+      ref={clock.root}
       className={`flash-question ${checked ? (feedback ? "answer-right" : "answer-error") : ""}`}
     >
       <h2>{q.prompt}</h2>

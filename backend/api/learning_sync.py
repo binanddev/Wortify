@@ -138,22 +138,22 @@ def apply_event(request,event):
                 if type(data.get('value')) is not bool:raise ValueError('Trạng thái sao không hợp lệ.')
                 if stamp>=state.stars.get(key,{}).get('at',''):state.stars[key]={'value':data['value'],'at':stamp}
             else:
-                if type(data.get('correct')) is not bool or data.get('type') not in ('choice','written','truefalse'):raise ValueError('Lượt học không hợp lệ.')
+                if type(data.get('correct')) is not bool or data.get('type') not in ('choice','written','truefalse','matching','flash','spell','order','write'):raise ValueError('Lượt học không hợp lệ.')
                 correct=data['correct'];p=state.progress.get(key,{'hits':0,'misses':0,'streak':0,'written':False})
                 p['hits']=p.get('hits',0)+int(correct);p['misses']=p.get('misses',0)+int(not correct)
                 p['streak']=p.get('streak',0)+1 if correct else 0;p['written']=p.get('written',False) or (correct and data['type']=='written')
                 p['stage']='mastered' if p['streak']>=3 and (data.get('goal')!='comprehensive' or p['written']) else 'familiar' if p['hits'] else 'new'
                 p['lastStudied']=timezone.localtime(parse_datetime(stamp)).date().isoformat();state.progress[key]=p
                 progress,_=StudyProgress.objects.get_or_create(user=request.user,card_id=card)
-                progress.correct_count+=int(correct);progress.incorrect_count+=int(not correct)
-                progress.state='mastered' if p['stage']=='mastered' else 'learning' if correct else 'weak'
-                progress.interval_days=min(30,2**min(p['streak']-2,5)) if p['stage']=='mastered' else 0
-                progress.due_at=timezone.now()+timedelta(days=progress.interval_days,minutes=0 if progress.interval_days else 10 if correct else 1)
-                progress.repetition_count+=1;progress.lapse_count+=int(not correct)
-                progress.last_reviewed_at=timezone.now();progress.last_mode='learn';progress.save()
+                from cards.services.spaced import review
+                review(progress,correct,data['type'],parse_datetime(stamp),data.get('response_ms'),data.get('rating'),state.options.get('srs',{}))
+                progress.save()
         elif kind=='options':
             options=data.get('options')
             if not isinstance(options,dict) or len(str(options))>10000:raise ValueError('Tùy chọn không hợp lệ.')
+            # FSRS options are validated and owned by the review settings endpoint.
+            options.pop('srs',None)
+            if 'srs' in state.options:options['srs']=state.options['srs']
             if stamp>=state.options_at:state.options=options;state.options_at=stamp
         elif kind=='test':
             results=data.get('results')

@@ -116,6 +116,8 @@ function ExploreContent({ lang, userId }) {
   const [filters, setFilters] = useState(false);
   const [preview, setPreview] = useState(null);
   const [notice, setNotice] = useState("");
+  const [copying, setCopying] = useState(false);
+  const [copied, setCopied] = useState({});
   const [view, setView] = useState(() =>
     readPreference(`wortify:explore-view:${lang}`, "grid") === "list"
       ? "list"
@@ -271,7 +273,32 @@ function ExploreContent({ lang, userId }) {
     search({ folder: id, q: "", mode: "" });
   };
   const isPinned = (node) => pinned.includes(node.root_id || node.id);
-  const toggle = (node) => {
+  const toggle = async (node) => {
+    if (!node.can_edit) {
+      if (copying) return;
+      if (copied[node.id]) {
+        navigate(`${routes.studio}/${copied[node.id]}`);
+        return;
+      }
+      setCopying(true);
+      try {
+        const result = await request(
+          endpoint(lang, `practice-hub/nodes/${node.id}/copy/`),
+          "POST",
+          {},
+        );
+        setCopied((previous) => ({
+          ...previous,
+          [node.id]: result.id,
+        }));
+        setNotice(`Đã sao chép “${result.title}” vào My Exercise Library.`);
+      } catch (error) {
+        setNotice(error.message);
+      } finally {
+        setCopying(false);
+      }
+      return;
+    }
     const rootId = node.root_id || node.id;
     const exists = isPinned(node);
     setPinned((previous) => {
@@ -283,6 +310,14 @@ function ExploreContent({ lang, userId }) {
     });
     setNotice(exists ? "Đã bỏ khỏi workspace." : "Đã thêm vào workspace.");
   };
+  const actionLabel = (node) =>
+    node.can_edit
+      ? isPinned(node)
+        ? "Bỏ khỏi workspace"
+        : "Thêm vào workspace"
+      : copied[node.id]
+        ? "Mở bản sao trong My Exercise Library"
+        : "Sao chép vào My Exercise Library";
   const items = results.key === resultKey ? results.rows : [];
   const loading = results.loading && !items.length;
   const error = results.error;
@@ -399,16 +434,21 @@ function ExploreContent({ lang, userId }) {
             {current && (
               <Btn
                 isIconOnly
-                title={
-                  isPinned(current) ? "Bỏ khỏi workspace" : "Thêm vào workspace"
-                }
-                aria-label={
-                  isPinned(current) ? "Bỏ khỏi workspace" : "Thêm vào workspace"
-                }
+                title={actionLabel(current)}
+                aria-label={actionLabel(current)}
                 aria-pressed={isPinned(current)}
+                isDisabled={copying}
                 onClick={() => toggle(current)}
               >
-                <Icon name={isPinned(current) ? "check" : "plus"} />
+                <Icon
+                  name={
+                    current.can_edit
+                      ? isPinned(current)
+                        ? "check"
+                        : "plus"
+                      : "copy"
+                  }
+                />
               </Btn>
             )}
           </div>
@@ -480,7 +520,19 @@ function ExploreContent({ lang, userId }) {
             </section>
           )}
         </div>
-        {!query && !parent && results.suggestions?.length > 0 && <div className="flex flex-wrap gap-2" aria-label="Gợi ý tìm kiếm">{results.suggestions.map(tag => <button key={tag} className="pill" onClick={() => submitSearch(tag, true)}>#{tag}</button>)}</div>}
+        {!query && !parent && results.suggestions?.length > 0 && (
+          <div className="flex flex-wrap gap-2" aria-label="Gợi ý tìm kiếm">
+            {results.suggestions.map((tag) => (
+              <button
+                key={tag}
+                className="pill"
+                onClick={() => submitSearch(tag, true)}
+              >
+                #{tag}
+              </button>
+            ))}
+          </div>
+        )}
         <Status error={error} />
         {notice && (
           <p role="status" className="text-sm text-(--muted)">
@@ -585,20 +637,21 @@ function ExploreContent({ lang, userId }) {
                         </Btn>
                         <Btn
                           isIconOnly
-                          title={
-                            isPinned(node)
-                              ? "Bỏ khỏi workspace"
-                              : "Thêm vào workspace"
-                          }
-                          aria-label={
-                            isPinned(node)
-                              ? "Bỏ khỏi workspace"
-                              : "Thêm vào workspace"
-                          }
+                          title={actionLabel(node)}
+                          aria-label={actionLabel(node)}
                           aria-pressed={isPinned(node)}
+                          isDisabled={copying}
                           onClick={() => toggle(node)}
                         >
-                          <Icon name={isPinned(node) ? "check" : "plus"} />
+                          <Icon
+                            name={
+                              node.can_edit
+                                ? isPinned(node)
+                                  ? "check"
+                                  : "plus"
+                                : "copy"
+                            }
+                          />
                         </Btn>
                       </div>
                     </motion.article>

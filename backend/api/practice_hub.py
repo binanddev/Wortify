@@ -12,7 +12,7 @@ from copy import deepcopy
 
 def visible(request):
     access=Q(owner=request.user)|Q(visibility='public')
-    for prefix in ('','parent__','parent__parent__','parent__parent__parent__'):
+    for prefix in ('parent__'*depth for depth in range(11)):
         access |= Q(**{prefix+'class_assignments__classroom__members':request.user})
     return PracticeNode.objects.filter(language=request.language).filter(access).distinct()
 
@@ -67,7 +67,7 @@ def save_node(request,data,node=None):
         if p.pk in seen or (node and p.pk==node.pk):raise ValueError('Không chuyển thư mục vào chính nó hoặc con của nó.')
         seen.add(p.pk);depth+=1;p=p.parent
     height=tree_height(node) if node else (1 if kind=='folder' else 0)
-    if depth+height>3:raise ValueError('Tối đa 3 cấp thư mục, kể cả thư mục con được di chuyển.')
+    if depth+height>10:raise ValueError('Tối đa 10 cấp thư mục, kể cả thư mục con được di chuyển.')
     previous_payload=deepcopy(node.payload) if node else None
     payload=validate_payload(kind,data.get('payload',node.payload if node else {}))
     tags=data.get('tags',payload.get('tags',[]))
@@ -127,7 +127,7 @@ def import_nodes(request):
     if not isinstance(rows,list) or not 1<=len(rows)<=100:raise ValueError('JSON cần mảng nodes gồm 1–100 mục.')
     created=[]
     def add(items,parent,depth=0):
-        if depth>3:raise ValueError('Tối đa 3 cấp thư mục.')
+        if depth>10:raise ValueError('Tối đa 10 cấp thư mục.')
         for row in items:
             if len(created)>=500:raise ValueError('Tối đa 500 nội dung trong một lần nhập.')
             if not isinstance(row,dict):raise ValueError('Mỗi mục phải là đối tượng.')

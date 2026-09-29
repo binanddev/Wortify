@@ -41,7 +41,7 @@ Each field occurs once per exercise/question except BLANK, which repeats for eac
 Limits per import: 100 exercises, 100 questions per exercise, 2 MB total UTF-8 text.
 Save as .txt, open Create, choose or create a root folder, import files, validate, preview, then save.
 Optional attachments: add MP3, PNG, JPG, WebP or GIF in Create after validating the text.
-Up to 20 files, 200 MB total per exercise. Attachments are stored separately and are not embedded in .txt exports.
+Up to 200 files, 200 MB total per exercise. Assign files to the whole exercise or individual questions in the Media dialog. Attachments are stored separately and are not embedded in .txt exports.
 Use preview to try each exercise before saving; preview does not save progress.
 Every exercise must belong to a folder. Loose exercises are not allowed. English and German spaces are independent.
 The whole batch is saved only after validation. Errors include line numbers.

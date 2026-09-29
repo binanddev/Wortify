@@ -1,3 +1,4 @@
+import { ExerciseMediaDialog } from "./exercise-media";
 import { PracticeModal } from "./practice-workspace";
 import { useEffect, useState } from "react";
 import {
@@ -58,6 +59,7 @@ export function ExerciseStudio({
   );
   const [query, setQuery] = useState("");
   const [choosingFolder, setChoosingFolder] = useState(false);
+  const [mediaOpen, setMediaOpen] = useState(false);
   const [folderDraft, setFolderDraft] = useState(null);
   const [settingId, setSettingId] = useState(null);
   const [removing, setRemoving] = useState(false);
@@ -391,6 +393,21 @@ export function ExerciseStudio({
           </>
         ) : null}
       </section>
+      {current?.kind === "exercise" && !edit && (
+        <SidebarTools navOnly>
+          <Btn icon="image" onClick={() => setMediaOpen(true)}>
+            Quản lý MP3 và hình ảnh
+          </Btn>
+        </SidebarTools>
+      )}
+      {mediaOpen && current?.kind === "exercise" && (
+        <ExerciseMediaDialog
+          node={current}
+          lang={lang}
+          onClose={() => setMediaOpen(false)}
+          onSaved={refresh}
+        />
+      )}
       {preview && (
         <PracticeModal title={preview.title} onClose={() => setPreviewId(null)}>
           <div className="flex justify-end">

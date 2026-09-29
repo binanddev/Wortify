@@ -94,6 +94,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
           <Status error={resource.error} />
           <nav aria-label="Danh sách bài học">
             <PracticeTree
+              compact={false}
               nodes={workspace}
               base={practiceRoutes(lang).learn}
               currentId={id}

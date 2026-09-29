@@ -107,7 +107,7 @@ def answer(request, token):
     a = get_object_or_404(StudyAttempt, token=data['question'], user=request.user)
     pending = next((row for row in attempts(session) if not row.completed_at), None)
     if not a.completed_at and (pending is None or pending.pk != a.pk): raise ValueError('Hãy trả lời câu hiện tại trước.')
-    result = a.result if a.completed_at else finish(a, data.get('answer',''), calculate(a, data.get('answer','')))
+    result = a.result if a.completed_at else finish(a, data.get('answer',''), calculate(a, data.get('answer','')), data.get('response_ms'), use_fsrs='response_ms' in data)
     if not StudyAttempt.objects.filter(token__in=session.tokens, completed_at__isnull=True).exists(): summarize(session)
     return JsonResponse({'feedback': result, 'session': payload(session)})
 
@@ -117,10 +117,13 @@ def answer(request, token):
 def finish_test(request, token):
     session = owned(request, token)
     if session.result: return JsonResponse(payload(session))
-    values = body(request).get('answers', {})
+    data = body(request)
+    values = data.get('answers', {})
+    timings = data.get('timings', {})
+    if not isinstance(timings,dict):raise ValueError('Thời gian không hợp lệ.')
     if not isinstance(values, dict) or set(values) != set(session.tokens): raise ValueError('Hãy trả lời đủ các câu trước khi nộp.')
     graded = [(a, calculate(a, values[str(a.token)])) for a in attempts(session)]
     for a, result in graded:
-        if not a.completed_at: finish(a, values[str(a.token)], result)
+        if not a.completed_at: finish(a, values[str(a.token)], result, timings.get(str(a.token)), use_fsrs=str(a.token) in timings)
     summarize(session)
     return JsonResponse(payload(session))

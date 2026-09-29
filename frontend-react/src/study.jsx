@@ -1,3 +1,5 @@
+import { useAnswerClock } from "./use-answer-clock";
+import { useLearningSync } from "./learning-sync";
 import { gradeCard } from "./local-learning";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -66,6 +68,9 @@ function SessionContent({ initial, lang, token, sound }) {
   const action = useAction(),
     audio = useSound(sound, lang);
   const q = session.question;
+  const clock = useAnswerClock(q?.token, !feedback);
+  const timers = useRef({});
+  const timings = useRef(readPreference(`${draftKey}:timings`, {}));
   useEffect(() => {
     if (!synced) savePreference(draftKey, answers);
   }, [answers, synced, draftKey]);
@@ -73,11 +78,12 @@ function SessionContent({ initial, lang, token, sound }) {
     await request(
       endpoint(lang, `sessions/${token}/finish/`),
       "POST",
-      { answers },
+      { answers, timings: timings.current },
       signal,
     );
     setSynced(true);
     savePreference(draftKey, {});
+    savePreference(`${draftKey}:timings`, {});
   };
   useEffect(() => {
     if (!session.result || synced) return;
@@ -104,6 +110,8 @@ function SessionContent({ initial, lang, token, sound }) {
     };
   }, [session.result, synced]);
   const send = (value) => {
+    timings.current[q.token] = clock.read();
+    savePreference(`${draftKey}:timings`, timings.current);
     const values = { ...answers, [q.token]: value };
     setAnswers(values);
     const row = gradeCard(q, value);
@@ -240,6 +248,11 @@ function SessionContent({ initial, lang, token, sound }) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              for (const question of session.questions)
+                if (timers.current[question.token])
+                  timings.current[question.token] =
+                    timers.current[question.token]();
+              savePreference(`${draftKey}:timings`, timings.current);
               setSession({
                 ...session,
                 completed: session.total,
@@ -248,19 +261,28 @@ function SessionContent({ initial, lang, token, sound }) {
             }}
           >
             {session.questions.map((question, i) => (
-              <Glass key={question.token}>
-                <span className="eyebrow">CÂU {i + 1}</span>
-                <h2 className="question-text">{question.prompt}</h2>
-                <Answer
-                  question={question}
-                  value={answers[question.token] || ""}
-                  onChange={(v) =>
-                    setAnswers({ ...answers, [question.token]: v })
-                  }
-                  disabled={action.pending || !!session.result}
-                />
-                <Feedback row={session.result?.rows[i]} />
-              </Glass>
+              <TimedArea
+                key={question.token}
+                id={question.token}
+                enabled={!session.result}
+                onTimer={(read) => {
+                  timers.current[question.token] = read;
+                }}
+              >
+                <Glass>
+                  <span className="eyebrow">CÂU {i + 1}</span>
+                  <h2 className="question-text">{question.prompt}</h2>
+                  <Answer
+                    question={question}
+                    value={answers[question.token] || ""}
+                    onChange={(v) =>
+                      setAnswers({ ...answers, [question.token]: v })
+                    }
+                    disabled={action.pending || !!session.result}
+                  />
+                  <Feedback row={session.result?.rows[i]} />
+                </Glass>
+              </TimedArea>
             ))}
             {session.result ? (
               <Glass className="result-summary">
@@ -309,7 +331,7 @@ function SessionContent({ initial, lang, token, sound }) {
             )}
           </form>
         ) : q ? (
-          <div key={q.token}>
+          <div key={q.token} ref={clock.root}>
             {q.mode === "flash" ? (
               <>
                 <FlipCard
@@ -442,11 +464,11 @@ export function ExtraStudy({ lang, params, sound }) {
   const resource = useResource(endpoint(lang, `study-pack/?${query}`));
   return (
     <Loading resource={resource}>
-      {(pack) => <LocalPractice {...{ pack, lang, params, sound }} />}
+      {(pack) => <LocalPractice {...{ pack, lang, params, sound, userId }} />}
     </Loading>
   );
 }
-function LocalPractice({ pack, lang, params, sound }) {
+function LocalPractice({ pack, lang, params, sound, userId }) {
   const mode = params.get("mode") || "write",
     deck = params.get("deck");
   const example = params.get("target") === "example";
@@ -462,6 +484,8 @@ function LocalPractice({ pack, lang, params, sound }) {
     action = useAction();
   const c = cards[index],
     group = cards.slice(index, index + 6);
+  const sync = useLearningSync(userId, lang);
+  const clock = useAnswerClock(c?.id, !result);
   const target = c ? (example ? c.example_german : c.german_text) : "";
   const items = target.split(/\s+/).map((text, i) => ({ id: String(i), text }));
   const options = [
@@ -516,12 +540,25 @@ function LocalPractice({ pack, lang, params, sound }) {
       }, 60000);
     });
   const check = (submitted = answer) => {
+    if (result) return;
+    const observe = (card, correct, type, response_ms) =>
+      sync.enqueue("review", {
+        deck: card.deck,
+        card: card.id,
+        correct,
+        type,
+        response_ms,
+        goal: "comprehensive",
+      });
     if (mode === "match") {
       const rows = group.map((v) => ({
         is_correct: submitted[String(v.id)] === String(v.id),
         term: v.german_text,
         meaning: v.vietnamese_meaning,
       }));
+      group.forEach((card, i) =>
+        observe(card, rows[i].is_correct, "matching", null),
+      );
       setResult({
         rows,
         correct: rows.filter((v) => v.is_correct).length,
@@ -534,18 +571,23 @@ function LocalPractice({ pack, lang, params, sound }) {
               .map((id) => items.find((t) => t.id === id)?.text)
               .join(" ")
           : submitted;
-      setResult(
-        gradeCard(
-          {
-            mode: mode === "quiz" ? "quiz" : "write",
-            target,
-            meaning: c.vietnamese_meaning,
-            card: c,
-            alternatives: example ? c.accepted_examples : c.accepted_answers,
-            grading: pack.grading,
-          },
-          actual,
-        ),
+      const graded = gradeCard(
+        {
+          mode: mode === "quiz" ? "quiz" : "write",
+          target,
+          meaning: c.vietnamese_meaning,
+          card: c,
+          alternatives: example ? c.accepted_examples : c.accepted_answers,
+          grading: pack.grading,
+        },
+        actual,
+      );
+      setResult(graded);
+      observe(
+        c,
+        graded.is_correct,
+        mode === "quiz" ? "choice" : mode,
+        clock.read(),
       );
     }
     audio.tick();
@@ -839,4 +881,12 @@ function Recorder({ lang, token, onResult }) {
       <Status error={action.error} />
     </div>
   );
+}
+
+function TimedArea({ id, enabled, onTimer, children }) {
+  const clock = useAnswerClock(id, enabled);
+  useEffect(() => {
+    onTimer(clock.read);
+  });
+  return <div ref={clock.root}>{children}</div>;
 }

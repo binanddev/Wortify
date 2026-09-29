@@ -37,6 +37,7 @@ export function PracticeTree({
   onMove,
   pending = false,
   query = "",
+  compact = true,
 }) {
   const [longBranches, setLongBranches] = useState({});
   const [expanded, setExpanded] = useState({});
@@ -60,7 +61,7 @@ export function PracticeTree({
     }
   }
   const branch = (parent = null, depth = 0) => {
-    if (depth > 3) return null;
+    if (depth > 10) return null;
     const siblings = nodes
       .filter((node) =>
         parent === null
@@ -78,7 +79,7 @@ export function PracticeTree({
     const visible = treeWindow(
       siblings,
       activeIds,
-      Boolean(needle || longBranches[parent]),
+      Boolean(!compact || needle || longBranches[parent]),
     );
     return (
       <>
@@ -91,7 +92,7 @@ export function PracticeTree({
             <li key={node.id}>
               <div
                 className={`practice-tree-row ${String(node.id) === String(currentId) ? "active" : ""} ${hover === node.id ? "drop-target" : ""}`}
-                style={{ paddingLeft: 6 + depth * 14 }}
+                style={{ paddingLeft: 6 + Math.min(depth, 5) * 10 }}
                 draggable={Boolean(onMove && !pending)}
                 onDragStart={(e) => {
                   e.dataTransfer.setData(
@@ -192,7 +193,7 @@ export function PracticeTree({
             </li>
           );
         })}
-        {!needle && siblings.length > 8 && (
+        {compact && !needle && siblings.length > 8 && (
           <li>
             <button
               type="button"

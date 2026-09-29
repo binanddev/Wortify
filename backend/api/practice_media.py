@@ -16,7 +16,7 @@ def media_data(item):
 
 def validated_attachments(request, payload):
     values = payload.get('attachments', [])
-    if not isinstance(values,list) or len(values)>20:raise ValueError('Tối đa 20 tệp, tổng dung lượng 200 MB mỗi bài.')
+    if not isinstance(values,list) or len(values)>200:raise ValueError('Tối đa 200 tệp, tổng dung lượng 200 MB mỗi bài.')
     try: ids = [uuid.UUID(str(item['id'])) for item in values]
     except (ValueError,TypeError,KeyError,AttributeError):raise ValueError('Tệp đính kèm không hợp lệ.')
     if len(set(ids))!=len(ids):raise ValueError('Tệp đính kèm bị lặp.')
@@ -24,7 +24,13 @@ def validated_attachments(request, payload):
     if len(rows)!=len(ids):raise ValueError('Tệp không thuộc tài khoản hoặc ngôn ngữ hiện tại.')
     items=[rows[pk] for pk in ids]
     if sum(item.size for item in items)>MAX_BYTES:raise ValueError('Tổng tệp đính kèm tối đa 200 MB mỗi bài.')
-    if values or 'attachments' in payload:payload['attachments']=[media_data(item) for item in items]
+    questions={str(q.get('id')) for q in payload.get('questions',[])}
+    cleaned=[]
+    for value,item in zip(values,items):
+        question=str(value.get('question') or '')
+        if question and question not in questions:raise ValueError('Chọn lại câu hỏi cho tệp đính kèm.')
+        cleaned.append({**media_data(item), **({'question':question} if question else {})})
+    if values or 'attachments' in payload:payload['attachments']=cleaned
     return items
 
 @endpoint

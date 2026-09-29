@@ -134,7 +134,17 @@ export function PracticeActivity({
       className="exercise-workspace practice-journey learning-stage"
       data-ui-style={style}
     >
-      <ExerciseMedia items={e.attachments || []} />
+      <ExerciseMedia
+        items={(e.attachments || []).filter((item) => !item.question)}
+      />
+      {question && (
+        <ExerciseMedia
+          key={question.id}
+          items={(e.attachments || []).filter(
+            (item) => String(item.question) === String(question.id),
+          )}
+        />
+      )}
       <div className="journey-topline">
         <span>
           {index >= questions.length

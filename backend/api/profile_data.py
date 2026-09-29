@@ -43,7 +43,7 @@ def profile_data(request, profile):
                 days[row['day']][key] += row.get(key, 0) or 0
 
     json_sum = lambda field: Coalesce(Sum(Cast(field, IntegerField())), 0)
-    collect(events.filter(kind='review'), 'created_at', Count('id'), Count('id', filter=Q(payload__correct=True)))
+    collect(events.filter(kind='review').filter(Q(payload__source__isnull=True)|~Q(payload__source='test')), 'created_at', Count('id'), Count('id', filter=Q(payload__correct=True)))
     collect(events.filter(kind='test'), 'created_at', json_sum('result__total'), json_sum('result__correct'), Count('id'))
     # Practice events are receipts; only the corresponding attempt is counted.
     collect(attempts, 'created_at', json_sum('result__total'), json_sum('result__score'), Count('id'))

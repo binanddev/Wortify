@@ -1,7 +1,7 @@
 export const MAX_MEDIA_BYTES = 200 * 1024 * 1024;
 export function validateMediaSelection(existing, files) {
-  if (existing.length + files.length > 20)
-    throw new Error("Tối đa 20 tệp mỗi bài.");
+  if (existing.length + files.length > 200)
+    throw new Error("Tối đa 200 tệp mỗi bài.");
   if (
     existing.reduce((sum, item) => sum + item.size, 0) +
       files.reduce((sum, file) => sum + file.size, 0) >
@@ -14,4 +14,23 @@ export function validateMediaSelection(existing, files) {
     )
   )
     throw new Error("Chỉ nhận MP3, PNG, JPG, WebP hoặc GIF.");
+}
+
+// Preserve attachment targets when questions move; changed/deleted prompts require reassignment.
+export function remapQuestionMedia(items, before, after) {
+  const available = new Map();
+  after.forEach((q, i) => {
+    const ids = available.get(q.prompt) || [];
+    ids.push(String(q.id || i + 1));
+    available.set(q.prompt, ids);
+  });
+  const targets = new Map();
+  before.forEach((q, i) =>
+    targets.set(String(q.id || i + 1), available.get(q.prompt)?.shift() || ""),
+  );
+  return items.map((item) =>
+    item.question
+      ? { ...item, question: targets.get(String(item.question)) || "" }
+      : item,
+  );
 }

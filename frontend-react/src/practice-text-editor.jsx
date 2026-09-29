@@ -1,6 +1,7 @@
+import { remapQuestionMedia } from "./exercise-media-utils";
 import { MediaEditor } from "./exercise-media";
 import { PracticeModal } from "./practice-workspace";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Btn, Field, Select, Status, SidebarTools, Icon } from "./ui";
 import {
   EXERCISE_TYPES,
@@ -22,6 +23,8 @@ export function PracticeTextEditor({
 }) {
   const [media, setMedia] = useState({ existing: exercise?.attachments || [] });
   const [mediaBusy, setMediaBusy] = useState(false);
+  const [activeDraft, setActiveDraft] = useState(0);
+  const [mediaIndex, setMediaIndex] = useState(null);
   const [previewIndex, setPreviewIndex] = useState(null);
   const keyFor = (node, index) =>
     exercise ? "existing" : `${index}:${node.title}`;
@@ -35,7 +38,17 @@ export function PracticeTextEditor({
   const [text, setText] = useState(() =>
     exercise?.questions?.some((q) => q.prompt) ? exerciseToText(exercise) : "",
   );
-  const [checked, setChecked] = useState(null);
+  const [checked, setChecked] = useState(() =>
+    exercise
+      ? {
+          nodes: [
+            { kind: "exercise", title: exercise.title, payload: exercise },
+          ],
+        }
+      : null,
+  );
+  const previousNodes = useRef(checked?.nodes || []);
+  const [mediaNotice, setMediaNotice] = useState("");
   const [error, setError] = useState("");
   const [reading, setReading] = useState(false);
   const [files, setFiles] = useState([]);
@@ -68,6 +81,49 @@ export function PracticeTextEditor({
       setReading(false);
     }
   };
+  const validateDraft = (target) => {
+    try {
+      const data = parsePracticeText(text);
+      if (exercise && data.nodes.length !== 1)
+        throw new Error(
+          "Khi sửa, tệp cần đúng một bài. Dùng nhập mới để tạo nhiều bài.",
+        );
+      const nextMedia = { ...media };
+      let detached = false;
+      data.nodes.forEach((node, i) => {
+        const key = keyFor(node, i);
+        const before = previousNodes.current.find(
+          (old, j) => keyFor(old, j) === key,
+        );
+        if (before) {
+          const items = media[key] || [];
+          nextMedia[key] = remapQuestionMedia(
+            items,
+            before.payload.questions,
+            node.payload.questions,
+          );
+          detached ||= nextMedia[key].some(
+            (item, j) => items[j].question && !item.question,
+          );
+        }
+      });
+      setMedia(nextMedia);
+      previousNodes.current = data.nodes;
+      setMediaNotice(
+        detached
+          ? "Một số câu đã đổi hoặc bị xóa. Tệp của chúng đã chuyển về Cả bài; hãy kiểm tra lại Media trước khi lưu."
+          : "",
+      );
+      setChecked(data);
+      if (target === "media")
+        setMediaIndex(Math.min(activeDraft, data.nodes.length - 1));
+      else setPreviewIndex(Math.min(activeDraft, data.nodes.length - 1));
+      setError("");
+    } catch (e) {
+      setChecked(null);
+      setError(e.message);
+    }
+  };
   return (
     <section className="practice-text-editor studio-content">
       <SidebarTools navOnly>
@@ -81,24 +137,30 @@ export function PracticeTextEditor({
         <Btn
           icon="eye"
           isDisabled={!text.trim() || reading || pending || mediaBusy}
-          onClick={() => {
-            try {
-              const data = parsePracticeText(text);
-              if (exercise && data.nodes.length !== 1)
-                throw new Error(
-                  "Khi sửa, tệp cần đúng một bài. Dùng nhập mới để tạo nhiều bài.",
-                );
-              setChecked(data);
-              setPreviewIndex(0);
-              setError("");
-            } catch (e) {
-              setChecked(null);
-              setError(e.message);
-            }
-          }}
+          onClick={() => validateDraft("preview")}
         >
           Kiểm tra và xem trước
         </Btn>
+        <Btn
+          icon="image"
+          isDisabled={!text.trim() || reading || pending || mediaBusy}
+          onClick={() => validateDraft("media")}
+        >
+          Media · MP3 và hình ảnh
+        </Btn>
+        {checked?.nodes.length > 1 && (
+          <Select
+            label="Bài đang soạn"
+            value={activeDraft}
+            onChange={(value) => setActiveDraft(Number(value))}
+          >
+            {checked.nodes.map((node, i) => (
+              <option key={i} value={i}>
+                {i + 1}. {node.title}
+              </option>
+            ))}
+          </Select>
+        )}
         {checked && (
           <>
             <p role="status">
@@ -209,6 +271,7 @@ export function PracticeTextEditor({
         </PracticeModal>
       )}
       <h1>{exercise ? exercise.title : "Nội dung bài tập"}</h1>
+      {mediaNotice && <p role="status">{mediaNotice}</p>}
       <Field
         label="Bản soạn .txt"
         description="Nội dung tệp xuất hiện ở đây. Các công cụ kiểm tra, lưu và tải mẫu nằm ở thanh bên."
@@ -218,36 +281,44 @@ export function PracticeTextEditor({
         onChange={update}
         isDisabled={pending || reading || mediaBusy}
       />
-      {checked && (
-        <section className="studio-preview-content">
-          {checked.nodes.map((node, i) => (
-            <article key={keyFor(node, i)} className="grid gap-3">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="text-lg font-semibold">{node.title}</h2>
-                <Btn
-                  isIconOnly
-                  title="Xem trước"
-                  aria-label={`Xem trước ${node.title}`}
-                  onClick={() => setPreviewIndex(i)}
-                >
-                  <Icon name="eye" />
-                </Btn>
-              </div>
-              <MediaEditor
-                lang={lang}
-                items={media[keyFor(node, i)] || []}
-                disabled={pending || mediaBusy}
-                onBusy={setMediaBusy}
-                onChange={(items) =>
-                  setMedia((previous) => ({
-                    ...previous,
-                    [keyFor(node, i)]: items,
-                  }))
-                }
-              />
-            </article>
-          ))}
-        </section>
+      {checked && mediaIndex !== null && checked.nodes[mediaIndex] && (
+        <PracticeModal
+          title={`Media · ${checked.nodes[mediaIndex].title}`}
+          pending={mediaBusy}
+          onClose={() => setMediaIndex(null)}
+        >
+          {checked.nodes.length > 1 && (
+            <Select
+              label="Bài tập"
+              value={mediaIndex}
+              disabled={mediaBusy}
+              onChange={(value) => {
+                setMediaIndex(Number(value));
+                setActiveDraft(Number(value));
+              }}
+            >
+              {checked.nodes.map((node, i) => (
+                <option key={i} value={i}>
+                  {i + 1}. {node.title}
+                </option>
+              ))}
+            </Select>
+          )}
+          <MediaEditor
+            key={keyFor(checked.nodes[mediaIndex], mediaIndex)}
+            questions={checked.nodes[mediaIndex].payload.questions}
+            lang={lang}
+            items={media[keyFor(checked.nodes[mediaIndex], mediaIndex)] || []}
+            disabled={pending || mediaBusy}
+            onBusy={setMediaBusy}
+            onChange={(items) =>
+              setMedia((previous) => ({
+                ...previous,
+                [keyFor(checked.nodes[mediaIndex], mediaIndex)]: items,
+              }))
+            }
+          />
+        </PracticeModal>
       )}
       {checked && previewIndex !== null && checked.nodes[previewIndex] && (
         <PracticeModal

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Btn, Icon, Status } from "./ui";
+import { Btn, Icon, Status, Select } from "./ui";
 import { PracticeModal } from "./practice-workspace";
 import { endpoint, request } from "./core";
 import { validateMediaSelection } from "./exercise-media-utils";
@@ -66,7 +66,10 @@ export function MediaEditor({
   lang,
   disabled = false,
   onBusy,
+  questions = [],
 }) {
+  const [scope, setScope] = useState("");
+  const [preview, setPreview] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const upload = async (files) => {
@@ -74,10 +77,12 @@ export function MediaEditor({
     setError("");
     try {
       validateMediaSelection(items, files);
+      if (scope === "sequence" && files.length > questions.length)
+        throw new Error("Số tệp vượt số câu. Chọn lại hoặc gắn cho cả bài.");
       setBusy(true);
       onBusy?.(true);
       let next = [...items];
-      for (const file of files) {
+      for (const [fileIndex, file] of files.entries()) {
         const data = new FormData();
         data.append("file", file);
         const result = await request(
@@ -85,7 +90,20 @@ export function MediaEditor({
           "POST",
           data,
         );
-        next = [...next, result.media];
+        next = [
+          ...next,
+          {
+            ...result.media,
+            ...(scope
+              ? {
+                  question:
+                    scope === "sequence"
+                      ? String(questions[fileIndex].id || fileIndex + 1)
+                      : scope,
+                }
+              : {}),
+          },
+        ];
         onChange(next);
       }
     } catch (error) {
@@ -120,15 +138,66 @@ export function MediaEditor({
           />
         </label>
       </div>
+      <Select
+        label="Thêm tệp cho"
+        value={scope}
+        disabled={busy || disabled}
+        onChange={setScope}
+      >
+        <option value="">Cả bài</option>
+        {questions.length > 1 && (
+          <option value="sequence">Mỗi tệp một câu · theo thứ tự chọn</option>
+        )}
+        {questions.map((q, i) => (
+          <option key={q.id || i + 1} value={String(q.id || i + 1)}>
+            Câu {i + 1} · {q.prompt.slice(0, 70)}
+          </option>
+        ))}
+      </Select>
+      {scope === "sequence" && (
+        <p className="text-sm text-(--muted)">
+          Tệp đầu → câu 1, tệp tiếp → câu 2. Kiểm tra và đổi câu trong danh sách
+          sau khi tải.
+        </p>
+      )}
+      <p className="text-sm text-(--muted)">
+        {items.length} tệp ·{" "}
+        {(items.reduce((n, item) => n + item.size, 0) / 1024 / 1024).toFixed(1)}{" "}
+        / 200 MB
+      </p>
       {busy && <p role="status">Đang tải tệp lên…</p>}
       <Status error={error} />
       {items.map((item) => (
-        <div key={item.id} className="flex min-w-0 items-center gap-2">
+        <div
+          key={item.id}
+          className="flex min-w-0 flex-wrap items-center gap-2"
+        >
           <Icon name={item.type === "audio/mpeg" ? "sound" : "image"} />
           <span className="min-w-0 flex-1 truncate" title={item.name}>
             {item.name}
           </span>
-          <small>{(item.size / 1024 / 1024).toFixed(1)} MB</small>
+          <Select
+            aria-label={`Gắn ${item.name} vào`}
+            value={item.question || ""}
+            disabled={disabled || busy}
+            onChange={(question) =>
+              onChange(
+                items.map((row) =>
+                  row.id === item.id ? { ...row, question } : row,
+                ),
+              )
+            }
+          >
+            <option value="">Cả bài</option>
+            {questions.map((q, i) => (
+              <option key={q.id || i + 1} value={String(q.id || i + 1)}>
+                Câu {i + 1} · {q.prompt.slice(0, 50)}
+              </option>
+            ))}
+          </Select>
+          <Btn icon="eye" onClick={() => setPreview(item)}>
+            Xem tệp
+          </Btn>
           <Btn
             isIconOnly
             title="Gỡ tệp"
@@ -140,7 +209,62 @@ export function MediaEditor({
           </Btn>
         </div>
       ))}
-      {!!items.length && <ExerciseMedia items={items} />}
+      {preview && (
+        <PracticeModal title={preview.name} onClose={() => setPreview(null)}>
+          <ExerciseMedia items={[preview]} />
+        </PracticeModal>
+      )}
     </div>
+  );
+}
+
+export function ExerciseMediaDialog({ node, lang, onClose, onSaved }) {
+  const [items, setItems] = useState(node.payload.attachments || []);
+  const [busy, setBusy] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  return (
+    <PracticeModal
+      title={`Media · ${node.title}`}
+      pending={busy || saving}
+      onClose={onClose}
+    >
+      <Status error={error} />
+      <MediaEditor
+        items={items}
+        questions={node.payload.questions || []}
+        lang={lang}
+        onChange={setItems}
+        disabled={saving}
+        onBusy={setBusy}
+      />
+      <div className="flex justify-end">
+        <Btn
+          icon="save"
+          primary
+          isDisabled={busy || saving}
+          isLoading={saving}
+          onClick={async () => {
+            setSaving(true);
+            setError("");
+            try {
+              await request(
+                endpoint(lang, `practice-hub/nodes/${node.id}/`),
+                "PATCH",
+                { payload: { ...node.payload, attachments: items } },
+              );
+              onSaved();
+              onClose();
+            } catch (error) {
+              setError(error.message);
+            } finally {
+              setSaving(false);
+            }
+          }}
+        >
+          Lưu media
+        </Btn>
+      </div>
+    </PracticeModal>
   );
 }

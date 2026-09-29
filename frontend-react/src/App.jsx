@@ -356,6 +356,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         />
       ) : parts[2] === "study" ? (
         <ExtraStudy
+          userId={user.id}
           key={route}
           lang={lang}
           params={new URLSearchParams(route.split("?")[1])}

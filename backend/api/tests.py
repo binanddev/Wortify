@@ -217,10 +217,10 @@ class PracticeHubTests(TestCase):
             data['parent'] = PracticeNode.objects.create(owner=self.user, language='en', kind='folder', title='Exercises').pk
         return self.client.post(self.base, json.dumps(data), content_type='application/json')
 
-    def test_three_folder_levels_and_move_cycle(self):
+    def test_ten_folder_levels_and_move_cycle(self):
         parent = None
         ids = []
-        for title in ('A', 'B', 'C'):
+        for title in [f'Level {i}' for i in range(10)]:
             response = self.create(kind='folder', title=title, parent=parent)
             self.assertEqual(response.status_code, 201, response.content)
             parent = response.json()['node']['id']
@@ -348,11 +348,11 @@ class PracticeProgressTests(TestCase):
     def test_batch_moves_ownership_cycles_depth_and_atomic_rollback(self):
         url='/api/en/practice-hub/organize/'
         folders=[]
-        for i in range(3):
+        for i in range(10):
             folders.append(PracticeNode.objects.create(owner=self.user,language='en',kind='folder',title=str(i),parent=folders[-1] if folders else None))
-        response=self.post(url,{'action':'move','ids':[folders[0].pk],'parent':folders[2].pk})
+        response=self.post(url,{'action':'move','ids':[folders[0].pk],'parent':folders[-1].pk})
         self.assertEqual(response.status_code,400)
-        response=self.post(url,{'action':'group','ids':[self.node.pk],'parent':folders[2].pk,'title':'Too deep'})
+        response=self.post(url,{'action':'group','ids':[self.node.pk],'parent':folders[-1].pk,'title':'Too deep'})
         self.assertEqual(response.status_code,400)
         self.assertFalse(PracticeNode.objects.filter(title='Too deep').exists())
         other=get_user_model().objects.create_user('owner-two')
@@ -805,3 +805,133 @@ class ExploreDiscoveryTests(TestCase):
         response = self.client.patch(path, json.dumps({'parent':self.roots[1].pk}), content_type='application/json')
         self.assertEqual(response.json()['node']['tags'], [])
         self.assertEqual(self.client.patch(path, json.dumps({'tags':['travel']}), content_type='application/json').status_code, 400)
+
+class PracticeCopyTests(TestCase):
+    def test_copy_is_owned_private_and_independent_with_media_and_links(self):
+        from practice.models import PracticeMedia
+        author = get_user_model().objects.create_user('copy-author')
+        reader = get_user_model().objects.create_user('copy-reader')
+        root = PracticeNode.objects.create(owner=author,language='en',kind='folder',title='Source',visibility='public',payload={'tags':['travel']})
+        child = PracticeNode.objects.create(owner=author,language='en',parent=root,kind='exercise',title='Listen',visibility='public',payload={'questions':[{'id':'1','prompt':'Hello'}]})
+        private = PracticeNode.objects.create(owner=author,language='en',parent=root,kind='folder',title='Private')
+        PracticeNode.objects.create(owner=author,language='en',parent=private,kind='theory',title='Hidden descendant',visibility='public')
+        asset = PracticeMedia.objects.create(owner=author,language='en',file='practice_media/test.mp3',name='test.mp3',size=42,content_type='audio/mpeg')
+        from api.practice_media import media_data
+        child.payload['attachments']=[{**media_data(asset),'question':'1'}]; child.save(); child.attachments.add(asset)
+        root.links.add(child)
+        self.client.force_login(reader)
+        response = self.client.post(f'/api/en/practice-hub/nodes/{root.pk}/copy/')
+        self.assertEqual(response.status_code,201,response.content)
+        copied = PracticeNode.objects.get(pk=response.json()['id'])
+        self.assertEqual(response.json()['count'],2)
+        self.assertEqual(copied.owner,reader)
+        self.assertEqual(copied.visibility,'private')
+        self.assertEqual(copied.payload['tags'],['travel'])
+        copy_child = copied.children.get()
+        self.assertEqual(list(copied.links.all()),[copy_child])
+        copy_asset = copy_child.attachments.get()
+        self.assertNotEqual(copy_asset.pk,asset.pk)
+        self.assertEqual(copy_asset.owner,reader)
+        self.assertEqual(copy_child.payload['attachments'][0]['question'],'1')
+        root.delete()
+        self.assertTrue(PracticeNode.objects.filter(pk=copy_child.pk,owner=reader).exists())
+        self.assertTrue(PracticeMedia.objects.filter(pk=copy_asset.pk).exists())
+        self.assertEqual(self.client.post(f'/api/de/practice-hub/nodes/{copied.pk}/copy/').status_code,404)
+        self.assertEqual(self.client.post(f'/api/en/practice-hub/nodes/{copied.pk}/copy/').status_code,404)
+
+    def test_question_media_scope_is_validated(self):
+        from types import SimpleNamespace
+        from practice.models import PracticeMedia
+        from api.practice_media import validated_attachments
+        owner = get_user_model().objects.create_user('scope-owner')
+        item = PracticeMedia.objects.create(owner=owner,language='en',file='test.mp3',name='test',size=10,content_type='audio/mpeg')
+        req=SimpleNamespace(user=owner,language='en')
+        payload={'questions':[{'id':'1'}],'attachments':[{'id':str(item.pk),'question':'1'}]}
+        validated_attachments(req,payload)
+        self.assertEqual(payload['attachments'][0]['question'],'1')
+        payload['attachments'][0]['question']='2'
+        with self.assertRaises(ValueError):validated_attachments(req,payload)
+
+class SpacedReviewTests(TestCase):
+    def setUp(self):
+        self.user=get_user_model().objects.create_user('spaced-user')
+        self.client.force_login(self.user)
+        self.deck=Deck.objects.create(owner=self.user,language='en',title='Spaced')
+        self.card=Card.objects.create(deck=self.deck,german_text='hello',vietnamese_meaning='xin chào')
+        self.url=f'/api/en/decks/{self.deck.pk}/review/'
+
+    def event(self, **extra):
+        from django.utils import timezone
+        import uuid
+        return {'token':str(uuid.uuid4()),'kind':'review','at':timezone.now().isoformat(),'payload':{'deck':self.deck.pk,'card':self.card.pk,'correct':True,'type':'written','response_ms':2000,**extra}}
+
+    def sync(self,event):
+        return self.client.post('/api/en/learning/sync/',json.dumps({'events':[event]}),content_type='application/json').json()
+
+    def test_fsrs_review_queue_rating_and_retry_are_idempotent(self):
+        from cards.models import StudyProgress
+        initial=self.client.get(self.url).json()
+        self.assertEqual(initial['new'],1)
+        self.assertEqual(set(initial['cards'][0]['choices']),{'1','2','3','4'})
+        event=self.event(type='flash',rating=4)
+        self.assertEqual(len(self.sync(event)['accepted']),1)
+        p=StudyProgress.objects.get(card=self.card)
+        due=p.due_at
+        self.assertGreater(p.interval_days,1)
+        self.assertIn('card',p.memory)
+        self.assertEqual(p.response_time_ms,2000)
+        self.sync(event);p.refresh_from_db()
+        self.assertEqual(p.correct_count,1)
+        self.assertEqual(p.due_at,due)
+        self.assertEqual(self.client.get(self.url).json()['new'],0)
+        self.assertEqual(self.client.get(self.url).json()['cards'],[])
+        self.assertEqual(self.client.get(self.url.replace('/en/','/de/')).status_code,404)
+        other=get_user_model().objects.create_user('spaced-other'); self.client.force_login(other)
+        self.assertEqual(self.client.get(self.url).status_code,404)
+
+    def test_settings_validation_and_old_options_do_not_overwrite_fsrs(self):
+        from cards.models import DeckLearningState
+        response=self.client.patch(self.url,json.dumps({'retention':.92,'new_limit':5}),content_type='application/json')
+        self.assertEqual(response.status_code,200,response.content)
+        event=self.event();event['kind']='options';event['payload']={'deck':self.deck.pk,'options':{'mode':'learn','srs':{'retention':0}}}
+        self.sync(event)
+        self.assertEqual(DeckLearningState.objects.get(deck=self.deck).options['srs']['retention'],.92)
+        for patch in [{'retention':1},{'new_limit':-1},{'review_limit':True},{'adapt_time':'yes'}]:
+            self.assertEqual(self.client.patch(self.url,json.dumps(patch),content_type='application/json').status_code,400)
+
+    def test_latency_is_secondary_and_immediate_practice_does_not_inflate_intervals(self):
+        from cards.services.spaced import review
+        from cards.models import StudyProgress
+        from django.utils import timezone
+        from datetime import timedelta
+        now=timezone.now(); p=StudyProgress(user=self.user,card=self.card)
+        p.memory={'timings':{'written':{'count':5,'average':2000}}}
+        review(p,True,'written',now,30000)
+        self.assertEqual(p.memory['rating'],2)
+        due=p.due_at
+        review(p,True,'written',now+timedelta(seconds=5),1000)
+        self.assertEqual(p.due_at,due)
+        review(p,False,'written',now+timedelta(seconds=10),1000)
+        self.assertEqual(p.memory['rating'],1)
+        self.assertEqual(p.state,'weak')
+        due=p.due_at
+        review(p,True,'written',now-timedelta(days=1),2000,rating=4)
+        self.assertEqual(p.due_at,due)
+        with self.assertRaises(ValueError):review(p,True,'written',now,True)
+
+    def test_learning_steps_remain_available_after_daily_budget(self):
+        from cards.models import StudyProgress
+        from django.utils import timezone
+        from datetime import timedelta
+        self.client.patch(self.url,json.dumps({'new_limit':1,'review_limit':1}),content_type='application/json')
+        event=self.event(correct=False,type='flash',rating=1)
+        self.sync(event)
+        StudyProgress.objects.filter(card=self.card).update(due_at=timezone.now()-timedelta(minutes=1))
+        self.assertEqual(len(self.client.get(self.url).json()['cards']),1)
+
+    def test_bad_rating_and_timing_do_not_commit_partial_progress(self):
+        from cards.models import StudyProgress
+        for patch in [{'rating':1,'correct':True},{'rating':7},{'response_ms':-1},{'response_ms':'fast'}]:
+            result=self.sync(self.event(**patch))
+            self.assertEqual(len(result['errors']),1)
+            self.assertFalse(StudyProgress.objects.filter(card=self.card).exists())

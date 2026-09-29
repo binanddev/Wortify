@@ -241,7 +241,7 @@
   @apply min-w-0 max-w-full;
 }
 .context-panel .practice-tree {
-  @apply max-h-[48dvh] overflow-y-auto overflow-x-hidden;
+  @apply max-h-none overflow-visible;
 }
 .context-panel .practice-tree-row .tree-title {
   @apply w-0 flex-1 truncate;

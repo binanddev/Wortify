@@ -39,7 +39,7 @@ def schedule(progress, correct, now):
 
 
 @transaction.atomic
-def finish(attempt, answer, result, response_ms=None):
+def finish(attempt, answer, result, response_ms=None, use_fsrs=False):
     # Conditional claim is also effective on SQLite, where select_for_update is a no-op.
     now = timezone.now()
     claimed = StudyAttempt.objects.filter(pk=attempt.pk, completed_at__isnull=True, abandoned=False).update(
@@ -47,7 +47,13 @@ def finish(attempt, answer, result, response_ms=None):
         is_correct=result['is_correct'], result=result, response_time_ms=response_ms)
     if claimed:
         progress, _ = StudyProgress.objects.select_for_update().get_or_create(user=attempt.user, card=attempt.card)
-        schedule(progress, result['is_correct'], now)
+        if use_fsrs or progress.memory.get('card'):
+            from .spaced import review
+            from cards.models import DeckLearningState
+            state=DeckLearningState.objects.filter(user=attempt.user,deck=attempt.card.deck).first()
+            review(progress,result['is_correct'],attempt.mode,now,response_ms,options=state.options.get('srs',{}) if state else {})
+        else:
+            schedule(progress, result['is_correct'], now)
         progress.last_mode = attempt.mode
         progress.response_time_ms = response_ms
         progress.save()

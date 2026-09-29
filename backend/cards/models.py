@@ -76,6 +76,7 @@ class StudySettings(models.Model):
 
 
 class StudyProgress(models.Model):
+    memory = models.JSONField(default=dict, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
     state = models.CharField(max_length=20, default='learning')
