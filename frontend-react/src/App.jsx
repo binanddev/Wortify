@@ -247,9 +247,13 @@ function Login({ onLogin }) {
 function Brand() {
   return (
     <Link to="/" className="brand">
-      <span className="brand-mark">
-        <Icon name="book" size={23} />
-      </span>
+      <img
+        className="brand-logo"
+        src="/brand/wortify-logo.png"
+        alt=""
+        width="44"
+        height="36"
+      />
       wortify<span className="brand-dot">.</span>
     </Link>
   );

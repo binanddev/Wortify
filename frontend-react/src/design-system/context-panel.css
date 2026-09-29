@@ -315,5 +315,5 @@ button[aria-pressed="true"].btn {
   @apply relative min-w-0;
 }
 .explore-suggestions {
-  @apply absolute inset-x-0 top-full z-30 mt-2 max-h-80 overflow-y-auto rounded-2xl border border-(--line) bg-(--solid) p-3 text-(--ink) shadow-xl;
+  @apply absolute inset-x-0 top-full z-30 mt-2 max-h-80 overflow-y-auto rounded-2xl border border-(--line) bg-(--surface) p-3 text-(--ink) shadow-xl;
 }
