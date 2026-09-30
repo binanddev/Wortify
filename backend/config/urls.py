@@ -14,7 +14,7 @@ def health(request):
     from django.conf import settings
     identity=hashlib.sha256(str(settings.BASE_DIR.parent).lower().encode()).hexdigest()[:16]
     return JsonResponse({'app':'Wortify','workspace':identity})
-urlpatterns=[path('api/setup-7f3c91d8/first-admin/',bootstrap,name='first-admin-setup'),path('api/health/',health),path('api/session/',session),path('admin/',admin.site.urls),
+urlpatterns=[path('api/setup-7f3c91d8/<slug:setup_key>/',bootstrap,name='first-admin-setup'),path('api/health/',health),path('api/session/',session),path('admin/',admin.site.urls),
  path('api/health/check/',monitoring.probe),
  path('api/monitor/',monitoring.report),
  path('api/manage/monitor/',monitoring.logs),

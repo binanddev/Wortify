@@ -82,29 +82,29 @@ Nếu backend đang ngủ, lần đầu có thể timeout 25 giây nhưng reques
 function báo lỗi và lần chạy kế tiếp kiểm tra lại. Không bảo đảm Render luôn thức
 và không thay thế lưu trữ bền vững. Docker vẫn dùng worker riêng hiện có.
 
-#### Tạo superuser đầu tiên khi Render không có Shell
+#### Trang tạo superuser khi Render không có Shell
 
-Backend có trang đăng ký quản trị được bảo vệ bằng khóa, tại
-`/api/setup-7f3c91d8/first-admin/`. Truy cập qua domain frontend, ví dụ
-`https://wwwortify.netlify.app/api/setup-7f3c91d8/first-admin/`.
+Trang có giao diện username, mật khẩu và xác nhận mật khẩu tại:
+`https://wwwortify.netlify.app/api/setup-7f3c91d8/<SUPERUSER_SETUP_KEY>/`.
+Đây là trang HTML dù đường dẫn bắt đầu bằng `/api/` để đi qua proxy tới Render.
 
 1. Trên Render, đặt `SUPERUSER_SETUP_KEY` là chuỗi ngẫu nhiên bí mật ít nhất 32 ký
-   tự (nên tạo 64 ký tự bằng password manager). Không đặt trên Netlify, không dùng
-   tiền tố `VITE_`, không đưa vào URL, Git hoặc gửi qua chat.
-2. Deploy backend với migration: thêm `python manage.py migrate --noinput` trước
-   lệnh khởi động backend hiện tại nếu quy trình chưa chạy migrate. Giữ nguyên
-   lệnh chạy server sau đó. Migration mới là `users/0005_superuserbootstrap`.
-3. Mở trang trên, nhập username, mật khẩu hai lần và khóa thiết lập. Mật khẩu được
-   kiểm tra như đăng ký thông thường. Trang yêu cầu CSRF nên cấu hình trusted
-   origins của frontend trên Render vẫn phải đúng.
-4. Tạo thành công rồi đăng nhập website bằng tài khoản mới; xóa `SUPERUSER_SETUP_KEY`
-   khỏi Render. Tạo staff hoặc superuser bổ sung qua trang quản trị hiện có.
+   tự, chỉ dùng chữ, số, dấu gạch ngang hoặc gạch dưới; nên tạo 64 ký tự bằng
+   password manager. Không đặt trên Netlify, không dùng tiền tố `VITE_`, không
+   commit giá trị này vào Git.
+2. Deploy backend. Thay `<SUPERUSER_SETUP_KEY>` trong đường dẫn bằng giá trị vừa
+   đặt (không có dấu ngoặc nhọn).
+3. Nhập username và mật khẩu hai lần. Không cần nhập khóa trong form. Trang vẫn
+   bắt buộc CSRF, nên giữ đúng trusted origins cho domain frontend trên Render.
+4. Có thể dùng lại đường dẫn để tạo thêm superuser, kể cả khi đã có superuser.
+   Trang không tự xóa hoặc khóa sau lần tạo đầu tiên.
 
-Trang trả 404 nếu khóa chưa đặt/quá ngắn, đã có superuser, hoặc đã từng hoàn tất
-thiết lập. Bản ghi trong database ngăn mở lại trang sau khi xóa tài khoản đã tạo;
-hai yêu cầu thiết lập đồng thời không thể cùng tạo hai tài khoản. Dùng PostgreSQL
-lưu bền vững; database SQLite mất khi restart sẽ làm mất cả tài khoản và khóa
-trạng thái này. Đường dẫn khó đoán không được xem là cơ chế bảo vệ.
+Ai có đường dẫn đều có quyền tạo superuser. URL có thể xuất hiện trong lịch sử
+trình duyệt và access log; giữ kín như mật khẩu quản trị. Trang không cache,
+không gửi referrer và yêu cầu công cụ tìm kiếm không lập chỉ mục. Đổi giá trị
+`SUPERUSER_SETUP_KEY` để đổi đường dẫn; xóa biến để tắt trang. Bản ghi singleton
+của phiên bản thiết lập cũ được giữ tương thích migration nhưng không còn được
+dùng để chặn tạo tài khoản.
 
 Repository có `netlify.toml`: base directory `frontend-react`, build command
 `npm run build:netlify`, publish directory `dist`, Node 22. Kết nối repository
