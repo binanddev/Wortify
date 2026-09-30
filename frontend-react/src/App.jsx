@@ -14,7 +14,7 @@ import {
 import FlashcardStudio from "./flashcard-studio";
 import Soundscape from "./Soundscape";
 import { PracticeHub } from "./practice-hub";
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useLayoutEffect, useState, lazy, Suspense } from "react";
 const Admin = lazy(() => import("./admin/Admin.jsx"));
 import {
   request,
@@ -34,9 +34,13 @@ export default function App() {
     [user, setUser] = useState(undefined),
     [appearance, setAppearance] = useState({ background_url: "" }),
     [error, setError] = useState("");
-  useEffect(() => {
-    applyAppearance(user?.preferences);
-  }, [user]);
+  const isWorkspace = /^\/(en|de|manage)(\/|\?|$)/.test(route);
+  useLayoutEffect(() => {
+    if (!isWorkspace || !user) {
+      applyAppearance();
+      document.documentElement.style.setProperty("--site-bg-image", "none");
+    }
+  }, [isWorkspace, user]);
   useEffect(() => {
     const c = new AbortController();
     request("/api/session/", "GET", undefined, c.signal)
@@ -102,9 +106,9 @@ export default function App() {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [appearanceKey, user === null]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const url =
-      appearance.key === appearanceKey
+      isWorkspace && appearance.key === appearanceKey
         ? appearance.data?.[activeLanguage]?.background_url
         : "";
     document.documentElement.style.setProperty(
@@ -113,7 +117,7 @@ export default function App() {
     );
     return () =>
       document.documentElement.style.removeProperty("--site-bg-image");
-  }, [appearance, appearanceKey, activeLanguage]);
+  }, [appearance, appearanceKey, activeLanguage, isWorkspace]);
   const parts = route.split("?")[0].split("/").filter(Boolean),
     lang = ["en", "de"].includes(parts[0]) ? parts[0] : null;
   if (error)
@@ -367,7 +371,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
     );
   };
   const action = useAction();
-  useEffect(() => {
+  useLayoutEffect(() => {
     applyAppearance(prefs);
   }, [prefs]);
   useEffect(() => {

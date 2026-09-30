@@ -6,6 +6,12 @@
 [build.environment]
   NODE_VERSION = "22"
 
+[functions]
+  directory = "netlify/functions"
+
+[functions."backend-ping"]
+  schedule = "*/10 * * * *"
+
 [[headers]]
   for = "/assets/*"
   [headers.values]

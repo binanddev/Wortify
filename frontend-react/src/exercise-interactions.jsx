@@ -1,6 +1,7 @@
 import { PracticeRichText } from "./practice-rich-text";
 import { MovableGap } from "./movable-gap";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { ModalLayerContext } from "./modal";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 import { motion } from "framer-motion";
 import { shuffled } from "./core";
@@ -130,8 +131,9 @@ function Chip({
 }
 function InlineMenu({ value, options, onChange, disabled, label, invalid }) {
   const [open, setOpen] = useState(false);
+  const inModal = useContext(ModalLayerContext);
   return (
-    <Popover isOpen={open} onOpenChange={setOpen} placement="bottom" showArrow>
+    <Popover isOpen={open} onOpenChange={setOpen} placement="bottom" showArrow style={inModal ? { zIndex: 100003 } : undefined}>
       <PopoverTrigger>
         <button
           type="button"

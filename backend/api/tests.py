@@ -130,11 +130,17 @@ class ApiOnlyTests(TestCase):
         self.assertTemplateUsed(response, 'admin/index.html')
         self.assertIn('django', str(get_template('admin/base_site.html').origin.name))
 
-    def test_no_application_templates_static_or_react_distribution_in_backend(self):
+    def test_only_bootstrap_form_template_without_react_distribution_in_backend(self):
         root = Path(settings.BASE_DIR)
         self.assertFalse((root / 'templates').exists())
         for app in ['api', 'cards', 'practice', 'users', 'content', 'learning']:
-            self.assertFalse((root / app / 'templates').exists())
+            if app == 'users':
+                self.assertEqual(
+                    {p.relative_to(root / app / 'templates').as_posix() for p in (root / app / 'templates').rglob('*') if p.is_file()},
+                    {'users/bootstrap.html'},
+                )
+            else:
+                self.assertFalse((root / app / 'templates').exists())
             self.assertFalse((root / app / 'static').exists())
         self.assertEqual(settings.STATICFILES_DIRS, [])
         self.assertEqual(settings.TEMPLATES[0]['DIRS'], [])
@@ -463,7 +469,7 @@ class ProfileDashboardTests(TestCase):
 class PlatformRunner(DiscoverRunner):
     """The Django applications live below backend/, outside the root discovery path."""
     def build_suite(self, test_labels=None, **kwargs):
-        return super().build_suite(test_labels or ['api', 'cards'], **kwargs)
+        return super().build_suite(test_labels or ['api', 'cards', 'users'], **kwargs)
 
 
 class SyncAndRolesTests(TestCase):

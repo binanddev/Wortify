@@ -4,12 +4,12 @@ import {
   Button,
   Card,
   CardBody,
-  Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from "@heroui/react";
+import { Modal } from "./modal";
 import { motion } from "framer-motion";
 import { navigate, useAction } from "./core";
 export function Icon({ name = "cards", size = 20 }) {

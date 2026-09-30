@@ -2,6 +2,11 @@ import uuid
 from django.conf import settings
 from django.db import models
 
+class SuperuserBootstrap(models.Model):
+    """Singleton permanently consumes the first-admin setup, even after deletion."""
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 class Theme(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='appearance_themes')
     name = models.CharField(max_length=80)

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import {
-  Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from "@heroui/react";
+import { Modal } from "./modal";
 import { request, useResource, useAction } from "./core";
 import { Btn, Field, Select, Status, Confirm } from "./ui";
 const visualKeys = [

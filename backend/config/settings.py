@@ -178,6 +178,7 @@ COMMUNITY_ENABLED = os.environ.get('COMMUNITY_ENABLED', '1') == '1'
 
 # Application clients bootstrap CSRF through /api/session/. Admin retains Django HTML.
 CSRF_FAILURE_VIEW = "api.errors.csrf_failure"
+SUPERUSER_SETUP_KEY = os.environ.get('SUPERUSER_SETUP_KEY', '')
 
 if os.environ.get("DJANGO_TRUST_PROXY") == "1":
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

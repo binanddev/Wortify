@@ -1,6 +1,7 @@
 import { treeWindow } from "./tree-window.js";
 import { useState } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/react";
+import { ModalContent, ModalHeader, ModalBody } from "@heroui/react";
+import { Modal } from "./modal";
 import { Icon, Link } from "./ui";
 
 export function PracticeModal({
