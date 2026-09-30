@@ -1,4 +1,4 @@
-"""Shared settings for development, staging and production (API + Django admin)."""
+"""Shared settings for the API; all application interfaces are served by React."""
 
 from pathlib import Path
 import os
@@ -38,6 +38,10 @@ ALLOWED_HOSTS = [host.strip() for host in os.environ.get('DJANGO_ALLOWED_HOSTS',
 
 INSTALLED_APPS = [
     'cards.apps.CardsConfig',
+    # Management APIs use admin.LogEntry and its existing migrations for audit
+    # history. Keep the model registered without autodiscovering admin UIs;
+    # config.urls deliberately does not expose admin.site.urls.
+    'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
