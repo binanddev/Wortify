@@ -67,6 +67,74 @@ Lệnh yêu cầu DEBUG và chạy lại không nhân bản. Tài khoản demo m
 
 ## Môi trường deploy
 
+### Frontend trên Netlify, backend đã deploy riêng
+
+Repository có `netlify.toml`: base directory `frontend-react`, build command
+`npm run build:netlify`, publish directory `dist`, Node 22. Kết nối repository
+với Netlify và dùng cấu hình này. Không chọn thư mục gốc làm publish directory.
+
+Đặt `BACKEND_ORIGIN=https://domain-backend-cua-ban` trong Environment variables
+của Netlify, scope **Builds**. Có thể import file theo mẫu
+`frontend-react/.env.production.example`. Backend phải truy cập được từ Internet
+bằng HTTPS; không dùng localhost, IP mạng riêng, đường dẫn `/api` hay thông tin
+đăng nhập trong URL. Không đặt origin bằng domain frontend để tránh proxy lặp.
+
+Để build trên máy rồi upload thủ công:
+
+```powershell
+Copy-Item frontend-react/.env.production.example frontend-react/.env.production.local
+# Sửa BACKEND_ORIGIN trong file .env.production.local vừa tạo.
+npm --prefix frontend-react ci
+npm --prefix frontend-react run build:netlify
+```
+
+Upload **toàn bộ** `frontend-react/dist`, gồm `_redirects`. File `.env.production.local`
+được gitignore; Netlify build từ Git không có file local của máy bạn, vì vậy phải
+import/khai báo biến trên Netlify. Biến môi trường tiến trình ưu tiên hơn file.
+Đổi backend: sửa `BACKEND_ORIGIN` rồi build/deploy lại, không sửa React.
+Không dùng `VITE_*` cho secret. Build Netlify không cần secret Django, database
+hoặc `BACKEND_MONITOR_SECRET`.
+
+Trình duyệt vẫn gọi `/api/...` trên domain frontend. Build sinh proxy `/api/`,
+`/admin/`, `/static/admin/`, giữ đường dẫn ảnh cũ `/static/react/` và fallback
+React cho reload trực tiếp `/de/...`, `/en/...`, `/manage`. Backend giữ cookie
+host-only (không ép Cookie Domain sang domain backend) và API trả
+`Cache-Control: private, no-store` như middleware hiện có.
+
+**Môi trường backend cần đối chiếu:**
+
+```dotenv
+DJANGO_ALLOWED_HOSTS=api.example.com,ten-site.netlify.app,learn.example.com
+DJANGO_CSRF_TRUSTED_ORIGINS=https://ten-site.netlify.app,https://learn.example.com
+DJANGO_SERVE_ADMIN_STATIC=1
+```
+
+Thay các domain ví dụ bằng domain thực sự sử dụng. Nếu backend dùng Compose
+hiện có, `compose.backend.yml` đang tự đặt allowed hosts/CSRF từ `PUBLIC_HOST`;
+cần chỉnh môi trường triển khai backend tương ứng, không chỉ thêm biến vào file
+mà Compose không đọc. Với proxy HTTPS phía backend, giữ cấu hình trusted proxy
+phù hợp của nhà cung cấp; chỉ bật `DJANGO_TRUST_PROXY=1` khi proxy tin cậy ghi đè
+`X-Forwarded-Proto`. Không bật CORS hoặc SameSite=None chỉ để dùng Netlify proxy.
+Deploy Preview có domain riêng: dùng backend staging và khai báo origin chính
+xác nếu cần đăng nhập, không mặc định cho mọi preview quyền dùng production.
+
+**Giới hạn cần thử trước khi mở thật:** Netlify proxy timeout sau 26 giây;
+upload audio lớn (ứng dụng cho phép tới 200 MB), tải media và API chậm cần kiểm
+tra thực tế. Không thể tăng giới hạn này bằng file env. Service `frontend-monitor`
+không chạy liên tục trên Netlify static hosting; nếu cần giữ giám sát, chạy worker
+trên máy/container riêng theo cấu hình Docker sẵn có.
+
+Sau deploy, thử `/api/health/check/`, đăng nhập/đăng xuất, lưu dữ liệu, reload
+`/de/flashcard`, ảnh nền, audio/upload lớn và `/admin/`. Khi domain/backend thay
+đổi, cập nhật cả môi trường frontend lẫn allowed hosts/CSRF trên backend.
+
+Nếu chuyển sang VPS/Docker, dùng cấu hình bên dưới với cùng tên `BACKEND_ORIGIN`
+và lệnh build thường `npm run build`. React không cần đổi; từng nền tảng vẫn cần
+adapter proxy/build riêng (Netlify dùng `_redirects`, Docker dùng Nginx).
+
+Tài liệu: [Netlify proxy và giới hạn](https://docs.netlify.com/manage/routing/redirects/rewrites-proxies/),
+[biến môi trường build](https://docs.netlify.com/configure-builds/environment-variables).
+
 Bộ mẫu trong [deploy](deploy):
 
 - Development: `.env.example`, SQLite, Vite + Django runserver.

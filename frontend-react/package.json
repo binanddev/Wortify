@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:netlify": "node scripts/build-netlify.mjs",
     "preview": "vite preview",
     "test": "node --test tests/*.test.mjs",
     "styles:baseline": "node scripts/design-system.mjs --snapshot",
