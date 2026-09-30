@@ -122,28 +122,18 @@ class LanguageTests(SimpleTestCase):
 
 
 class ApiOnlyTests(TestCase):
-    def test_default_admin_remains_available(self):
-        user = get_user_model().objects.create_superuser('root', password='Testing-7391-secure')
-        self.client.force_login(user)
+    def test_django_admin_is_not_exposed(self):
         response = self.client.get('/admin/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'admin/index.html')
-        self.assertIn('django', str(get_template('admin/base_site.html').origin.name))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response['Content-Type'], 'application/json')
 
-    def test_only_bootstrap_form_template_without_react_distribution_in_backend(self):
+    def test_no_application_templates_static_or_react_distribution_in_backend(self):
         root = Path(settings.BASE_DIR)
         self.assertFalse((root / 'templates').exists())
         for app in ['api', 'cards', 'practice', 'users', 'content', 'learning']:
-            if app == 'users':
-                self.assertEqual(
-                    {p.relative_to(root / app / 'templates').as_posix() for p in (root / app / 'templates').rglob('*') if p.is_file()},
-                    {'users/bootstrap.html'},
-                )
-            else:
-                self.assertFalse((root / app / 'templates').exists())
+            self.assertFalse((root / app / 'templates').exists())
             self.assertFalse((root / app / 'static').exists())
         self.assertEqual(settings.STATICFILES_DIRS, [])
-        self.assertEqual(settings.TEMPLATES[0]['DIRS'], [])
         self.assertFalse(hasattr(settings, 'REACT_DIST'))
 
     def test_api_errors_stay_json_including_csrf_and_method_errors(self):

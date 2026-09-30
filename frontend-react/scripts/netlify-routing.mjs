@@ -14,11 +14,10 @@ export function netlifyRedirects(value) {
     throw new Error("BACKEND_ORIGIN must be a public HTTPS origin without credentials, path, query or fragment.");
   }
   return [
-    ...["api", "admin"].flatMap((path) => [
+    ...["api"].flatMap((path) => [
       `/${path} ${url.origin}/${path}/ 200!`,
       `/${path}/* ${url.origin}/${path}/:splat 200!`,
     ]),
-    `/static/admin/* ${url.origin}/static/admin/:splat 200!`,
     "/static/react/* /:splat 200",
     "/private_media/* /404.html 404!",
     "/assets/* /404.html 404",

@@ -1,6 +1,6 @@
 # Wortify
 
-Web học tiếng Anh/Đức: React 19 + Vite + Tailwind/HeroUI, Django 5.2 cung cấp API và admin mặc định. Frontend gồm cả quản trị trong `frontend-react/src/admin`. Development dùng SQLite; cấu hình deploy bên dưới dùng PostgreSQL, Gunicorn và Nginx.
+Web học tiếng Anh/Đức: React 19 + Vite + Tailwind/HeroUI, Django 5.2 chỉ cung cấp API. Frontend gồm cả quản trị trong `frontend-react/src/admin`. Development dùng SQLite; cấu hình deploy bên dưới dùng PostgreSQL, Gunicorn và Nginx.
 
 ## Chạy trên Windows
 
@@ -32,7 +32,7 @@ Chạy ở thư mục gốc, đúng môi trường/database đang dùng:
 .\.venv\Scripts\python.exe manage.py createsuperuser
 ```
 
-Nhập username, email (có thể bỏ trống) và mật khẩu hai lần. Terminal không hiện ký tự khi gõ mật khẩu. Sau đó đăng nhập giao diện web và mở `/de/admin`, `/en/admin` hoặc `/manage`. Superuser vẫn có đầy đủ Flashcard, Practice Hub, Explore và Create để kiểm thử. Django admin mặc định ở `/admin/` trên cùng website khi deploy; local có thể mở http://127.0.0.1:8000/admin/.
+Nhập username, email (có thể bỏ trống) và mật khẩu hai lần. Terminal không hiện ký tự khi gõ mật khẩu. Sau đó đăng nhập giao diện web và mở `/de/admin`, `/en/admin` hoặc `/manage`. Superuser vẫn có đầy đủ Flashcard, Practice Hub, Explore và Create để kiểm thử. Không cung cấp giao diện Django admin; quản trị bằng React tại `/manage`.
 
 Đổi mật khẩu tài khoản đã tồn tại:
 
@@ -54,7 +54,6 @@ Trong container production, dùng `dc exec backend python manage.py createsuperu
 - Ảnh nền được tải một lần cho mỗi lần đăng nhập, lưu Blob trong IndexedDB và hiển thị qua URL nội bộ trình duyệt. Hai không gian dùng cùng ảnh chỉ tải một bản. Reload/đổi trang/đổi ngôn ngữ dùng bản lưu, không gọi lại ảnh hay manifest. Cập nhật ảnh, chọn hoặc sửa theme có hiệu lực sau đăng xuất/đăng nhập lại; giao diện hiển thị thông báo. Đăng xuất xóa cache nền. Nếu trình duyệt chặn lưu trữ/hết dung lượng hoặc tải lỗi, báo lỗi trong Cài đặt và yêu cầu đăng nhập lại, không tự tải lặp lại trên mỗi reload. Xóa dữ liệu website có thể làm mất cache.
 - Hover/active/selected/focus dùng nền trong suốt, viền kính và focus ring; Cài đặt có độ cong 0–32 px và độ lúp 0–100. Giảm chuyển động theo tùy chọn hệ điều hành. Điều chỉnh hiển thị trực tiếp vẫn có hiệu lực trong phiên; lưu thành theme để tái sử dụng.
 - Âm nền là các nốt nhẹ có khoảng nghỉ, chỉ khởi động sau thao tác của người dùng; tạm im khi nghe audio/video/TTS hoặc ẩn tab. Không có sóng trầm chạy liên tục. Âm lượng thay đổi không tạo lại audio context.
-- Máy chủ frontend kiểm tra backend ngay khi khởi động và mỗi 10 phút, kể cả khi không có ai mở web. Local: tiến trình Vite chạy monitor; production: service `frontend-monitor` chạy trên máy frontend. Trình duyệt không chạy health probe hoặc gửi log. Báo cáo có khóa server riêng `BACKEND_MONITOR_SECRET`, không gắn user; superuser xem tại Quản trị → Hệ thống. Log giữ 30 ngày; lúc backend lỗi, hàng đợi được lưu trên máy frontend (tối đa 7 ngày/1008 bản ghi), gửi lại khi kết nối phục hồi.
 - Practice Hub và các chế độ Flashcard có icon **Bỏ qua** để hiện đáp án, sau đó icon **Tiếp tục**. Câu bỏ qua không được tính là trả lời đúng: Practice Hub vẫn để câu đó chưa hoàn thành; Flashcard ghi nhận chưa nhớ để ôn lại. Bài kiểm tra giữ cách hiển thị hiện có, icon tiếp tục chuyển focus tới câu kế tiếp hoặc tổng kết/nút nộp bài.
 
 Dữ liệu demo chỉ dùng development:
@@ -69,42 +68,25 @@ Lệnh yêu cầu DEBUG và chạy lại không nhân bản. Tài khoản demo m
 
 ### Frontend trên Netlify, backend đã deploy riêng
 
-#### Gọi backend định kỳ trên Netlify
+#### Đăng ký superuser bằng giao diện React
 
-Function `backend-ping` gọi trực tiếp `/api/health/check/` mỗi 10 phút, độc lập
-trình duyệt. Đặt `BACKEND_PING_ENABLED=1` và `BACKEND_ORIGIN=https://wortify.onrender.com`
-trên Netlify; cả hai cần scope **Functions**, riêng `BACKEND_ORIGIN` còn cần
-**Builds**. Deploy lại rồi mở Functions → backend-ping → Run now, kiểm tra log.
-Đặt `BACKEND_PING_ENABLED=0` để ngừng gửi request. Lịch chỉ tự chạy ở published
-production deploy; preview không tự chạy. Không cần `BACKEND_MONITOR_SECRET`.
-Đây là ping kiểm tra sức khỏe, không ghi lịch sử vào dashboard giám sát Django.
-Nếu backend đang ngủ, lần đầu có thể timeout 25 giây nhưng request đã được gửi;
-function báo lỗi và lần chạy kế tiếp kiểm tra lại. Không bảo đảm Render luôn thức
-và không thay thế lưu trữ bền vững. Docker vẫn dùng worker riêng hiện có.
+Mở `https://wwwortify.netlify.app/setup-7f3c91d8/<SUPERUSER_SETUP_KEY>/`.
+Thay phần trong dấu ngoặc bằng khóa đã đặt trên Render (chuỗi ngẫu nhiên tối
+thiểu 32 ký tự, chỉ chữ/số/gạch ngang/gạch dưới). Không có `/api/` trong URL trang.
+Form dùng chung giao diện đăng ký React; chỉ khác đường dẫn và quyền tài khoản.
+Backend xác thực khóa trên mỗi yêu cầu và trả JSON, không render HTML.
+Có thể tạo nhiều superuser. Đổi khóa trên Render rồi restart/deploy làm đường
+ dẫn cũ hết hiệu lực; xóa biến để tắt tính năng. Không đặt khóa trong biến VITE_*.
+Ai có URL đều có quyền tạo superuser; giữ kín URL như mật khẩu.
 
-#### Trang tạo superuser khi Render không có Shell
+Deploy cả frontend và backend; chạy `python manage.py migrate --noinput` để
+xóa bảng bootstrap cũ bằng migration 0006. Giữ migration 0005 để tương thích
+các database đã áp dụng trước đó. Không còn Django admin `/admin/`; quản trị
+người dùng bằng giao diện React `/manage`.
 
-Trang có giao diện username, mật khẩu và xác nhận mật khẩu tại:
-`https://wwwortify.netlify.app/api/setup-7f3c91d8/<SUPERUSER_SETUP_KEY>/`.
-Đây là trang HTML dù đường dẫn bắt đầu bằng `/api/` để đi qua proxy tới Render.
-
-1. Trên Render, đặt `SUPERUSER_SETUP_KEY` là chuỗi ngẫu nhiên bí mật ít nhất 32 ký
-   tự, chỉ dùng chữ, số, dấu gạch ngang hoặc gạch dưới; nên tạo 64 ký tự bằng
-   password manager. Không đặt trên Netlify, không dùng tiền tố `VITE_`, không
-   commit giá trị này vào Git.
-2. Deploy backend. Thay `<SUPERUSER_SETUP_KEY>` trong đường dẫn bằng giá trị vừa
-   đặt (không có dấu ngoặc nhọn).
-3. Nhập username và mật khẩu hai lần. Không cần nhập khóa trong form. Trang vẫn
-   bắt buộc CSRF, nên giữ đúng trusted origins cho domain frontend trên Render.
-4. Có thể dùng lại đường dẫn để tạo thêm superuser, kể cả khi đã có superuser.
-   Trang không tự xóa hoặc khóa sau lần tạo đầu tiên.
-
-Ai có đường dẫn đều có quyền tạo superuser. URL có thể xuất hiện trong lịch sử
-trình duyệt và access log; giữ kín như mật khẩu quản trị. Trang không cache,
-không gửi referrer và yêu cầu công cụ tìm kiếm không lập chỉ mục. Đổi giá trị
-`SUPERUSER_SETUP_KEY` để đổi đường dẫn; xóa biến để tắt trang. Bản ghi singleton
-của phiên bản thiết lập cũ được giữ tương thích migration nhưng không còn được
-dùng để chặn tạo tài khoản.
+Không còn tác vụ ping định kỳ từ frontend, Netlify, Vite hoặc Docker. Có thể
+xóa `BACKEND_PING_ENABLED` khỏi Netlify. `BACKEND_ORIGIN` vẫn cần cho scope Builds
+để sinh proxy API. Dịch vụ giám sát bên ngoài có thể gọi `/api/health/check/`.
 
 Repository có `netlify.toml`: base directory `frontend-react`, build command
 `npm run build:netlify`, publish directory `dist`, Node 22. Kết nối repository
@@ -143,7 +125,6 @@ host-only (không ép Cookie Domain sang domain backend) và API trả
 ```dotenv
 DJANGO_ALLOWED_HOSTS=api.example.com,ten-site.netlify.app,learn.example.com
 DJANGO_CSRF_TRUSTED_ORIGINS=https://ten-site.netlify.app,https://learn.example.com
-DJANGO_SERVE_ADMIN_STATIC=1
 ```
 
 Thay các domain ví dụ bằng domain thực sự sử dụng. Nếu backend dùng Compose
@@ -157,9 +138,7 @@ xác nếu cần đăng nhập, không mặc định cho mọi preview quyền d
 
 **Giới hạn cần thử trước khi mở thật:** Netlify proxy timeout sau 26 giây;
 upload audio lớn (ứng dụng cho phép tới 200 MB), tải media và API chậm cần kiểm
-tra thực tế. Không thể tăng giới hạn này bằng file env. Service `frontend-monitor`
-không chạy liên tục trên Netlify static hosting; nếu cần giữ giám sát, chạy worker
-trên máy/container riêng theo cấu hình Docker sẵn có.
+tra thực tế. Không thể tăng giới hạn này bằng file env. Việc giám sát định kỳ do dịch vụ bên ngoài đảm nhiệm.
 
 Sau deploy, thử `/api/health/check/`, đăng nhập/đăng xuất, lưu dữ liệu, reload
 `/de/flashcard`, ảnh nền, audio/upload lớn và `/admin/`. Khi domain/backend thay
@@ -181,7 +160,7 @@ Bộ mẫu trong [deploy](deploy):
 
 Các bước deploy dưới đây dùng **Linux + Docker Engine/Compose v2**, chạy ở thư mục gốc repository. Đây là cấu hình chuẩn bị, không tự triển khai lên máy chủ. Máy frontend cần Nginx trên host và chứng chỉ TLS. Không dùng `runserver`, `vite dev` hoặc `vite preview` phục vụ production.
 
-Hai kịch bản đều giữ một origin cho trình duyệt: `https://learn.example.com/api/...`. Frontend Nginx chuyển API về backend, vì vậy cookie đăng nhập và CSRF hoạt động cùng origin; không cần CORS, không đặt `SameSite=None`, không public thư mục media. Django chỉ phục vụ API và admin mặc định; WhiteNoise chỉ phục vụ static của admin.
+Hai kịch bản đều giữ một origin cho trình duyệt: `https://learn.example.com/api/...`. Frontend Nginx chuyển API về backend, vì vậy cookie đăng nhập và CSRF hoạt động cùng origin; không cần CORS, không đặt `SameSite=None`, không public thư mục media. Django chỉ phục vụ API JSON; mọi giao diện quản trị nằm trong React.
 
 ### Chuẩn bị domain, secret và HTTPS
 
@@ -236,7 +215,7 @@ dc ps
 curl --fail https://learn.example.com/api/health/check/
 ```
 
-Nếu cần nhập dữ liệu cũ, thực hiện bước chuyển dữ liệu bên dưới **trước** createsuperuser. Container backend thu gom static admin khi khởi động. Volume `database` giữ PostgreSQL, `media` giữ ảnh/audio riêng tư. Chỉ frontend publish cổng `127.0.0.1:8080`; API và database nằm trong mạng Compose.
+Nếu cần nhập dữ liệu cũ, thực hiện bước chuyển dữ liệu bên dưới **trước** createsuperuser. Giao diện quản trị được build cùng frontend React. Volume `database` giữ PostgreSQL, `media` giữ ảnh/audio riêng tư. Chỉ frontend publish cổng `127.0.0.1:8080`; API và database nằm trong mạng Compose.
 
 ### B. Frontend và backend trên hai máy chủ
 
@@ -259,12 +238,11 @@ dc ps
 
 Giới hạn cổng `10.20.0.2:8000` chỉ cho IP frontend bằng firewall/cloud security group. Với Docker, kiểm tra cả quy tắc firewall của Docker/DOCKER-USER; không mặc định rằng UFW một mình đã chặn port publish. PostgreSQL không publish cổng. Backend không cần public domain hay public TLS riêng khi kênh này đi qua VPN. Nếu thay cổng host, đặt `BACKEND_PORT` và sửa `BACKEND_ORIGIN` trên frontend cho khớp.
 
-**Máy frontend:** cần source frontend, Dockerfile và deploy config. Chỉ chia sẻ khóa giám sát `BACKEND_MONITOR_SECRET` với backend; không sao chép secret Django hoặc mật khẩu database. Đặt cùng giá trị khóa giám sát trong hai file env của hai máy, giữ khóa ở phía server, tuyệt đối không dùng tiền tố `VITE_`.
+**Máy frontend:** cần source frontend, Dockerfile và deploy config. Không sao chép secret Django hoặc mật khẩu database sang frontend.
 
 ```bash
 cp deploy/.env.frontend.example deploy/.env.frontend.local
 # PUBLIC_HOST=learn.example.com
-# BACKEND_MONITOR_SECRET=<cùng khóa giám sát với backend>
 # BACKEND_ORIGIN=http://10.20.0.2:8000   (không có dấu / ở cuối)
 dc() { docker compose --env-file deploy/.env.frontend.local -f deploy/compose.frontend.yml "$@"; }
 dc config --quiet
@@ -273,9 +251,8 @@ dc ps
 curl --fail https://learn.example.com/api/health/check/
 ```
 
-Nginx host/TLS giống kịch bản A. `/api/`, `/admin/` và `/static/admin/` đi về máy backend. `/assets/` và route React phục vụ tại frontend. Upload MP3 200 MB đi qua hai lớp proxy với giới hạn 201 MB để chừa multipart overhead; backend vẫn kiểm tra định dạng/kích thước. Media riêng tư luôn đi qua API có xác thực, không mount thành thư mục static công khai.
+Nginx host/TLS giống kịch bản A. `/api/` đi về máy backend. `/assets/` và route React phục vụ tại frontend. Upload MP3 200 MB đi qua hai lớp proxy với giới hạn 201 MB để chừa multipart overhead; backend vẫn kiểm tra định dạng/kích thước. Media riêng tư luôn đi qua API có xác thực, không mount thành thư mục static công khai.
 
-Nếu đã deploy bằng cấu hình cũ, thêm `BACKEND_MONITOR_SECRET` mới cho backend và monitor, chạy migration rồi build/up lại. Volume `monitor-state` giữ các kiểm tra chưa gửi qua mỗi lần restart. Khi đổi khóa, cập nhật cả hai máy cùng đợt; 403 trong log monitor thường nghĩa là hai khóa chưa khớp. Local dùng khóa development mặc định, hoặc đặt biến môi trường giống nhau cho Django và Vite nếu khởi động chúng riêng.
 
 ### Staging độc lập
 
@@ -325,12 +302,12 @@ Rollback dùng image/release cũ; nếu migration không tương thích ngược
 dc exec -T db sh -c 'pg_restore --clean --if-exists --no-owner -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < backup/database.dump
 ```
 
-Xem log server: `dc logs --tail=100 backend`, `dc logs --tail=100 frontend` (trên máy frontend nếu tách), `dc logs --tail=100 db`. Xem tiến trình giám sát: `dc logs --tail=100 frontend-monitor` trên máy frontend. Log kiểm tra từ máy chủ frontend nằm trong Quản trị → Hệ thống; bảng này chỉ tải khi mở hoặc nhấn cập nhật. Chạy định kỳ `dc exec backend python manage.py clearsessions` bằng scheduler của hệ thống.
+Xem log server: `dc logs --tail=100 backend`, `dc logs --tail=100 frontend` (trên máy frontend nếu tách), `dc logs --tail=100 db`. Log kiểm tra từ máy chủ frontend nằm trong Quản trị → Hệ thống; bảng này chỉ tải khi mở hoặc nhấn cập nhật. Chạy định kỳ `dc exec backend python manage.py clearsessions` bằng scheduler của hệ thống.
 
 ### Kiểm tra trước khi mở cho người dùng
 
 - `dc config --quiet`, `dc run --rm backend python manage.py check --deploy`, `dc ps` và `sudo nginx -t`.
-- HTTPS, đăng nhập/đăng xuất, CSRF, route React khi reload trực tiếp, static Django admin.
+- HTTPS, đăng nhập/đăng xuất, CSRF, route React khi reload trực tiếp và quản trị React.
 - Đăng nhập để tải ảnh nền đã chọn, reload/đổi ngôn ngữ phải dùng cache; cập nhật nền rồi đăng nhập lại; audio/ảnh bài tập, upload lớn, lỗi 413/502 nếu giới hạn proxy sai.
 - Staff không sửa superuser; dữ liệu riêng tư không mở được bằng tài khoản khác.
 - Health `/api/health/check/` trả `{"ok":true}`; backup/restore, disk space và gia hạn TLS đã được thử.

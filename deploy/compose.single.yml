@@ -13,17 +13,3 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-
-  frontend-monitor:
-    build:
-      context: ..
-      dockerfile: deploy/monitor.Dockerfile
-    restart: unless-stopped
-    environment:
-      BACKEND_ORIGIN: http://backend:8000
-      PUBLIC_HOST: ${PUBLIC_HOST:?Set PUBLIC_HOST}
-      BACKEND_MONITOR_SECRET: ${BACKEND_MONITOR_SECRET:?Set BACKEND_MONITOR_SECRET}
-    volumes:
-      - monitor-state:/state
-volumes:
-  monitor-state:

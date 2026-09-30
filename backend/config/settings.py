@@ -38,7 +38,6 @@ ALLOWED_HOSTS = [host.strip() for host in os.environ.get('DJANGO_ALLOWED_HOSTS',
 
 INSTALLED_APPS = [
     'cards.apps.CardsConfig',
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -133,9 +132,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = Path(os.environ.get('DJANGO_STATIC_ROOT', BASE_DIR / 'staticfiles'))
-LOGIN_URL = '/admin/login/'
+LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/admin/'
-LOGOUT_REDIRECT_URL = '/admin/login/'
+LOGOUT_REDIRECT_URL = '/'
 MEDIA_ROOT = Path(os.environ.get('DJANGO_MEDIA_ROOT', BASE_DIR / 'private_media'))
 STT_PROVIDER = os.environ.get('STT_PROVIDER', '')
 TTS_PROVIDER = os.environ.get('TTS_PROVIDER', '')
@@ -176,7 +175,7 @@ MIDDLEWARE += ['api.middleware.PrivateResponsesMiddleware']
 # Community features are available by default; deployments can disable them explicitly.
 COMMUNITY_ENABLED = os.environ.get('COMMUNITY_ENABLED', '1') == '1'
 
-# Application clients bootstrap CSRF through /api/session/. Admin retains Django HTML.
+# React clients obtain CSRF cookies through the session API.
 CSRF_FAILURE_VIEW = "api.errors.csrf_failure"
 SUPERUSER_SETUP_KEY = os.environ.get('SUPERUSER_SETUP_KEY', '')
 
@@ -184,13 +183,6 @@ if os.environ.get("DJANGO_TRUST_PROXY") == "1":
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
-# WhiteNoise serves collected Django-admin static assets only; never private media or React.
-if os.environ.get('DJANGO_SERVE_ADMIN_STATIC', '0') == '1':
-    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-    STORAGES = {
-        'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
-        'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
-    }
 SECURE_HSTS_SECONDS = int(os.environ.get('DJANGO_HSTS_SECONDS', '0' if DEBUG else '3600'))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('DJANGO_HSTS_INCLUDE_SUBDOMAINS', '0') == '1'
 SECURE_HSTS_PRELOAD = False

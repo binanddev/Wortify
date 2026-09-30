@@ -1,4 +1,3 @@
-import { backendMonitorPlugin } from "./scripts/backend-monitor-plugin.mjs";
 import { frontendAssetAliases } from "./scripts/frontend-assets.mjs";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
@@ -6,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // Preserve the browser Host/Origin pair for Django session + CSRF checks.
 const proxy = Object.fromEntries(
-  ["/api", "/admin", "/static/admin"].map((path) => [
+  ["/api"].map((path) => [
     path,
     {
       target: process.env.DJANGO_DEV_ORIGIN || "http://127.0.0.1:8000",
@@ -20,7 +19,6 @@ export default defineConfig({
   resolve: { dedupe: ["react", "react-dom"] },
   plugins: [
     frontendAssetAliases(),
-    backendMonitorPlugin(),
     react(),
     tailwindcss(),
   ],

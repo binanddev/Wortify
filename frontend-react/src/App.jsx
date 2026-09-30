@@ -120,6 +120,7 @@ export default function App() {
   }, [appearance, appearanceKey, activeLanguage, isWorkspace]);
   const parts = route.split("?")[0].split("/").filter(Boolean),
     lang = ["en", "de"].includes(parts[0]) ? parts[0] : null;
+  const setupKey = /^\/setup-7f3c91d8\/([A-Za-z0-9_-]+)\/?$/.exec(route.split("?")[0])?.[1];
   if (error)
     return (
       <div className="welcome">
@@ -139,7 +140,8 @@ export default function App() {
         <p>Đang tải…</p>
       </div>
     );
-  if (!user) return <Login onLogin={setUser} />;
+  if (setupKey) return <Login key={setupKey} setupKey={setupKey} onLogin={(created) => { setUser(created); navigate("/"); }} />;
+  if (!user) return <Login key="normal-login" onLogin={setUser} />;
   if (appearance.key !== appearanceKey)
     return (
       <div className="welcome">
@@ -167,8 +169,8 @@ export default function App() {
     />
   );
 }
-function Login({ onLogin }) {
-  const [register, setRegister] = useState(false),
+function Login({ onLogin, setupKey }) {
+  const [register, setRegister] = useState(Boolean(setupKey)),
     [values, setValues] = useState({
       username: "",
       password: "",
@@ -176,17 +178,36 @@ function Login({ onLogin }) {
       password2: "",
     }),
     action = useAction();
+  const [setupState, setSetupState] = useState(setupKey ? "loading" : "ready");
+  const [setupError, setSetupError] = useState("");
+  const authEndpoint = setupKey
+    ? `/api/superuser-registration/${encodeURIComponent(setupKey)}/`
+    : "/api/session/";
+  useEffect(() => {
+    if (!setupKey) return;
+    const controller = new AbortController();
+    request(authEndpoint, "GET", undefined, controller.signal)
+      .then(() => { if (!controller.signal.aborted) setSetupState("ready"); })
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        setSetupState("error");
+        setSetupError(error.message);
+      });
+    return () => controller.abort();
+  }, [setupKey, authEndpoint]);
   return (
     <div className="auth-layout">
       <Glass className="auth-card">
         <span className="eyebrow">WORTIFY</span>
-        <h2>{register ? "Tạo tài khoản" : "Đăng nhập"}</h2>
-        <form
+        <h2>{setupKey ? "Tạo tài khoản quản trị" : register ? "Tạo tài khoản" : "Đăng nhập"}</h2>
+        {setupState === "loading" && <p>Đang kiểm tra đường dẫn…</p>}
+        <Status error={setupError} />
+        {setupState === "ready" && <form
           onSubmit={(e) => {
             e.preventDefault();
             action.run(async (s) => {
               const d = await request(
-                "/api/session/",
+                authEndpoint,
                 "POST",
                 register
                   ? {
@@ -232,8 +253,8 @@ function Login({ onLogin }) {
             {register ? "Tạo tài khoản" : "Đăng nhập"}
             <Icon name="arrow" />
           </Btn>
-        </form>
-        <div className="auth-switch">
+        </form>}
+        {!setupKey && <div className="auth-switch">
           {register ? "Đã có tài khoản?" : "Chưa có tài khoản?"}
           <Btn
             onClick={() => {
@@ -243,7 +264,8 @@ function Login({ onLogin }) {
           >
             {register ? "Đăng nhập" : "Tạo tài khoản"}
           </Btn>
-        </div>
+        </div>}
+        {setupKey && <Link to="/">Về trang chính</Link>}
       </Glass>
     </div>
   );

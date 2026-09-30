@@ -1,20 +1,16 @@
 from api import spaced_review, management_data, personal_appearance, monitoring, themes
-from django.contrib import admin
 from django.urls import path,re_path
 from django.http import JsonResponse
 from api import views,sessions,community,management,practice_hub,learning_sync,practice_media,practice_copy
 from api.common import legacy_json,namespace
-from users.views import session
-from users.bootstrap import bootstrap
+from users.views import session, superuser_registration
 from api import card_learning as cards
-# Django admin remains superuser-only; staff uses the scoped React management tools.
-admin.site.has_permission=lambda request: request.user.is_active and request.user.is_superuser
 def health(request):
     import hashlib
     from django.conf import settings
     identity=hashlib.sha256(str(settings.BASE_DIR.parent).lower().encode()).hexdigest()[:16]
     return JsonResponse({'app':'Wortify','workspace':identity})
-urlpatterns=[path('api/setup-7f3c91d8/<slug:setup_key>/',bootstrap,name='first-admin-setup'),path('api/health/',health),path('api/session/',session),path('admin/',admin.site.urls),
+urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_registration),path('api/health/',health),path('api/session/',session),
  path('api/health/check/',monitoring.probe),
  path('api/monitor/',monitoring.report),
  path('api/manage/monitor/',monitoring.logs),
