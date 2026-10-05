@@ -1,3 +1,6 @@
+import { SentenceBuilder } from "./sentence-builder";
+export { SentenceBuilder } from "./sentence-builder";
+import { Icon } from "./ui";
 import { PracticeRichText } from "./practice-rich-text";
 import { MovableGap } from "./movable-gap";
 import { useState, useEffect, useRef, useContext } from "react";
@@ -113,12 +116,14 @@ function Chip({
   disabled,
   selected = false,
   draggable = true,
+  result,
 }) {
   return (
     <motion.button
       layout
       type="button"
-      className={`word-chip ${selected ? "selected" : ""}`}
+      className={`word-chip ${selected ? "selected" : ""} ${result === false ? "is-wrong" : result === true ? "is-right" : ""}`}
+      aria-invalid={result === false || undefined}
       disabled={disabled}
       aria-pressed={selected}
       draggable={!disabled && draggable}
@@ -150,7 +155,7 @@ function InlineMenu({ value, options, onChange, disabled, label, invalid }) {
           aria-invalid={invalid}
         >
           {value || "······"}
-          <span aria-hidden="true">⌄</span>
+          <Icon name="chevron_down" />
         </button>
       </PopoverTrigger>
       <PopoverContent className="inline-menu">
@@ -319,98 +324,6 @@ export function GapPassage({
     </div>
   );
 }
-export function SentenceBuilder({
-  q,
-  value = [],
-  onChange,
-  disabled,
-  uiStyle,
-}) {
-  const tokens = q.presentation?.tokens || [];
-  const [order] = useState(() => shuffled(tokens));
-  const add = (id) => {
-    if (disabled) return;
-    if (tokens.some((t) => t.id === id) && !value.includes(id))
-      onChange([...value, id]);
-  };
-  return (
-    <div
-      className={`sentence-builder ${uiStyle === "drag_build" ? "is-drag-build" : ""}`}
-      data-ui-style={uiStyle || ""}
-    >
-      <div
-        className="sentence-target"
-        aria-label="Câu đã xếp"
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          add(e.dataTransfer.getData("text/plain"));
-        }}
-      >
-        {value.length ? (
-          value.map((id, i) => (
-            <span className="placed-token" key={id}>
-              <Chip
-                value={id}
-                onClick={() => onChange(value.filter((v) => v !== id))}
-                disabled={disabled}
-                draggable={uiStyle === "drag_build"}
-              >
-                {tokens.find((t) => t.id === id)?.text} <small>×</small>
-              </Chip>
-              <button
-                type="button"
-                className="move-token"
-                aria-label={`Chuyển ${tokens.find((t) => t.id === id)?.text} sang trái`}
-                disabled={disabled || i === 0}
-                onClick={() => {
-                  const n = [...value];
-                  [n[i - 1], n[i]] = [n[i], n[i - 1]];
-                  onChange(n);
-                }}
-              >
-                ←
-              </button>
-            </span>
-          ))
-        ) : (
-          <span className="drop-placeholder">Xếp từ vào đây</span>
-        )}
-      </div>
-      <div className="word-bank">
-        {order
-          .filter((t) => !value.includes(t.id))
-          .map((t) => (
-            <Chip
-              key={t.id}
-              value={t.id}
-              onClick={() => add(t.id)}
-              disabled={disabled}
-              draggable={uiStyle === "drag_build"}
-            >
-              {t.text}
-            </Chip>
-          ))}
-      </div>
-      <div className="toolbar">
-        <button
-          type="button"
-          disabled={disabled || !value.length}
-          onClick={() => onChange(value.slice(0, -1))}
-        >
-          ↶ Hoàn tác
-        </button>
-        <button
-          type="button"
-          disabled={disabled || !value.length}
-          onClick={() => onChange([])}
-        >
-          Làm lại câu
-        </button>
-      </div>
-    </div>
-  );
-}
 export function ErrorTokens({ q, value = [], onChange, disabled, uiStyle }) {
   const tokens = q.presentation?.tokens || [];
   const toggle = (id) =>
@@ -495,6 +408,7 @@ export function Categories({
   onAnswer,
   disabled,
   exercise,
+  rows = [],
 }) {
   const [picked, setPicked] = useState(null);
   const groups =
@@ -541,10 +455,13 @@ export function Categories({
                   <Chip
                     key={q.id}
                     value={q.id}
+                    result={
+                      rows.find((row) => row.key === String(q.id))?.correct
+                    }
                     disabled={disabled}
                     onClick={() => onAnswer(String(q.id), "")}
                   >
-                    <PracticeRichText>{q.prompt}</PracticeRichText> ×
+                    <PracticeRichText>{q.prompt}</PracticeRichText>
                   </Chip>
                 ))}
             </div>
@@ -569,95 +486,8 @@ export function Categories({
     </div>
   );
 }
-export function MatchPairs({
-  questions,
-  answers,
-  onAnswer,
-  disabled,
-  uiStyle,
-  rows = [],
-}) {
-  const [picked, setPicked] = useState(null);
-  const wrong = rows.some((row) => row.correct === false);
-  const [right] = useState(() =>
-    shuffled([...new Set(questions.flatMap((q) => q.options))]),
-  );
-  return (
-    <div className="pairing-work">
-      <div className="pair-column">
-        <h3>A</h3>
-        {questions.map((q, i) => (
-          <button
-            type="button"
-            className={`pair-card ${picked === String(q.id) ? "selected" : ""} ${answers[q.id] ? (rows.find((r) => r.key === String(q.id))?.correct ? "paired" : "assigned") : ""}`}
-            aria-pressed={picked === String(q.id)}
-            key={q.id}
-            disabled={disabled}
-            draggable={!disabled && uiStyle === "drag_match"}
-            onDragStart={(event) =>
-              event.dataTransfer.setData("text/plain", String(q.id))
-            }
-            onClick={() => {
-              setPicked(String(q.id));
-            }}
-          >
-            <b>{i + 1}</b>
-            <span>
-              <PracticeRichText>{q.prompt}</PracticeRichText>
-              {answers[q.id] && <small>↔ {answers[q.id]}</small>}
-            </span>
-          </button>
-        ))}
-      </div>
-      <div className="pair-column">
-        <h3>B</h3>
-        {right.map((text, i) => {
-          const linked = questions.findIndex((q) => answers[q.id] === text);
-          return (
-            <button
-              type="button"
-              key={text}
-              className={`pair-card ${linked >= 0 ? (rows.find((r) => r.key === String(questions[linked].id))?.correct ? "paired" : "assigned") : ""} ${wrong && linked >= 0 ? "pair-error" : ""}`}
-              disabled={
-                disabled || (picked === null && uiStyle !== "drag_match")
-              }
-              onDragOver={(event) => {
-                if (uiStyle === "drag_match") event.preventDefault();
-              }}
-              onDrop={(event) => {
-                if (uiStyle !== "drag_match") return;
-                event.preventDefault();
-                const source = event.dataTransfer.getData("text/plain");
-                if (questions.some((q) => String(q.id) === source))
-                  onAnswer(source, text);
-              }}
-              onClick={() => {
-                const source = questions.find((q) => String(q.id) === picked);
-                if (!source || disabled) return;
-                const previous = questions.find((q) => answers[q.id] === text);
-                if (previous && String(previous.id) !== picked)
-                  onAnswer(String(previous.id), "");
-                onAnswer(picked, text);
-                setPicked(null);
-              }}
-            >
-              <b>{linked >= 0 ? linked + 1 : String.fromCharCode(65 + i)}</b>
-              <span>{text}</span>
-            </button>
-          );
-        })}
-      </div>
-      <span className="match-status" role="status">
-        {wrong
-          ? "Chưa khớp. Chọn lại hai thẻ nhé."
-          : picked
-            ? "Chọn thẻ tương ứng ở cột B."
-            : "Chọn một thẻ ở cột A."}
-      </span>
-    </div>
-  );
-}
-function CorrectSentence({ q, value, onChange, disabled, uiStyle }) {
+export { MatchPairs } from "./match-pairs";
+function CorrectSentence({ q, value, onChange, disabled, uiStyle, revealed }) {
   const original = q.prompt.split(/\s+/);
   const [words, setWords] = useState(() => original);
   const [active, setActive] = useState(null);
@@ -732,22 +562,11 @@ function CorrectSentence({ q, value, onChange, disabled, uiStyle }) {
           </button>
         </div>
       )}
-      {value && (
+      {value && !revealed && (
         <p className="corrected-preview" aria-live="polite">
           Câu của bạn: {value}
         </p>
       )}
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={() => {
-          setWords(original);
-          onChange("");
-          setActive(null);
-        }}
-      >
-        Khôi phục câu gốc
-      </button>
     </div>
   );
 }
@@ -757,6 +576,7 @@ export function TypeQuestion({
   answers,
   onAnswer,
   disabled,
+  revealed,
   rows = [],
   assets = {},
   uiStyle,
@@ -767,7 +587,7 @@ export function TypeQuestion({
   if (mode === "error_correction")
     return (
       <CorrectSentence
-        {...{ q, value, disabled, uiStyle }}
+        {...{ q, value, disabled, uiStyle, revealed }}
         onChange={(v) => onAnswer(key, v)}
       />
     );

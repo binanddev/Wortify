@@ -1,6 +1,12 @@
 import { PracticeTree, PracticeModal } from "./practice-workspace";
 import { useState } from "react";
-import { useResource, endpoint, readPreference, savePreference } from "./core";
+import {
+  navigate,
+  useResource,
+  endpoint,
+  readPreference,
+  savePreference,
+} from "./core";
 import {
   Page,
   Heading,
@@ -314,6 +320,19 @@ export function PracticeHub({ lang, id, userId, sound }) {
             userId={userId}
             lang={lang}
             sound={sound}
+            onNext={() => {
+              const exercises = (
+                workspace.some((node) => node.id === current.id)
+                  ? workspace
+                  : nodes
+              ).filter((node) => node.kind === "exercise");
+              const next =
+                exercises[
+                  exercises.findIndex((node) => node.id === current.id) + 1
+                ];
+              if (next && next.id !== current.id)
+                navigate(`${practiceRoutes(lang).learn}/${next.id}`);
+            }}
             onProgress={(completed) => {
               setProgress((previous) => ({
                 ...previous,

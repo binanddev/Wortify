@@ -9,6 +9,22 @@ def validate_preferences(data):
             if type(value) is not bool:raise ValueError('Cài đặt âm thanh không hợp lệ.')
         elif key=='ambientTrack':
             if value not in ('morning','marimba','picnic','bubbles','cafe','garden','puzzle','clouds','starlight','steps'):raise ValueError('Giai điệu nền không hợp lệ.')
+        elif key=='appearanceSelections':
+            if not isinstance(value,dict) or len(value)>300:raise ValueError('Cài đặt theme không hợp lệ.')
+            for name, settings in value.items():
+                if not isinstance(name,str) or (name!='default' and not name.isdecimal()):raise ValueError('Theme không hợp lệ.')
+                if not isinstance(settings,dict) or set(settings)-{'interface','background'}:raise ValueError('Thông số theme không hợp lệ.')
+                validate_preferences(settings)
+        elif key=='appearanceProfiles':
+            import re
+            allowed = {'navScale','font','transparency','textSize','textWeight','textContrast','textColor','curvature','glassLens'}
+            if not isinstance(value,dict) or len(value)>300:raise ValueError('Cài đặt giao diện không hợp lệ.')
+            for name, settings in value.items():
+                if not isinstance(name,str) or not re.fullmatch(r'(default|[0-9]+):(studio|glass):(mist|paper|night)',name):raise ValueError('Theme không hợp lệ.')
+                if not isinstance(settings,dict) or set(settings)-allowed:raise ValueError('Thông số giao diện không hợp lệ.')
+                validate_preferences(settings)
+        elif key=='interface':
+            if value not in ('studio','glass'):raise ValueError('Giao diện không hợp lệ.')
         elif key=='textColor':
             import re
             if not isinstance(value,str) or (value != 'auto' and not re.fullmatch(r'#[0-9a-fA-F]{6}', value)):raise ValueError('Màu chữ không hợp lệ.')

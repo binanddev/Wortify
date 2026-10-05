@@ -9,6 +9,7 @@ import { Modal } from "./modal";
 import { request, useResource, useAction } from "./core";
 import { Btn, Field, Select, Status, Confirm } from "./ui";
 const visualKeys = [
+  "interface",
   "background",
   "transparency",
   "textSize",
@@ -64,6 +65,14 @@ function ThemeEditor({ theme, prefs, staff, lang, onClose, onSaved }) {
       <ModalContent>
         <ModalHeader>{theme ? "Sửa theme" : "Theme mới"}</ModalHeader>
         <ModalBody>
+          <Select
+            label="Phong cách giao diện"
+            value={values.interface || "studio"}
+            onChange={(value) => setValues((v) => ({ ...v, interface: value }))}
+          >
+            <option value="studio">Studio — sáng rõ</option>
+            <option value="glass">Glass — trong suốt</option>
+          </Select>
           <Field
             label="Tên theme"
             value={name}

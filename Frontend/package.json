@@ -9,6 +9,7 @@
     "build:netlify": "node scripts/build-netlify.mjs",
     "preview": "vite preview",
     "test": "node --test tests/*.test.mjs",
+    "test:interface": "node scripts/verify-interface.mjs",
     "styles:baseline": "node scripts/design-system.mjs --snapshot",
     "test:styles": "node --test tests/design-system.test.mjs"
   },

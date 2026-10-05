@@ -907,7 +907,7 @@ function Studio({ lang, id, userId, sound, data }) {
                     sync.flush();
                   }}
                 >
-                  <span aria-hidden="true">×</span>
+                  <Icon name="close" />
                   <span>Kết thúc</span>
                 </Btn>
               </div>
@@ -1107,7 +1107,7 @@ function QuestionUI({
               aria-label="Kiểm tra câu trả lời"
               onClick={() => onCommit?.()}
             >
-              ↵
+              <Icon name="enter" />
             </button>
           }
         />

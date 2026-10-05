@@ -1,0 +1,25 @@
+/* Filters on ancestors blur every descendant, including otherwise opaque icons. */
+:root[data-interface] body *,
+:root[data-interface] body *::before,
+:root[data-interface] body *::after {
+  @apply [filter:none]! backdrop-filter-none!;
+}
+:root[data-interface] body svg.app-icon {
+  @apply opacity-100!;
+}
+:root[data-interface]
+  body
+  :is(button, a, [role="button"]):not(:disabled):not([aria-disabled="true"]):is(
+    :hover,
+    [data-hover="true"]
+  ) {
+  @apply opacity-100!;
+}
+:root[data-interface] body :is(#auto-contrast-foreground, [data-auto-ink]),
+:root[data-interface] body :is(#auto-contrast-foreground, [data-auto-ink]):is(:hover, :focus, :focus-visible) {
+  @apply [color:var(--auto-ink)]!;
+}
+
+:root[data-interface] body .exercise-workspace :is(#inline-transparent, .inline-choice, .gap-drop, .inline-pills button, .partial-rewrite input):is(:hover,:focus,:focus-visible,:active,[aria-pressed="true"]) {
+  @apply bg-transparent!;
+}

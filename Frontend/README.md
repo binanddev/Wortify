@@ -57,3 +57,11 @@ Màn hình rộng tối đa 1024px có thanh Menu / Công cụ trang; chọn li�
 Mọi modal dùng lớp portal riêng dưới body, trên nav; nội dung dài cuộn bên trong. Popover của bài tập trong modal dùng cùng lớp portal.
 
 Cài đặt có 10 giai điệu nền tổng hợp sẵn tại máy (không tải file hoặc gọi dịch vụ bên ngoài), chọn bài, bật/tắt và âm lượng. Lựa chọn được lưu theo tài khoản. Âm nền tạm im khi audio/video/TTS đang phát hoặc tab bị ẩn. Trình duyệt có thể yêu cầu chạm vào trang trước khi phát.
+
+## Hai phong cách giao diện
+
+Studio là giao diện mặc định: nền sáng ấm, nav xanh chàm, bề mặt đặc và thẻ học hai màu. Trong Cài đặt, chọn Studio hoặc Glass; đổi có hiệu lực ngay và đồng bộ tài khoản. Glass giữ ảnh nền và độ trong suốt đã chọn. Theme cá nhân có thể lưu trường `interface` cùng các thông số hiển thị.
+
+Icon dùng bộ Wortify Rounded trong `src/icon-paths.js`, nét 2.25px, kích thước tối thiểu 22px; icon nav chính có nền đặc, không đổi theo transparency. Flashcard không áp dụng filter/backdrop-filter vào cảnh lật 3D hoặc mặt thẻ.
+
+Kiểm thử CSS bằng trình duyệt ẩn, không chạy web: `npm run build` rồi `npm run test:interface`. Script dựng tệp HTML tạm với CSS production, kiểm tra hover/lật và độ trong suốt của cả hai giao diện. Windows mặc định dùng Chrome; hệ điều hành khác đặt `CHROME_PATH` tới trình duyệt Chromium. `INTERFACE_SCREENSHOT` tùy chọn đường dẫn ảnh xem trước.

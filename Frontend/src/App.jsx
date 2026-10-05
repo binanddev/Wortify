@@ -1,3 +1,5 @@
+import { installAutoContrast } from "./auto-contrast";
+import { restoreAppearance, updateAppearance } from "./appearance-profiles";
 import { loadLoginSnapshot, clearLoginAppearance } from "./appearance-cache";
 import { applyAppearance } from "./appearance-preferences";
 import FlashcardNavigation from "./flashcard-navigation";
@@ -374,7 +376,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       ]
         .filter((e) => e.kind === "preferences")
         .sort((a, b) => a.at.localeCompare(b.at));
-      const p = {
+      const merged = {
         ...user.preferences,
         ...Object.assign({}, ...pending.map((e) => e.payload)),
         ...appearance.data?.[lang]?.preferences,
@@ -383,7 +385,11 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
           {},
         ),
       };
+      const p = restoreAppearance(merged, appearance.data?.[lang]?.theme_id, true);
       return {
+        appearanceProfiles: p.appearanceProfiles || {},
+        appearanceSelections: p.appearanceSelections || {},
+        interface: p.interface === "glass" ? "glass" : "studio",
         curvature: p.curvature ?? 18,
         glassLens: p.glassLens ?? 40,
         navPinned: p.navPinned !== false,
@@ -439,7 +445,12 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
     document.addEventListener("keydown", escape);
     return () => document.removeEventListener("keydown", escape);
   }, [smallScreen, navOpen]);
-  const setPrefs = (v) => {
+  const setPrefs = (requested) => {
+    const v = updateAppearance(
+      prefs,
+      requested,
+      appearance.data?.[lang]?.theme_id,
+    );
     setLocalPrefs(v);
     savePreference(prefKey, v);
     savePreference(
@@ -455,6 +466,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
     );
   };
   const action = useAction();
+  useEffect(() => installAutoContrast(), []);
   useLayoutEffect(() => {
     applyAppearance(prefs);
   }, [prefs]);
@@ -597,7 +609,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
             setNavOpen((open) => !open);
           }}
         >
-          ☰ Menu
+          <Icon name="menu" /> Menu
         </button>
         <button
           aria-controls="app-navigation"
@@ -648,12 +660,6 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
               inert={navBack}
               aria-hidden={navBack}
             >
-              <Link className="workspace-select" to="/">
-                <span className="language-monogram">{lang.toUpperCase()}</span>
-                <span>{lang === "en" ? "English" : "Deutsch"}</span>
-                <span>⌄</span>
-              </Link>
-
               <nav>
                 {[
                   ["flashcard", "cards", "Flashcard"],
@@ -763,6 +769,21 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         </div>
       </div>
       <div className="main-shell">
+        {prefs.interface === "studio" && (
+          <header className="studio-masthead">
+            <div>
+              <span className="studio-kicker">WORTIFY / KHÔNG GIAN HỌC</span>
+              <strong>{contextItems.title}</strong>
+            </div>
+            <Link
+              to={`/${lang}/settings`}
+              className="studio-appearance-link"
+              aria-label="Đổi giao diện trong Cài đặt"
+            >
+              <Icon name="palette" /> Giao diện
+            </Link>
+          </header>
+        )}
         <main id="main-content" tabIndex={-1}>
           {content}
         </main>
@@ -779,7 +800,7 @@ function NavStatic({ navBack, setNavBack, onClose }) {
         aria-label="Đóng menu"
         onClick={onClose}
       >
-        ×
+        <Icon name="close" />
       </button>
       <button
         className="nav-rotate"

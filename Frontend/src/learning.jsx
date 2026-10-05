@@ -75,46 +75,86 @@ function SettingsContent({
         title="Cài đặt"
         description="Một không gian vừa mắt, vừa tai và vừa sức."
       />
+      <section className="interface-picker" aria-label="Chọn giao diện">
+        {[
+          [
+            "studio",
+            "Studio",
+            "Mặc định · Sáng rõ, vui tươi, tập trung vào bài học.",
+          ],
+          ["glass", "Glass", "Kính trong suốt, ảnh nền và hiệu ứng ánh sáng."],
+        ].map(([id, name, description]) => (
+          <button
+            key={id}
+            type="button"
+            className={`interface-option interface-option-${id}`}
+            aria-pressed={prefs.interface === id}
+            onClick={() => setPrefs({ ...prefs, interface: id })}
+          >
+            <span className="interface-sample" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+            <strong>
+              {name}
+              {prefs.interface === id ? " · Đang dùng" : ""}
+            </strong>
+            <span>{description}</span>
+          </button>
+        ))}
+      </section>
       <div className="grid two">
         <Glass>
           <h2>Hiển thị & âm thanh</h2>
+          {prefs.interface === "studio" && (
+            <p className="text-sm text-(--muted)">
+              Studio dùng nền đặc để giữ chữ rõ nét. Ảnh nền, độ trong suốt và
+              hiệu ứng kính được giữ lại cho chế độ Glass.
+            </p>
+          )}
           <ThemeLibrary {...{ prefs, lang }} staff={staff || superuser} />
-          <PersonalBackground
-            backgroundUrl={appearance?.data?.[lang]?.background_url}
-          />
+          {prefs.interface === "glass" && (
+            <PersonalBackground
+              backgroundUrl={appearance?.data?.[lang]?.background_url}
+            />
+          )}
           <Status error={appearance?.warning} />
-          {[
-            ["curvature", "Độ cong", 32, 18],
-            ["glassLens", "Độ lúp kính", 100, 40],
-          ].map(([key, label, max, fallback]) => (
-            <label className="range-label" key={key}>
-              {label} <strong>{prefs[key] ?? fallback}</strong>
-              <input
-                type="range"
-                min="0"
-                max={max}
-                value={prefs[key] ?? fallback}
-                onChange={(e) =>
-                  setPrefs({ ...prefs, [key]: Number(e.target.value) })
-                }
-              />
-            </label>
-          ))}
+          {prefs.interface === "glass" &&
+            [
+              ["curvature", "Độ cong", 32, 18],
+              ["glassLens", "Độ lúp kính", 100, 40],
+            ].map(([key, label, max, fallback]) => (
+              <label className="range-label" key={key}>
+                {label} <strong>{prefs[key] ?? fallback}</strong>
+                <input
+                  type="range"
+                  min="0"
+                  max={max}
+                  value={prefs[key] ?? fallback}
+                  onChange={(e) =>
+                    setPrefs({ ...prefs, [key]: Number(e.target.value) })
+                  }
+                />
+              </label>
+            ))}
           <div className="flex items-center gap-3">
             <Field
               label="Màu chữ"
               type="color"
               value={
                 prefs.textColor === "auto"
-                  ? prefs.background === "night"
-                    ? "#f0f5ff"
-                    : "#152740"
+                  ? prefs.interface === "studio"
+                    ? "#24304e"
+                    : prefs.background === "night"
+                      ? "#f0f5ff"
+                      : "#152740"
                   : prefs.textColor
               }
               onChange={(textColor) => setPrefs({ ...prefs, textColor })}
             />
             <Btn
-              icon="undo"
+              aria-pressed={prefs.textColor === "auto"}
               onClick={() =>
                 setPrefs({
                   ...prefs,
@@ -124,7 +164,7 @@ function SettingsContent({
                 })
               }
             >
-              Khôi phục chữ mặc định
+              Auto · Tương phản tự động
             </Btn>
           </div>
           <label className="range-label">
@@ -159,6 +199,7 @@ function SettingsContent({
               min="0"
               max="100"
               step="5"
+              disabled={prefs.interface !== "glass"}
               value={prefs.transparency}
               onChange={(e) =>
                 setPrefs({ ...prefs, transparency: Number(e.target.value) })
@@ -257,7 +298,8 @@ function SettingsContent({
             />
           </label>
           <Select
-            label="Phông nền"
+            label="Phông nền Glass"
+            disabled={prefs.interface !== "glass"}
             value={prefs.background}
             onChange={(background) => setPrefs({ ...prefs, background })}
           >

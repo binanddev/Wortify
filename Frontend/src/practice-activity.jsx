@@ -8,7 +8,15 @@ import { TypeQuestion, MatchPairs, Categories } from "./exercise-interactions";
 import { exerciseStylesOf, modeOf } from "./exercise-types";
 import { readPreference, savePreference } from "./core";
 import { Btn, Icon, Status, useSound } from "./ui";
-import { mergeProgress, readyToCheck } from "./practice-session";
+import {
+  mergeProgress,
+  readyToCheck,
+  activeQuestions,
+  needsManualCheck,
+  advanceQueue,
+  repeatLater,
+  isWholeExercise,
+} from "./practice-session";
 
 export function PracticeActivity({
   data,
@@ -16,6 +24,7 @@ export function PracticeActivity({
   userId,
   preview = false,
   onProgress,
+  onNext,
   sound = false,
   lang,
   uiStyle,
@@ -33,15 +42,16 @@ export function PracticeActivity({
       preview ? [] : readPreference(storageKey, []),
     ),
   );
-  const [index, setIndex] = useState(() => {
-    const done = mergeProgress(
-      questions,
-      data.progress?.completed,
-      preview ? [] : readPreference(storageKey, []),
-    );
-    const next = questions.findIndex((q) => !done.includes(String(q.id)));
-    return next < 0 ? questions.length : next;
-  });
+  const [queue, setQueue] = useState(() =>
+    questions
+      .filter((q) => !completed.includes(String(q.id)))
+      .map((q) => String(q.id)),
+  );
+  const index = queue.length
+    ? questions.findIndex((q) => String(q.id) === queue[0])
+    : questions.length;
+  const [reviewed, setReviewed] = useState([]);
+  const [attempt, setAttempt] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [skipped, setSkipped] = useState([]);
   const [answers, setAnswers] = useState({});
@@ -58,6 +68,8 @@ export function PracticeActivity({
   callback.current = onProgress;
   const sounds = useSound(soundEnabled, lang);
   const question = questions[index];
+  const batch = activeQuestions(mode, questions, index);
+  const manual = needsManualCheck(mode, style);
   const typed = ["short_answer", "error_correction"].includes(mode);
   useEffect(() => setSoundEnabled(sound), [sound]);
   useEffect(() => {
@@ -74,61 +86,111 @@ export function PracticeActivity({
       callback.current?.(completed);
     }
   }, [completed, preview]);
+  const checkNow = () => {
+    if (
+      !batch.length ||
+      revealed ||
+      composing ||
+      feedback?.correct ||
+      !batch.every((q) => readyToCheck(q, answers))
+    )
+      return;
+    const fingerprint = JSON.stringify([batch.map((q) => q.id), answers]);
+    if (checked.current === fingerprint) return;
+    checked.current = fingerprint;
+    const result = gradeExercise(e, batch, answers);
+    const correct = result.answers.every((row) => row.correct);
+    setFeedback({ correct, rows: result.answers, fingerprint });
+    if (style === "partial_input") {
+      setReviewed((previous) => [
+        ...new Set([...previous, String(question.id)]),
+      ]);
+      if (!correct || !reviewed.includes(String(question.id))) {
+        setRevealed(true);
+        sounds.feedback(correct);
+        return;
+      }
+    }
+
+    if (correct)
+      setSkipped((previous) =>
+        previous.filter((id) => !batch.some((q) => String(q.id) === id)),
+      );
+    sounds.feedback(correct);
+    if (correct)
+      setCompleted((current) =>
+        mergeProgress(
+          questions,
+          current,
+          batch.map((q) => String(q.id)),
+        ),
+      );
+  };
   useEffect(() => {
     if (
+      mode === "matching" ||
+      manual ||
       !question ||
       revealed ||
       composing ||
       feedback?.correct ||
-      !readyToCheck(question, answers)
+      !batch.every((q) => readyToCheck(q, answers))
     )
       return;
-    const fingerprint = JSON.stringify([question.id, answers]);
-    if (checked.current === fingerprint) return;
-    const timer = setTimeout(
-      () => {
-        checked.current = fingerprint;
-        const result = gradeExercise(e, [question], answers);
-        const correct = result.answers.every((row) => row.correct);
-        setFeedback({ correct, rows: result.answers, fingerprint });
-        sounds.feedback(correct);
-        if (correct)
-          setCompleted((current) =>
-            mergeProgress(questions, current, [String(question.id)]),
-          );
-      },
-      typed ? 1400 : 250,
-    );
+    const timer = setTimeout(checkNow, typed ? 1400 : 250);
     return () => clearTimeout(timer);
-  }, [answers, question, composing, feedback?.correct, revealed]);
+  }, [answers, question, composing, feedback?.correct, revealed, manual]);
+  const reveal = () => {
+    setRevealed(true);
+    setFeedback(null);
+    setSkipped((previous) => [
+      ...new Set([...previous, ...batch.map((q) => String(q.id))]),
+    ]);
+  };
   const advance = () => {
-    const next = replaying
-      ? index + 1
-      : questions.findIndex(
-          (q, i) => i > index && !completed.includes(String(q.id)),
-        );
-    setIndex(next < 0 ? questions.length : next);
+    const next =
+      revealed && ["partial_input", "click_edit"].includes(style)
+        ? repeatLater(queue)
+        : advanceQueue(queue, revealed, isWholeExercise(mode));
+    setAttempt((value) => value + 1);
+    setQueue(next);
     setAnswers({});
     setFeedback(null);
     setRevealed(false);
     checked.current = "";
-    if (next < 0 && !skipped.length && !revealed) sounds.applause();
+    if (!next.length) {
+      sounds.applause();
+      onNext?.();
+    }
   };
-  useEffect(() => {
-    if (!feedback?.correct || revealed) return;
-    const timer = setTimeout(advance, 1000);
-    return () => clearTimeout(timer);
-  }, [feedback?.correct, index, revealed]);
   const update = (key, value) => {
     if (feedback?.correct || revealed) return;
     if (JSON.stringify(answers[key]) === JSON.stringify(value)) return;
+    checked.current = "";
     setAnswers((current) => ({ ...current, [key]: value }));
-    setFeedback(null);
+    setFeedback((current) =>
+      current
+        ? {
+            ...current,
+            correct: false,
+            rows: current.rows.filter((row) => row.key !== String(key)),
+          }
+        : null,
+    );
     if (!typed) sounds.tick();
   };
   const props = {
     exercise: e,
-    questions: question ? [question] : [],
+    revealed,
+    onPairResult: (correct) => sounds.feedback(correct),
+    onPairCorrect: (key, value) => {
+      const next = { ...answers, [key]: value };
+      setAnswers(next);
+      setCompleted((current) => mergeProgress(questions, current, [key]));
+      if (questions.every((q) => readyToCheck(q, next)))
+        setFeedback({ correct: true, rows: [] });
+    },
+    questions: batch,
     q: question,
     answers,
     onAnswer: update,
@@ -159,15 +221,21 @@ export function PracticeActivity({
             ? skipped.length
               ? "Đã xem hết lượt"
               : "Chặng học hoàn tất"
-            : `Câu ${index + 1} / ${questions.length}`}
+            : mode === "matching"
+              ? `Nối cặp · ${questions.length} cặp`
+              : mode === "categorization"
+                ? `Phân loại · ${questions.length} từ`
+                : `Câu ${index + 1} / ${questions.length}`}
         </span>
-        <progress
-          aria-label="Tiến độ bài học"
-          value={
-            replaying ? Math.min(index, questions.length) : completed.length
-          }
-          max={questions.length}
-        />
+        {!isWholeExercise(mode) && (
+          <progress
+            aria-label="Tiến độ bài học"
+            value={
+              replaying ? Math.min(index, questions.length) : completed.length
+            }
+            max={questions.length}
+          />
+        )}
         <button
           type="button"
           className="exercise-sound-toggle"
@@ -198,9 +266,10 @@ export function PracticeActivity({
           <Btn
             onClick={() => {
               setSkipped([]);
+              setReviewed([]);
               setRevealed(false);
               setReplaying(true);
-              setIndex(0);
+              setQueue(questions.map((q) => String(q.id)));
               setAnswers({});
               setFeedback(null);
               checked.current = "";
@@ -211,11 +280,14 @@ export function PracticeActivity({
         </section>
       ) : (
         <>
-          {e.instruction && (
-            <p className="exercise-instruction">
-              <PracticeRichText>{e.instruction}</PracticeRichText>
-            </p>
-          )}
+          {e.instruction &&
+            !/^(Hoàn thành từng câu[.!]?|Hoàn thành câu này, mình sẽ tự kiểm tra cho bạn[.!]?)$/i.test(
+              e.instruction.trim(),
+            ) && (
+              <p className="exercise-instruction">
+                <PracticeRichText>{e.instruction}</PracticeRichText>
+              </p>
+            )}
           {e.context && (
             <aside className="reading-document">
               <PracticeRichText>{e.context}</PracticeRichText>
@@ -224,7 +296,7 @@ export function PracticeActivity({
           <section
             ref={paper}
             tabIndex={-1}
-            key={question.id}
+            key={`${question.id}:${attempt}`}
             className={`work-paper journey-question ${feedback ? (feedback.correct ? "is-correct" : "is-incorrect") : ""}`}
             onCompositionStart={() => setComposing(true)}
             onCompositionEnd={() => setComposing(false)}
@@ -244,27 +316,45 @@ export function PracticeActivity({
             ) : (
               <TypeQuestion {...props} />
             )}
-            {revealed && (
+            {(revealed || (style === "partial_input" && feedback)) && (
               <AnswerReveal
-                answers={exerciseSolution(e, question)}
+                answers={batch.flatMap((q) => exerciseSolution(e, q))}
                 explanation={question.presentation?.explanation}
               />
             )}
-            <div className="flex justify-center gap-3 my-3">
-              {revealed ? (
-                <Btn icon="arrow" primary onClick={advance}>
-                  Tiếp tục
-                </Btn>
+            <div className="exercise-check-actions">
+              {revealed || feedback?.correct ? (
+                <button
+                  type="button"
+                  className="btn primary exercise-next"
+                  aria-label="Tiếp tục"
+                  title="Tiếp tục"
+                  onClick={advance}
+                >
+                  <Icon name="arrow" />
+                </button>
+              ) : mode === "matching" ? null : manual ? (
+                <>
+                  {feedback && !feedback.correct && (
+                    <Btn onClick={reveal}>Xem đáp án</Btn>
+                  )}
+                  <Btn
+                    primary
+                    className="btn primary check-action"
+                    isDisabled={
+                      composing || !batch.every((q) => readyToCheck(q, answers))
+                    }
+                    onClick={checkNow}
+                  >
+                    Kiểm tra
+                  </Btn>
+                </>
+              ) : style === "click_edit" ? (
+                <Btn onClick={reveal}>Xem đáp án</Btn>
               ) : (
                 <SkipButton
-                  disabled={feedback?.correct}
-                  onClick={() => {
-                    setRevealed(true);
-                    setFeedback(null);
-                    setSkipped((previous) => [
-                      ...new Set([...previous, String(question.id)]),
-                    ]);
-                  }}
+                  disabled={feedback?.correct || composing}
+                  onClick={reveal}
                 />
               )}
             </div>
@@ -274,28 +364,24 @@ export function PracticeActivity({
               aria-atomic="true"
             >
               {revealed
-                ? "Đã xem đáp án. Nhấn tiếp tục khi bạn sẵn sàng."
+                ? ""
                 : feedback
                   ? feedback.correct
-                    ? "✨ Đúng rồi! Mình sang câu tiếp nhé."
-                    : "🌱 Gần tới rồi! Sửa một chút và thử lại nhé."
-                  : typed
-                    ? "Viết xong, dừng một chút để tự kiểm tra."
-                    : "Hoàn thành câu này, mình sẽ tự kiểm tra cho bạn."}
-              {feedback?.correct && question.presentation?.explanation && (
-                <p>
-                  <PracticeRichText>
-                    {question.presentation.explanation}
-                  </PracticeRichText>
-                </p>
-              )}
+                    ? "Đúng rồi!"
+                    : "Chưa đúng. Thử lại nhé."
+                  : ""}
+              {!revealed &&
+                style !== "partial_input" &&
+                feedback?.correct &&
+                question.presentation?.explanation && (
+                  <p>
+                    <PracticeRichText>
+                      {question.presentation.explanation}
+                    </PracticeRichText>
+                  </p>
+                )}
             </div>
           </section>
-          {!preview && (
-            <small className="journey-save-note">
-              Tiến độ được giữ tự động. Bạn có thể quay lại bất cứ lúc nào.
-            </small>
-          )}
         </>
       )}
     </div>

@@ -1,0 +1,50 @@
+/* Never flatten the flashcard's 3D scene with an interaction filter. */
+:root body button.flip-stage,
+:root body button.flip-stage .flip-inner,
+:root body button.flip-stage .flip-face {
+  @apply [filter:none]! backdrop-filter-none!;
+}
+:root body button.flip-stage {
+  @apply scale-100! bg-transparent! shadow-none!;
+}
+:root body button.flip-stage:focus-visible {
+  @apply outline-2 outline-(--accent) outline-offset-4;
+}
+:root body button.flip-stage:hover .flip-face {
+  @apply border-(--accent)!;
+}
+/* Opaque ink, independent from glass alpha, background images and text contrast. */
+:root {
+  --icon-ink: #314489;
+  --icon-tile: #edf0ff;
+}
+:root[data-interface="glass"][data-background="night"] {
+  --icon-ink: #edf0ff;
+  --icon-tile: #313d69;
+}
+:root body svg.app-icon {
+  @apply shrink-0 opacity-100 [filter:none] [color:var(--icon-ink)] [stroke-width:2.25];
+}
+:root body .nav-link > svg.app-icon,
+:root body .workspace-select > svg.app-icon {
+  @apply box-border w-9 h-9 p-[5px] rounded-[10px] [background:var(--icon-tile)];
+}
+:root body .btn.primary svg.app-icon {
+  @apply text-white;
+}
+:root[data-interface="studio"] body .nav-face {
+  --icon-ink: #edf0ff;
+}
+:root[data-interface="studio"] body .nav-link > svg.app-icon,
+:root[data-interface="studio"] body .workspace-select > svg.app-icon {
+  @apply text-[#314489];
+}
+:root[data-interface="studio"] body .nav-face .btn.primary svg.app-icon {
+  @apply text-[#314489];
+}
+:root body [aria-pressed="true"] svg[data-icon="star"] {
+  @apply fill-[#f5b940] text-[#8b5705];
+}
+:root body .mobile-nav-bar button {
+  @apply inline-flex items-center justify-center gap-2;
+}

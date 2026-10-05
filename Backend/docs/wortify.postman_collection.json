@@ -2494,7 +2494,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/{{language}}/learning/sync/",
-            "description": "Quyền: Người dùng đăng nhập\n\n1–100 events; mỗi event có UUID token, kind, payload. kind gồm preferences, study_settings, practice_progress, practice, review, test, star, options. preferences cần at dạng ISO8601 có múi giờ. payload hỗ trợ navScale=50–150, ambient boolean, volume=0–1 và ambientTrack=morning/marimba/picnic/bubbles/cafe/garden/puzzle/clouds/starlight/steps. Retry cùng token giữ tính idempotent; HTTP 200 có thể chứa errors từng mục.",
+            "description": "Quyền: Người dùng đăng nhập\n\n1–100 events; mỗi event có UUID token, kind, payload. kind gồm preferences, study_settings, practice_progress, practice, review, test, star, options. preferences cần at dạng ISO8601 có múi giờ. payload hỗ trợ interface=studio/glass (Studio mặc định), navScale=50–150, ambient boolean, volume=0–1 và ambientTrack=morning/marimba/picnic/bubbles/cafe/garden/puzzle/clouds/starlight/steps. Retry cùng token giữ tính idempotent; HTTP 200 có thể chứa errors từng mục.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"events\": [\n    {\n      \"token\": \"{{eventToken}}\",\n      \"kind\": \"study_settings\",\n      \"payload\": {\n        \"new_cards_per_day\": 20\n      }\n    }\n  ]\n}",

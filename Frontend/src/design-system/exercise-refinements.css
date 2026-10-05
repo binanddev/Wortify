@@ -1,0 +1,177 @@
+:root[data-interface]
+  body
+  .exercise-workspace
+  :is(.inline-choice, .gap-drop, .inline-pills, .inline-pills button),
+:root[data-interface]
+  body
+  .exercise-workspace
+  :is(.inline-choice, .gap-drop, .inline-pills button):is(
+    :hover,
+    :focus,
+    :focus-visible,
+    :active
+  ) {
+  @apply bg-transparent! rounded-none! shadow-none! outline-none! backdrop-filter-none! border-x-0! border-t-0! transform-none!;
+}
+:root[data-interface]
+  body
+  .exercise-workspace
+  :is(.inline-choice, .gap-drop, .inline-pills button) {
+  @apply border-b-2! border-solid! border-(--line)! px-2! py-1!;
+}
+:root[data-interface]
+  body
+  .exercise-workspace
+  :is(.inline-choice, .gap-drop, .inline-pills button):is(
+    :hover,
+    :focus-visible
+  ),
+:root[data-interface] body .exercise-workspace .gap-drop.is-active,
+:root[data-interface] body .exercise-workspace .inline-pills button.selected {
+  @apply border-blue-500! shadow-[0_1px_0_0_#3b82f6]! text-blue-600!;
+}
+:root[data-interface] body .exercise-workspace .gap-drop .movable-token {
+  @apply bg-transparent! border-0! shadow-none! p-0!;
+}
+:root[data-interface] body .exercise-workspace .sentence-target {
+  @apply border-0! bg-transparent! shadow-none! min-h-24! flex! flex-wrap! items-center! justify-start! gap-2! px-0!;
+}
+:root[data-interface] body .exercise-workspace .sentence-word {
+  @apply touch-none select-none rounded-lg! px-3! py-2!;
+}
+:root[data-interface] body .exercise-workspace .sentence-bank {
+  @apply min-h-24 transition-colors;
+}
+:root[data-interface] body .exercise-workspace .sentence-bank.is-drag-over {
+  @apply border-blue-500! bg-blue-50!;
+}
+.sentence-insertion {
+  @apply inline-block shrink-0 rounded-lg bg-blue-100/60 border-l-2 border-blue-500;
+}
+.sentence-held-token {
+  @apply fixed pointer-events-none z-[100004] flex items-center justify-center rounded-lg bg-white text-slate-900 shadow-xl border border-blue-400;
+}
+.gap-held-token {
+  @apply z-[100004]!;
+}
+:root[data-interface] body .exercise-workspace .pairing-work {
+  @apply grid! grid-cols-2! gap-3!;
+}
+:root[data-interface] body .exercise-workspace .pair-column {
+  @apply min-w-0;
+}
+:root[data-interface] body .exercise-workspace .pair-card {
+  @apply w-full! min-w-0! break-words! whitespace-normal!;
+}
+:root[data-interface] body .exercise-workspace .pair-card.paired,
+:root[data-interface]
+  body
+  .exercise-workspace
+  .pair-card.paired:is(:hover, :focus-visible) {
+  @apply bg-emerald-100! text-emerald-900! border-emerald-500! shadow-[0_0_0_2px_#6ee7b7]! opacity-100! outline-none!;
+}
+:root[data-interface] body .exercise-workspace .pair-card.pair-error {
+  @apply bg-red-100! text-red-900! border-red-500! shadow-[0_0_0_2px_#fca5a5]! opacity-100!;
+}
+.exercise-check-actions {
+  @apply flex justify-end items-center gap-3 mt-5;
+}
+.check-action {
+  @apply ml-auto;
+}
+.exercise-next {
+  @apply min-w-12 min-h-12 flex items-center justify-center;
+}
+.journey-feedback:empty {
+  @apply hidden;
+}
+@media (max-width: 540px) {
+  :root[data-interface] body .exercise-workspace .pair-card {
+    @apply p-2! gap-1! text-sm!;
+  }
+}
+
+:root[data-interface] body .exercise-workspace .inline-pills {
+  @apply border-0! p-0!;
+}
+
+:root[data-interface]
+  body
+  .exercise-workspace
+  .fluid-passage
+  :is(.gap-token, .gap-drop, .inline-choice, .movable-token) {
+  @apply [font-size:inherit]! [line-height:inherit]!;
+}
+
+:root[data-interface] body .exercise-workspace .partial-rewrite {
+  @apply bg-transparent! border-0! rounded-none! p-0! shadow-none! text-(--ink)! items-baseline! gap-x-2!;
+}
+:root[data-interface] body .exercise-workspace .partial-rewrite input,
+:root[data-interface]
+  body
+  .exercise-workspace
+  .partial-rewrite
+  input:is(:hover, :focus, :focus-visible, :disabled) {
+  @apply [font:inherit]! text-inherit! bg-transparent! border-0! border-b-2! border-solid! border-(--line)! rounded-none! shadow-none! outline-none! px-1! py-1! opacity-100!;
+}
+:root[data-interface] body .exercise-workspace .partial-rewrite input:focus {
+  @apply border-blue-500!;
+}
+:root[data-interface] body .exercise-workspace .gap-token.is-right .gap-drop,
+:root[data-interface]
+  body
+  .exercise-workspace
+  .gap-token.is-right
+  .gap-drop:is(:hover, :focus-visible) {
+  @apply text-emerald-700! border-emerald-500! opacity-100!;
+}
+:root[data-interface]
+  body
+  .exercise-workspace
+  .gap-token.is-right
+  .movable-token {
+  @apply text-emerald-700! opacity-100! visible!;
+}
+:root[data-interface]
+  body
+  .exercise-workspace
+  .category-bin
+  .word-chip.is-wrong,
+:root[data-interface]
+  body
+  .exercise-workspace
+  .category-bin
+  .word-chip.is-wrong:is(:hover, :focus-visible) {
+  @apply bg-red-100! text-red-900! border-red-500!;
+}
+:root[data-interface]
+  body
+  .exercise-workspace
+  .category-bin
+  .word-chip.is-right {
+  @apply bg-emerald-100! text-emerald-900! border-emerald-500!;
+}
+
+:root[data-interface]
+  body
+  .exercise-workspace[data-ui-style="sentence_rewrite"]
+  textarea,
+:root[data-interface]
+  body
+  .exercise-workspace[data-ui-style="sentence_rewrite"]
+  textarea:is(:hover, :focus, :focus-visible) {
+  @apply bg-transparent! border-0! border-b-2! border-solid! border-gray-300! rounded-none! shadow-none! outline-none! resize-none! overflow-hidden! whitespace-pre-wrap! wrap-anywhere! px-0! py-2! [font:inherit]! text-inherit!;
+}
+:root[data-interface]
+  body
+  .exercise-workspace[data-ui-style="sentence_rewrite"]
+  textarea:focus {
+  @apply border-violet-700!;
+}
+:root[data-interface]
+  body
+  .exercise-workspace[data-ui-style="click_edit"]
+  .journey-question.is-incorrect
+  .correction-work {
+  @apply border-b-2 border-red-500 text-red-700;
+}

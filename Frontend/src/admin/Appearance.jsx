@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { request, useResource, useAction } from "../core";
-import { Btn, Glass, Heading, Loading, Page, Status } from "../ui";
+import { Btn, Icon, Glass, Heading, Loading, Page, Status } from "../ui";
 
 export default function Appearance({ backgroundUrl = "" }) {
   const resource = useResource("/api/manage/appearance/"),
@@ -98,7 +98,9 @@ export default function Appearance({ backgroundUrl = "" }) {
               <Status error={action.error} />
             </Glass>
             <Glass className="appearance-guide">
-              <span className="tile-icon">✦</span>
+              <span className="tile-icon">
+                <Icon name="image" size={32} />
+              </span>
               <h2>Gợi ý hình ảnh</h2>
               <ul>
                 <li>Chọn ảnh ngang, ít chi tiết để chữ vẫn dễ đọc.</li>

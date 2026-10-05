@@ -35,3 +35,9 @@
 @import "./glass-materials.css";
 @import "./interaction-glass.css";
 @import "./modal-layers.css";
+@import "./studio.css";
+@import "./readability.css";
+@import "./exercise-refinements.css";
+
+/* Final interaction and contrast rules must follow every theme. */
+@import "./crisp-interface.css";

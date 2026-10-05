@@ -33,7 +33,7 @@
   @apply [transform:rotate(180deg)];
 }
 .nav-flip-inner {
-  @apply [top:0] [zoom:var(--nav-scale,1)] w-[calc(100%/var(--nav-scale,1))] h-[calc(100%/var(--nav-scale,1))];
+  @apply [top:0] [scale:var(--nav-scale,1)] origin-top-left w-[calc(100%/var(--nav-scale,1))] h-[calc(100%/var(--nav-scale,1))];
 }
 .nav-flip .sidebar,
 .nav-flip .workspace-context {
@@ -231,3 +231,13 @@
     @apply hidden;
   }
 }
+
+/* The frame and both faces share the scaled viewport, not only their contents. */
+.nav-flip {
+  @apply bottom-auto! h-[calc(100dvh-24px)];
+}
+@media (max-width: 1024px) {
+  .nav-flip { @apply h-[calc(100dvh-84px)]; }
+}
+
+.nav-flip-inner.is-flipped { @apply [transform:translateX(100%)_rotateY(180deg)]; }

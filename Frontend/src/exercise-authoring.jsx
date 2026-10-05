@@ -134,7 +134,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
                   })
                 }
               >
-                ×
+                <Icon name="close" />
               </Btn>
             </div>
           ))}
@@ -151,7 +151,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
               })
             }
           >
-            ＋ Nhóm
+            <Icon name="plus" /> Nhóm
           </Btn>
         </div>
       )}
@@ -198,7 +198,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
                     })
                   }
                 >
-                  ×
+                  <Icon name="close" />
                 </Btn>
               )}
             </header>
@@ -218,7 +218,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
           onChange({ questions: [...e.questions, newQuestion(mode)] })
         }
       >
-        ＋{" "}
+        <Icon name="plus" />{" "}
         {mode === "matching"
           ? "Thêm cặp"
           : mode === "categorization"
@@ -377,12 +377,12 @@ function QuestionForm({
                   })
                 }
               >
-                ×
+                <Icon name="close" />
               </button>
             </div>
           ))}
           <Btn onClick={() => onChange({ options: [...q.options, ""] })}>
-            ＋ Lựa chọn
+            <Icon name="plus" /> Lựa chọn
           </Btn>
           <AutoTextarea
             label="Giải thích sau khi chấm"
@@ -565,7 +565,7 @@ function TokenAuthor({ mode, q, onChange }) {
                 })
               }
             >
-              ×
+              <Icon name="close" />
             </button>
           </div>
         ))
@@ -646,7 +646,7 @@ function SentenceAuthor({ q, onChange }) {
                   });
                 }}
               >
-                ＋
+                <Icon name="plus" />
               </button>
             )}
           </span>
@@ -693,7 +693,7 @@ function SentenceAuthor({ q, onChange }) {
               })
             }
           >
-            {t.text} ×
+            {t.text} <Icon name="close" />
           </button>
         ))}
     </>

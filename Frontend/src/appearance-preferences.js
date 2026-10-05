@@ -1,5 +1,8 @@
 export function applyAppearance(p = {}) {
   const root = document.documentElement;
+  const style = p.interface === "glass" ? "glass" : "studio";
+  root.dataset.interface = style;
+  root.dataset.textAuto = String(!p.textColor || p.textColor === "auto");
   const clamp = (v, lo, hi, fallback) =>
     Math.min(
       hi,
@@ -17,7 +20,7 @@ export function applyAppearance(p = {}) {
     "--glass-lens-blur",
     `${clamp(p.glassLens ?? 40, 0, 100, 40) / 20}px`,
   );
-  const night = p.background === "night";
+  const night = style === "glass" && p.background === "night";
   root.dataset.background = p.background || "mist";
   root.style.setProperty(
     "--glass-alpha",
@@ -36,7 +39,9 @@ export function applyAppearance(p = {}) {
     ? p.textColor
     : night
       ? "#f0f5ff"
-      : "#152740";
+      : style === "studio"
+        ? "#24304e"
+        : "#152740";
   const contrast = clamp(p.textContrast ?? 80, 0, 100, 80);
   root.style.setProperty(
     "--ink",

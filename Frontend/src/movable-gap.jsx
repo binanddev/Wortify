@@ -1,7 +1,7 @@
+import { ModalLayerContext, modalRoot } from "./modal";
 import { PracticeRichText } from "./practice-rich-text";
-import { useRef, useState, useEffect, useId } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import { createPortal } from "react-dom";
-import { motion, LayoutGroup, useReducedMotion } from "framer-motion";
 import { allocateGapTokens, gapMove } from "./gap-tokens";
 
 export function MovableGap({
@@ -13,12 +13,11 @@ export function MovableGap({
   rows,
   uiStyle,
 }) {
+  const inModal = useContext(ModalLayerContext);
   const root = useRef(null);
   const gesture = useRef(null);
   const [drag, setDrag] = useState(null);
   const [active, setActive] = useState(null);
-  const group = useId();
-  const reduced = useReducedMotion();
   const count = q.blank_count || q.blanks?.length || 0;
   const { slots, bank } = allocateGapTokens(chips, answers, q.id, count);
   useEffect(() => {
@@ -39,7 +38,7 @@ export function MovableGap({
     else if (target >= 0) move(token, target);
   };
   const start = (event, token) => {
-    if (disabled || uiStyle === "tap_fill" || event.button !== 0) return;
+    if (disabled || event.button !== 0) return;
     event.preventDefault();
     const rect = event.currentTarget.getBoundingClientRect();
     const value = {
@@ -73,23 +72,14 @@ export function MovableGap({
       : null;
   };
   const tokenView = (token) => (
-    <motion.span
-      layoutId={`${group}-${token.id}`}
-      className="movable-token"
-      transition={
-        reduced
-          ? { duration: 0 }
-          : { type: "spring", stiffness: 480, damping: 34 }
-      }
-    >
-      {token.text}
-    </motion.span>
+    <span className="movable-token">{token.text}</span>
   );
   return (
-    <LayoutGroup id={group}>
+    <>
       <div
         ref={root}
         className="gap-work movable-gap"
+        data-ui-style={uiStyle}
         onPointerMove={(event) => {
           const current = gesture.current;
           if (!current || current.pointerId !== event.pointerId) return;
@@ -117,6 +107,8 @@ export function MovableGap({
             event.clientY,
           );
           cancel();
+          if (root.current.hasPointerCapture(event.pointerId))
+            root.current.releasePointerCapture(event.pointerId);
           if (!current.moved) tap(current.token);
           else if (target !== null) move(current.token, target);
           else if (
@@ -140,7 +132,8 @@ export function MovableGap({
               );
             const index = Number(match[1]) - 1;
             const token = slots[index];
-            const held = token && drag?.token.id === token.id;
+            const held =
+              token && drag?.moved && !disabled && drag.token.id === token.id;
             const row = rows.find((r) => r.key === `${q.id}_${index}`);
             return (
               <span
@@ -155,7 +148,7 @@ export function MovableGap({
                   aria-label={`Ô ${index + 1}${token ? `: ${token.text}. Bấm để trả từ về khay` : ""}`}
                   onPointerDown={(event) => token && start(event, token)}
                   onClick={(event) => {
-                    if (event.detail === 0 || uiStyle === "tap_fill" || !token)
+                    if (event.detail === 0 || !token)
                       token ? tap(token) : setActive(index);
                   }}
                 >
@@ -171,7 +164,9 @@ export function MovableGap({
           aria-label="Khay từ; kéo từ về đây để bỏ khỏi ô"
         >
           {bank
-            .filter((token) => token.id !== drag?.token.id)
+            .filter(
+              (token) => !drag?.moved || disabled || token.id !== drag.token.id,
+            )
             .map((token) => (
               <button
                 key={token.id}
@@ -180,14 +175,15 @@ export function MovableGap({
                 disabled={disabled}
                 onPointerDown={(event) => start(event, token)}
                 onClick={(event) => {
-                  if (event.detail === 0 || uiStyle === "tap_fill") tap(token);
+                  if (event.detail === 0) tap(token);
                 }}
               >
                 {tokenView(token)}
               </button>
             ))}
         </div>
-        {drag &&
+        {drag?.moved &&
+          !disabled &&
           createPortal(
             <div
               className="gap-held-token"
@@ -201,9 +197,9 @@ export function MovableGap({
             >
               {drag.token.text}
             </div>,
-            document.body,
+            inModal ? modalRoot() : document.body,
           )}
       </div>
-    </LayoutGroup>
+    </>
   );
 }
