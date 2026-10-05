@@ -16,10 +16,10 @@ status=0
 if [[ "$status" == 10 ]]; then exit 0; fi
 if [[ "$status" != 0 ]]; then exit "$status"; fi
 command -v npm >/dev/null || { echo 'Please install Node.js 22.12+ (includes npm).'; exit 1; }
-"$PYTHON" -m pip install -r requirements.txt
-if [[ ! -f frontend-react/node_modules/vite/bin/vite.js ]]; then
-  npm --prefix frontend-react ci --cache "$PWD/.npm-cache"
+"$PYTHON" -m pip install -r Backend/requirements.txt
+if [[ ! -f Frontend/node_modules/vite/bin/vite.js ]]; then
+  npm --prefix Frontend ci --cache "$PWD/.npm-cache"
 fi
-"$PYTHON" manage.py migrate
+"$PYTHON" Backend/manage.py migrate
 npm run build
 exec "$PYTHON" tools/run_local.py

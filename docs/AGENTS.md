@@ -14,14 +14,14 @@ Tài liệu kiến trúc hiện tại. Yêu cầu trực tiếp của người d
 
 ## Runtime và mã nguồn
 
-- Django backend cổng8000; Vite frontend5173. Vite proxy `/api`, media và static sang backend.
+- Django backend cổng8000; Vite frontend5173. Vite proxy `/api` sang backend; frontend tự phục vụ static asset.
 - `tools/run_local.py` kiểm tra cổng trước khi khởi động; nhận diện đúng Wortify qua health + workspace fingerprint. Dùng lại dịch vụ đúng, không tắt dịch vụ lạ. Có biến WORTIFY_BACKEND_PORT/WORTIFY_FRONTEND_PORT.
 - `start.ps1`/`start.sh`: kiểm tra, cài thư viện, migrate, build, chạy dịch vụ. Không tự sinh migrations.
-- `frontend-react/src/App.jsx`: tài khoản, routing EN/DE, shell. `ui.jsx`: primitives/form một lớp focus. `glass.css`: lớp theme cuối cùng.
+- `Frontend/src/App.jsx`: tài khoản, routing EN/DE, shell. `ui.jsx`: primitives/form một lớp focus. `glass.css`: lớp theme cuối cùng.
 - Sidebar trước điều hướng chính, sau công cụ theo trang. Header cố định có Brand, icon xoay và thu gọn/ghim. Sidebar liền khối352px, hỗ trợ vuốt ngang (ngưỡng65px, bỏ cử chỉ cuộn dọc) và hover mép trái khi thu gọn. navPinned lưu vào preferences server. `SidebarTools` portal vào mặt sau. Không có topbar, chữ quảng bá hoặc hướng dẫn thường trực. Practice Hub tự mở mặt cây: ＋ ở root/folder, folder tạo inline chỉ nhập tên, bài/theory nhận parent hiện tại. Di chuyển dùng hộp thoại riêng; cây hiển thị icon, nhánh và đường nối.
 - `practice-hub.jsx`: cây, CRUD, JSON, đọc lý thuyết; `exercise-authoring.jsx`: tạo câu; `practice-activity.jsx`: luyện và chấm tại máy; `exercise-interactions.jsx`: chín dạng tương tác.
 - `flashcard-studio.jsx` + `flashcard-engine.js`: Flashcards/Learn/Test cho bộ thẻ; chọn choice/truefalse chấm ngay, written dùng Enter/↵, matching chấm khi đủ. Test tự lưu khi mọi câu được trả lời. Phản hồi có vùng giữ sẵn, xanh/đỏ và ký hiệu đúng/sai. Gắn sao không reset thứ tự/index; `study.jsx`: ôn liên bộ bằng StudySession và luyện thêm. Luyện nói thu âm/nghe lại tại máy, không chấm phát âm tự động.
-- `learning.jsx`: Settings; `community.jsx`: hồ sơ/lớp. `frontend-react/src/admin/`: Admin.jsx quản trị người dùng/dashboard hệ thống, UserData.jsx quản lý dữ liệu từng người dùng, Appearance.jsx nền hệ thống dành superuser.
+- `learning.jsx`: Settings; `community.jsx`: hồ sơ/lớp. `Frontend/src/admin/`: Admin.jsx quản trị người dùng/dashboard hệ thống, UserData.jsx quản lý dữ liệu từng người dùng, Appearance.jsx nền hệ thống dành superuser.
 - `Soundscape.jsx`: Web Audio sinh âm nền/tương tác, không tải âm khi bấm. TTS phụ thuộc giọng trình duyệt.
 
 ## API
@@ -45,7 +45,7 @@ Cài đặt tài khoản là nguồn dữ liệu chính khi đăng nhập. Overl
 
 ## JSON
 
-Mẫu `frontend-react/public/templates/practice-hub.json`: gốc `{ "nodes": [...] }`, folder có `children`, exercise có `payload.questions`, theory có format/content. Có thể nhập một bài/theory độc lập. Giới hạn100 mục gốc,500 tổng; lỗi hoàn tác toàn bộ. Nhập câu hỏi JSON nối vào bản nháp. Liên kết chọn sau khi nội dung đã có ID. Lý thuyết giới hạn2MB; HTML hiển thị iframe sandbox. Markdown hiện hỗ trợ tiêu đề/chữ đậm/xuống dòng cơ bản. Mẫu nghe có âm báo; cần thay bằng ngữ liệu thật khi biên soạn.
+Mẫu `Frontend/public/templates/practice-hub.json`: gốc `{ "nodes": [...] }`, folder có `children`, exercise có `payload.questions`, theory có format/content. Có thể nhập một bài/theory độc lập. Giới hạn100 mục gốc,500 tổng; lỗi hoàn tác toàn bộ. Nhập câu hỏi JSON nối vào bản nháp. Liên kết chọn sau khi nội dung đã có ID. Lý thuyết giới hạn2MB; HTML hiển thị iframe sandbox. Markdown hiện hỗ trợ tiêu đề/chữ đậm/xuống dòng cơ bản. Mẫu nghe có âm báo; cần thay bằng ngữ liệu thật khi biên soạn.
 
 ## Database và kiểm thử
 
@@ -58,8 +58,8 @@ Kiểm tra: npm test, npm run build, manage.py test, manage.py makemigrations --
 
 ## Deployment và appearance (2026-09-29)
 
-- README là hướng dẫn triển khai hiện hành: development, staging và production; Compose chung host hoặc frontend/backend qua private network/VPN. Django API/admin chạy Gunicorn, PostgreSQL; React chạy Nginx, proxy cùng origin. Private media có volume riêng, không public static.
-- `WORTIFY_ENV_FILE` là tùy chọn rõ ràng cho CLI local; môi trường tiến trình luôn ưu tiên. Production dependencies nằm trong requirements-production.txt và constraints tương ứng. Không đưa secret/database/backup vào image hoặc Git.
+- README là hướng dẫn triển khai hiện hành: development, staging và production; Compose riêng trong Backend/deploy và Frontend/deploy, nối qua private network/VPN. Django API/admin chạy Gunicorn, PostgreSQL; React chạy Nginx, proxy cùng origin. Private media có volume riêng, không public static.
+- Backend tự nạp `.env` tại gốc repo; `WORTIFY_ENV_FILE` chọn file khác (path tương đối từ Backend); môi trường tiến trình luôn ưu tiên. Production dependencies nằm trong Backend/requirements-production.txt và constraints tương ứng. Không đưa secret/database/backup vào image hoặc Git.
 - Ảnh nền cá nhân được áp dụng qua shorthand `background` ở surfaces.css: `--page-bg` chứa cả màu cuối nên không được ghép vào thuộc tính background-image. App lấy snapshot theo phiên đăng nhập, lưu Blob vào IndexedDB và thu hồi object URL khi đổi tài khoản; upload không tải lại nền.
 - Soundscape dùng nốt hữu hạn, envelope về 0 và stop/disconnect; không dùng oscillator trầm chạy liên tục. Âm nền tạm im khi media/TTS phát hoặc tab ẩn. Thay volume không tạo lại AudioContext.
 
@@ -76,3 +76,7 @@ Kiểm tra: npm test, npm run build, manage.py test, manage.py makemigrations --
 
 - Không còn hook health/monitor ở trình duyệt. Vite plugin chỉ chạy trong tiến trình Node server; production có service frontend-monitor ở máy frontend. Worker scripts/backend-monitor.mjs probe ngay khi khởi động và mỗi 600000 ms, persist hàng đợi khi backend lỗi, gửi token idempotent qua X-Wortify-Monitor-Key. Secret chỉ ở môi trường server. BackendCheck.source phân biệt frontend-server với các log browser cũ; dashboard chỉ hiện server và không gắn user.
 - PracticeActivity có trạng thái revealed độc lập đáp án/progress: bỏ qua hủy chấm tự động, hiện đáp án, chờ icon tiếp tục; không thêm vào completed. Flashcard learn/test/review/flash và ExtraStudy có bỏ qua; ghi correct=false/Again để không tăng thành thạo. StudySession dùng giá trị reserved __wortify_skipped__ được chấm false cả frontend/backend và lưu idempotent. Test dạng danh sách giữ bố cục, tiếp tục focus câu kế/tổng kết/nút nộp.
+
+## Repo độc lập (2026-10-05)
+
+Backend và Frontend có dependency, env, deploy và README riêng. Backend không được đọc file trong Frontend; mẫu dùng cho test/seed nằm ở Backend/sample_data. Các script gốc chỉ hỗ trợ chạy chung local. Database/media/static path tương đối tính từ Backend, không phụ thuộc working directory. Chạy manage.py trong Backend hoặc dùng Backend/manage.py từ gốc.

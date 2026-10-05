@@ -3,7 +3,7 @@ import hashlib,json,os,shutil,signal,socket,subprocess,sys,time,webbrowser
 from pathlib import Path
 from urllib.request import urlopen
 ROOT=Path(__file__).resolve().parents[1]
-IDENTITY=hashlib.sha256(str(ROOT).lower().encode()).hexdigest()[:16]
+IDENTITY=hashlib.sha256(str(ROOT/'Backend').lower().encode()).hexdigest()[:16]
 BACKEND=int(os.environ.get('WORTIFY_BACKEND_PORT','8000'))
 FRONTEND=int(os.environ.get('WORTIFY_FRONTEND_PORT','5173'))
 
@@ -30,7 +30,7 @@ def check():
 
 def main():
     os.chdir(ROOT)
-    sys.path.insert(0, str(ROOT/'backend'))
+    sys.path.insert(0, str(ROOT/'Backend'))
     from config.environment import load_environment
     load_environment()
     state=check()
@@ -45,10 +45,10 @@ def main():
     children=[]
     try:
         if not healthy(BACKEND):
-            children.append(subprocess.Popen([sys.executable,'-X','utf8','manage.py','runserver',f'127.0.0.1:{BACKEND}'],creationflags=flags,start_new_session=os.name!='nt'))
+            children.append(subprocess.Popen([sys.executable,'-X','utf8',str(ROOT/'Backend/manage.py'),'runserver',f'127.0.0.1:{BACKEND}'],creationflags=flags,start_new_session=os.name!='nt'))
         if not healthy(FRONTEND):
             env={**os.environ,'DJANGO_DEV_ORIGIN':f'http://127.0.0.1:{BACKEND}'}
-            children.append(subprocess.Popen([node,str(ROOT/'frontend-react/node_modules/vite/bin/vite.js'),'--host','127.0.0.1','--port',str(FRONTEND)],cwd=ROOT/'frontend-react',env=env,creationflags=flags,start_new_session=os.name!='nt'))
+            children.append(subprocess.Popen([node,str(ROOT/'Frontend/node_modules/vite/bin/vite.js'),'--host','127.0.0.1','--port',str(FRONTEND)],cwd=ROOT/'Frontend',env=env,creationflags=flags,start_new_session=os.name!='nt'))
         for _ in range(60):
             if not all(p.poll() is None for p in children):raise RuntimeError('Server exited during startup.')
             if healthy(BACKEND) and healthy(FRONTEND):break

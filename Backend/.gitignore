@@ -1,0 +1,15 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.sqlite3
+*.sqlite3-*
+private_media/
+staticfiles/
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.log
+backup/
+deploy/secrets/

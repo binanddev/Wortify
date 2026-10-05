@@ -2,11 +2,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "npm --prefix frontend-react test",
-    "dev": "npm --prefix frontend-react run dev",
-    "build": "npm --prefix frontend-react run build",
-    "preview": "npm --prefix frontend-react run preview",
-    "setup:frontend": "npm --prefix frontend-react ci"
+    "test": "npm --prefix Frontend test",
+    "dev": "npm --prefix Frontend run dev",
+    "build": "npm --prefix Frontend run build",
+    "preview": "npm --prefix Frontend run preview",
+    "setup:frontend": "npm --prefix Frontend ci"
   },
   "name": "wortify",
   "engines": {

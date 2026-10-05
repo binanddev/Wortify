@@ -1,0 +1,470 @@
+{
+  "nodes": [
+    {
+      "kind": "exercise",
+      "title": "Điền vào chỗ trống · drag_drop",
+      "payload": {
+        "title": "Điền vào chỗ trống · drag_drop",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "cloze",
+        "presentation": {
+          "interaction": "cloze_drag_drop",
+          "style": "drag_drop"
+        },
+        "questions": [
+          {
+            "prompt": "I {{1}} coffee in the {{2}}.",
+            "accepted_answers": [],
+            "options": [],
+            "blanks": [
+              {
+                "answers": [
+                  "drink"
+                ],
+                "options": [
+                  "drink",
+                  "eat"
+                ]
+              },
+              {
+                "answers": [
+                  "morning"
+                ],
+                "options": [
+                  "morning",
+                  "evening"
+                ]
+              }
+            ],
+            "presentation": {
+              "word_bank": [
+                "morning",
+                "drink",
+                "eat"
+              ]
+            },
+            "id": "1",
+            "position": 1,
+            "kind": "cloze"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Điền vào chỗ trống · tap_fill",
+      "payload": {
+        "title": "Điền vào chỗ trống · tap_fill",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "cloze",
+        "presentation": {
+          "interaction": "cloze_drag_drop",
+          "style": "tap_fill"
+        },
+        "questions": [
+          {
+            "prompt": "I {{1}} coffee in the {{2}}.",
+            "accepted_answers": [],
+            "options": [],
+            "blanks": [
+              {
+                "answers": [
+                  "drink"
+                ],
+                "options": [
+                  "drink",
+                  "eat"
+                ]
+              },
+              {
+                "answers": [
+                  "morning"
+                ],
+                "options": [
+                  "morning",
+                  "evening"
+                ]
+              }
+            ],
+            "presentation": {
+              "word_bank": [
+                "morning",
+                "drink",
+                "eat"
+              ]
+            },
+            "id": "1",
+            "position": 1,
+            "kind": "cloze"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Tìm và sửa lỗi sai · click_edit",
+      "payload": {
+        "title": "Tìm và sửa lỗi sai · click_edit",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "text",
+        "presentation": {
+          "interaction": "error_correction",
+          "style": "click_edit"
+        },
+        "questions": [
+          {
+            "prompt": "He do not like sports.",
+            "accepted_answers": [
+              "He does not like sports."
+            ],
+            "options": [],
+            "blanks": [],
+            "presentation": {},
+            "id": "1",
+            "position": 1,
+            "kind": "text"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Tìm và sửa lỗi sai · cross_out",
+      "payload": {
+        "title": "Tìm và sửa lỗi sai · cross_out",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "text",
+        "presentation": {
+          "interaction": "error_correction",
+          "style": "cross_out"
+        },
+        "questions": [
+          {
+            "prompt": "They discussed about the project yesterday.",
+            "accepted_answers": [
+              "They discussed the project yesterday."
+            ],
+            "options": [],
+            "blanks": [],
+            "presentation": {},
+            "id": "1",
+            "position": 1,
+            "kind": "text"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Nối đáp án · tap_match",
+      "payload": {
+        "title": "Nối đáp án · tap_match",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "matching",
+        "presentation": {
+          "interaction": "matching",
+          "style": "tap_match"
+        },
+        "questions": [
+          {
+            "prompt": "cat",
+            "accepted_answers": [
+              "mèo"
+            ],
+            "options": [
+              "mèo",
+              "chó"
+            ],
+            "blanks": [],
+            "presentation": {},
+            "id": "1",
+            "position": 1,
+            "kind": "matching"
+          },
+          {
+            "prompt": "dog",
+            "accepted_answers": [
+              "chó"
+            ],
+            "options": [
+              "mèo",
+              "chó"
+            ],
+            "blanks": [],
+            "presentation": {},
+            "id": "2",
+            "position": 2,
+            "kind": "matching"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Sắp xếp câu · tap_build",
+      "payload": {
+        "title": "Sắp xếp câu · tap_build",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "order",
+        "presentation": {
+          "interaction": "sentence_building",
+          "style": "tap_build"
+        },
+        "questions": [
+          {
+            "prompt": "Sắp xếp thành câu đúng.",
+            "accepted_answers": [
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "options": [],
+            "blanks": [],
+            "presentation": {
+              "word_bank": [
+                "She",
+                "is",
+                "reading",
+                "a book."
+              ],
+              "tokens": [
+                {
+                  "id": "1",
+                  "text": "She"
+                },
+                {
+                  "id": "2",
+                  "text": "is"
+                },
+                {
+                  "id": "3",
+                  "text": "reading"
+                },
+                {
+                  "id": "4",
+                  "text": "a book."
+                }
+              ]
+            },
+            "id": "1",
+            "position": 1,
+            "kind": "order"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Phân loại · drag_sort",
+      "payload": {
+        "title": "Phân loại · drag_sort",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "choice",
+        "presentation": {
+          "interaction": "categorization",
+          "style": "drag_sort",
+          "categories": [
+            "Fruit",
+            "Animals"
+          ]
+        },
+        "questions": [
+          {
+            "prompt": "apple",
+            "accepted_answers": [
+              "Fruit"
+            ],
+            "options": [
+              "Fruit",
+              "Animals"
+            ],
+            "blanks": [],
+            "presentation": {},
+            "id": "1",
+            "position": 1,
+            "kind": "choice"
+          },
+          {
+            "prompt": "cat",
+            "accepted_answers": [
+              "Animals"
+            ],
+            "options": [
+              "Fruit",
+              "Animals"
+            ],
+            "blanks": [],
+            "presentation": {},
+            "id": "2",
+            "position": 2,
+            "kind": "choice"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Trắc nghiệm trong câu · pill_toggle",
+      "payload": {
+        "title": "Trắc nghiệm trong câu · pill_toggle",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "cloze",
+        "presentation": {
+          "interaction": "inline_selection",
+          "style": "pill_toggle"
+        },
+        "questions": [
+          {
+            "prompt": "She {{1}} a doctor.",
+            "accepted_answers": [],
+            "options": [],
+            "blanks": [
+              {
+                "answers": [
+                  "is"
+                ],
+                "options": [
+                  "is",
+                  "are"
+                ]
+              }
+            ],
+            "presentation": {},
+            "id": "1",
+            "position": 1,
+            "kind": "cloze"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Trắc nghiệm trong câu · inline_select",
+      "payload": {
+        "title": "Trắc nghiệm trong câu · inline_select",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "cloze",
+        "presentation": {
+          "interaction": "inline_selection",
+          "style": "inline_select"
+        },
+        "questions": [
+          {
+            "prompt": "She {{1}} a doctor.",
+            "accepted_answers": [],
+            "options": [],
+            "blanks": [
+              {
+                "answers": [
+                  "is"
+                ],
+                "options": [
+                  "is",
+                  "are"
+                ]
+              }
+            ],
+            "presentation": {},
+            "id": "1",
+            "position": 1,
+            "kind": "cloze"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Viết lại câu · partial_input",
+      "payload": {
+        "title": "Viết lại câu · partial_input",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "text",
+        "presentation": {
+          "interaction": "short_answer",
+          "style": "partial_input"
+        },
+        "questions": [
+          {
+            "prompt": "Rewrite: He began learning English two years ago.",
+            "accepted_answers": [
+              "He has learned English for two years.",
+              "He has been learning English for two years."
+            ],
+            "options": [],
+            "blanks": [],
+            "presentation": {
+              "prefix": "He has"
+            },
+            "id": "1",
+            "position": 1,
+            "kind": "text"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    },
+    {
+      "kind": "exercise",
+      "title": "Viết lại câu · sentence_rewrite",
+      "payload": {
+        "title": "Viết lại câu · sentence_rewrite",
+        "instruction": "Hoàn thành các câu bên dưới.",
+        "kind": "text",
+        "presentation": {
+          "interaction": "short_answer",
+          "style": "sentence_rewrite"
+        },
+        "questions": [
+          {
+            "prompt": "Rewrite: He began learning English two years ago.",
+            "accepted_answers": [
+              "He has learned English for two years.",
+              "He has been learning English for two years."
+            ],
+            "options": [],
+            "blanks": [],
+            "presentation": {
+              "prefix": "He has"
+            },
+            "id": "1",
+            "position": 1,
+            "kind": "text"
+          }
+        ],
+        "ignore_case": true,
+        "ignore_punctuation": true,
+        "check_mode": "auto_check"
+      }
+    }
+  ]
+}
