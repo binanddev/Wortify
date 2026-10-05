@@ -37,7 +37,7 @@ export default function BackendLogs() {
         Máy chủ frontend kiểm tra backend mỗi 10 phút, không phụ thuộc người
         dùng. Giữ log 30 ngày.
       </p>
-      <Loading resource={resource}>
+      <Loading label="Đang tải dữ liệu quản trị…" resource={resource}>
         {(data) => (
           <>
             <div className="grid gap-2">

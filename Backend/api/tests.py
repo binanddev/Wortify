@@ -542,7 +542,7 @@ class SyncAndRolesTests(TestCase):
         self.assertEqual(self.client.patch(url,json.dumps({'role':'staff','is_active':False}),content_type='application/json').status_code,200)
         self.user.refresh_from_db();self.assertTrue(self.user.is_staff);self.assertFalse(self.user.is_active)
         self.assertEqual(self.client.delete(f'/api/manage/users/{self.admin.pk}/').status_code,400)
-        self.assertEqual(self.client.delete(url).status_code,200)
+        self.assertEqual(self.client.delete(url,json.dumps({'confirm':self.user.username,'reason':'Remove test account'}),content_type='application/json').status_code,200)
 
     def test_class_assignment_grants_subtree_access_only(self):
         root=PracticeNode.objects.create(owner=self.admin,language='en',title='Private root',kind='folder')

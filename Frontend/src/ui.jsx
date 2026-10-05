@@ -173,12 +173,16 @@ export function ExerciseTypeBadge({ type, label }) {
     </span>
   );
 }
-export function Loading({ resource, children }) {
+export function Loading({
+  resource,
+  children,
+  label = "Đang mở không gian học…",
+}) {
   if (resource.loading)
     return (
       <div className="loading" role="status">
         <span className="loader" />
-        Đang mở không gian học…
+        {label}
       </div>
     );
   if (resource.error)
@@ -290,6 +294,9 @@ export function Editor({
       isOpen
       onClose={onClose}
       size="2xl"
+      isDismissable={!action.pending}
+      isKeyboardDismissDisabled={action.pending}
+      hideCloseButton={action.pending}
       scrollBehavior="inside"
       classNames={{ base: "glass dialog" }}
     >

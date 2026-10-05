@@ -1,0 +1,103 @@
+// Original, locally synthesized loops; no downloads, recordings or uploads.
+export const AMBIENT_TRACKS = [
+  {
+    id: "morning",
+    name: "Nắng sớm",
+    description: "Chuông nhẹ, giai điệu sáng",
+    notes: [72, 76, 79, 76, 74, 79, 81, 79],
+    bpm: 78,
+    type: "sine",
+    duration: 1.2,
+  },
+  {
+    id: "marimba",
+    name: "Marimba vui",
+    description: "Tiếng gõ gỗ ngắn, nhịp đều",
+    notes: [60, 67, 64, 69, 67, 64, 62, 67],
+    bpm: 96,
+    type: "triangle",
+    duration: 0.38,
+  },
+  {
+    id: "picnic",
+    name: "Dạo chơi",
+    description: "Nốt gảy nhẹ, tiết tấu thong thả",
+    notes: [67, 71, 74, 71, 69, 74, 76, 74],
+    bpm: 84,
+    type: "triangle",
+    duration: 0.55,
+  },
+  {
+    id: "bubbles",
+    name: "Bong bóng",
+    description: "Âm tròn, cao và tinh nghịch",
+    notes: [79, 84, 81, 76, 79, 81, 84, 88],
+    bpm: 100,
+    type: "sine",
+    duration: 0.28,
+  },
+  {
+    id: "cafe",
+    name: "Góc cà phê",
+    description: "Nhịp chậm, âm mềm để tập trung",
+    notes: [60, 64, 67, 71, 62, 65, 69, 72],
+    bpm: 68,
+    type: "sine",
+    duration: 0.9,
+  },
+  {
+    id: "garden",
+    name: "Vườn xanh",
+    description: "Chuông trong, giai điệu ngũ cung",
+    notes: [74, 78, 81, 83, 81, 78, 76, 74],
+    bpm: 74,
+    type: "sine",
+    duration: 1.5,
+  },
+  {
+    id: "puzzle",
+    name: "Ghép hình",
+    description: "Nhịp gõ sáng, ngắn và gọn",
+    notes: [65, 69, 72, 74, 72, 69, 67, 69],
+    bpm: 104,
+    type: "triangle",
+    duration: 0.3,
+  },
+  {
+    id: "clouds",
+    name: "Mây bông",
+    description: "Âm ngân thưa, nhẹ nhàng",
+    notes: [72, 79, 76, 84, 81, 79, 76, 74],
+    bpm: 60,
+    type: "sine",
+    duration: 1.8,
+  },
+  {
+    id: "starlight",
+    name: "Sao lấp lánh",
+    description: "Chuông cao đan xen nốt gảy",
+    notes: [84, 79, 88, 81, 86, 79, 84, 76],
+    bpm: 82,
+    type: "sine",
+    duration: 0.75,
+  },
+  {
+    id: "steps",
+    name: "Bước nhỏ",
+    description: "Giai điệu tiến lên, nhịp vui vừa phải",
+    notes: [60, 62, 64, 67, 69, 67, 64, 62],
+    bpm: 92,
+    type: "triangle",
+    duration: 0.48,
+  },
+];
+export const ambientTrack = (id) =>
+  AMBIENT_TRACKS.find((track) => track.id === id) || AMBIENT_TRACKS[0];
+export function ambientStep(track, index) {
+  return {
+    frequency: 440 * 2 ** ((track.notes[index % track.notes.length] - 69) / 12),
+    interval: 60 / track.bpm,
+    duration: track.duration,
+    type: track.type,
+  };
+}

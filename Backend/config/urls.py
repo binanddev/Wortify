@@ -1,4 +1,4 @@
-from api import spaced_review, management_data, personal_appearance, monitoring, themes
+from api import api_reference, management_center, spaced_review, management_data, personal_appearance, monitoring, themes
 from django.urls import path,re_path
 from django.http import JsonResponse
 from api import views,sessions,community,management,practice_hub,learning_sync,practice_media,practice_copy
@@ -22,6 +22,12 @@ urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_regis
  path('api/me/appearance/',themes.manifest),
  path('api/me/background/',personal_appearance.background),
  path('api/me/background/image/',personal_appearance.image),
+ path('api/manage/summary/',management_center.summary),
+ path('api/manage/api-docs/',api_reference.reference),
+ path('api/manage/activity/',management_center.activity),
+ path('api/manage/content/',management_center.content),
+ path('api/manage/content/<int:pk>/',management_center.content_detail),
+ path('api/manage/content/<int:pk>/media/',management_center.content_upload),
  path('api/manage/overview/',management_data.overview),
  path('api/manage/users/<int:pk>/data/',management_data.user_data),
  path('api/manage/users/<int:pk>/data/<str:kind>/',management_data.records),

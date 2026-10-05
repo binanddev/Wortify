@@ -1,0 +1,15 @@
+/* A dedicated body portal escapes transformed cards and mobile navigation. */
+#modal-root {
+  @apply fixed inset-0 z-[2147483000] isolate pointer-events-none;
+}
+#modal-root .app-modal-wrapper,
+#modal-root .app-modal-backdrop,
+#modal-root [data-slot="popover-content"] {
+  @apply pointer-events-auto;
+}
+#modal-root .app-modal {
+  @apply w-[min(100%,calc(100vw-16px))] max-h-[calc(100dvh-24px)] min-w-0;
+}
+#modal-root .app-modal-body {
+  @apply min-w-0 min-h-0 overflow-y-auto overscroll-contain;
+}

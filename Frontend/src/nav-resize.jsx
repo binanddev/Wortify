@@ -1,28 +1,19 @@
 import { useState } from "react";
-import { readPreference, savePreference } from "./core";
-const BASE = 422,
-  MAX = 633;
-export function useNavWidth(userId) {
-  const key = `nav-width:${userId}`;
-  const clamp = (value) => Math.max(BASE, Math.min(MAX, Number(value) || BASE));
-  const [width, update] = useState(() => clamp(readPreference(key, BASE)));
-  const setWidth = (value) => {
-    const next = clamp(value);
-    update(next);
-    savePreference(key, next);
-  };
-  return [width, setWidth];
-}
+import { NAV_BASE, NAV_MIN, NAV_MAX } from "./navigation-settings";
+const BASE = NAV_BASE,
+  MIN = NAV_MIN,
+  MAX = NAV_MAX;
 export function NavResize({ width, setWidth }) {
   const [drag, setDrag] = useState(null);
   return (
     <div
       role="separator"
-      aria-label="Độ rộng thanh điều hướng"
+      aria-label="Kích thước thanh điều hướng"
       aria-orientation="vertical"
-      aria-valuemin={BASE}
+      aria-valuemin={MIN}
       aria-valuemax={MAX}
       aria-valuenow={width}
+      aria-valuetext={`${Math.round((width / BASE) * 100)}%`}
       tabIndex={0}
       className="nav-resize"
       title="Kéo để đổi độ rộng · nhấp đúp để đặt lại"
@@ -31,7 +22,7 @@ export function NavResize({ width, setWidth }) {
         const next = {
           ArrowLeft: width - 16,
           ArrowRight: width + 16,
-          Home: BASE,
+          Home: MIN,
           End: MAX,
         }[e.key];
         if (next !== undefined) {

@@ -120,7 +120,9 @@ def records(request, pk, kind, item_id=None):
         if language in ('en', 'de') and 'language' in names: qs = qs.filter(language=language)
         fields = [{'name': f.name, 'type': f.get_internal_type(), 'required': not (f.blank or f.null or f.has_default()),
                    'default': f.get_default() if f.has_default() else None,
-                   'choices': list(f.choices or [])} for f in editable_fields(model)]
+                   'choices': list(f.choices or []),
+                   'relation': next((key for key, (name, _, _) in DATA.items() if f.is_relation and apps.get_model(name) == f.remote_field.model), None)
+                  } for f in editable_fields(model)]
         if kind in ('classes', 'practice'):
             fields.append({'name': 'members' if kind == 'classes' else 'links', 'type': 'JSONField', 'required': False, 'default': [], 'choices': []})
         return JsonResponse({'rows': [record(v) for v in qs.order_by('pk')[(page-1)*25:page*25]],

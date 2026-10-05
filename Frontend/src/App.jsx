@@ -1,7 +1,9 @@
 import { loadLoginSnapshot, clearLoginAppearance } from "./appearance-cache";
 import { applyAppearance } from "./appearance-preferences";
 import FlashcardNavigation from "./flashcard-navigation";
-import { NavResize, useNavWidth } from "./nav-resize";
+import { NavResize } from "./nav-resize";
+import { navScale, navWidth as widthForScale } from "./navigation-settings";
+import { ambientTrack } from "./soundscape-presets";
 import { Explore } from "./explore";
 import { ExerciseStudio } from "./exercise-studio";
 import { legacyPracticeDestination } from "./practice-navigation";
@@ -120,7 +122,9 @@ export default function App() {
   }, [appearance, appearanceKey, activeLanguage, isWorkspace]);
   const parts = route.split("?")[0].split("/").filter(Boolean),
     lang = ["en", "de"].includes(parts[0]) ? parts[0] : null;
-  const setupKey = /^\/setup-7f3c91d8\/([A-Za-z0-9_-]+)\/?$/.exec(route.split("?")[0])?.[1];
+  const setupKey = /^\/setup-7f3c91d8\/([A-Za-z0-9_-]+)\/?$/.exec(
+    route.split("?")[0],
+  )?.[1];
   if (error)
     return (
       <div className="welcome">
@@ -140,7 +144,17 @@ export default function App() {
         <p>Đang tải…</p>
       </div>
     );
-  if (setupKey) return <Login key={setupKey} setupKey={setupKey} onLogin={(created) => { setUser(created); navigate("/"); }} />;
+  if (setupKey)
+    return (
+      <Login
+        key={setupKey}
+        setupKey={setupKey}
+        onLogin={(created) => {
+          setUser(created);
+          navigate("/");
+        }}
+      />
+    );
   if (!user) return <Login key="normal-login" onLogin={setUser} />;
   if (appearance.key !== appearanceKey)
     return (
@@ -187,7 +201,9 @@ function Login({ onLogin, setupKey }) {
     if (!setupKey) return;
     const controller = new AbortController();
     request(authEndpoint, "GET", undefined, controller.signal)
-      .then(() => { if (!controller.signal.aborted) setSetupState("ready"); })
+      .then(() => {
+        if (!controller.signal.aborted) setSetupState("ready");
+      })
       .catch((error) => {
         if (controller.signal.aborted) return;
         setSetupState("error");
@@ -199,72 +215,82 @@ function Login({ onLogin, setupKey }) {
     <div className="auth-layout">
       <Glass className="auth-card">
         <span className="eyebrow">WORTIFY</span>
-        <h2>{setupKey ? "Tạo tài khoản quản trị" : register ? "Tạo tài khoản" : "Đăng nhập"}</h2>
+        <h2>
+          {setupKey
+            ? "Tạo tài khoản quản trị"
+            : register
+              ? "Tạo tài khoản"
+              : "Đăng nhập"}
+        </h2>
         {setupState === "loading" && <p>Đang kiểm tra đường dẫn…</p>}
         <Status error={setupError} />
-        {setupState === "ready" && <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            action.run(async (s) => {
-              const d = await request(
-                authEndpoint,
-                "POST",
-                register
-                  ? {
-                      register: true,
-                      username: values.username,
-                      password1: values.password1,
-                      password2: values.password2,
-                    }
-                  : { username: values.username, password: values.password },
-                s,
-              );
-              onLogin(d.user);
-            });
-          }}
-        >
-          <Field
-            label="Tên tài khoản"
-            value={values.username}
-            onChange={(v) => setValues({ ...values, username: v })}
-            autoComplete="username"
-            isRequired
-          />
-          {(register ? ["password1", "password2"] : ["password"]).map(
-            (key, i) => (
-              <Field
-                key={key}
-                label={i ? "Nhập lại mật khẩu" : "Mật khẩu"}
-                type="password"
-                value={values[key]}
-                onChange={(v) => setValues({ ...values, [key]: v })}
-                autoComplete={register ? "new-password" : "current-password"}
-                isRequired
-              />
-            ),
-          )}
-          <Status error={action.error} />
-          <Btn
-            primary
-            type="submit"
-            className="btn primary full"
-            isLoading={action.pending}
-          >
-            {register ? "Tạo tài khoản" : "Đăng nhập"}
-            <Icon name="arrow" />
-          </Btn>
-        </form>}
-        {!setupKey && <div className="auth-switch">
-          {register ? "Đã có tài khoản?" : "Chưa có tài khoản?"}
-          <Btn
-            onClick={() => {
-              setRegister(!register);
-              action.setError("");
+        {setupState === "ready" && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              action.run(async (s) => {
+                const d = await request(
+                  authEndpoint,
+                  "POST",
+                  register
+                    ? {
+                        register: true,
+                        username: values.username,
+                        password1: values.password1,
+                        password2: values.password2,
+                      }
+                    : { username: values.username, password: values.password },
+                  s,
+                );
+                onLogin(d.user);
+              });
             }}
           >
-            {register ? "Đăng nhập" : "Tạo tài khoản"}
-          </Btn>
-        </div>}
+            <Field
+              label="Tên tài khoản"
+              value={values.username}
+              onChange={(v) => setValues({ ...values, username: v })}
+              autoComplete="username"
+              isRequired
+            />
+            {(register ? ["password1", "password2"] : ["password"]).map(
+              (key, i) => (
+                <Field
+                  key={key}
+                  label={i ? "Nhập lại mật khẩu" : "Mật khẩu"}
+                  type="password"
+                  value={values[key]}
+                  onChange={(v) => setValues({ ...values, [key]: v })}
+                  autoComplete={register ? "new-password" : "current-password"}
+                  isRequired
+                />
+              ),
+            )}
+            <Status error={action.error} />
+            <Btn
+              primary
+              type="submit"
+              className="btn primary full"
+              isLoading={action.pending}
+            >
+              {register ? "Tạo tài khoản" : "Đăng nhập"}
+              <Icon name="arrow" />
+            </Btn>
+          </form>
+        )}
+        {!setupKey && (
+          <div className="auth-switch">
+            {register ? "Đã có tài khoản?" : "Chưa có tài khoản?"}
+            <Btn
+              onClick={() => {
+                setRegister(!register);
+                action.setError("");
+              }}
+            >
+              {register ? "Đăng nhập" : "Tạo tài khoản"}
+            </Btn>
+          </div>
+        )}
         {setupKey && <Link to="/">Về trang chính</Link>}
       </Glass>
     </div>
@@ -361,6 +387,11 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         curvature: p.curvature ?? 18,
         glassLens: p.glassLens ?? 40,
         navPinned: p.navPinned !== false,
+        navScale: navScale(
+          p.navScale ??
+            (readPreference(`nav-width:${user.id}`, 422) / 422) * 100,
+        ),
+        ambientTrack: ambientTrack(p.ambientTrack).id,
         font: Math.min(60, Math.max(24, Number(p?.font) || 36)),
         sound: p?.sound === true,
         ambient: p?.ambient === true,
@@ -376,7 +407,38 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       };
     }),
     [navBack, setNavBack] = useState(false);
-  const [navWidth, setNavWidth] = useNavWidth(user.id);
+  const navWidth = widthForScale(prefs.navScale);
+  const [smallScreen, setSmallScreen] = useState(
+    () => window.matchMedia("(max-width: 1024px)").matches,
+  );
+  const [navOpen, setNavOpen] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 1024px)");
+    const change = () => {
+      setSmallScreen(media.matches);
+      setNavOpen(false);
+    };
+    media.addEventListener("change", change);
+    return () => media.removeEventListener("change", change);
+  }, []);
+  useEffect(() => {
+    setNavOpen(false);
+  }, [route]);
+  useEffect(() => {
+    if (!smallScreen || !navOpen) return;
+    const escape = (event) => {
+      if (
+        event.key === "Escape" &&
+        !event.defaultPrevented &&
+        !document.querySelector('[aria-modal="true"]')
+      ) {
+        setNavOpen(false);
+        document.getElementById("mobile-nav-toggle")?.focus();
+      }
+    };
+    document.addEventListener("keydown", escape);
+    return () => document.removeEventListener("keydown", escape);
+  }, [smallScreen, navOpen]);
   const setPrefs = (v) => {
     setLocalPrefs(v);
     savePreference(prefKey, v);
@@ -509,24 +571,78 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       </Page>
     );
   return (
-    <div className="app-shell" style={{ "--nav-width": `${navWidth}px` }}>
+    <div
+      className="app-shell"
+      style={{
+        "--nav-width": `${navWidth}px`,
+        "--nav-scale": prefs.navScale / 100,
+      }}
+    >
       <Soundscape
         interactions={prefs.sound}
         ambient={prefs.ambient}
+        track={prefs.ambientTrack}
         volume={prefs.volume}
       />
       <a className="skip-link" href="#main-content">
         Đến nội dung chính
       </a>
-      <div className="nav-flip">
-        <NavResize width={navWidth} setWidth={setNavWidth} />
+      <div className="mobile-nav-bar">
+        <button
+          id="mobile-nav-toggle"
+          aria-controls="app-navigation"
+          aria-expanded={navOpen}
+          onClick={() => {
+            setNavBack(false);
+            setNavOpen((open) => !open);
+          }}
+        >
+          ☰ Menu
+        </button>
+        <button
+          aria-controls="app-navigation"
+          aria-expanded={navOpen && navBack}
+          onClick={() => {
+            setNavBack(true);
+            setNavOpen(true);
+          }}
+        >
+          Công cụ trang
+        </button>
+      </div>
+      {smallScreen && navOpen && (
+        <button
+          className="nav-scrim"
+          aria-label="Đóng menu"
+          onClick={() => setNavOpen(false)}
+        />
+      )}
+      <div
+        id="app-navigation"
+        className={`nav-flip ${navOpen ? "open" : ""}`}
+        inert={smallScreen && !navOpen}
+        aria-hidden={smallScreen && !navOpen}
+        onClick={(event) => {
+          if (smallScreen && event.target.closest("a[href]")) setNavOpen(false);
+        }}
+      >
+        <NavResize
+          width={navWidth}
+          setWidth={(width) =>
+            setPrefs({ ...prefs, navScale: navScale((width / 422) * 100) })
+          }
+        />
         <div className={`nav-flip-inner ${navBack ? "is-flipped" : ""}`}>
           <div
             inert={navBack}
             aria-hidden={navBack}
             className={`nav-face nav-front ${navBack ? "" : "is-active"}`}
           >
-            <NavStatic navBack={navBack} setNavBack={setNavBack} />
+            <NavStatic
+              navBack={navBack}
+              setNavBack={setNavBack}
+              onClose={() => setNavOpen(false)}
+            />
             <aside
               className="sidebar open"
               inert={navBack}
@@ -621,7 +737,11 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
             aria-hidden={!navBack}
             className={`nav-face nav-back ${navBack ? "is-active" : ""}`}
           >
-            <NavStatic navBack={navBack} setNavBack={setNavBack} />
+            <NavStatic
+              navBack={navBack}
+              setNavBack={setNavBack}
+              onClose={() => setNavOpen(false)}
+            />
             <aside
               className="workspace-context context-panel open"
               aria-label="Công cụ và chỉ mục"
@@ -650,10 +770,17 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
     </div>
   );
 }
-function NavStatic({ navBack, setNavBack }) {
+function NavStatic({ navBack, setNavBack, onClose }) {
   return (
     <div className="nav-static">
       <Brand />
+      <button
+        className="mobile-nav-close"
+        aria-label="Đóng menu"
+        onClick={onClose}
+      >
+        ×
+      </button>
       <button
         className="nav-rotate"
         aria-label={navBack ? "Điều hướng chính" : "Công cụ trang"}

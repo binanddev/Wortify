@@ -60,3 +60,11 @@ Backup PostgreSQL và toàn bộ volume media trước khi update. Chuyển từ
 Cập nhật release: backup → build → migrate → up → kiểm tra `/api/health/check/`, đăng nhập và media từ frontend. Xem log bằng `dc logs --tail=100 backend`. Không tự sinh migration trên production.
 
 `sample_data/` chứa snapshot mẫu nhập liệu dùng cho tests và seed. Đây là dữ liệu độc lập của backend; frontend có thể cập nhật mẫu tải xuống của riêng nó. `python manage.py seed_development_demo` chỉ dùng cho local DEBUG, tạo tài khoản demo với mật khẩu được ghi trong mã seed.
+
+## Quản trị và tài liệu API
+
+Frontend có workspace quản trị tại `/manage`. Admin quản lý tài khoản và phân quyền User/Staff/Admin, hệ thống và giao diện chung. Staff quản lý tài khoản thường và biên tập nội dung học toàn hệ thống; không quản lý tài khoản đặc quyền hoặc cấu hình hệ thống. Mọi quyền được kiểm tra lại tại backend. Thay đổi quyền/mật khẩu, khóa tài khoản có thu hồi phiên; thao tác quản trị có nhật ký.
+
+Tab **Tài liệu API** chỉ dành Admin, lấy tài liệu từ `/api/manage/api-docs/`. Có hướng dẫn session/CSRF, ví dụ nghiệp vụ, bộ lọc endpoint và tải Postman Collection. Bản độc lập nằm trong `docs/API_REFERENCE.md` và `docs/wortify.postman_collection.json`, có thể gửi cho lập trình viên mà không cần tài khoản Admin. Không chứa mật khẩu/khóa thực tế.
+
+Sau khi cập nhật API, xuất lại tài liệu bằng `python tools/export_api_docs.py` từ repo backend. Lệnh này không khởi động web. Trong Postman, import collection, đặt Environment riêng với baseUrl/username/password, rồi gửi ba request trong thư mục 00 theo thứ tự. Chỉ gửi từng request cần thử trên dữ liệu thử nghiệm.

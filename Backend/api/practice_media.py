@@ -71,7 +71,8 @@ def upload(request):
 def content(request,pk):
     from .practice_hub import visible
     item=get_object_or_404(PracticeMedia,pk=pk,language=request.language)
-    if item.owner_id!=request.user.pk and not visible(request).filter(attachments=item).exists():
+    manager = request.user.is_active and (request.user.is_staff or request.user.is_superuser)
+    if item.owner_id!=request.user.pk and not manager and not visible(request).filter(attachments=item).exists():
         from django.http import Http404
         raise Http404
     start,end=0,item.size-1

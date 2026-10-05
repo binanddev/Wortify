@@ -1,9 +1,13 @@
 # Quản trị Wortify
 
-Tất cả giao diện quản trị nằm trong `src/admin`, dùng chung shell và build React. Admin.jsx tải riêng tại `/en/admin`, `/de/admin` hoặc `/manage`. Appearance.jsx giữ trong Cài đặt, chỉ dành superuser.
+Workspace tại `/manage`, `/en/admin` hoặc `/de/admin`, dùng chung shell React và được tải riêng.
 
-Superuser có dashboard số người dùng/nội dung, trạng thái kết nối DB, migration chờ áp dụng, phiên bản runtime và nhật ký quản trị. Các chức năng học và tạo nội dung thông thường vẫn đầy đủ.
+- Tổng quan: số tài khoản, trạng thái và nội dung gần đây.
+- Người dùng: tìm kiếm, lọc vai trò/trạng thái, tạo/sửa, đặt lại mật khẩu, khóa/mở, thu hồi phiên, xóa có xác nhận và lý do. Admin cấp User/Staff/Admin; Staff chỉ quản lý tài khoản thường.
+- Nội dung: lọc nguồn/ngôn ngữ/loại/trạng thái, tạo thư mục, lý thuyết và bài tập, upload media, xem trước, công bố/ẩn cây và xóa. Biên tập giữ nguyên chủ sở hữu. Version chống ghi đè bản đã được sửa.
+- Nhật ký: Admin xem toàn bộ, Staff xem thao tác của mình.
+- Hệ thống, giao diện chung và tài liệu API: chỉ Admin. Tài liệu có tìm kiếm endpoint, hướng dẫn session/CSRF, mẫu nghiệp vụ, tải Markdown và Postman Collection; không tự gửi request thử.
 
-Staff quản lý tài khoản thường (tạo, sửa, đổi mật khẩu, khóa, thu hồi phiên, xóa). Không được đọc/sửa/xóa tài khoản staff hoặc superuser qua API quản trị, không tự nâng quyền và không sửa cấu hình hệ thống. Django admin mặc định vẫn dành superuser.
+UserData hỗ trợ dữ liệu của tài khoản thường qua model được phép, phân trang 25 mục, tìm quan hệ bằng tên. Backend kiểm tra chủ sở hữu/ngôn ngữ; không sửa auth hoặc đường dẫn tệp tùy ý. Xóa toàn bộ dữ liệu giữ tài khoản, yêu cầu nhập username và thu hồi phiên.
 
-UserData quản lý dữ liệu theo từng tài khoản, phân trang 25 mục, xem/tạo/sửa/xóa qua danh sách model cho phép. Các quan hệ được kiểm tra quyền sở hữu; nội dung và cây dùng lại validator của hệ thống. Tệp âm thanh/hình ảnh cần upload qua công cụ Media, không tạo đường dẫn tệp tùy ý. Xóa toàn bộ dữ liệu giữ tài khoản và mật khẩu, yêu cầu nhập tên xác nhận, thu hồi phiên, ghi audit. Không có thao tác xóa thật nào chạy khi triển khai code này.
+Các modal ghi dữ liệu khóa đóng khi đang lưu, hiển thị lỗi trong ngữ cảnh và xác nhận trước thao tác phá hủy. Staff không thể nâng quyền bằng cách gọi API trực tiếp.

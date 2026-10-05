@@ -49,3 +49,11 @@ Copy nội dung thư mục này vào repo frontend mới, gồm các file ẩn m
 
 
 Giọng TTS/micro phụ thuộc thiết bị. Practice Hub yêu cầu đáp án khi tạo; không có bài viết dài hoặc chấm thủ công. Hướng dẫn kiến trúc và giới hạn hiện tại: docs/AGENTS.md.
+
+## Nav, modal và âm thanh
+
+Màn hình rộng tối đa 1024px có thanh Menu / Công cụ trang; chọn liên kết, chạm ra ngoài hoặc Escape để đóng nav. Trong Cài đặt học tập, Kích thước thanh điều hướng cho phép thu/phóng 50–150% và đặt lại 100%; trên desktop vẫn kéo cạnh nav được. Kích thước được đồng bộ theo tài khoản. Trên điện thoại, khung nav luôn giới hạn theo chiều rộng màn hình.
+
+Mọi modal dùng lớp portal riêng dưới body, trên nav; nội dung dài cuộn bên trong. Popover của bài tập trong modal dùng cùng lớp portal.
+
+Cài đặt có 10 giai điệu nền tổng hợp sẵn tại máy (không tải file hoặc gọi dịch vụ bên ngoài), chọn bài, bật/tắt và âm lượng. Lựa chọn được lưu theo tài khoản. Âm nền tạm im khi audio/video/TTS đang phát hoặc tab bị ẩn. Trình duyệt có thể yêu cầu chạm vào trang trước khi phát.

@@ -37,7 +37,7 @@ export default function Appearance({ backgroundUrl = "" }) {
         description="Ảnh nền do quản trị viên cập nhật sẽ được dùng đồng nhất trong toàn bộ không gian Wortify."
       />
       {notice && <p role="status">{notice}</p>}
-      <Loading resource={resource}>
+      <Loading label="Đang tải dữ liệu quản trị…" resource={resource}>
         {(data) => (
           <div className="appearance-layout">
             <Glass className="appearance-editor">
@@ -57,8 +57,10 @@ export default function Appearance({ backgroundUrl = "" }) {
               <div
                 className="appearance-preview"
                 style={
-                  backgroundUrl
-                    ? { backgroundImage: `url("${backgroundUrl}")` }
+                  data.background_url || backgroundUrl
+                    ? {
+                        backgroundImage: `url("${data.background_url || backgroundUrl}")`,
+                      }
                     : undefined
                 }
               >
@@ -103,7 +105,7 @@ export default function Appearance({ backgroundUrl = "" }) {
                 <li>
                   Ảnh được áp dụng chung cho tất cả tài khoản đã đăng nhập.
                 </li>
-                <li>Thay đổi có hiệu lực sau khi người dùng tải lại trang.</li>
+                <li>Thay đổi có hiệu lực từ lần đăng nhập tiếp theo.</li>
               </ul>
             </Glass>
           </div>

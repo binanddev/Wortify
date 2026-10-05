@@ -1,0 +1,3583 @@
+{
+  "info": {
+    "name": "Wortify API · Developer reference",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "1. Chọn địa chỉ API\nLocal mặc định: http://127.0.0.1:8000. Nếu dùng proxy frontend: http://127.0.0.1:5173. Production dùng HTTPS, ví dụ https://learn.example.com. baseUrl không có dấu / cuối và chưa gồm /api. Dùng cùng một origin trong suốt phiên; localhost và 127.0.0.1 là hai host khác nhau. Trang này chỉ đọc tài liệu, không tự gửi thử request.\n\n2. Xác thực bằng session cookie\nAPI hiện dùng session Django, không có Bearer token/API key cho người dùng. Trong Postman chọn No Auth và bật cookie jar. Gửi GET /api/session/ để nhận csrftoken, sau đó POST /api/session/ với username/password. Postman giữ sessionid tự động. Đăng nhập làm đổi CSRF token, vì vậy phải lấy lại csrftoken từ response đăng nhập. Không copy sessionid hay mật khẩu vào Git hoặc collection được chia sẻ.\n\n3. CSRF cho request ghi\nPOST, PATCH và DELETE cần X-CSRFToken khớp cookie csrftoken, cùng cookie sessionid khi đã đăng nhập. Collection tải xuống tự lấy CSRF từ Set-Cookie sau mỗi response và đặt header cho request tiếp theo. Origin đặt bằng {{baseUrl}}; với HTTPS, Referer là {{baseUrl}}/. Production phải cho phép hostname qua DJANGO_ALLOWED_HOSTS và origin frontend qua DJANGO_CSRF_TRUSTED_ORIGINS. POST /api/monitor/ là ngoại lệ, dùng khóa máy chủ riêng và được miễn CSRF.\n\n4. Nhập và dùng Postman\nTải Collection v2.1 rồi chọn Import trong Postman. Tạo Environment riêng với baseUrl, username, password; giữ password ở giá trị local hoặc Vault, không chia sẻ giá trị thật. Chạy thư mục 00 theo thứ tự: nhận CSRF → đăng nhập → kiểm tra phiên. Chọn từng request trong danh mục, thay pk/deck_id/token/item_id bằng ID thật. Các ID số mặc định 1 chỉ là ví dụ. Không chạy toàn bộ collection tự động vì có request thay đổi quyền và xóa dữ liệu. Collection không chứa credential thực tế. Không tạo biến Environment csrfToken/contentVersion/contentTitle vì sẽ che giá trị Collection tự cập nhật. eventToken cần UUID mới cho mỗi sự kiện (giữ nguyên khi retry), checkedAt dùng ISO8601 hiện tại có múi giờ, ví dụ 2026-10-05T10:00:00Z.\n\n5. Luồng thử bộ thẻ\nPOST /api/en/decks/ với title, level=A1; lấy id trả về làm deck_id và pk. POST /api/en/decks/{deck_id}/cards/ với german_text và vietnamese_meaning. GET /api/en/decks/{pk}/ để kiểm tra thẻ vừa thêm. PATCH cùng URL để đổi tiêu đề. Các endpoint học chỉ truy cập dữ liệu của tài khoản đang đăng nhập, kể cả khi tài khoản đó là Admin.\n\n6. Luồng biên tập và công bố\nDùng tài khoản Staff/Admin. POST /api/manage/content/ để tạo folder riêng tư, sau đó tạo theory/exercise có parent là thư mục cùng chủ sở hữu và ngôn ngữ. GET /api/manage/content/{pk}/ lấy version hiện tại trước PATCH/DELETE. PATCH công bố/ẩn cần visibility và reason; cascade=true áp dụng cho cả cây thư mục. HTTP 409 yêu cầu đọc lại bản mới rồi hợp nhất thay đổi; không tự ghi đè. DELETE yêu cầu version, confirm đúng tiêu đề và reason.\n\n7. Phân quyền\nNgười dùng: dữ liệu học của mình, nội dung công khai hoặc lớp được giao. Staff: quản lý tài khoản thường, hỗ trợ dữ liệu của họ, biên tập nội dung học tập và media toàn hệ thống; không cấp quyền, quản lý tài khoản Staff/Admin hoặc cấu hình hệ thống. Admin: toàn bộ chức năng quản trị và phân quyền. API tài liệu, tình trạng hệ thống, nhật ký giám sát và giao diện chung chỉ dành Admin. Nhật ký workspace của Staff chỉ hiển thị thao tác của chính họ.\n\n8. Định dạng và giới hạn\nGiữ dấu / cuối URL. JSON dùng Content-Type: application/json; upload dùng form-data và để Postman tự đặt boundary. language chỉ en/de. Danh sách người dùng: 50/trang; nội dung, nhật ký workspace, dữ liệu người dùng: 25/trang. Media bài tập tối đa 200 MB, ảnh nền/theme 30 MB. Đồng bộ 1–100 sự kiện, token UUID ổn định khi retry; cần kiểm tra cả accepted và errors dù HTTP 200. File và audio trả binary, không parse như JSON.\n\n9. Xử lý lỗi\n400: dữ liệu/đăng nhập không hợp lệ; 401: thiếu phiên; 403: thiếu quyền hoặc CSRF; 404: không tồn tại hoặc ngoài phạm vi được phép; 405: sai method; 409: phiên bản/trạng thái xung đột; 413: proxy từ chối file lớn; 429: giới hạn báo cáo monitor; 503: probe database lỗi. Lỗi API thường có {\"error\":\"…\"}; lỗi proxy hoặc 405 có thể không phải JSON. Đọc status và Content-Type trước khi parse."
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "username",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "newPassword",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "csrfToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "language",
+      "value": "en",
+      "type": "string"
+    },
+    {
+      "key": "pk",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "deck_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "item_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "kind",
+      "value": "decks",
+      "type": "string"
+    },
+    {
+      "key": "fmt",
+      "value": "json",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "questionToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "eventToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "checkedAt",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "setup_key",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "monitorKey",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "contentVersion",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "contentTitle",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "targetUsername",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 · Bắt đầu — chạy theo thứ tự",
+      "item": [
+        {
+          "name": "01 · Nhận CSRF cookie",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/session/",
+            "description": "Quyền: Public / session\n\nGET cấp cookie CSRF và trả user/null. POST đăng nhập; đăng ký thường dùng register=true, username, password1, password2. DELETE đăng xuất phiên hiện tại. Đăng nhập sai trả 400, không phải 401."
+          },
+          "response": []
+        },
+        {
+          "name": "02 · Đăng nhập",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/session/",
+            "description": "Quyền: Public / session\n\nGET cấp cookie CSRF và trả user/null. POST đăng nhập; đăng ký thường dùng register=true, username, password1, password2. DELETE đăng xuất phiên hiện tại. Đăng nhập sai trả 400, không phải 401.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03 · Kiểm tra phiên",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/session/",
+            "description": "Quyền: Public / session\n\nGET cấp cookie CSRF và trả user/null. POST đăng nhập; đăng ký thường dùng register=true, username, password1, password2. DELETE đăng xuất phiên hiện tại. Đăng nhập sai trả 400, không phải 401."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01 · Ví dụ nghiệp vụ — gửi từng request",
+      "item": [
+        {
+          "name": "Tạo bài tập trong thư mục",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content/",
+            "description": "Quyền: Admin / Staff\n\nStaff/Admin: tạo folder trước và thay parent=1 bằng ID folder của chính tài khoản. Lưu riêng tư, xem trước rồi công bố. Đây là body bài viết lại câu tối thiểu.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kind\": \"exercise\",\n  \"title\": \"Chào hỏi\",\n  \"language\": \"en\",\n  \"parent\": 1,\n  \"visibility\": \"private\",\n  \"payload\": {\n    \"title\": \"Chào hỏi\",\n    \"kind\": \"text\",\n    \"presentation\": {\n      \"interaction\": \"short_answer\"\n    },\n    \"questions\": [\n      {\n        \"prompt\": \"Viết hello bằng tiếng Anh\",\n        \"accepted_answers\": [\n          \"hello\"\n        ],\n        \"options\": [],\n        \"blanks\": [],\n        \"presentation\": {}\n      }\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cấp quyền Staff",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nChỉ Admin. pk là ID tài khoản đích; đổi quyền đăng xuất các phiên hiện tại. Không được tự hạ quyền Admin đang sử dụng.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"staff\",\n  \"reason\": \"Bổ nhiệm nhân viên quản lý nội dung\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Khóa tài khoản",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nStaff chỉ nhắm tài khoản thường. is_active=false khóa đăng nhập và thu hồi phiên, không xóa dữ liệu. Mở lại bằng true.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false,\n  \"reason\": \"Yêu cầu tạm khóa từ người dùng\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Đặt lại mật khẩu",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nDùng biến Environment local newPassword, không ghi mật khẩu thật trong collection. Server áp dụng kiểm tra độ mạnh mật khẩu.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{newPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Công bố cả cây nội dung",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nGET chi tiết trước để lấy version. Collection cập nhật contentVersion từ response. Chọn pk của folder; cascade=true đổi trạng thái của toàn bộ mục con.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"{{contentVersion}}\",\n  \"visibility\": \"public\",\n  \"cascade\": true,\n  \"reason\": \"Đã duyệt bài và media\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Phiên & sức khỏe",
+      "item": [
+        {
+          "name": "GET /api/superuser-registration/{setup_key}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/superuser-registration/{{setup_key}}/",
+            "description": "Quyền: Public / session\n\nChỉ hoạt động khi setup_key khớp cấu hình SUPERUSER_SETUP_KEY (ít nhất 32 ký tự). Không nhúng khóa thật vào tài liệu. POST tạo Admin; dùng công cụ triển khai để tạo Admin nếu tính năng này tắt."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/superuser-registration/{setup_key}/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/superuser-registration/{{setup_key}}/",
+            "description": "Quyền: Public / session\n\nChỉ hoạt động khi setup_key khớp cấu hình SUPERUSER_SETUP_KEY (ít nhất 32 ký tự). Không nhúng khóa thật vào tài liệu. POST tạo Admin; dùng công cụ triển khai để tạo Admin nếu tính năng này tắt.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"new-admin\",\n  \"password1\": \"{{password}}\",\n  \"password2\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/health/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/health/",
+            "description": "Quyền: Public / session\n\nPublic GET, trả app=Wortify và workspace fingerprint để nhận diện instance local; không phải phép kiểm tra database. Dùng /api/health/check/ để kiểm tra database."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/session/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/session/",
+            "description": "Quyền: Public / session\n\nGET cấp cookie CSRF và trả user/null. POST đăng nhập; đăng ký thường dùng register=true, username, password1, password2. DELETE đăng xuất phiên hiện tại. Đăng nhập sai trả 400, không phải 401."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/session/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/session/",
+            "description": "Quyền: Public / session\n\nGET cấp cookie CSRF và trả user/null. POST đăng nhập; đăng ký thường dùng register=true, username, password1, password2. DELETE đăng xuất phiên hiện tại. Đăng nhập sai trả 400, không phải 401.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/session/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/session/",
+            "description": "Quyền: Public / session\n\nGET cấp cookie CSRF và trả user/null. POST đăng nhập; đăng ký thường dùng register=true, username, password1, password2. DELETE đăng xuất phiên hiện tại. Đăng nhập sai trả 400, không phải 401.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/health/check/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/health/check/",
+            "description": "Quyền: Public / session\n\nPublic, kiểm tra kết nối database; {ok:true} hoặc 503 {ok:false}."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Giám sát máy chủ",
+      "item": [
+        {
+          "name": "POST /api/monitor/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Wortify-Monitor-Key",
+                "value": "{{monitorKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/monitor/",
+            "description": "Quyền: Monitor key\n\nServer-to-server: X-Wortify-Monitor-Key, không dùng session và không cần CSRF. checks 1–50; token UUID, at ISO8601 có timezone, ok boolean, latency_ms 0–60000, error rỗng/timeout/network/http/invalid-response. at trong 7 ngày gần đây, không quá 5 phút tương lai. Không đưa monitor secret vào frontend.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"checks\": [\n    {\n      \"token\": \"{{eventToken}}\",\n      \"at\": \"{{checkedAt}}\",\n      \"ok\": true,\n      \"latency_ms\": 50,\n      \"error\": \"\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Quản trị",
+      "item": [
+        {
+          "name": "GET /api/manage/monitor/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/monitor/",
+            "description": "Quyền: Admin\n\nChỉ Admin. page 50/trang; failures=1 chỉ xem lỗi."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/summary/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/summary/",
+            "description": "Quyền: Admin / Staff\n\nTổng quan công việc. Số tài khoản của Staff chỉ tính tài khoản thường; thống kê nội dung gồm nội dung học tập hệ thống."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/api-docs/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/api-docs/",
+            "description": "Quyền: Admin\n\nChỉ Admin. GET JSON để hiển thị trang; format=postman tải collection v2.1; format=markdown tải tài liệu. Chỉ chứa ví dụ và placeholder, không xuất secret hay dữ liệu tài khoản."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/activity/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/activity/",
+            "description": "Quyền: Admin / Staff\n\nq và page, 25/trang. Admin xem toàn bộ; Staff chỉ xem nhật ký của chính mình. Không có API sửa/xóa audit."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/content/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content/",
+            "description": "Quyền: Admin / Staff\n\nGET q,language,kind,visibility,source=system/users/mine,owner,page (25/trang). GET options=folders trả thư mục của người đang đăng nhập. POST tạo nội dung của người thao tác; không chấp nhận owner từ client."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/manage/content/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content/",
+            "description": "Quyền: Admin / Staff\n\nGET q,language,kind,visibility,source=system/users/mine,owner,page (25/trang). GET options=folders trả thư mục của người đang đăng nhập. POST tạo nội dung của người thao tác; không chấp nhận owner từ client.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kind\": \"folder\",\n  \"title\": \"Thư mục hệ thống\",\n  \"language\": \"en\",\n  \"visibility\": \"private\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/content/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nGET trả payload, folders, children, version. PATCH chỉ title,parent,payload,visibility,position,links; không đổi owner/language/kind. Bắt buộc version đọc gần nhất. Thay đổi công khai cần reason; cascade=true chỉ cho thư mục. DELETE cần version, confirm đúng tiêu đề, reason; xóa cả cây và dữ liệu liên quan."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/manage/content/{pk}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nGET trả payload, folders, children, version. PATCH chỉ title,parent,payload,visibility,position,links; không đổi owner/language/kind. Bắt buộc version đọc gần nhất. Thay đổi công khai cần reason; cascade=true chỉ cho thư mục. DELETE cần version, confirm đúng tiêu đề, reason; xóa cả cây và dữ liệu liên quan.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"{{contentVersion}}\",\n  \"visibility\": \"public\",\n  \"cascade\": false,\n  \"reason\": \"Đã kiểm tra nội dung\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/manage/content/{pk}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nGET trả payload, folders, children, version. PATCH chỉ title,parent,payload,visibility,position,links; không đổi owner/language/kind. Bắt buộc version đọc gần nhất. Thay đổi công khai cần reason; cascade=true chỉ cho thư mục. DELETE cần version, confirm đúng tiêu đề, reason; xóa cả cây và dữ liệu liên quan.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"{{contentVersion}}\",\n  \"confirm\": \"{{contentTitle}}\",\n  \"reason\": \"Xóa bản thử nghiệm\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/manage/content/{pk}/media/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content/{{pk}}/media/",
+            "description": "Quyền: Admin / Staff\n\nMultipart file; chỉ bài exercise. File được lưu dưới chủ sở hữu nội dung, kiểm tra định dạng như upload thông thường. Gắn media trả về vào payload.attachments khi lưu bài.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/overview/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/overview/",
+            "description": "Quyền: Admin\n\nChỉ Admin: thống kê tài khoản/nội dung, kết nối database, migration, runtime và nhật ký. Không trả cấu hình chứa secret."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/users/{pk}/data/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/data/",
+            "description": "Quyền: Admin / Staff\n\nGET danh sách collections và số lượng. DELETE xóa dữ liệu học/hồ sơ nhưng giữ tài khoản; confirm phải khớp username. Chỉ nhắm tài khoản thường khác."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/manage/users/{pk}/data/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/data/",
+            "description": "Quyền: Admin / Staff\n\nGET danh sách collections và số lượng. DELETE xóa dữ liệu học/hồ sơ nhưng giữ tài khoản; confirm phải khớp username. Chỉ nhắm tài khoản thường khác.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"confirm\": \"{{targetUsername}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/users/{pk}/data/{kind}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/data/{{kind}}/",
+            "description": "Quyền: Admin / Staff\n\nkind là collection trong GET data/: decks,cards,folders,practice,classes,... GET danh sách trả fields và can_create để dựng biểu mẫu. POST vào danh sách, PATCH/DELETE vào item_id. Ví dụ body bên dưới áp dụng kind=decks; các collection khác theo fields. Quan hệ phải cùng chủ sở hữu/ngôn ngữ; không được sửa auth hoặc đường dẫn tệp."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/manage/users/{pk}/data/{kind}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/data/{{kind}}/",
+            "description": "Quyền: Admin / Staff\n\nkind là collection trong GET data/: decks,cards,folders,practice,classes,... GET danh sách trả fields và can_create để dựng biểu mẫu. POST vào danh sách, PATCH/DELETE vào item_id. Ví dụ body bên dưới áp dụng kind=decks; các collection khác theo fields. Quan hệ phải cùng chủ sở hữu/ngôn ngữ; không được sửa auth hoặc đường dẫn tệp.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tiêu đề mới\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/manage/users/{pk}/data/{kind}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/data/{{kind}}/",
+            "description": "Quyền: Admin / Staff\n\nkind là collection trong GET data/: decks,cards,folders,practice,classes,... GET danh sách trả fields và can_create để dựng biểu mẫu. POST vào danh sách, PATCH/DELETE vào item_id. Ví dụ body bên dưới áp dụng kind=decks; các collection khác theo fields. Quan hệ phải cùng chủ sở hữu/ngôn ngữ; không được sửa auth hoặc đường dẫn tệp.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/users/{pk}/data/{kind}/{item_id}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/data/{{kind}}/{{item_id}}/",
+            "description": "Quyền: Admin / Staff\n\nkind là collection trong GET data/: decks,cards,folders,practice,classes,... GET danh sách trả fields và can_create để dựng biểu mẫu. POST vào danh sách, PATCH/DELETE vào item_id. Ví dụ body bên dưới áp dụng kind=decks; các collection khác theo fields. Quan hệ phải cùng chủ sở hữu/ngôn ngữ; không được sửa auth hoặc đường dẫn tệp."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/manage/users/{pk}/data/{kind}/{item_id}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/data/{{kind}}/{{item_id}}/",
+            "description": "Quyền: Admin / Staff\n\nkind là collection trong GET data/: decks,cards,folders,practice,classes,... GET danh sách trả fields và can_create để dựng biểu mẫu. POST vào danh sách, PATCH/DELETE vào item_id. Ví dụ body bên dưới áp dụng kind=decks; các collection khác theo fields. Quan hệ phải cùng chủ sở hữu/ngôn ngữ; không được sửa auth hoặc đường dẫn tệp.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tiêu đề mới\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/manage/users/{pk}/data/{kind}/{item_id}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/data/{{kind}}/{{item_id}}/",
+            "description": "Quyền: Admin / Staff\n\nkind là collection trong GET data/: decks,cards,folders,practice,classes,... GET danh sách trả fields và can_create để dựng biểu mẫu. POST vào danh sách, PATCH/DELETE vào item_id. Ví dụ body bên dưới áp dụng kind=decks; các collection khác theo fields. Quan hệ phải cùng chủ sở hữu/ngôn ngữ; không được sửa auth hoặc đường dẫn tệp.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/users/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/",
+            "description": "Quyền: Admin / Staff\n\nGET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. 50/trang. POST cần username,password; email,first_name,last_name tùy chọn. Staff chỉ tạo user, Admin mới cấp staff/superuser."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/manage/users/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/",
+            "description": "Quyền: Admin / Staff\n\nGET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. 50/trang. POST cần username,password; email,first_name,last_name tùy chọn. Staff chỉ tạo user, Admin mới cấp staff/superuser.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"postman-user\",\n  \"email\": \"example@example.com\",\n  \"password\": \"{{newPassword}}\",\n  \"role\": \"user\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/users/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nGET nhật ký tài khoản. PATCH username,email,first_name,last_name,password,role,is_active,revoke_sessions,reason. Staff chỉ nhắm tài khoản thường. Không tự khóa/xóa/hạ quyền và phải giữ Admin hoạt động. Đổi quyền/mật khẩu thu hồi phiên; mật khẩu không ghi vào nhật ký. DELETE cần confirm tên và reason 3–500 ký tự."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/manage/users/{pk}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nGET nhật ký tài khoản. PATCH username,email,first_name,last_name,password,role,is_active,revoke_sessions,reason. Staff chỉ nhắm tài khoản thường. Không tự khóa/xóa/hạ quyền và phải giữ Admin hoạt động. Đổi quyền/mật khẩu thu hồi phiên; mật khẩu không ghi vào nhật ký. DELETE cần confirm tên và reason 3–500 ký tự.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"staff\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/manage/users/{pk}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/users/{{pk}}/",
+            "description": "Quyền: Admin / Staff\n\nGET nhật ký tài khoản. PATCH username,email,first_name,last_name,password,role,is_active,revoke_sessions,reason. Staff chỉ nhắm tài khoản thường. Không tự khóa/xóa/hạ quyền và phải giữ Admin hoạt động. Đổi quyền/mật khẩu thu hồi phiên; mật khẩu không ghi vào nhật ký. DELETE cần confirm tên và reason 3–500 ký tự.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"confirm\": \"{{targetUsername}}\",\n  \"reason\": \"Xóa tài khoản thử nghiệm\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/manage/appearance/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/appearance/",
+            "description": "Quyền: Admin\n\nChỉ Admin. GET trạng thái, POST multipart background_image (PNG/JPG/WebP tối đa 30 MB), DELETE gỡ ảnh chung."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/manage/appearance/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/appearance/",
+            "description": "Quyền: Admin\n\nChỉ Admin. GET trạng thái, POST multipart background_image (PNG/JPG/WebP tối đa 30 MB), DELETE gỡ ảnh chung.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "background_image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/manage/appearance/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/appearance/",
+            "description": "Quyền: Admin\n\nChỉ Admin. GET trạng thái, POST multipart background_image (PNG/JPG/WebP tối đa 30 MB), DELETE gỡ ảnh chung.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Giao diện & media",
+      "item": [
+        {
+          "name": "GET /api/themes/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET các theme truy cập được. POST multipart name, preferences (chuỗi JSON), shared=true/false; image tùy chọn. URL có pk để sửa theme. Mỗi tài khoản tối đa 5 theme, chỉ Staff/Admin tạo shared."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/themes/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET các theme truy cập được. POST multipart name, preferences (chuỗi JSON), shared=true/false; image tùy chọn. URL có pk để sửa theme. Mỗi tài khoản tối đa 5 theme, chỉ Staff/Admin tạo shared.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "type": "text",
+                  "value": "Theme mẫu"
+                },
+                {
+                  "key": "preferences",
+                  "type": "text",
+                  "value": "{}"
+                },
+                {
+                  "key": "shared",
+                  "type": "text",
+                  "value": "false"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/themes/select/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/select/",
+            "description": "Quyền: Người dùng đăng nhập\n\nscope=en/de/both; theme_id=null trở về mặc định.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scope\": \"both\",\n  \"theme_id\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/themes/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET các theme truy cập được. POST multipart name, preferences (chuỗi JSON), shared=true/false; image tùy chọn. URL có pk để sửa theme. Mỗi tài khoản tối đa 5 theme, chỉ Staff/Admin tạo shared."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/themes/{pk}/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET các theme truy cập được. POST multipart name, preferences (chuỗi JSON), shared=true/false; image tùy chọn. URL có pk để sửa theme. Mỗi tài khoản tối đa 5 theme, chỉ Staff/Admin tạo shared.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "type": "text",
+                  "value": "Theme mẫu"
+                },
+                {
+                  "key": "preferences",
+                  "type": "text",
+                  "value": "{}"
+                },
+                {
+                  "key": "shared",
+                  "type": "text",
+                  "value": "false"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/themes/{pk}/delete/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/delete/",
+            "description": "Quyền: Người dùng đăng nhập\n\nChỉ người có quyền sửa theme. Xóa theme gỡ lựa chọn của các tài khoản liên quan.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/themes/{pk}/image/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/image/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET/HEAD trả ảnh binary của theme mà người dùng được truy cập. 404 khi không tồn tại/không có quyền/không có ảnh."
+          },
+          "response": []
+        },
+        {
+          "name": "HEAD /api/themes/{pk}/image/",
+          "request": {
+            "method": "HEAD",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/image/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET/HEAD trả ảnh binary của theme mà người dùng được truy cập. 404 khi không tồn tại/không có quyền/không có ảnh."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/me/appearance/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/appearance/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET manifest ảnh/theme của phiên hiện tại cho cả tiếng Anh và tiếng Đức; dùng các URL trả về thay vì tự ghép đường dẫn tệp."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/me/background/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET trạng thái; POST multipart image (PNG/JPG/WebP tối đa 30 MB); DELETE gỡ nền cá nhân."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/me/background/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET trạng thái; POST multipart image (PNG/JPG/WebP tối đa 30 MB); DELETE gỡ nền cá nhân.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/me/background/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET trạng thái; POST multipart image (PNG/JPG/WebP tối đa 30 MB); DELETE gỡ nền cá nhân.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/me/background/image/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/image/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET/HEAD ảnh nền riêng của tài khoản đang đăng nhập; trả binary và Cache-Control private,no-store."
+          },
+          "response": []
+        },
+        {
+          "name": "HEAD /api/me/background/image/",
+          "request": {
+            "method": "HEAD",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/image/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET/HEAD ảnh nền riêng của tài khoản đang đăng nhập; trả binary và Cache-Control private,no-store."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/site/appearance/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/site/appearance/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET thông tin ảnh nền dùng chung, vẫn yêu cầu đăng nhập; trả background_image và background_url nếu có."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/site/appearance/image/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/site/appearance/image/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET ảnh nền chung dưới dạng binary, cần đăng nhập. Không có quyền sửa ảnh qua endpoint này."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Học tập & nội dung",
+      "item": [
+        {
+          "name": "GET /api/{language}/profile/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/profile/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET hồ sơ/thống kê học tập theo language. PATCH display_name (tối đa 100 ký tự), bio (2000 ký tự), daily_goal (số nguyên 1–500). Không dùng để sửa quyền hoặc mật khẩu."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/profile/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/profile/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET hồ sơ/thống kê học tập theo language. PATCH display_name (tối đa 100 ký tự), bio (2000 ký tự), daily_goal (số nguyên 1–500). Không dùng để sửa quyền hoặc mật khẩu.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"display_name\": \"Người học\",\n  \"bio\": \"Giới thiệu\",\n  \"daily_goal\": 20\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/classes/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/classes/",
+            "description": "Quyền: Người dùng đăng nhập\n\nPOST title tạo lớp; POST invite tham gia lớp. GET chỉ các lớp sở hữu hoặc tham gia."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/classes/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/classes/",
+            "description": "Quyền: Người dùng đăng nhập\n\nPOST title tạo lớp; POST invite tham gia lớp. GET chỉ các lớp sở hữu hoặc tham gia.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Lớp tiếng Anh\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/classes/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/classes/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET cho chủ lớp/thành viên; PATCH/DELETE chỉ chủ lớp. PATCH remove_member với ID để bỏ thành viên."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/classes/{pk}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/classes/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET cho chủ lớp/thành viên; PATCH/DELETE chỉ chủ lớp. PATCH remove_member với ID để bỏ thành viên.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Lớp A1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/{language}/classes/{pk}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/classes/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET cho chủ lớp/thành viên; PATCH/DELETE chỉ chủ lớp. PATCH remove_member với ID để bỏ thành viên.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/classes/{pk}/assignments/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/classes/{{pk}}/assignments/",
+            "description": "Quyền: Người dùng đăng nhập\n\nChỉ chủ lớp. POST node + due_at (ISO8601 hoặc null). DELETE {id} là ID bài giao, không phải ID node.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"node\": 1,\n  \"due_at\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/{language}/classes/{pk}/assignments/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/classes/{{pk}}/assignments/",
+            "description": "Quyền: Người dùng đăng nhập\n\nChỉ chủ lớp. POST node + due_at (ISO8601 hoặc null). DELETE {id} là ID bài giao, không phải ID node.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/practice-hub/nodes/{pk}/copy/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/nodes/{{pk}}/copy/",
+            "description": "Quyền: Người dùng đăng nhập\n\nSao chép bộ nội dung được phép truy cập thành bản thuộc tài khoản hiện tại. Nội dung/mối liên kết được kiểm tra tại API.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/decks/{pk}/review/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/review/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET hàng đợi ôn, config, due,new,reviewed_today,next_due,forecast,cards,difficult. PATCH retention=0.8–0.97, new_limit/review_limit=0–500 và adapt_time boolean; chỉ bộ thẻ thuộc tài khoản."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/decks/{pk}/review/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/review/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET hàng đợi ôn, config, due,new,reviewed_today,next_due,forecast,cards,difficult. PATCH retention=0.8–0.97, new_limit/review_limit=0–500 và adapt_time boolean; chỉ bộ thẻ thuộc tài khoản.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"retention\": 0.9,\n  \"new_limit\": 20,\n  \"review_limit\": 100,\n  \"adapt_time\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/practice-hub/media/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/media/",
+            "description": "Quyền: Người dùng đăng nhập\n\nMultipart: file, tối đa 200 MB; MP3/PNG/JPG/JPEG/WebP/GIF. Response media có id/name/size/type/url. Đưa media vào payload.attachments để gắn với bài.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/practice-hub/media/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/media/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTrả binary có kiểm tra quyền. Hỗ trợ GET/HEAD và Range bytes; 206 khi đọc một phần. Staff/Admin được đọc media cho công việc biên tập."
+          },
+          "response": []
+        },
+        {
+          "name": "HEAD /api/{language}/practice-hub/media/{pk}/",
+          "request": {
+            "method": "HEAD",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/media/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTrả binary có kiểm tra quyền. Hỗ trợ GET/HEAD và Range bytes; 206 khi đọc một phần. Staff/Admin được đọc media cho công việc biên tập."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/practice-hub/explore/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/explore/",
+            "description": "Quyền: Người dùng đăng nhập\n\nDanh mục nội dung công khai có lọc/tìm kiếm; vẫn cần đăng nhập."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/practice-hub/nodes/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/nodes/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET metadata; full=1 thêm payload. POST kind=folder/exercise/theory, title, parent, payload, visibility. Exercise bắt buộc nằm trong folder cùng chủ sở hữu/ngôn ngữ. Xem Backend/sample_data để xem các mẫu dạng bài."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/practice-hub/nodes/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/nodes/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET metadata; full=1 thêm payload. POST kind=folder/exercise/theory, title, parent, payload, visibility. Exercise bắt buộc nằm trong folder cùng chủ sở hữu/ngôn ngữ. Xem Backend/sample_data để xem các mẫu dạng bài.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kind\": \"folder\",\n  \"title\": \"Bài học mới\",\n  \"visibility\": \"private\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/practice-hub/nodes/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/nodes/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nĐọc theo quyền sở hữu/công khai/lớp được giao. PATCH/DELETE của API học chỉ dành chủ sở hữu. Nhân viên biên tập dùng /api/manage/content/{pk}/."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/practice-hub/nodes/{pk}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/nodes/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nĐọc theo quyền sở hữu/công khai/lớp được giao. PATCH/DELETE của API học chỉ dành chủ sở hữu. Nhân viên biên tập dùng /api/manage/content/{pk}/.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tên bài mới\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/{language}/practice-hub/nodes/{pk}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/nodes/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nĐọc theo quyền sở hữu/công khai/lớp được giao. PATCH/DELETE của API học chỉ dành chủ sở hữu. Nhân viên biên tập dùng /api/manage/content/{pk}/.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/practice-hub/import/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/import/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTối đa 100 mục gốc, 500 mục tổng; lỗi hoàn tác toàn bộ. links dùng các ID nội dung mà người dùng được truy cập.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nodes\": [\n    {\n      \"kind\": \"folder\",\n      \"title\": \"Bài nhập\",\n      \"children\": [\n        {\n          \"kind\": \"theory\",\n          \"title\": \"Chào hỏi\",\n          \"payload\": {\n            \"format\": \"markdown\",\n            \"content\": \"# Hello\"\n          }\n        }\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/practice-hub/organize/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/organize/",
+            "description": "Quyền: Người dùng đăng nhập\n\nThao tác sắp xếp/di chuyển cây của chính người dùng. parent=null là gốc; không được tạo chu trình hoặc trộn ngôn ngữ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    1\n  ],\n  \"parent\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/learning/sync/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/learning/sync/",
+            "description": "Quyền: Người dùng đăng nhập\n\n1–100 events; mỗi event có UUID token, kind, payload. kind gồm preferences, study_settings, practice_progress, practice, review, test, star, options. preferences cần at dạng ISO8601 có múi giờ. payload hỗ trợ navScale=50–150, ambient boolean, volume=0–1 và ambientTrack=morning/marimba/picnic/bubbles/cafe/garden/puzzle/clouds/starlight/steps. Retry cùng token giữ tính idempotent; HTTP 200 có thể chứa errors từng mục.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"events\": [\n    {\n      \"token\": \"{{eventToken}}\",\n      \"kind\": \"study_settings\",\n      \"payload\": {\n        \"new_cards_per_day\": 20\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/decks/{pk}/learning/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/learning/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET trạng thái học đã đồng bộ của bộ thẻ đang sở hữu; dùng /learning/sync/ để gửi thay đổi thay vì PATCH endpoint này."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/settings/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/settings/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET/PATCH cài đặt học theo ngôn ngữ. Các trường gồm autoplay,ignore_case,ignore_punctuation,transliteration,new_cards_per_day,session_minutes. Giá trị boolean phải là JSON boolean."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/settings/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/settings/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET/PATCH cài đặt học theo ngôn ngữ. Các trường gồm autoplay,ignore_case,ignore_punctuation,transliteration,new_cards_per_day,session_minutes. Giá trị boolean phải là JSON boolean.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"new_cards_per_day\": 20,\n  \"session_minutes\": 15\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/decks/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET trả decks, folders, due, resume. POST cần title; level mặc định A1, folder tùy chọn phải thuộc cùng người dùng/ngôn ngữ. ID tạo mới nằm ở trường id."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/decks/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET trả decks, folders, due, resume. POST cần title; level mặc định A1, folder tùy chọn phải thuộc cùng người dùng/ngôn ngữ. ID tạo mới nằm ở trường id.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman demo\",\n  \"level\": \"A1\",\n  \"description\": \"Bộ thẻ thử nghiệm\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/decks/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET trả deck, cards, folders, learning và study_defaults. PATCH giữ ngôn ngữ. DELETE xóa bộ thẻ và dữ liệu phụ thuộc."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/decks/{pk}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET trả deck, cards, folders, learning và study_defaults. PATCH giữ ngôn ngữ. DELETE xóa bộ thẻ và dữ liệu phụ thuộc.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tiêu đề mới\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/{language}/decks/{pk}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET trả deck, cards, folders, learning và study_defaults. PATCH giữ ngôn ngữ. DELETE xóa bộ thẻ và dữ liệu phụ thuộc.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/study-pack/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/study-pack/",
+            "description": "Quyền: Người dùng đăng nhập\n\nQuery deck tùy chọn và filter; chỉ trả các thẻ người dùng sở hữu."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/decks/{pk}/reorder/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/reorder/",
+            "description": "Quyền: Người dùng đăng nhập\n\nids phải chứa mọi ID thẻ của bộ đúng một lần.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    1,\n    2\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/decks/{pk}/import/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/import/",
+            "description": "Quyền: Người dùng đăng nhập\n\nHai bước: gửi text+separator nhận token/count/preview, sau đó POST {\"token\":\"UUID nhận được\"} để xác nhận. Preview hết hạn sau 30 phút; gửi lại token đã xác nhận không nhân bản.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"hello,xin chào\\nbook,quyển sách\",\n  \"separator\": \",\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/decks/{deck_id}/cards/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{deck_id}}/cards/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTạo thẻ ở URL danh sách; sửa/xóa ở URL có pk. german_text là từ cần học cho cả EN/DE. Bắt buộc german_text và vietnamese_meaning. Danh sách thẻ được đọc từ chi tiết bộ thẻ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"german_text\": \"hello\",\n  \"vietnamese_meaning\": \"xin chào\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/decks/{deck_id}/cards/{pk}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{deck_id}}/cards/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTạo thẻ ở URL danh sách; sửa/xóa ở URL có pk. german_text là từ cần học cho cả EN/DE. Bắt buộc german_text và vietnamese_meaning. Danh sách thẻ được đọc từ chi tiết bộ thẻ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vietnamese_meaning\": \"chào bạn\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/{language}/decks/{deck_id}/cards/{pk}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{deck_id}}/cards/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTạo thẻ ở URL danh sách; sửa/xóa ở URL có pk. german_text là từ cần học cho cả EN/DE. Bắt buộc german_text và vietnamese_meaning. Danh sách thẻ được đọc từ chi tiết bộ thẻ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/folders/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/folders/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTạo ở URL danh sách; sửa/xóa ở URL có pk. Không có GET danh sách folder riêng; đọc folders trong GET /api/{language}/decks/. parent thuộc cùng chủ sở hữu/ngôn ngữ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Từ vựng\",\n  \"parent\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/folders/{pk}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/folders/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTạo ở URL danh sách; sửa/xóa ở URL có pk. Không có GET danh sách folder riêng; đọc folders trong GET /api/{language}/decks/. parent thuộc cùng chủ sở hữu/ngôn ngữ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Từ vựng A1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/{language}/folders/{pk}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/folders/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTạo ở URL danh sách; sửa/xóa ở URL có pk. Không có GET danh sách folder riêng; đọc folders trong GET /api/{language}/decks/. parent thuộc cùng chủ sở hữu/ngôn ngữ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/sessions/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/sessions/",
+            "description": "Quyền: Người dùng đăng nhập\n\nkind=flash/learn/test; count 1–100; deck tùy chọn. Cần có thẻ phù hợp. Response chứa token phiên và các câu hỏi.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kind\": \"learn\",\n  \"deck\": 1,\n  \"count\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/sessions/{token}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/sessions/{{token}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET phiên học bằng UUID token của chính tài khoản/ngôn ngữ. Không dùng ID số. Phiên test chưa nộp không trả đáp án."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/sessions/{token}/answer/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/sessions/{{token}}/answer/",
+            "description": "Quyền: Người dùng đăng nhập\n\nquestion phải là token câu hiện tại trong phiên; chỉ dùng cho flash/learn. Test nộp qua finish. response_ms tùy chọn.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"{{questionToken}}\",\n  \"answer\": \"hello\",\n  \"response_ms\": 1500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/sessions/{token}/finish/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/sessions/{{token}}/finish/",
+            "description": "Quyền: Người dùng đăng nhập\n\nNộp answers ánh xạ question token sang đáp án; không dùng ID thẻ. Gửi lại phiên đã chấm trả kết quả cũ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": {\n    \"{{questionToken}}\": \"hello\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/decks/{pk}/export/{fmt}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/export/{{fmt}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nfmt=json hoặc csv; response là tệp tải xuống của bộ thẻ thuộc người dùng."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/next/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/next/",
+            "description": "Quyền: Người dùng đăng nhập\n\ndeck, mode, filter tùy chọn; JSON được adapter chuyển sang form. Trả câu/token để submit.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deck\": 1,\n  \"mode\": \"write\",\n  \"filter\": \"all\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/question/{token}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/question/{{token}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET câu hỏi theo UUID token thuộc tài khoản và ngôn ngữ hiện tại. Không truy cập token của tài khoản khác hoặc token thuộc phiên test chưa nộp."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/submit/{token}/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/submit/{{token}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nPOST answer là đáp án văn bản cho token câu hỏi, response_ms tùy chọn. Server chấm và lưu tiến độ; gửi lại token hoàn thành không chấm trùng.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answer\": \"hello\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/audio/{token}/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/audio/{{token}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTạo/lấy TTS cho câu hỏi; phụ thuộc cấu hình speech ở backend. type=term/example, slow=1 tùy chọn.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"term\",\n  \"slow\": \"0\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/audio-file/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/audio-file/{{pk}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nGET audio binary theo ID bản âm thanh đã tạo; chỉ tài khoản sở hữu thẻ. URL thường nhận từ response tạo TTS."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/cards/{pk}/audio/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/cards/{{pk}}/audio/",
+            "description": "Quyền: Người dùng đăng nhập\n\nTTS cho thẻ của người dùng; type=term/example.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"term\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/speaking/{token}/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/speaking/{{token}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nMultipart audio + consent=yes. Bản ghi tối đa 10 MB/60 giây; nhà cung cấp speech phải được cấu hình ở backend. Không tự gửi ghi âm khi chưa có đồng ý.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "audio",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "consent",
+                  "type": "text",
+                  "value": "yes"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/retry/{token}/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/retry/{{token}}/",
+            "description": "Quyền: Người dùng đăng nhập\n\nPOST thử lại câu hỏi bằng token hợp lệ; token phải thuộc tài khoản/ngôn ngữ. Không cần body ngoài JSON rỗng.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/match/{pk}/new/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/match/{{pk}}/new/",
+            "description": "Quyền: Người dùng đăng nhập\n\nPOST tạo lượt ghép từ bộ thẻ pk của mình. weak=1 lọc thẻ yếu; resume là UUID để tiếp tục lượt ghép hiện có. Gửi pairs tới /match/{token}/submit/ để chấm.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"weak\": \"0\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/match/{token}/submit/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/match/{{token}}/submit/",
+            "description": "Quyền: Người dùng đăng nhập\n\npairs ánh xạ ID/token của lượt ghép theo dữ liệu match/new. JSON được adapter chuyển đổi.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pairs\": {\n    \"1\": \"2\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const cookieHeaders = pm.response.headers.all().filter(h => h.key.toLowerCase() === 'set-cookie');",
+          "for (const h of cookieHeaders) { const match = h.value.match(/(?:^|[,;]\\s*)csrftoken=([^;]+)/); if (match) pm.collectionVariables.set('csrfToken', decodeURIComponent(match[1])); }",
+          "if (pm.response.headers.get('Content-Type')?.includes('application/json')) { const data = pm.response.json(); if (data.version) pm.collectionVariables.set('contentVersion', data.version); if (data.title) pm.collectionVariables.set('contentTitle', data.title); }"
+        ]
+      }
+    }
+  ]
+}

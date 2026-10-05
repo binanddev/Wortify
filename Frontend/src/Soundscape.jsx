@@ -1,6 +1,14 @@
 import { useEffect, useRef } from "react";
 import { playAmbientNote } from "./soundscape-engine";
-export default function Soundscape({ interactions, ambient, volume = 0.25 }) {
+import { ambientTrack, ambientStep } from "./soundscape-presets";
+export default function Soundscape({
+  interactions,
+  ambient,
+  track = "morning",
+  volume = 0.25,
+}) {
+  const preset = useRef(ambientTrack(track));
+  preset.current = ambientTrack(track);
   const state = useRef(null),
     level = useRef(volume);
   level.current = volume;
@@ -18,7 +26,6 @@ export default function Soundscape({ interactions, ambient, volume = 0.25 }) {
       unlocked = false,
       nextNote = 0,
       noteIndex = 0;
-    const notes = [523.25, 659.25, 783.99, 659.25, 587.33, 783.99];
     const occupied = () =>
       document.hidden ||
       window.speechSynthesis?.speaking ||
@@ -37,13 +44,9 @@ export default function Soundscape({ interactions, ambient, volume = 0.25 }) {
         ctx.currentTime < nextNote
       )
         return;
-      playAmbientNote(
-        ctx,
-        background,
-        notes[noteIndex++ % notes.length],
-        active,
-      );
-      nextNote = ctx.currentTime + 9;
+      const note = ambientStep(preset.current, noteIndex++);
+      playAmbientNote(ctx, background, note.frequency, active, note);
+      nextNote = ctx.currentTime + note.interval;
     };
     const activate = (event) => {
       if (
@@ -98,8 +101,29 @@ export default function Soundscape({ interactions, ambient, volume = 0.25 }) {
     document.addEventListener("keydown", activate);
     document.addEventListener("visibilitychange", visibility);
     document.addEventListener("play", pulse, true);
-    const timer = setInterval(pulse, 500);
-    state.current = { ctx, master };
+    const timer = setInterval(pulse, 100);
+    state.current = {
+      ctx,
+      master,
+      reset: () => {
+        active.forEach((node) => {
+          try {
+            node.stop();
+          } catch {}
+        });
+        noteIndex = 0;
+        nextNote = 0;
+      },
+    };
+    ctx
+      .resume()
+      .then(() => {
+        if (!disposed && ctx.state === "running") {
+          unlocked = true;
+          pulse();
+        }
+      })
+      .catch(() => {});
     return () => {
       disposed = true;
       clearInterval(timer);
@@ -116,6 +140,9 @@ export default function Soundscape({ interactions, ambient, volume = 0.25 }) {
       ctx.close().catch(() => {});
     };
   }, [interactions, ambient]);
+  useEffect(() => {
+    state.current?.reset();
+  }, [track]);
   useEffect(() => {
     const audio = state.current;
     if (audio)

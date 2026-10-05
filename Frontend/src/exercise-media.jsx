@@ -67,6 +67,7 @@ export function MediaEditor({
   disabled = false,
   onBusy,
   questions = [],
+  uploadUrl,
 }) {
   const [scope, setScope] = useState("");
   const [preview, setPreview] = useState(null);
@@ -86,7 +87,7 @@ export function MediaEditor({
         const data = new FormData();
         data.append("file", file);
         const result = await request(
-          endpoint(lang, "practice-hub/media/"),
+          uploadUrl || endpoint(lang, "practice-hub/media/"),
           "POST",
           data,
         );

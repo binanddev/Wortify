@@ -1,25 +1,16 @@
 import { useState } from "react";
 import { request, useResource, useAction } from "../core";
-import {
-  Btn,
-  Icon,
-  Field,
-  Select,
-  SidebarTools,
-  Status,
-  Loading,
-  Confirm,
-} from "../ui";
+import { Btn, Icon, Field, Select, Status, Loading, Confirm } from "../ui";
 import { PracticeModal } from "../practice-workspace";
 const labels = {
   name: "Tên",
   title: "Tiêu đề",
   description: "Mô tả",
-  parent: "Folde chứa · ID",
-  folder: "Folde · ID",
-  deck: "Bộ thẻ · ID",
-  card: "Thẻ · ID",
-  node: "Bài tập · ID",
+  parent: "Thư mục chứa",
+  folder: "Thư mục",
+  deck: "Bộ thẻ",
+  card: "Thẻ",
+  node: "Bài tập",
   language: "Ngôn ngữ",
   kind: "Loại",
   payload: "Nội dung",
@@ -33,7 +24,54 @@ const labels = {
   theory_content: "Lý thuyết",
   theory_format: "Định dạng lý thuyết",
 };
-function RecordEditor({ row, schema, url, onClose, onSaved }) {
+function RelationPicker({ base, field, value, onChange, language }) {
+  const [query, setQuery] = useState("");
+  const url = `${base}${field.relation}/`;
+  const resource = useResource(
+    `${url}?q=${encodeURIComponent(query)}&language=${language || ""}`,
+  );
+  const selected = useResource(value ? `${url}${value}/` : url);
+  const rows = resource.data?.rows || [];
+  return (
+    <div className="grid gap-2 rounded-xl border border-(--line) p-3">
+      <Field
+        label={`Tìm ${labels[field.name] || field.name}`}
+        value={query}
+        onChange={setQuery}
+      />
+      <Select
+        label={labels[field.name] || field.name}
+        value={value}
+        onChange={onChange}
+        required={field.required}
+      >
+        <option value="">
+          {field.required ? "Chọn một mục" : "Không liên kết"}
+        </option>
+        {value && !rows.some((r) => String(r.id) === String(value)) && (
+          <option value={value}>
+            {selected.data?.label || `Mục đang chọn #${value}`}
+          </option>
+        )}
+        {rows.map((row) => (
+          <option key={row.id} value={row.id}>
+            {row.label}
+            {row.values.language
+              ? ` · ${row.values.language.toUpperCase()}`
+              : ""}
+          </option>
+        ))}
+      </Select>
+      <small className="text-(--muted)">
+        {resource.loading
+          ? "Đang tìm…"
+          : `${resource.data?.total || 0} mục phù hợp. Nhập tên để thu hẹp kết quả.`}
+      </small>
+      <Status error={resource.error || selected.error} />
+    </div>
+  );
+}
+function RecordEditor({ row, schema, url, base, onClose, onSaved }) {
   const [values, setValues] = useState(() =>
     Object.fromEntries(
       schema.map((f) => {
@@ -115,6 +153,15 @@ function RecordEditor({ row, schema, url, onClose, onSaved }) {
               />
               {labels[f.name] || f.name}
             </label>
+          ) : f.relation ? (
+            <RelationPicker
+              key={f.name}
+              base={base}
+              field={f}
+              value={values[f.name]}
+              language={values.language}
+              onChange={(v) => updateValue(f.name, v)}
+            />
           ) : f.choices.length ? (
             <Select
               key={f.name}
@@ -141,7 +188,7 @@ function RecordEditor({ row, schema, url, onClose, onSaved }) {
         )}
       </div>
       <Status error={action.error} />
-      <Btn icon="save" primary isLoading={action.pending} onClick={save}>
+      <Btn primary isLoading={action.pending} onClick={save}>
         Lưu
       </Btn>
     </PracticeModal>
@@ -168,16 +215,11 @@ export default function UserData({ user, onClose }) {
   };
   return (
     <>
-      <SidebarTools navOnly>
+      <div className="my-5 grid gap-4 rounded-2xl border border-(--line) p-4">
         <div className="flash-icon-row">
-          <Btn icon="undo" onClick={onClose}>
-            Về người dùng
-          </Btn>
-          <Btn icon="refresh" onClick={reload}>
-            Cập nhật
-          </Btn>
+          <Btn onClick={onClose}>Về người dùng</Btn>
+          <Btn onClick={reload}>Cập nhật</Btn>
           <Btn
-            icon="plus"
             isDisabled={!resource.data?.can_create}
             onClick={() => setEdit({ create: true })}
           >
@@ -185,7 +227,6 @@ export default function UserData({ user, onClose }) {
           </Btn>
           {!user.is_staff && !user.is_superuser && (
             <Btn
-              icon="trash"
               onClick={() => {
                 setPurge(true);
                 setConfirm("");
@@ -220,17 +261,15 @@ export default function UserData({ user, onClose }) {
           className="grid gap-2"
         >
           <Field label="Tìm theo tên" value={query} onChange={setQuery} />
-          <Btn icon="search" type="submit">
-            Tìm
-          </Btn>
+          <Btn type="submit">Tìm</Btn>
         </form>
-      </SidebarTools>
+      </div>
       <h1 className="mb-2 text-3xl font-bold">{user.username}</h1>
       <p className="mb-6 text-(--muted)">
         {summary.data?.collections.find((c) => c.key === kind)?.label}
       </p>
       <Status error={summary.error || action.error} />
-      <Loading resource={resource}>
+      <Loading label="Đang tải dữ liệu quản trị…" resource={resource}>
         {(data) => (
           <>
             <div className="grid gap-3">
@@ -249,12 +288,8 @@ export default function UserData({ user, onClose }) {
                         : ""}
                     </small>
                   </div>
-                  <Btn icon="edit" onClick={() => setEdit(row)}>
-                    Xem và sửa
-                  </Btn>
-                  <Btn icon="trash" onClick={() => setRemove(row)}>
-                    Xóa
-                  </Btn>
+                  <Btn onClick={() => setEdit(row)}>Xem và sửa</Btn>
+                  <Btn onClick={() => setRemove(row)}>Xóa</Btn>
                 </div>
               ))}
               {!data.rows.length && (
@@ -265,7 +300,6 @@ export default function UserData({ user, onClose }) {
             </div>
             <div className="toolbar centered">
               <Btn
-                icon="chevron_left"
                 isDisabled={page === 1}
                 onClick={() => setPage((p) => p - 1)}
               >
@@ -275,7 +309,6 @@ export default function UserData({ user, onClose }) {
                 {page} · {data.total} mục
               </span>
               <Btn
-                icon="chevron_right"
                 isDisabled={page * 25 >= data.total}
                 onClick={() => setPage((p) => p + 1)}
               >
@@ -290,6 +323,7 @@ export default function UserData({ user, onClose }) {
           key={`${kind}:${edit.id || "new"}`}
           row={edit.create ? null : edit}
           schema={resource.data.fields}
+          base={base}
           url={`${base}${kind}/`}
           onClose={() => setEdit(null)}
           onSaved={reload}
@@ -319,7 +353,7 @@ export default function UserData({ user, onClose }) {
           size="md"
         >
           <p>
-            Xóa toàn bộ folde, bộ thẻ, bài tập, tiến độ, lịch sử học, hồ sơ và
+            Xóa toàn bộ thư mục, bộ thẻ, bài tập, tiến độ, lịch sử học, hồ sơ và
             lớp sở hữu trong cả hai ngôn ngữ. Giữ tài khoản và mật khẩu; đăng
             xuất các phiên hiện tại. Không thể hoàn tác.
           </p>
@@ -330,7 +364,6 @@ export default function UserData({ user, onClose }) {
           />
           <Status error={action.error} />
           <Btn
-            icon="trash"
             isDisabled={confirm !== user.username}
             isLoading={action.pending}
             onClick={() =>
