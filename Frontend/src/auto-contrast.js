@@ -21,6 +21,12 @@ export function installAutoContrast() {
   let frame;
   const paint = () => {
     frame = null;
+    if (document.documentElement.dataset.interface === "glass") {
+      document
+        .querySelectorAll("[data-auto-ink]")
+        .forEach((el) => el.removeAttribute("data-auto-ink"));
+      return;
+    }
     const auto = document.documentElement.dataset.textAuto === "true";
     if (!auto)
       document

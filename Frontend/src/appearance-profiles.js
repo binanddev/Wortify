@@ -1,3 +1,5 @@
+import { interfaceName } from "./interface-themes.js";
+import { glassPolicy } from "./glass-policy.js";
 export const visualDefaults = {
   navScale: 100,
   font: 36,
@@ -14,10 +16,14 @@ const snapshot = (p) =>
     Object.keys(visualDefaults).map((k) => [k, p[k] ?? visualDefaults[k]]),
   );
 const keyOf = (p, theme) =>
-  `${theme ?? "default"}:${p.interface === "glass" ? "glass" : "studio"}:${p.background || "mist"}`;
+  `${theme ?? "default"}:${interfaceName(p.interface)}:${p.background || "mist"}`;
 export function restoreAppearance(p, theme, restoreSelection = false) {
-  if (restoreSelection) p = {...p,...p.appearanceSelections?.[theme ?? "default"]};
-  return { ...p, ...(p.appearanceProfiles?.[keyOf(p, theme)] || {}) };
+  if (restoreSelection)
+    p = { ...p, ...p.appearanceSelections?.[theme ?? "default"] };
+  return glassPolicy({
+    ...p,
+    ...(p.appearanceProfiles?.[keyOf(p, theme)] || {}),
+  });
 }
 export function updateAppearance(previous, requested, theme) {
   const oldKey = keyOf(previous, theme),
@@ -30,9 +36,16 @@ export function updateAppearance(previous, requested, theme) {
     oldKey === newKey
       ? requested
       : { ...requested, ...(profiles[newKey] || visualDefaults) };
+  const fixed = glassPolicy(next);
   return {
-    ...next,
-    appearanceSelections: {...previous.appearanceSelections, [theme ?? "default"]: {interface:next.interface, background:next.background}},
-    appearanceProfiles: { ...profiles, [newKey]: snapshot(next) },
+    ...fixed,
+    appearanceSelections: {
+      ...previous.appearanceSelections,
+      [theme ?? "default"]: {
+        interface: next.interface,
+        background: next.background,
+      },
+    },
+    appearanceProfiles: { ...profiles, [keyOf(fixed, theme)]: snapshot(fixed) },
   };
 }

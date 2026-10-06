@@ -23,7 +23,7 @@ test("appearance clamps values, keeps glass visible at 100%, and clears another 
     assert.match(values.get("--ink"), /#ab12cd/);
     applyAppearance({ interface: "glass", background: "night" });
     assert.equal(values.get("--glass-alpha"), "0.75");
-    assert.match(values.get("--ink"), /#f0f5ff/);
+    assert.match(values.get("--ink"), /#ffffff/);
     assert.equal(values.get("--text-weight"), "500");
   } finally {
     globalThis.document = previous;
@@ -49,7 +49,7 @@ test("Studio is the default and switching interfaces clears the previous mode", 
       transparency: 100,
     });
     assert.equal(dataset.interface, "glass");
-    assert.match(values.get("--ink"), /#f0f5ff/);
+    assert.match(values.get("--ink"), /#ffffff/);
     applyAppearance({ interface: "studio", background: "night" });
     assert.equal(dataset.interface, "studio");
     assert.match(values.get("--ink"), /#24304e/);

@@ -627,7 +627,7 @@ Body POST:
 
 **Quyền:** Người dùng đăng nhập
 
-1–100 events; mỗi event có UUID token, kind, payload. kind gồm preferences, study_settings, practice_progress, practice, review, test, star, options. preferences cần at dạng ISO8601 có múi giờ. payload hỗ trợ interface=studio/glass (Studio mặc định), navScale=50–150, ambient boolean, volume=0–1 và ambientTrack=morning/marimba/picnic/bubbles/cafe/garden/puzzle/clouds/starlight/steps. Retry cùng token giữ tính idempotent; HTTP 200 có thể chứa errors từng mục.
+1–100 events; mỗi event có UUID token, kind, payload. kind gồm preferences, study_settings, practice_progress, practice, review, test, star, options. preferences cần at dạng ISO8601 có múi giờ. payload hỗ trợ interface=studio/glass/xp/retro/space (Studio mặc định), navScale=50–150, ambient boolean, volume=0–1 và ambientTrack=morning/marimba/picnic/bubbles/cafe/garden/puzzle/clouds/starlight/steps/bounce/ghost/begin/ukulele/island/tropical/sunshine/arcade/dew/hearth. Retry cùng token giữ tính idempotent; HTTP 200 có thể chứa errors từng mục.
 
 Body POST:
 

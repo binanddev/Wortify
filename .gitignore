@@ -25,3 +25,5 @@ book/
 # Deployment backups and local secrets
 backup/
 deploy/secrets/
+
+Frontend/.interface-preview/

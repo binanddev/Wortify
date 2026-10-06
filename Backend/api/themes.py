@@ -73,6 +73,9 @@ def themes(request, pk=None):
     except (ValueError, TypeError): raise ValueError('Thông số theme không hợp lệ.')
     if not isinstance(prefs, dict) or set(prefs) - DISPLAY_KEYS: raise ValueError('Theme chỉ chứa thông số hiển thị.')
     theme.name, theme.shared, theme.preferences = name, shared, {**DEFAULT_DISPLAY, **validate_preferences(prefs)}
+    if theme.preferences.get('interface') == 'glass':
+        theme.preferences.update(textColor='#ffffff', textSize=18, textWeight=500, textContrast=100, font=36, curvature=24, glassLens=0)
+        theme.preferences['transparency'] = max(10, min(100, theme.preferences.get('transparency', 25)))
     old = theme.background_image.name
     new_file = None
     source = request.FILES.get('image')

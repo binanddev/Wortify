@@ -1,0 +1,143 @@
+export const AMBIENT_TRACKS = [
+  {
+    "id": "morning",
+    "name": "Simple Wishes",
+    "description": "Alanajordan",
+    "src": "/audio/ambient/morning.mp3",
+    "sourceFile": "alanajordan-simple-wishes-346423.mp3"
+  },
+  {
+    "id": "marimba",
+    "name": "Marimba · Spark",
+    "description": "Alex",
+    "src": "/audio/ambient/marimba.mp3",
+    "sourceFile": "alex-morgan-corporate-marimba-advertising-music-563572.mp3"
+  },
+  {
+    "id": "picnic",
+    "name": "Marimba · Flow",
+    "description": "Alex",
+    "src": "/audio/ambient/picnic.mp3",
+    "sourceFile": "alex-morgan-corporate-marimba-explainer-video-563574.mp3"
+  },
+  {
+    "id": "bubbles",
+    "name": "Marimba · Studio",
+    "description": "Alex",
+    "src": "/audio/ambient/bubbles.mp3",
+    "sourceFile": "alex-morgan-corporate-marimba-presentation-music-563571.mp3"
+  },
+  {
+    "id": "cafe",
+    "name": "Upbeat Day",
+    "description": "Alex",
+    "src": "/audio/ambient/cafe.mp3",
+    "sourceFile": "alex-morgan-upbeat-591314.mp3"
+  },
+  {
+    "id": "garden",
+    "name": "8-Bit Adventure",
+    "description": "Djartmusic",
+    "src": "/audio/ambient/garden.mp3",
+    "sourceFile": "djartmusic-the-world-of-8-bit-games-301273.mp3"
+  },
+  {
+    "id": "puzzle",
+    "name": "Quirky Steps",
+    "description": "Echoes Of Lumen",
+    "src": "/audio/ambient/puzzle.mp3",
+    "sourceFile": "echoes_of_lumen-quirky-music-584892.mp3"
+  },
+  {
+    "id": "clouds",
+    "name": "Star Sky",
+    "description": "Emmraan",
+    "src": "/audio/ambient/clouds.mp3",
+    "sourceFile": "emmraan-star-sky-220659.mp3"
+  },
+  {
+    "id": "starlight",
+    "name": "Lucky Little Day",
+    "description": "Geoffharvey",
+    "src": "/audio/ambient/starlight.mp3",
+    "sourceFile": "geoffharvey-lucky-go-lightly-quirky-387577.mp3"
+  },
+  {
+    "id": "steps",
+    "name": "Playful Marimba",
+    "description": "Jorisvermeer",
+    "src": "/audio/ambient/steps.mp3",
+    "sourceFile": "jorisvermeer-playful-marimba-background-570155.mp3"
+  },
+  {
+    "id": "bounce",
+    "name": "Your Bounce",
+    "description": "Loksii",
+    "src": "/audio/ambient/bounce.mp3",
+    "sourceFile": "loksii-your-bounce-236072.mp3"
+  },
+  {
+    "id": "ghost",
+    "name": "A Cute Ghost Story",
+    "description": "Mmaudio",
+    "src": "/audio/ambient/ghost.mp3",
+    "sourceFile": "mmaudio-a-cute-ghost-story-512522.mp3"
+  },
+  {
+    "id": "begin",
+    "name": "Start Somewhere Good",
+    "description": "Mmaudio",
+    "src": "/audio/ambient/begin.mp3",
+    "sourceFile": "mmaudio-start-somewhere-good-512524.mp3"
+  },
+  {
+    "id": "ukulele",
+    "name": "Ukulele Breeze",
+    "description": "Nastelbom",
+    "src": "/audio/ambient/ukulele.mp3",
+    "sourceFile": "nastelbom-ukulele-454043.mp3"
+  },
+  {
+    "id": "island",
+    "name": "Tropical Escape",
+    "description": "Prettyjohn1",
+    "src": "/audio/ambient/island.mp3",
+    "sourceFile": "prettyjohn1-tropical-tropical-music-581648.mp3"
+  },
+  {
+    "id": "tropical",
+    "name": "Island Rhythm",
+    "description": "Soundsurfer",
+    "src": "/audio/ambient/tropical.mp3",
+    "sourceFile": "soundsurfer-tropical-609188.mp3"
+  },
+  {
+    "id": "sunshine",
+    "name": "Sunlit Ukulele",
+    "description": "Tatamusic",
+    "src": "/audio/ambient/sunshine.mp3",
+    "sourceFile": "tatamusic-ukulele-ukelele-music-599002.mp3"
+  },
+  {
+    "id": "arcade",
+    "name": "Glitch Hop",
+    "description": "The Mountain",
+    "src": "/audio/ambient/arcade.mp3",
+    "sourceFile": "the_mountain-glitch-hop-167617.mp3"
+  },
+  {
+    "id": "dew",
+    "name": "Morning Dew",
+    "description": "Turning Pages",
+    "src": "/audio/ambient/dew.mp3",
+    "sourceFile": "turning_pages-johto-morning-dew-479844.mp3"
+  },
+  {
+    "id": "hearth",
+    "name": "Temple Hearth",
+    "description": "Turning Pages",
+    "src": "/audio/ambient/hearth.mp3",
+    "sourceFile": "turning_pages-temple-hearth-501795.mp3"
+  }
+];
+export const ambientTrack = id => AMBIENT_TRACKS.find(track=>track.id===id) || AMBIENT_TRACKS[0];

@@ -8,7 +8,7 @@ from users.preferences import validate_preferences
 
 class InterfacePreferenceValidationTests(SimpleTestCase):
     def test_interface_modes_are_whitelisted(self):
-        for mode in ('studio','glass'):
+        for mode in ('studio','glass','xp','retro','space'):
             self.assertEqual(validate_preferences({'interface':mode}), {'interface':mode})
         with self.assertRaises(ValueError):
             validate_preferences({'interface':'unknown'})
@@ -45,3 +45,29 @@ class InterfacePreferenceSyncTests(TestCase):
             self.assertEqual(response.status_code, 201, response.content)
         themes = self.client.get('/api/themes/').json()['themes']
         self.assertEqual({theme['name']:theme['preferences']['interface'] for theme in themes}, {'studio':'studio','glass':'glass'})
+
+class GlassThemePolicyTests(TestCase):
+    def test_glass_theme_locks_display_and_clamps_transparency(self):
+        user = get_user_model().objects.create_user('glass-policy-user')
+        self.client.force_login(user)
+        response = self.client.post('/api/themes/', {'name':'Glass locked', 'preferences':json.dumps({'interface':'glass','textColor':'#000000','textSize':22,'transparency':0})})
+        self.assertEqual(response.status_code,201,response.content)
+        prefs=self.client.get('/api/themes/').json()['themes'][0]['preferences']
+        self.assertEqual(prefs['textColor'],'#ffffff')
+        self.assertEqual(prefs['textSize'],18)
+        self.assertEqual(prefs['transparency'],10)
+
+class ExtendedThemePreferencesTests(TestCase):
+    def test_new_modes_and_recordings_survive_account_sync(self):
+        user=get_user_model().objects.create_user('new-themes-user')
+        self.client.force_login(user)
+        for mode in ('xp','retro','space'):
+            payload={'interface':mode,'ambientTrack':'hearth','appearanceProfiles':{f'default:{mode}:mist':{'textSize':20}}}
+            response=self.client.post('/api/en/learning/sync/',json.dumps({'events':[{'token':str(uuid.uuid4()),'kind':'preferences','at':timezone.now().isoformat(),'payload':payload}]}),content_type='application/json')
+            self.assertEqual(response.json()['errors'],[])
+            self.assertEqual(self.client.get('/api/session/').json()['user']['preferences']['interface'],mode)
+    def test_new_account_has_no_nonstudio_interface_override(self):
+        user=get_user_model().objects.create_user('default-studio-user')
+        self.client.force_login(user)
+        prefs=self.client.get('/api/session/').json()['user']['preferences']
+        self.assertEqual(prefs.get('interface','studio'),'studio')

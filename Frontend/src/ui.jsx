@@ -1,3 +1,4 @@
+import { THEME_ICONS } from "./theme-icons";
 import { ICON_PATHS } from "./icon-paths";
 import { createPortal } from "react-dom";
 import { useEffect, useRef, useState, useId } from "react";
@@ -30,7 +31,15 @@ export function Icon({ name = "cards", size = 26 }) {
       aria-hidden="true"
       focusable="false"
     >
-      <path d={ICON_PATHS[name] || ICON_PATHS.cards} />
+      <path
+        className="icon-family icon-default"
+        d={ICON_PATHS[name] || ICON_PATHS.cards}
+      />
+      {Object.entries(THEME_ICONS).map(([theme, paths]) => (
+        <g key={theme} className={`icon-family icon-${theme}`}>
+          <path d={paths[name] || ICON_PATHS[name] || paths.cards} />
+        </g>
+      ))}
     </svg>
   );
 }

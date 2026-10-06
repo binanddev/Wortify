@@ -162,3 +162,14 @@
 .cloze-practice .is-incorrect {
   @apply border-[#e3a0a0];
 }
+
+/* Keep the primary action anchored when checking/reveal controls disappear. */
+.flashcard-actions {
+  @apply flex flex-wrap items-center justify-end gap-3 w-full;
+}
+.session-controls > .flashcard-actions {
+  @apply ml-auto w-auto min-w-0;
+}
+.session-controls > .end-session {
+  @apply shrink-0;
+}

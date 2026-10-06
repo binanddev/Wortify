@@ -1,3 +1,5 @@
+import Home from "./home";
+import { interfaceName } from "./interface-themes.js";
 import { installAutoContrast } from "./auto-contrast";
 import { restoreAppearance, updateAppearance } from "./appearance-profiles";
 import { loadLoginSnapshot, clearLoginAppearance } from "./appearance-cache";
@@ -5,7 +7,7 @@ import { applyAppearance } from "./appearance-preferences";
 import FlashcardNavigation from "./flashcard-navigation";
 import { NavResize } from "./nav-resize";
 import { navScale, navWidth as widthForScale } from "./navigation-settings";
-import { ambientTrack } from "./soundscape-presets";
+import { ambientTrack } from "./ambient-recordings";
 import { Explore } from "./explore";
 import { ExerciseStudio } from "./exercise-studio";
 import { legacyPracticeDestination } from "./practice-navigation";
@@ -42,6 +44,7 @@ export default function App() {
   useLayoutEffect(() => {
     if (!isWorkspace || !user) {
       applyAppearance();
+      document.documentElement.dataset.interface = "home";
       document.documentElement.style.setProperty("--site-bg-image", "none");
     }
   }, [isWorkspace, user]);
@@ -157,7 +160,14 @@ export default function App() {
         }}
       />
     );
-  if (!user) return <Login key="normal-login" onLogin={setUser} />;
+  if (!user)
+    return !lang && !setupKey ? (
+      <Home>
+        <Login key="normal-login" onLogin={setUser} />
+      </Home>
+    ) : (
+      <Login key="normal-login" onLogin={setUser} />
+    );
   if (appearance.key !== appearanceKey)
     return (
       <div className="welcome">
@@ -176,7 +186,7 @@ export default function App() {
         appearance={appearance}
       />
     );
-  if (!lang) return <Welcome {...{ user, setUser }} />;
+  if (!lang) return <Home {...{ user, setUser }} />;
   return (
     <Workspace
       key={`${user.id}:${lang}`}
@@ -312,60 +322,6 @@ function Brand() {
     </Link>
   );
 }
-function Welcome({ user, setUser }) {
-  const action = useAction();
-  return (
-    <div className="welcome-page">
-      <header>
-        <Brand />
-        {(user.superuser || user.staff) && (
-          <Link to="/manage">Quản trị người dùng ↗</Link>
-        )}
-        <Btn
-          onClick={() =>
-            action.run(async (s) => {
-              await request("/api/session/", "DELETE", undefined, s);
-              setUser(null);
-            })
-          }
-        >
-          Đăng xuất <Icon name="logout" />
-        </Btn>
-      </header>
-      <Page>
-        <Heading eyebrow={`XIN CHÀO, ${user.username}`} title="Chọn ngôn ngữ" />
-        <div className="language-grid">
-          {[
-            [
-              "en",
-              "English",
-              "Tiếng Anh",
-              "Hello.",
-              "A world of possibilities.",
-            ],
-            ["de", "Deutsch", "Tiếng Đức", "Hallo.", "Ein neuer Anfang."],
-          ].map(([lang, name, label, word, sub]) => (
-            <Link
-              key={lang}
-              to={`/${lang}/flashcard`}
-              className="language-card"
-            >
-              <span className="eyebrow">{label}</span>
-              <strong>{word}</strong>
-              <div>
-                <h2>{name}</h2>
-                <span className="round-arrow">
-                  <Icon name="arrow" />
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-        <Status error={action.error} />
-      </Page>
-    </div>
-  );
-}
 function Workspace({ user, setUser, lang, parts, route, appearance }) {
   const sync = useLearningSync(user.id, lang);
   const prefKey = `wortify:${user.id}:appearance`,
@@ -385,11 +341,15 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
           {},
         ),
       };
-      const p = restoreAppearance(merged, appearance.data?.[lang]?.theme_id, true);
+      const p = restoreAppearance(
+        merged,
+        appearance.data?.[lang]?.theme_id,
+        true,
+      );
       return {
         appearanceProfiles: p.appearanceProfiles || {},
         appearanceSelections: p.appearanceSelections || {},
-        interface: p.interface === "glass" ? "glass" : "studio",
+        interface: interfaceName(p.interface),
         curvature: p.curvature ?? 18,
         glassLens: p.glassLens ?? 40,
         navPinned: p.navPinned !== false,
@@ -475,6 +435,9 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [route]);
   const section = parts[1] || "flashcard";
+  useEffect(() => {
+    if (section === "settings") setNavBack(true);
+  }, [section]);
   const legacyDestination =
     section === "exercise-studio"
       ? route.replace("/exercise-studio", "/create")
@@ -638,12 +601,14 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
           if (smallScreen && event.target.closest("a[href]")) setNavOpen(false);
         }}
       >
-        <NavResize
-          width={navWidth}
-          setWidth={(width) =>
-            setPrefs({ ...prefs, navScale: navScale((width / 422) * 100) })
-          }
-        />
+        {prefs.interface !== "glass" && (
+          <NavResize
+            width={navWidth}
+            setWidth={(width) =>
+              setPrefs({ ...prefs, navScale: navScale((width / 422) * 100) })
+            }
+          />
+        )}
         <div className={`nav-flip-inner ${navBack ? "is-flipped" : ""}`}>
           <div
             inert={navBack}

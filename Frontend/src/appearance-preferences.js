@@ -1,8 +1,13 @@
+import { interfaceName } from "./interface-themes.js";
+import { glassPolicy } from "./glass-policy.js";
 export function applyAppearance(p = {}) {
+  p = glassPolicy(p);
   const root = document.documentElement;
-  const style = p.interface === "glass" ? "glass" : "studio";
+  const style = interfaceName(p.interface);
   root.dataset.interface = style;
-  root.dataset.textAuto = String(!p.textColor || p.textColor === "auto");
+  root.dataset.textAuto = String(
+    style !== "glass" && (!p.textColor || p.textColor === "auto"),
+  );
   const clamp = (v, lo, hi, fallback) =>
     Math.min(
       hi,
@@ -19,6 +24,12 @@ export function applyAppearance(p = {}) {
   root.style.setProperty(
     "--glass-lens-blur",
     `${clamp(p.glassLens ?? 40, 0, 100, 40) / 20}px`,
+  );
+  root.style.setProperty(
+    "--glass-material-alpha",
+    String(
+      0.85 - Math.min(100, Math.max(10, Number(p.transparency) || 10)) * 0.0045,
+    ),
   );
   const night = style === "glass" && p.background === "night";
   root.dataset.background = p.background || "mist";
@@ -39,9 +50,15 @@ export function applyAppearance(p = {}) {
     ? p.textColor
     : night
       ? "#f0f5ff"
-      : style === "studio"
-        ? "#24304e"
-        : "#152740";
+      : style === "space"
+        ? "#eef2ff"
+        : style === "retro"
+          ? "#292419"
+          : style === "xp"
+            ? "#13264a"
+            : style === "studio"
+              ? "#24304e"
+              : "#152740";
   const contrast = clamp(p.textContrast ?? 80, 0, 100, 80);
   root.style.setProperty(
     "--ink",

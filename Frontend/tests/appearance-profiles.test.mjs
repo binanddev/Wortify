@@ -30,7 +30,7 @@ test("appearance profiles isolate interfaces, backgrounds and saved themes", () 
   assert.equal(p.textColor, "#ffffff");
   assert.equal(
     restoreAppearance({ ...p, interface: "glass" }, 4).textColor,
-    "#000000",
+    "#ffffff",
   );
   assert.equal(
     restoreAppearance({ ...p, textColor: "auto" }, 5).textColor,

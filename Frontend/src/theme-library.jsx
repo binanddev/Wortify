@@ -1,3 +1,5 @@
+import { INTERFACE_CHOICES } from "./interface-themes.js";
+import { glassPolicy } from "./glass-policy";
 import { useEffect, useState } from "react";
 import {
   ModalContent,
@@ -70,8 +72,11 @@ function ThemeEditor({ theme, prefs, staff, lang, onClose, onSaved }) {
             value={values.interface || "studio"}
             onChange={(value) => setValues((v) => ({ ...v, interface: value }))}
           >
-            <option value="studio">Studio — sáng rõ</option>
-            <option value="glass">Glass — trong suốt</option>
+            {INTERFACE_CHOICES.map(([id, name]) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
+            ))}
           </Select>
           <Field
             label="Tên theme"
@@ -90,47 +95,58 @@ function ThemeEditor({ theme, prefs, staff, lang, onClose, onSaved }) {
             </label>
           )}
           <div className="grid gap-3 sm:grid-cols-2">
-            {sliders.map(([key, label, min, max, step, fallback]) => (
-              <label key={key} className="range-label">
-                {label} <strong>{values[key] ?? fallback}</strong>
-                <input
-                  type="range"
-                  min={min}
-                  max={max}
-                  step={step}
-                  value={values[key] ?? fallback}
-                  onChange={(e) =>
-                    setValues({ ...values, [key]: Number(e.target.value) })
+            {sliders
+              .filter(
+                ([key]) =>
+                  values.interface !== "glass" || key === "transparency",
+              )
+              .map(([key, label, min, max, step, fallback]) => (
+                <label key={key} className="range-label">
+                  {label} <strong>{values[key] ?? fallback}</strong>
+                  <input
+                    type="range"
+                    min={values.interface === "glass" ? 10 : min}
+                    max={max}
+                    step={step}
+                    value={values[key] ?? fallback}
+                    onChange={(e) =>
+                      setValues({ ...values, [key]: Number(e.target.value) })
+                    }
+                  />
+                </label>
+              ))}
+          </div>
+          {values.interface !== "glass" && (
+            <>
+              <div className="flex items-center gap-3">
+                <Field
+                  label="Màu chữ"
+                  type="color"
+                  value={
+                    values.textColor?.startsWith("#")
+                      ? values.textColor
+                      : "#152740"
                   }
+                  onChange={(textColor) => setValues({ ...values, textColor })}
                 />
-              </label>
-            ))}
-          </div>
-          <div className="flex items-center gap-3">
-            <Field
-              label="Màu chữ"
-              type="color"
-              value={
-                values.textColor?.startsWith("#") ? values.textColor : "#152740"
-              }
-              onChange={(textColor) => setValues({ ...values, textColor })}
-            />
-            <Btn
-              icon="undo"
-              onClick={() => setValues({ ...values, textColor: "auto" })}
-            >
-              Màu chữ tự động
-            </Btn>
-          </div>
-          <Select
-            label="Nền cơ bản"
-            value={values.background || "mist"}
-            onChange={(background) => setValues({ ...values, background })}
-          >
-            <option value="mist">Sương sớm</option>
-            <option value="paper">Giấy sáng</option>
-            <option value="night">Đêm yên tĩnh</option>
-          </Select>
+                <Btn
+                  icon="undo"
+                  onClick={() => setValues({ ...values, textColor: "auto" })}
+                >
+                  Màu chữ tự động
+                </Btn>
+              </div>
+              <Select
+                label="Nền cơ bản"
+                value={values.background || "mist"}
+                onChange={(background) => setValues({ ...values, background })}
+              >
+                <option value="mist">Sương sớm</option>
+                <option value="paper">Giấy sáng</option>
+                <option value="night">Đêm yên tĩnh</option>
+              </Select>
+            </>
+          )}
           <Select
             label="Ảnh nền"
             value={mode}
@@ -182,7 +198,10 @@ function ThemeEditor({ theme, prefs, staff, lang, onClose, onSaved }) {
                 const data = new FormData();
                 data.append("name", name);
                 data.append("shared", String(shared));
-                data.append("preferences", JSON.stringify(values));
+                data.append(
+                  "preferences",
+                  JSON.stringify(displayOnly(glassPolicy(values))),
+                );
                 data.append("image_mode", mode);
                 data.append("language", lang);
                 if (image) data.append("image", image);

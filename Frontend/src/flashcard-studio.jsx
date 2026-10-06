@@ -729,7 +729,7 @@ function Studio({ lang, id, userId, sound, data }) {
                 audio.tick();
               }}
             />
-            <div className="toolbar centered">
+            <div className="toolbar flashcard-actions">
               {flashSkipped ? (
                 <Btn
                   icon="arrow"
@@ -882,21 +882,6 @@ function Studio({ lang, id, userId, sound, data }) {
                 <AnswerReveal answers={cardSolution(question)} />
               )}
               <div className="session-controls">
-                {!feedback?.correct && !feedback?.skipped && (
-                  <SkipButton onClick={() => submitLearn("", true)} />
-                )}
-                <Btn
-                  primary
-                  icon="arrow"
-                  className="next-question"
-                  aria-label="Câu tiếp theo"
-                  title="Câu tiếp theo"
-                  onClick={next}
-                  isDisabled={!feedback?.correct && !feedback?.skipped}
-                >
-                  <span className="next-label">Tiếp tục</span>
-                  <Icon name="arrow" />
-                </Btn>
                 <Btn
                   icon="close"
                   className="end-session"
@@ -910,6 +895,23 @@ function Studio({ lang, id, userId, sound, data }) {
                   <Icon name="close" />
                   <span>Kết thúc</span>
                 </Btn>
+                <div className="flashcard-actions">
+                  {!feedback?.correct && !feedback?.skipped && (
+                    <SkipButton onClick={() => submitLearn("", true)} />
+                  )}
+                  <Btn
+                    primary
+                    icon="arrow"
+                    className="next-question"
+                    aria-label="Câu tiếp theo"
+                    title="Câu tiếp theo"
+                    onClick={next}
+                    isDisabled={!feedback?.correct && !feedback?.skipped}
+                  >
+                    <span className="next-label">Tiếp tục</span>
+                    <Icon name="arrow" />
+                  </Btn>
+                </div>
               </div>
             </section>
           ) : null}
@@ -952,26 +954,30 @@ function Studio({ lang, id, userId, sound, data }) {
                     disabled={Object.hasOwn(testChecked, i)}
                   />
                   {testSkipped[i] && <AnswerReveal answers={cardSolution(q)} />}
-                  {!Object.hasOwn(testChecked, i) ? (
-                    <SkipButton onClick={() => answerTest(i, "", true, true)} />
-                  ) : (
-                    testSkipped[i] && (
-                      <Btn
-                        icon="arrow"
-                        onClick={() =>
-                          document
-                            .getElementById(
-                              i + 1 < test.length
-                                ? `studio-test-${i + 1}`
-                                : "studio-test-summary",
-                            )
-                            ?.focus()
-                        }
-                      >
-                        Tiếp tục
-                      </Btn>
-                    )
-                  )}
+                  <div className="flashcard-actions">
+                    {!Object.hasOwn(testChecked, i) ? (
+                      <SkipButton
+                        onClick={() => answerTest(i, "", true, true)}
+                      />
+                    ) : (
+                      testSkipped[i] && (
+                        <Btn
+                          icon="arrow"
+                          onClick={() =>
+                            document
+                              .getElementById(
+                                i + 1 < test.length
+                                  ? `studio-test-${i + 1}`
+                                  : "studio-test-summary",
+                              )
+                              ?.focus()
+                          }
+                        >
+                          Tiếp tục
+                        </Btn>
+                      )
+                    )}
+                  </div>
                 </section>
               ))}
               {testResult ? (

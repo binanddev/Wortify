@@ -56,7 +56,7 @@ Màn hình rộng tối đa 1024px có thanh Menu / Công cụ trang; chọn li�
 
 Mọi modal dùng lớp portal riêng dưới body, trên nav; nội dung dài cuộn bên trong. Popover của bài tập trong modal dùng cùng lớp portal.
 
-Cài đặt có 10 giai điệu nền tổng hợp sẵn tại máy (không tải file hoặc gọi dịch vụ bên ngoài), chọn bài, bật/tắt và âm lượng. Lựa chọn được lưu theo tài khoản. Âm nền tạm im khi audio/video/TTS đang phát hoặc tab bị ẩn. Trình duyệt có thể yêu cầu chạm vào trang trước khi phát.
+Cài đặt dùng 20 bản MP3 trong `public/audio/ambient`, nguồn gốc tệp được ghi trong `SOURCES.json`. Chọn bài, bật/tắt và âm lượng được lưu theo tài khoản. Chỉ tải bản đang nghe; nhạc tạm dừng khi audio/video/TTS phát hoặc tab bị ẩn. Trình duyệt có thể yêu cầu tương tác trước khi phát.
 
 ## Hai phong cách giao diện
 
@@ -65,3 +65,5 @@ Studio là giao diện mặc định: nền sáng ấm, nav xanh chàm, bề m�
 Icon dùng bộ Wortify Rounded trong `src/icon-paths.js`, nét 2.25px, kích thước tối thiểu 22px; icon nav chính có nền đặc, không đổi theo transparency. Flashcard không áp dụng filter/backdrop-filter vào cảnh lật 3D hoặc mặt thẻ.
 
 Kiểm thử CSS bằng trình duyệt ẩn, không chạy web: `npm run build` rồi `npm run test:interface`. Script dựng tệp HTML tạm với CSS production, kiểm tra hover/lật và độ trong suốt của cả hai giao diện. Windows mặc định dùng Chrome; hệ điều hành khác đặt `CHROME_PATH` tới trình duyệt Chromium. `INTERFACE_SCREENSHOT` tùy chọn đường dẫn ảnh xem trước.
+
+Giao diện gồm Studio (mặc định), Glass, Windows XP, Retro Arcade và Space. Tùy chỉnh lưu riêng cho từng giao diện. Trang chủ có thiết kế độc lập; các nhóm Cài đặt nằm ở mặt sau nav.

@@ -1,0 +1,266 @@
+.settings-tabs {
+  @apply flex flex-wrap gap-2 mb-6;
+}
+.settings-tabs [role="tab"] {
+  @apply px-5 py-3 rounded-xl border border-(--line) font-semibold;
+}
+.settings-tabs [aria-selected="true"] {
+  @apply bg-violet-700 text-white;
+}
+:root[data-interface="glass"] {
+  --surface: rgb(15 23 42 / var(--glass-material-alpha, 0.65));
+  --solid: #172033;
+  --ink: #ffffff;
+  --muted: #ffffff99;
+  --icon-ink: #ffffff;
+  --icon-tile: transparent;
+  --line: #ffffff26;
+}
+:root[data-interface="glass"] body {
+  @apply bg-slate-950 text-white;
+}
+:root[data-interface="glass"]
+  body
+  :is(
+    .glass,
+    .nav-face,
+    .library-card,
+    .work-paper,
+    .catalog-card,
+    .deck-tile,
+    .hub-tile,
+    .language-card,
+    [data-slot="base"][role="dialog"]
+  ) {
+  @apply [background:rgb(15_23_42/var(--glass-material-alpha,.65))]! border! border-white/15! rounded-3xl! [box-shadow:inset_0_1px_0_rgb(255_255_255/.16),0_8px_32px_rgb(0_0_0/.4)]!;
+}
+/* Only material surfaces blur the scenery; content remains unfiltered. */
+:root[data-interface="glass"]
+  body
+  :is(#glass-material, .glass, .nav-face, .work-paper, [role="dialog"]) {
+  @apply backdrop-blur-xl!;
+}
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-content,
+    button,
+    a,
+    input,
+    textarea,
+    select,
+    span,
+    p,
+    label,
+    small,
+    strong,
+    h1,
+    h2,
+    h3,
+    h4,
+    svg.app-icon
+  ),
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-content,
+    button,
+    a,
+    input,
+    textarea,
+    select,
+    span,
+    p,
+    label,
+    small,
+    strong,
+    h1,
+    h2,
+    h3,
+    h4,
+    svg.app-icon
+  ):is(:hover, :focus, :active) {
+  @apply text-white! [filter:none]!;
+}
+:root[data-interface="glass"]
+  body
+  :is(#glass-vibrancy, small, .muted, .eyebrow, .range-label, .text-sm) {
+  @apply text-white/65!;
+}
+:root[data-interface="glass"] body svg.app-icon {
+  @apply opacity-100! bg-transparent!;
+}
+:root[data-interface="glass"]
+  body
+  :is(#glass-control, button, a, [role="tab"], input, textarea, select) {
+  @apply border-white/15!;
+}
+:root[data-interface="glass"]
+  body
+  :is(#glass-control, button, a, [role="tab"]):not(:disabled):is(
+    :hover,
+    [data-hover="true"]
+  ) {
+  @apply bg-white/10! text-white!;
+}
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-active,
+    .selected,
+    .active,
+    [aria-selected="true"],
+    [aria-pressed="true"]
+  ),
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-active,
+    .selected,
+    .active,
+    [aria-selected="true"],
+    [aria-pressed="true"]
+  ):hover {
+  @apply bg-white/20! text-white!;
+}
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-field,
+    input,
+    textarea,
+    select,
+    .btn,
+    .word-chip,
+    .pair-card,
+    .category-bin,
+    [data-slot="input-wrapper"],
+    .inline-menu
+  ) {
+  @apply bg-slate-900/70! text-white!;
+}
+:root[data-interface="glass"]
+  body
+  .exercise-workspace
+  :is(
+    #glass-inline,
+    .gap-drop,
+    .inline-choice,
+    .partial-rewrite,
+    .partial-rewrite input,
+    .inline-pills,
+    .inline-pills button,
+    .sentence-target
+  ) {
+  @apply bg-transparent!;
+}
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-success,
+    .pair-card.paired,
+    .word-chip.is-right,
+    .gap-token.is-right .gap-drop
+  ) {
+  @apply bg-emerald-800/70! text-white! border-emerald-400!;
+}
+:root[data-interface="glass"]
+  body
+  :is(#glass-error, .pair-error, .word-chip.is-wrong) {
+  @apply bg-red-900/70! text-white! border-red-400!;
+}
+:root[data-interface="glass"] body .nav-resize {
+  @apply hidden!;
+}
+
+:root[data-interface="glass"]
+  body
+  .exercise-workspace
+  :is(
+    #glass-inline,
+    .gap-drop,
+    .inline-choice,
+    .partial-rewrite input,
+    .inline-pills button,
+    textarea
+  ):is(:hover, :focus, :focus-visible, :active, [aria-pressed="true"]) {
+  @apply bg-transparent!;
+}
+:root[data-interface="glass"]
+  body
+  .exercise-workspace[data-ui-style="sentence_rewrite"]
+  textarea {
+  @apply bg-transparent!;
+}
+
+/* Shared material coverage across studying, authoring and learner profile. */
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-page-panel,
+    .flash-settings,
+    .profile-panel,
+    .profile-identity,
+    .profile-focus-grid > section,
+    .author-panel,
+    .author-question,
+    .exercise-editor,
+    .practice-catalog,
+    .learning-welcome,
+    .reading-document,
+    .test-summary,
+    .learning-complete,
+    .history-row,
+    .flash-mode-picker,
+    .profile-stat,
+    .profile-stat-card
+  ) {
+  @apply [background:rgb(15_23_42/var(--glass-material-alpha,.65))]! text-white! border border-white/15! rounded-2xl! shadow-[0_8px_32px_#00000066]!;
+}
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-face,
+    .flip-face,
+    .answer-option,
+    .truefalse button,
+    .profile-edit,
+    .profile-continue,
+    .category-head,
+    .native-field-wrap,
+    .profile-day,
+    .profile-goal-ring
+  ) {
+  @apply bg-slate-900/70! text-white! border-white/20!;
+}
+:root[data-interface="glass"] body .flip-face {
+  @apply [background:rgb(15_23_42/var(--glass-material-alpha,.65))]!;
+}
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-table,
+    table,
+    thead,
+    tbody,
+    tr,
+    td,
+    th,
+    .author-field,
+    .options-editor,
+    .gap-editor,
+    .form-row
+  ) {
+  @apply bg-transparent! text-white! border-white/15!;
+}
+:root[data-interface="glass"]
+  body
+  :is(
+    #glass-progress,
+    .profile-day.level-1,
+    .profile-day.level-2,
+    .profile-day.level-3,
+    .profile-day.level-4
+  ) {
+  @apply bg-emerald-600/60! text-white!;
+}

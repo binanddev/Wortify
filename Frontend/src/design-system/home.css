@@ -1,0 +1,166 @@
+:root[data-interface="home"] body {
+  @apply bg-[#f8f7f2]! text-[#172c2a]!;
+}
+:root[data-interface="home"] body::before,
+:root[data-interface="home"] body::after {
+  @apply hidden!;
+}
+#wortify-home {
+  --ink: #172c2a;
+  --muted: #57645c;
+  --solid: #fff;
+  --surface: #fff;
+  --line: #d9dfd6;
+  --accent: #226050;
+  @apply min-h-dvh bg-[#f8f7f2] text-[#172c2a] [font-family:Inter,Arial,sans-serif] [font-size:16px] [font-weight:400];
+}
+#wortify-home .landing-header {
+  @apply max-w-[1280px] mx-auto px-6 py-7 flex items-center justify-between gap-6;
+}
+#wortify-home .landing-brand {
+  @apply text-3xl font-extrabold tracking-tight;
+}
+#wortify-home .landing-brand span {
+  @apply text-[#e47f49];
+}
+#wortify-home nav {
+  @apply flex gap-6 items-center text-sm font-semibold;
+}
+#wortify-home main {
+  @apply max-w-[1280px] mx-auto px-6;
+}
+#wortify-home a:focus-visible,
+#wortify-home button:focus-visible {
+  @apply outline-2 outline-offset-4 outline-emerald-700;
+}
+#wortify-home .landing-hero {
+  @apply grid grid-cols-2 gap-10 py-20 items-center;
+}
+#wortify-home .landing-eyebrow {
+  @apply text-xs tracking-[.2em] font-bold text-[#527668];
+}
+#wortify-home h1 {
+  @apply text-[clamp(2.8rem,4.7vw,4.8rem)] leading-[1.1] tracking-[-.045em] font-semibold my-6;
+}
+#wortify-home h1 em {
+  @apply [font-family:Georgia,serif] font-normal text-[#3f755e];
+}
+#wortify-home .landing-copy > p {
+  @apply text-lg leading-8 max-w-[490px] text-[#59675f];
+}
+#wortify-home .landing-cta {
+  @apply inline-flex items-center gap-12 bg-[#1f5145] text-white rounded-full px-7 py-4 mt-8 font-semibold;
+}
+#wortify-home .landing-cta:hover {
+  @apply bg-[#123f34];
+}
+#wortify-home .landing-note {
+  @apply mt-9 text-[10px] tracking-[.12em] flex gap-4 text-[#68776b];
+}
+#wortify-home .landing-art {
+  @apply relative h-[490px] rounded-[48%_48%_20%_20%] bg-[#e5ebda];
+}
+#wortify-home .landing-orbit {
+  @apply absolute inset-8 border border-[#bdcbb7] rounded-full rotate-[-20deg];
+}
+#wortify-home .landing-word {
+  @apply absolute left-[6%] top-[18%] w-[76%] p-8 rounded-2xl bg-[#fffdf8] shadow-[0_20px_55px_#1e44341c] rotate-[-9deg];
+}
+#wortify-home .landing-word small {
+  @apply text-[10px] tracking-[.18em] text-[#73816c];
+}
+#wortify-home .landing-word strong {
+  @apply block text-4xl font-semibold mt-7 mb-2;
+}
+#wortify-home .landing-word > div {
+  @apply absolute right-7 top-7 text-3xl text-[#d2a143];
+}
+#wortify-home .landing-word.secondary {
+  @apply bg-[#f3c979] top-[56%] left-[25%] w-[70%] rotate-[6deg];
+}
+#wortify-home .landing-word.secondary strong {
+  @apply text-3xl mt-3;
+}
+#wortify-home .landing-sticker {
+  @apply absolute right-4 top-1 text-sm text-[#45654a] rotate-12 [font-family:Georgia,serif] italic;
+}
+#wortify-home .landing-dot {
+  @apply absolute -bottom-2 left-1 w-20 h-20 bg-[#295c49] text-white rounded-full grid place-items-center text-3xl [font-family:Georgia,serif];
+}
+#wortify-home h2 {
+  @apply text-3xl tracking-tight font-semibold mt-3 mb-7;
+}
+#wortify-home .landing-languages {
+  @apply py-12 border-t border-[#dce2d8];
+}
+#wortify-home .landing-language-grid {
+  @apply grid grid-cols-2 gap-5;
+}
+#wortify-home .landing-language {
+  @apply p-8 rounded-3xl bg-[#e4eadd] transition-transform hover:-translate-y-1;
+}
+#wortify-home .language-de {
+  @apply bg-[#f2e7d5];
+}
+#wortify-home .landing-language small {
+  @apply text-xs tracking-widest;
+}
+#wortify-home .landing-language strong {
+  @apply block text-6xl [font-family:Georgia,serif] my-9;
+}
+#wortify-home .landing-language > div {
+  @apply flex justify-between text-sm;
+}
+#wortify-home .landing-method {
+  @apply grid grid-cols-3 gap-9 py-14;
+}
+#wortify-home .landing-method article > span {
+  @apply text-xs text-[#798b7b];
+}
+#wortify-home h3 {
+  @apply text-xl font-semibold my-4;
+}
+#wortify-home .landing-method p,
+#wortify-home .landing-account p {
+  @apply leading-7 text-[#59675f];
+}
+#wortify-home .landing-account {
+  @apply grid grid-cols-2 gap-10 items-center border-t border-[#dce2d8] py-12;
+}
+#wortify-home .auth-layout {
+  @apply min-h-0 p-0 bg-transparent;
+}
+#wortify-home .auth-card {
+  @apply w-full max-w-none bg-white text-[#172c2a] rounded-3xl shadow-none border border-[#dce2d8];
+}
+#wortify-home .landing-footer {
+  @apply max-w-[1280px] mx-auto px-6 py-8 border-t border-[#dce2d8] flex justify-between gap-6 text-xs text-[#667568];
+}
+@media (max-width: 760px) {
+  #wortify-home .landing-hero,
+  #wortify-home .landing-account {
+    @apply grid-cols-1 py-10;
+  }
+  #wortify-home .landing-art {
+    @apply h-[390px] max-w-[470px] w-full mx-auto;
+  }
+  #wortify-home .landing-language-grid,
+  #wortify-home .landing-method {
+    @apply grid-cols-1;
+  }
+  #wortify-home nav {
+    @apply gap-3 text-xs;
+  }
+  #wortify-home .landing-footer {
+    @apply flex-wrap;
+  }
+}
+
+@media(max-width:540px) {
+ #wortify-home .landing-header { @apply flex-wrap gap-4; }
+ #wortify-home nav { @apply flex-wrap; }
+ #wortify-home .landing-note { @apply flex-wrap gap-2; }
+ #wortify-home .landing-copy,#wortify-home .landing-art { @apply min-w-0; }
+ #wortify-home .landing-word { @apply p-5; }
+ #wortify-home .landing-word strong { @apply text-3xl; }
+}

@@ -41,3 +41,8 @@
 
 /* Final interaction and contrast rules must follow every theme. */
 @import "./crisp-interface.css";
+
+@import "./glass-spatial.css";
+
+@import "./identity-themes.css";
+@import "./home.css";

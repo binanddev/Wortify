@@ -1,0 +1,15 @@
+import {build} from 'vite';
+import react from '@vitejs/plugin-react';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+process.chdir(path.resolve(import.meta.dirname,'..'));
+const out=path.resolve('.interface-preview');
+await build({configFile:false,plugins:[react()],build:{ssr:'src/home.jsx',outDir:out,emptyOutDir:false,minify:false}});
+const {default:Home}=await import(pathToFileURL(path.join(out,'home.js')).href);
+const html=renderToStaticMarkup(React.createElement(Home,{user:{username:'Linh'},setUser:()=>{}}));
+const assets=await fs.readdir('dist/assets');const css=await fs.readFile(path.join('dist/assets',assets.find(f=>/^index-.*\.css$/.test(f))),'utf8');
+await fs.writeFile(path.join(out,'home.html'),`<!doctype html><html data-interface="home"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style><body>${html}</body></html>`);
+console.log(path.join(out,'home.html'));
