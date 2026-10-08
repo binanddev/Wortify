@@ -14,6 +14,9 @@
     "test:styles": "node --test tests/design-system.test.mjs"
   },
   "dependencies": {
+    "@fontsource/cormorant-garamond": "5.3.0",
+    "@fontsource/kalam": "5.3.0",
+    "@fontsource/montserrat": "5.3.0",
     "@fontsource/vt323": "5.3.0",
     "@heroui/react": "^2.8.10",
     "98.css": "0.1.21",
@@ -24,6 +27,7 @@
     "react95": "4.0.0",
     "rpgui": "1.0.3",
     "styled-components": "6.5.3",
+    "terminal.css": "0.7.5",
     "xp.css": "0.2.6"
   },
   "devDependencies": {

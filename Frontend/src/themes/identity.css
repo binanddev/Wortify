@@ -1,13 +1,10 @@
 @import "./shared/controls.css";
 @import "./windows-xp/styles.css";
 @import "./retro/styles.css";
-@import "./space/styles.css";
 @import "./windows-xp/details.css";
 @import "./retro/details.css";
-@import "./space/details.css";
 @import "./shared/exercise-surfaces.css";
 @import "./windows-xp/preview.css";
 @import "./retro/preview.css";
-@import "./space/preview.css";
 @import "./glass/preview.css";
 @import "./shared/responsive.css";

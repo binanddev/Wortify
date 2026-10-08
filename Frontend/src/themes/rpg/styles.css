@@ -1,0 +1,42 @@
+:root[data-interface="rpg"] {
+ --surface: #050a05; --solid: #050a05; --line: #4d9c3b; --accent: #33ff00; --icon-ink: #8df579; --icon-tile: transparent;
+}
+:root[data-interface="rpg"] body { @apply bg-[#000000]! text-[#8df579]; }
+:root[data-interface="rpg"] body::before, :root[data-interface="rpg"] body::after { @apply hidden!; }
+:root[data-interface="rpg"] .default-background { @apply bg-[#000000] [background-image:linear-gradient(#75848a12_1px,transparent_1px),linear-gradient(90deg,#75848a12_1px,transparent_1px)] [background-size:24px_24px]; }
+:root[data-interface="rpg"] .ambient-symbols { @apply hidden; }
+:root[data-interface="rpg"] body :is(.glass,.nav-face,.work-paper,.flip-face,.profile-panel,.profile-identity,.catalog-card,.author-panel,.author-question,.hub-tile,.library-card,.deck-tile,.practice-catalog,.learning-welcome,[role="dialog"],[data-slot="popover-content"]) {
+ @apply bg-[#050a05]! bg-none! border-2 border-[#4d9c3b]! text-[#8df579] backdrop-filter-none! shadow-[3px_4px_0_#352e2220]!;
+}
+:root[data-interface="rpg"] body :is(.sidebar,.workspace-context) { @apply bg-transparent! shadow-none!; }
+:root[data-interface="rpg"] body :is(.btn,.word-chip,.pair-card,.category-bin,.native-field-wrap,[data-slot="input-wrapper"],input:not([type="range"]),textarea,select) {
+ @apply bg-[#050a05] text-[#8df579] border-[#4d9c3b];
+}
+:root[data-interface="rpg"] body :is(.btn.primary,.nav-link.active,[role="tab"][aria-selected="true"]) { @apply bg-[#33ff00]! text-[#8df579]! border-[#4d9c3b]!; }
+:root[data-interface="rpg"] body .nav-link { @apply text-[#8df579] rounded-md; }
+:root[data-interface="rpg"] body .nav-link:hover { @apply bg-[#33ff00]/30 text-[#8df579]; }
+:root[data-interface="rpg"] body :is(h1,h2,h3,.theme-trail-title) { @apply [font-family:'VT323',monospace] tracking-normal; }
+:root[data-interface="rpg"] body :is(.btn.primary,.nav-link,.workspace-select) svg.app-icon { @apply text-current bg-transparent; }
+:root[data-interface="rpg"] .icon-default { @apply hidden; }
+:root[data-interface="rpg"] .icon-rpg { @apply block; }
+:root[data-interface="rpg"] body :is(button,a,input,textarea,select):focus-visible { @apply outline-2 outline-offset-4 outline-[#4d9c3b]; }
+:root[data-interface="rpg"] body .theme-trail { @apply mb-6 border-2 border-[#4d9c3b] bg-[#050a05] p-4 rounded-lg shadow-[3px_4px_0_#352e2220]; }
+:root[data-interface="rpg"] body .theme-trail summary { @apply cursor-pointer flex items-center justify-between gap-3 font-semibold; }
+:root[data-interface="rpg"] body .theme-trail nav { @apply flex flex-wrap gap-3 mt-4; }
+:root[data-interface="rpg"] body .theme-trail a { @apply inline-flex items-center gap-2 px-3 py-2 border border-[#4d9c3b] rounded-md text-[#8df579] bg-[#050a05]; }
+:root[data-interface="rpg"] body .theme-trail a[aria-current="page"] { @apply bg-[#33ff00] font-semibold; }
+:root[data-interface="rpg"] body .theme-trail-title { @apply text-2xl; }
+.interface-option-rpg .interface-sample { @apply bg-[#000000]; }
+.interface-option-rpg .interface-sample > span { @apply bg-[#050a05] border-[#4d9c3b]; }
+
+:root[data-interface="rpg"] body :is(.deck-tile,.library-card,.hub-tile,.work-paper,.nav-face,.theme-trail) { @apply rounded-none border-4 border-double shadow-[4px_4px_0_#51443140]!; }
+:root[data-interface="rpg"] body :is(.btn,.word-chip,.pair-card) { @apply rounded-none border-2 shadow-[2px_2px_0_#4d9c3b]; }
+:root[data-interface="rpg"] body .heading h1 { @apply text-[clamp(36px,4vw,56px)]; }
+:root[data-interface="rpg"] body .theme-trail a { @apply rounded-none border-2 shadow-[2px_2px_0_#4d9c3b]; }
+:root[data-interface="rpg"] body .thin-progress { @apply rounded-none bg-[#152d10]; }
+:root[data-interface="rpg"] body .thin-progress > span { @apply bg-[#33ff00] [background-image:repeating-linear-gradient(90deg,transparent_0_10px,#050a05_10px_12px)]; }
+
+:root[data-interface="rpg"]:not([data-has-background="true"]) body { @apply bg-none!; }
+:root[data-interface="rpg"] body .btn { @apply inline-flex items-center justify-center gap-2 px-4 py-2 min-h-11; }
+:root[data-interface="rpg"] body .nav-link.active::before { @apply hidden; }
+:root[data-interface="rpg"] body .flip-face { @apply rounded-none border-4 border-double; }

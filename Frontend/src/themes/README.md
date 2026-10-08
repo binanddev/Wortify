@@ -4,7 +4,7 @@
 - `preferences.js`: lưu/khôi phục tùy chỉnh riêng theo giao diện và nền.
 - `apply.js`: áp dụng tùy chỉnh vào DOM.
 - `icons.js`: tập hợp icon riêng; icon không ghi đè vẫn dùng bộ chung của UI.
-- `studio/`, `glass/`, `windows-xp/`, `retro/`, `space/`: CSS và icon riêng. `glass/policy.js` chứa giới hạn chỉnh sửa Glass.
+- `studio/`, `glass/`, `windows-xp/`, `retro/`, `notebook/`, `rpg/`: CSS và icon riêng. `glass/policy.js` chứa giới hạn chỉnh sửa Glass.
 - `shared/`: chất liệu, điều khiển và quy tắc chung giữa các giao diện.
 - `identity.css`: điểm nối CSS cho các theme bổ sung, giữ thứ tự cascade hiện tại.
 
@@ -29,3 +29,11 @@ Giấy phép và nguồn: `src/vendor/LICENSE-NES.txt` (https://github.com/nosta
 ### Retro: typography và các lớp nền
 
 `retro/pixel-polish.css` chỉ có selector Retro: VT323 400 được self-host từ @fontsource/vt323 (gồm latin, latin-ext, vietnamese; giấy phép tại src/vendor/LICENSE-VT323.txt). Các shell/page/catalog trong suốt, màu giấy chỉ nằm trong panel cụ thể. Các control vuông, Next/check có bóng pixel cứng. Native progress vẫn giữ value/max và aria-label; CSS chia fill thành các khối, không dùng transition width. Không đổi logic chấm bài hoặc component của các theme khác.
+
+Notebook and RPG Quest own their CSS and icon families. ThemeTrail adds collapsible notebook tabs / adventure destinations using the existing router; lesson state and scoring stay in feature components. Space is retired: legacy selections fall back to Studio; old appearance profile keys remain accepted so existing saves are not rejected.
+
+RPG Quest uses Terminal.css only inside `.quest-console`. Regenerate its scoped vendor stylesheet with `node scripts/build-terminal-vendor.mjs`; selectors and animation names are isolated. The console uses an allowlist router in `rpg/commands.js`, never shell execution. It lives on the reverse navigation face and supports command history.
+
+MS-DOS replaces the RPG Quest presentation. The internal `rpg` ID and folder are intentionally retained so saved appearance profiles keep working. Its visual reference is `ms_dos_flashcard_ui.html`; green-on-black panels, VT323 and directory headings are scoped to this theme. The terminal remains on the reverse navigation face.
+
+MS-DOS uses the shared responsive layout and unscaled modal portal. Its decorative pixel/scanline mask has a brief, low-contrast flicker every 19 seconds, disabled with prefers-reduced-motion. The mask never handles pointer events; it does not rasterize HTML text. Terminal remains on the front navigation face, with help and exit().

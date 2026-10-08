@@ -1,4 +1,4 @@
-export const INTERFACES = ["studio", "glass", "xp", "retro", "space"];
+export const INTERFACES = ["studio", "glass", "xp", "retro", "notebook", "rpg"];
 export const interfaceName = (value) =>
   INTERFACES.includes(value) ? value : "studio";
 export const INTERFACE_CHOICES = [
@@ -6,5 +6,6 @@ export const INTERFACE_CHOICES = [
   ["glass", "Glass", "Dark glass, soft light and your background."],
   ["xp", "Windows", "Familiar blues and classic windows."],
   ["retro", "Retro Arcade", "Pixels, warm paper and an arcade spirit."],
-  ["space", "Space", "Outer space, midnight blue and starlight."],
+  ["notebook", "Notebook", "Graph paper, ink sketches and a personal study journal."],
+  ["rpg", "MS-DOS", "Green phosphor, command prompts and classic terminal panels."],
 ];

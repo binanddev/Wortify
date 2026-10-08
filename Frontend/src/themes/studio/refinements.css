@@ -1,0 +1,106 @@
+/* Studio only. Loaded after shared readability so icon weight stays intentional.
+   No opacity/filter on text or icons; user font-size and color preferences survive. */
+:root[data-interface="studio"] body {
+  @apply [-webkit-font-smoothing:antialiased];
+  @apply [-moz-osx-font-smoothing:grayscale];
+}
+:root[data-interface="studio"] body svg.app-icon {
+  @apply [stroke-width:1.8];
+}
+:root[data-interface="studio"] body :is(h1, h2, h3, .brand) {
+  @apply [letter-spacing:-0.025em];
+  @apply [font-weight:600];
+  @apply [text-wrap:balance];
+}
+:root[data-interface="studio"] body :is(.btn, .nav-link) {
+  @apply [font-weight:500];
+  @apply [letter-spacing:-0.01em];
+}
+:root[data-interface="studio"] body .nav-link {
+  @apply [min-height:44px];
+  @apply [transition:background-color_160ms_ease,_color_160ms_ease];
+}
+:root[data-interface="studio"] body .nav-link.active {
+  @apply [box-shadow:inset_3px_0_0_#879d70];
+}
+:root[data-interface="studio"] body :is(.library-card, .deck-tile, .hub-tile) {
+  @apply [border-width:1px]!;
+}
+:root[data-interface="studio"] body :is(.library-card, .deck-tile, .hub-tile):hover {
+  @apply [border-color:#adbba0]!;
+  @apply [box-shadow:0_10px_32px_-16px_#232c2530]!;
+}
+:root[data-interface="studio"] body .studio-masthead {
+  @apply [border-color:#dce0d3];
+}
+:root[data-interface="studio"] body .studio-kicker {
+  @apply [color:#6b7265];
+  @apply [font-weight:600];
+  @apply [letter-spacing:0.1em];
+}
+:root[data-interface="studio"] body .studio-session-badge {
+  @apply [background:#e8edde];
+  @apply [color:#4c6240];
+  @apply [border:1px_solid_#d8e0cd];
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-interface="studio"] body .nav-link { @apply [transition:none]; }
+}
+
+:root[data-interface="studio"] body .nav-link > svg.app-icon {
+  @apply bg-transparent text-current p-[4px];
+}
+:root[data-interface="studio"] body .workspace-select > svg.app-icon {
+  @apply bg-transparent text-current;
+}
+
+/* Editorial typography is reserved for page titles, never exercise text. */
+:root[data-interface="studio"] body .heading h1 {
+  @apply [font-family:'Cormorant_Garamond',Georgia,serif] font-normal tracking-[-0.045em] text-[clamp(36px,4.5vw,64px)] leading-[1.12];
+}
+:root[data-interface="studio"] body .studio-title-lead {
+  @apply italic font-normal;
+}
+:root[data-interface="studio"] body :is(.deck-tile,.library-card,.hub-tile) {
+  @apply rounded-[14px] p-6 border-[#d6ddcb]! bg-[#fcfaf4]!;
+}
+:root[data-interface="studio"] body :is(.deck-tile,.library-card,.hub-tile) h3 {
+  @apply [font-family:Montserrat,ui-sans-serif,system-ui,sans-serif] font-semibold tracking-[-0.025em] leading-snug;
+}
+:root[data-interface="studio"] body :is(.tile-icon,.tile-icon .app-icon) {
+  @apply bg-transparent text-[#526447];
+}
+:root[data-interface="studio"] body .deck-tile :is(.pill,small) {
+  @apply rounded-full bg-[#e9edde] text-[#4c5d40] text-xs px-3 py-1;
+}
+:root[data-interface="studio"] body .deck-tile small {
+  @apply inline-block self-start;
+}
+:root[data-interface="studio"] body .thin-progress {
+  @apply bg-[#e5e8dc];
+}
+:root[data-interface="studio"] body .thin-progress > span {
+  @apply bg-[#809369];
+}
+:root[data-interface="studio"] body .nav-face {
+  @apply bg-[#232c25]/95! backdrop-blur-xl!;
+}
+:root[data-interface="studio"] body .default-background {
+  @apply bg-[#f7f1e5] [background-image:radial-gradient(ellipse_at_90%_10%,#e8e6d8,transparent_48%),radial-gradient(ellipse_at_15%_90%,#eee5d5,transparent_48%)];
+}
+
+:root[data-interface="studio"] .ambient-symbols { @apply hidden; }
+
+/* Fonts are bundled locally; no external font service or network at runtime. */
+:root[data-interface="studio"] {
+  --font-sans: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+:root[data-interface="studio"] body {
+  @apply [font-family:var(--font-sans)] leading-[1.65];
+}
+:root[data-interface="studio"] body :is(h1,h2,.studio-masthead strong) {
+  @apply [font-family:'Cormorant_Garamond',Georgia,serif] font-semibold leading-[1.2] tracking-[-0.015em];
+}
+:root[data-interface="studio"] body .heading h1 {
+  @apply font-medium leading-[1.12];
+}

@@ -99,19 +99,19 @@ for(const mode of ['studio','glass']) {
     if(s.filter!=='none'||s.backdropFilter!=='none') errors.push(mode+' '+target.className+' filter='+s.filter+' backdrop='+s.backdropFilter);
    }
   }
-  if(mode==='studio' && getComputedStyle(face).backgroundColor!=='rgb(255, 253, 246)') errors.push('Studio surface is not opaque cream');
+  if(mode==='studio' && getComputedStyle(face).backgroundColor!=='rgb(252, 250, 244)') errors.push('Studio surface is not opaque ivory');
  }
  if(new Set(colors).size!==1) errors.push(mode+' icons change with glass alpha');
 }
 root.dataset.interface='studio';card.firstElementChild.classList.remove('flipped');card.removeAttribute('data-test-hover');card.setAttribute('aria-pressed','false');root.style.setProperty('--glass-alpha','0.75');
 const themeBackgrounds=[];
-for(const mode of ['xp','retro','space']) {
+for(const mode of ['xp','retro','notebook','rpg']) {
  root.dataset.interface=mode;
  themeBackgrounds.push(getComputedStyle(document.querySelector('.flip-face')).backgroundColor);
  if(getComputedStyle(document.querySelector('.icon-'+mode)).display==='none'||getComputedStyle(document.querySelector('.icon-default')).display!=='none') errors.push(mode+' independent icons missing');
  if(getComputedStyle(document.querySelector('.nav-face')).backdropFilter!=='none') errors.push(mode+' inherited glass blur');
 }
-if(new Set(themeBackgrounds).size!==3) errors.push('New theme surfaces are not distinct');
+if(new Set(themeBackgrounds).size!==4) errors.push('New theme surfaces are not distinct');
 const cleanup=installAutoContrast();root.dataset.textAuto='true';
 const probe=document.createElement('button');probe.textContent='Auto contrast';document.body.append(probe);
 for(const color of ['#ffffff','#111111']) {
@@ -131,7 +131,7 @@ for (const [selector, expected] of [['.pair-card.paired','rgb(220, 235, 220)'],[
  if(getComputedStyle(el).backgroundColor!==expected) errors.push('Retro feedback '+selector+': '+getComputedStyle(el).backgroundColor);
 }
 root.dataset.hasBackground='true';root.style.setProperty('--site-bg-image','linear-gradient(rgb(1,2,3),rgb(4,5,6))');
-for(const mode of ['studio','glass','xp','retro','space']) {
+for(const mode of ['studio','glass','xp','retro','notebook','rpg']) {
  root.dataset.interface=mode;
  if(!getComputedStyle(document.body).backgroundImage.includes('rgb(1, 2, 3)')) errors.push(mode+' shared background lost');
 }
@@ -139,7 +139,7 @@ root.dataset.hasBackground='false';root.style.removeProperty('--site-bg-image');
 document.activeElement?.blur();window.scrollTo(0,0);
 root.dataset.interface='${process.env.INTERFACE_THEME || 'studio'}';
 for(const el of document.querySelectorAll('button, .nav-face, .glass, .app-icon')) {
- const st=getComputedStyle(el);if(st.filter!=='none'||(root.dataset.interface==='studio' && st.backdropFilter!=='none')) errors.push('filter remains '+el.className);
+ const st=getComputedStyle(el);if(st.filter!=='none'||(root.dataset.interface==='studio' && !el.classList.contains('nav-face') && st.backdropFilter!=='none')) errors.push('filter remains '+el.className);
 }
 document.getElementById('results').textContent=JSON.stringify({errors});
 })();

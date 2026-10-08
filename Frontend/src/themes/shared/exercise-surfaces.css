@@ -1,7 +1,8 @@
 :root:is(
     [data-interface="xp"],
     [data-interface="retro"],
-    [data-interface="space"]
+    [data-interface="notebook"],
+    [data-interface="rpg"]
   )
   body
   .exercise-workspace

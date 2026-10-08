@@ -1,4 +1,11 @@
 @import "tailwindcss";
+@import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/500.css";
+@import "@fontsource/montserrat/600.css";
+@import "@fontsource/montserrat/700.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/500-italic.css";
+@import "@fontsource/cormorant-garamond/600.css";
 @plugin "../hero.js";
 @source "../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
 @custom-variant dark (&:is(.dark *));
@@ -7,6 +14,7 @@
 }
 @import "../vendor/retro-libraries.css";
 @import "../vendor/windows-libraries.css";
+@import "../vendor/terminal-scoped.css";
 @import "./tokens.css";
 @import "./profile.css";
 @import "./foundation.css";
@@ -53,3 +61,14 @@
 @import "../themes/retro/arcade.css";
 @import "../themes/retro/pixel-polish.css";
 @import "../themes/windows-xp/desktop.css";
+
+@import "../themes/studio/refinements.css";
+
+@import "@fontsource/kalam/400.css";
+@import "@fontsource/kalam/700.css";
+@import "../themes/notebook/styles.css";
+@import "../themes/rpg/styles.css";
+
+@import "../themes/notebook/pages.css";
+
+@import "../themes/rpg/terminal.css";

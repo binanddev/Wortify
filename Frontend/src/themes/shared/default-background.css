@@ -30,12 +30,6 @@ body {
 :root[data-interface="xp"] .default-background {
   @apply bg-[#8cc6e6] [background-image:radial-gradient(ellipse_at_25%_130%,#648653_0%,#a1b57c_55%,transparent_56%)];
 }
-:root[data-interface="space"] .default-background {
-  @apply bg-[#0b1329] [background-image:radial-gradient(ellipse_at_85%_15%,#343353,transparent_60%)];
-}
-:root[data-interface="space"] .ambient-symbols {
-  @apply text-[#a4d1e4] opacity-30;
-}
 :root[data-interface="retro"] .retro-world {
   @apply block;
 }

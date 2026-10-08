@@ -79,20 +79,20 @@ function DeckOptions({ values, set, folders }) {
     </div>
   );
 }
-export function Library({ lang }) {
+export function Library({ lang, interfaceName }) {
   const resource = useResource(endpoint(lang, "decks/"));
   return (
     <Loading resource={resource}>
       {(data) => (
         <LibraryContent
           key={lang}
-          {...{ data, lang, reload: resource.reload }}
+          {...{ data, lang, interfaceName, reload: resource.reload }}
         />
       )}
     </Loading>
   );
 }
-function LibraryContent({ data, lang, reload }) {
+function LibraryContent({ data, lang, interfaceName, reload }) {
   const navigate = useNavigate();
   const route = useRoute();
   const folder =
@@ -107,6 +107,7 @@ function LibraryContent({ data, lang, reload }) {
     [remove, setRemove] = useState(null),
     [panel, setPanel] = useState(null),
     [layout, setLayout] = useState("grid");
+  const [studyPile, setStudyPile] = useState(false);
   const action = useAction();
   const api = (p, m, d, s) => request(endpoint(lang, p), m, d, s);
   let decks = data.decks.filter(
@@ -114,6 +115,7 @@ function LibraryContent({ data, lang, reload }) {
       String(d.folder_id ?? "all") === folder &&
       `${d.title} ${d.description}`.toLowerCase().includes(query.toLowerCase()),
   );
+  if (interfaceName === "notebook" && studyPile) decks = decks.filter((d) => d.due > 0);
   if (sort === "name") decks.sort((a, b) => a.title.localeCompare(b.title));
   if (sort === "count") decks.sort((a, b) => b.count - a.count);
   const selected = data.folders.find((f) => String(f.id) === folder);
@@ -145,7 +147,7 @@ function LibraryContent({ data, lang, reload }) {
     <Page>
       <div className="flash-library-heading">
         <div>
-          <h1>{selected?.name || "My Flashcards"}</h1>
+          <h1>{selected?.name || <><span className="studio-title-lead">My</span> Flashcards</>}</h1>
         </div>
         <div className="flash-icon-row">
           <Btn
@@ -164,6 +166,16 @@ function LibraryContent({ data, lang, reload }) {
           </Btn>
         </div>
       </div>
+      {interfaceName === "notebook" && <section className="notebook-desk" aria-label="Study desk">
+        <div className="notebook-sticky"><span className="notebook-caption">On my desk</span><strong>{data.due} cards to revisit</strong><p>Pick a note and make it yours.</p>
+          {data.resume && <Link className="notebook-ink-action" to={`/${lang}/flashcard/session/${data.resume}`}>Continue studying <Icon name="arrow" /></Link>}
+        </div>
+        <div className="notebook-desk-actions">
+          <button className="notebook-ink-action" onClick={() => createHere("deck")}><Icon name="plus" /> New card collection</button>
+          <button className="notebook-ink-action" onClick={() => createHere("folder")}><Icon name="folder" /> New notebook section</button>
+          <label className="notebook-check"><input type="checkbox" checked={studyPile} onChange={e => setStudyPile(e.target.checked)} /> Only notes due for review</label>
+        </div>
+      </section>}
       <Status error={action.error} />
       <div
         className={`mb-5 grid gap-3 ${layout === "list" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"}`}
@@ -181,7 +193,7 @@ function LibraryContent({ data, lang, reload }) {
             key={f.id}
             onClick={() => setFolder(String(f.id))}
             title={folderPath(data.folders, f)}
-            className="flex items-center gap-3 rounded-2xl border border-(--line) bg-(--surface) px-4 py-3 font-semibold transition hover:-translate-y-0.5 hover:bg-(--solid)"
+            className="notebook-folder-tab flex items-center gap-3 rounded-2xl border border-(--line) bg-(--surface) px-4 py-3 font-semibold transition hover:-translate-y-0.5 hover:bg-(--solid)"
           >
             <Icon name="folder" />
             <span>{f.name}</span>
@@ -353,7 +365,8 @@ function LibraryContent({ data, lang, reload }) {
           </Link>
         ))}
       </div>
-      {!decks.length && !visibleFolders.length && (
+      {interfaceName === "notebook" && studyPile && !decks.length && <p className="notebook-empty">No notes are due in this section. Uncheck the filter to see all your notes.</p>}
+      {!decks.length && !visibleFolders.length && !(interfaceName === "notebook" && studyPile) && (
         <div className="flash-empty">
           <Icon name={query ? "search" : "cards"} size={36} />
           <p>

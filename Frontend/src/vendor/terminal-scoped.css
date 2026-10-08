@@ -1,0 +1,1060 @@
+/* Terminal.css (MIT), scoped to RPG command console. Regenerate with build-terminal-vendor.mjs. */
+:root[data-interface="rpg"] .quest-console {
+  --global-font-size: 15px;
+  --global-line-height: 1.4em;
+  --global-space: 10px;
+  --font-stack: "Menlo", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", serif;
+  --mono-font-stack: "Menlo", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", serif;
+  --background-color: #fff;
+  --page-width: 60em;
+  --font-color: #151515;
+  --invert-font-color: #fff;
+  --primary-color: #1a95e0;
+  --secondary-color: #727578;
+  --error-color: #d20962;
+  --progress-bar-background: #727578;
+  --progress-bar-fill: #151515;
+  --code-bg-color: #e8eff2;
+  --input-style: solid;
+  --display-h1-decoration: none;
+  --block-background-color: var(--background-color);
+}
+
+:root[data-interface="rpg"] .quest-console * {
+  box-sizing: border-box;
+  text-rendering: geometricprecision;
+}
+
+:root[data-interface="rpg"] .quest-console *::selection {
+  background: var(--primary-color);
+  color: var(--invert-font-color);
+}
+
+:root[data-interface="rpg"] .quest-console {
+  font-size: var(--global-font-size);
+  color: var(--font-color);
+  line-height: var(--global-line-height);
+  margin: 0;
+  font-family: var(--font-stack);
+  word-wrap: break-word;
+  background-color: var(--background-color);
+}
+
+:root[data-interface="rpg"] .quest-console h1,
+:root[data-interface="rpg"] .quest-console h2,
+:root[data-interface="rpg"] .quest-console h3,
+:root[data-interface="rpg"] .quest-console h4,
+:root[data-interface="rpg"] .quest-console h5,
+:root[data-interface="rpg"] .quest-console h6,
+:root[data-interface="rpg"] .quest-console .logo {
+  line-height: var(--global-line-height);
+}
+
+:root[data-interface="rpg"] .quest-console a {
+  cursor: pointer;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+:root[data-interface="rpg"] .quest-console a:hover {
+  background-color: var(--primary-color);
+  color: var(--invert-font-color);
+}
+
+:root[data-interface="rpg"] .quest-console em {
+  font-size: var(--global-font-size);
+  font-style: italic;
+  font-family: var(--font-stack);
+  color: var(--font-color);
+}
+
+:root[data-interface="rpg"] .quest-console blockquote,
+:root[data-interface="rpg"] .quest-console code,
+:root[data-interface="rpg"] .quest-console em,
+:root[data-interface="rpg"] .quest-console strong {
+  line-height: var(--global-line-height);
+}
+
+:root[data-interface="rpg"] .quest-console blockquote,
+:root[data-interface="rpg"] .quest-console code,
+:root[data-interface="rpg"] .quest-console footer,
+:root[data-interface="rpg"] .quest-console h1,
+:root[data-interface="rpg"] .quest-console h2,
+:root[data-interface="rpg"] .quest-console h3,
+:root[data-interface="rpg"] .quest-console h4,
+:root[data-interface="rpg"] .quest-console h5,
+:root[data-interface="rpg"] .quest-console h6,
+:root[data-interface="rpg"] .quest-console header,
+:root[data-interface="rpg"] .quest-console li,
+:root[data-interface="rpg"] .quest-console ol,
+:root[data-interface="rpg"] .quest-console p,
+:root[data-interface="rpg"] .quest-console section,
+:root[data-interface="rpg"] .quest-console ul,
+:root[data-interface="rpg"] .quest-console .logo {
+  float: none;
+  margin: 0;
+  padding: 0;
+}
+
+:root[data-interface="rpg"] .quest-console blockquote,
+:root[data-interface="rpg"] .quest-console h1,
+:root[data-interface="rpg"] .quest-console ol,
+:root[data-interface="rpg"] .quest-console p,
+:root[data-interface="rpg"] .quest-console ul,
+:root[data-interface="rpg"] .quest-console .logo {
+  margin-top: calc(var(--global-space) * 2);
+  margin-bottom: calc(var(--global-space) * 2);
+}
+
+:root[data-interface="rpg"] .quest-console h1,
+:root[data-interface="rpg"] .quest-console .logo {
+  position: relative;
+  padding: calc(var(--global-space) * 2) 0 calc(var(--global-space) * 2);
+  margin: 0;
+  overflow: hidden;
+  font-weight: 600;
+}
+
+:root[data-interface="rpg"] .quest-console h1::after {
+  content: "====================================================================================================";
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  display: var(--display-h1-decoration);
+}
+
+:root[data-interface="rpg"] .quest-console h1 + *,
+:root[data-interface="rpg"] .quest-console .logo + * {
+  margin-top: 0;
+}
+
+:root[data-interface="rpg"] .quest-console h2,
+:root[data-interface="rpg"] .quest-console h3,
+:root[data-interface="rpg"] .quest-console h4,
+:root[data-interface="rpg"] .quest-console h5,
+:root[data-interface="rpg"] .quest-console h6 {
+  position: relative;
+  margin-bottom: var(--global-line-height);
+  font-weight: 600;
+}
+
+:root[data-interface="rpg"] .quest-console blockquote {
+  position: relative;
+  padding-left: calc(var(--global-space) * 2);
+  overflow: hidden;
+}
+
+:root[data-interface="rpg"] .quest-console blockquote::after {
+  content: ">\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>";
+  white-space: pre;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: var(--global-line-height);
+  color: #9ca2ab;
+}
+
+:root[data-interface="rpg"] .quest-console blockquote > *:last-child {
+  margin-bottom: 0;
+}
+
+:root[data-interface="rpg"] .quest-console code {
+  font-weight: inherit;
+  background-color: var(--code-bg-color);
+  font-family: var(--mono-font-stack);
+}
+
+:root[data-interface="rpg"] .quest-console code::after,
+:root[data-interface="rpg"] .quest-console code::before {
+  content: "`";
+  display: inline;
+}
+
+:root[data-interface="rpg"] .quest-console pre code::after,
+:root[data-interface="rpg"] .quest-console pre code::before {
+  content: "";
+}
+
+:root[data-interface="rpg"] .quest-console pre {
+  display: block;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: var(--secondary-color);
+  background-color: var(--block-background-color);
+  border: 1px solid var(--secondary-color);
+  padding: var(--global-space);
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -o-pre-wrap;
+}
+
+:root[data-interface="rpg"] .quest-console pre code {
+  overflow-x: scroll;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  min-width: 100%;
+  font-family: var(--mono-font-stack);
+  background-color: var(--block-background-color);
+}
+
+:root[data-interface="rpg"] .quest-console blockquote,
+:root[data-interface="rpg"] .quest-console h1,
+:root[data-interface="rpg"] .quest-console h2,
+:root[data-interface="rpg"] .quest-console h3,
+:root[data-interface="rpg"] .quest-console h4,
+:root[data-interface="rpg"] .quest-console h5,
+:root[data-interface="rpg"] .quest-console h6,
+:root[data-interface="rpg"] .quest-console strong,
+:root[data-interface="rpg"] .quest-console .logo {
+  font-size: var(--global-font-size);
+  font-style: normal;
+  font-family: var(--font-stack);
+}
+
+:root[data-interface="rpg"] .quest-console code {
+  font-size: var(--global-font-size);
+  font-style: normal;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-prompt {
+  position: relative;
+  white-space: nowrap;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-prompt::before {
+  content: "> ";
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-prompt::after {
+  content: "";
+  animation: rpg-terminal-cursor 800ms infinite;
+  background: var(--primary-color);
+  border-radius: 0;
+  display: inline-block;
+  height: 1em;
+  margin-left: 0.2em;
+  width: 3px;
+  bottom: -2px;
+  position: relative;
+}
+
+@keyframes rpg-terminal-cursor {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes rpg-terminal-cursor {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+:root[data-interface="rpg"] .quest-console li,
+:root[data-interface="rpg"] .quest-console li > ul > li {
+  position: relative;
+  display: block;
+  padding-left: calc(var(--global-space) * 2);
+}
+
+:root[data-interface="rpg"] .quest-console nav > ul > li {
+  padding-left: 0;
+}
+
+:root[data-interface="rpg"] .quest-console li::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+:root[data-interface="rpg"] .quest-console ul > li::after {
+  content: "-";
+}
+
+:root[data-interface="rpg"] .quest-console nav ul > li::after {
+  content: "";
+}
+
+:root[data-interface="rpg"] .quest-console ol li::before {
+  content: counters(item, ".") ". ";
+  counter-increment: item;
+}
+
+:root[data-interface="rpg"] .quest-console ol ol li::before {
+  content: counters(item, ".") " ";
+  counter-increment: item;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-menu li::after,
+:root[data-interface="rpg"] .quest-console .terminal-menu li::before {
+  display: none;
+}
+
+:root[data-interface="rpg"] .quest-console ol {
+  counter-reset: item;
+}
+
+:root[data-interface="rpg"] .quest-console ol li:nth-child(n+10)::after {
+  left: -7px;
+}
+
+:root[data-interface="rpg"] .quest-console ol ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-menu {
+  width: 100%;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+:root[data-interface="rpg"] .quest-console ul ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-menu ul {
+  list-style-type: none;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-grow: 1;
+  font-size: var(--global-font-size);
+  margin-top: 0;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-menu li {
+  display: flex;
+  margin: 0 0 0.5em;
+  padding: 0;
+}
+
+:root[data-interface="rpg"] .quest-console ol.terminal-toc li {
+  border-bottom: 1px dotted var(--secondary-color);
+  padding: 0;
+  margin-bottom: 15px;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-menu li:last-child {
+  margin-bottom: 0;
+}
+
+:root[data-interface="rpg"] .quest-console ol.terminal-toc li a {
+  margin: 4px 4px 4px 0;
+  background: var(--background-color);
+  position: relative;
+  top: 6px;
+  text-align: left;
+  padding-right: 4px;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-menu li a:not(.btn) {
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  border: none;
+  color: var(--secondary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-menu li a.active {
+  color: var(--font-color);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-menu li a:hover {
+  background: none;
+  color: inherit;
+}
+
+:root[data-interface="rpg"] .quest-console ol.terminal-toc li::before {
+  content: counters(item, ".") ". ";
+  counter-increment: item;
+  position: absolute;
+  right: 0;
+  background: var(--background-color);
+  padding: 4px 0 4px 4px;
+  bottom: -8px;
+}
+
+:root[data-interface="rpg"] .quest-console ol.terminal-toc li a:hover {
+  background: var(--primary-color);
+  color: var(--invert-font-color);
+}
+
+:root[data-interface="rpg"] .quest-console hr {
+  position: relative;
+  overflow: hidden;
+  margin: calc(var(--global-space) * 4) 0;
+  border: 0;
+  border-bottom: 1px dashed var(--secondary-color);
+}
+
+:root[data-interface="rpg"] .quest-console p {
+  margin: 0 0 var(--global-line-height);
+}
+
+:root[data-interface="rpg"] .quest-console .container {
+  max-width: var(--page-width);
+}
+
+:root[data-interface="rpg"] .quest-console .container,
+:root[data-interface="rpg"] .quest-console .container-fluid {
+  margin: 0 auto;
+  padding: 0 calc(var(--global-space) * 2);
+}
+
+:root[data-interface="rpg"] .quest-console img {
+  max-width: 100%;
+}
+
+:root[data-interface="rpg"] .quest-console .progress-bar {
+  height: 8px;
+  background-color: var(--progress-bar-background);
+  margin: 12px 0;
+}
+
+:root[data-interface="rpg"] .quest-console .progress-bar.progress-bar-show-percent {
+  margin-top: 38px;
+}
+
+:root[data-interface="rpg"] .quest-console .progress-bar-filled {
+  background-color: var(--progress-bar-fill);
+  height: 100%;
+  transition: width 0.3s ease;
+  position: relative;
+  width: 0;
+}
+
+:root[data-interface="rpg"] .quest-console .progress-bar-filled::before {
+  content: "";
+  border: 6px solid transparent;
+  border-top-color: var(--progress-bar-fill);
+  position: absolute;
+  top: -6px;
+  right: -6px;
+}
+
+:root[data-interface="rpg"] .quest-console .progress-bar-filled::after {
+  color: var(--progress-bar-fill);
+  content: attr(data-filled);
+  display: block;
+  font-size: 12px;
+  white-space: nowrap;
+  position: absolute;
+  border: 6px solid transparent;
+  top: -32px;
+  right: 0;
+  transform: translateX(50%);
+}
+
+:root[data-interface="rpg"] .quest-console .progress-bar-no-arrow > .progress-bar-filled::before,
+:root[data-interface="rpg"] .quest-console .progress-bar-no-arrow > .progress-bar-filled::after {
+  content: "";
+  display: none;
+  visibility: hidden;
+  opacity: 0;
+}
+
+:root[data-interface="rpg"] .quest-console table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--global-line-height) 0;
+  color: var(--font-color);
+  font-size: var(--global-font-size);
+}
+
+:root[data-interface="rpg"] .quest-console table td,
+:root[data-interface="rpg"] .quest-console table th {
+  vertical-align: top;
+  border: 1px solid var(--font-color);
+  line-height: var(--global-line-height);
+  padding: calc(var(--global-space) / 2);
+  font-size: 1em;
+}
+
+:root[data-interface="rpg"] .quest-console table thead tr th {
+  font-size: 1em;
+  vertical-align: middle;
+  font-weight: 700;
+}
+
+:root[data-interface="rpg"] .quest-console table tfoot tr th {
+  font-weight: 500;
+}
+
+:root[data-interface="rpg"] .quest-console table caption {
+  font-size: 1em;
+  margin: 0 0 1em;
+}
+
+:root[data-interface="rpg"] .quest-console .form {
+  width: 100%;
+}
+
+:root[data-interface="rpg"] .quest-console fieldset {
+  border: 1px solid var(--font-color);
+  padding: 1em;
+}
+
+:root[data-interface="rpg"] .quest-console label {
+  font-size: 1em;
+  color: var(--font-color);
+}
+
+:root[data-interface="rpg"] .quest-console input[type="email"],
+:root[data-interface="rpg"] .quest-console input[type="text"],
+:root[data-interface="rpg"] .quest-console input[type="number"],
+:root[data-interface="rpg"] .quest-console input[type="password"],
+:root[data-interface="rpg"] .quest-console input[type="search"],
+:root[data-interface="rpg"] .quest-console input[type="date"],
+:root[data-interface="rpg"] .quest-console input[type="time"] {
+  border: 1px var(--input-style) var(--font-color);
+  width: 100%;
+  padding: 0.7em 0.5em;
+  font-size: 1em;
+  font-family: var(--font-stack);
+
+  /* stylelint-disable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* stylelint-enable */
+
+  appearance: none;
+  border-radius: 0;
+}
+
+:root[data-interface="rpg"] .quest-console input[type="email"]:active,
+:root[data-interface="rpg"] .quest-console input[type="text"]:active,
+:root[data-interface="rpg"] .quest-console input[type="number"]:active,
+:root[data-interface="rpg"] .quest-console input[type="password"]:active,
+:root[data-interface="rpg"] .quest-console input[type="search"]:active,
+:root[data-interface="rpg"] .quest-console input[type="date"]:active,
+:root[data-interface="rpg"] .quest-console input[type="time"]:active,
+:root[data-interface="rpg"] .quest-console input[type="email"]:focus,
+:root[data-interface="rpg"] .quest-console input[type="text"]:focus,
+:root[data-interface="rpg"] .quest-console input[type="number"]:focus,
+:root[data-interface="rpg"] .quest-console input[type="password"]:focus,
+:root[data-interface="rpg"] .quest-console input[type="search"]:focus,
+:root[data-interface="rpg"] .quest-console input[type="date"]:focus,
+:root[data-interface="rpg"] .quest-console input[type="time"]:focus {
+  outline: none;
+
+  /* stylelint-disable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* stylelint-enable */
+
+  appearance: none;
+  border: 1px solid var(--font-color);
+}
+
+:root[data-interface="rpg"] .quest-console input[type="text"]:not(:placeholder-shown):invalid,
+:root[data-interface="rpg"] .quest-console input[type="email"]:not(:placeholder-shown):invalid,
+:root[data-interface="rpg"] .quest-console input[type="password"]:not(:placeholder-shown):invalid,
+:root[data-interface="rpg"] .quest-console input[type="search"]:not(:placeholder-shown):invalid,
+:root[data-interface="rpg"] .quest-console input[type="number"]:not(:placeholder-shown):invalid,
+:root[data-interface="rpg"] .quest-console input[type="date"]:not(:placeholder-shown):invalid,
+:root[data-interface="rpg"] .quest-console input[type="time"]:not(:placeholder-shown):invalid {
+  border-color: var(--error-color);
+}
+
+:root[data-interface="rpg"] .quest-console input,
+:root[data-interface="rpg"] .quest-console textarea {
+  color: var(--font-color);
+  background-color: var(--background-color);
+}
+
+:root[data-interface="rpg"] .quest-console input::placeholder,
+:root[data-interface="rpg"] .quest-console textarea::placeholder {
+  color: var(--secondary-color) !important;
+  opacity: 1;
+}
+
+:root[data-interface="rpg"] .quest-console textarea {
+  height: auto;
+  width: 100%;
+  resize: none;
+  border: 1px var(--input-style) var(--font-color);
+  padding: 0.5em;
+  font-size: 1em;
+  font-family: var(--font-stack);
+  appearance: none;
+  border-radius: 0;
+}
+
+:root[data-interface="rpg"] .quest-console textarea:focus {
+  outline: none;
+
+  /* stylelint-disable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* stylelint-enable */
+
+  appearance: none;
+  border: 1px solid var(--font-color);
+}
+
+:root[data-interface="rpg"] .quest-console textarea:not(:placeholder-shown):invalid {
+  border-color: var(--error-color);
+}
+
+:root[data-interface="rpg"] .quest-console select {
+  border: 1px var(--input-style) var(--font-color);
+  width: 100%;
+  padding: .7em .5em;
+  font-size: 1em;
+  font-family: var(--font-stack);
+  color: var(--font-color);
+  border-radius: 0;
+
+  /* stylelint-disable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* stylelint-enable */
+
+  background-color: var(--background-color);
+  background-image: url("data:image/svg+xml;utf8,<svg fill='currentColor' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right .5em bottom .5em;
+}
+
+:root[data-interface="rpg"] .quest-console input:-webkit-autofill,
+:root[data-interface="rpg"] .quest-console input:-webkit-autofill:hover,
+:root[data-interface="rpg"] .quest-console input:-webkit-autofill:focus textarea:-webkit-autofill,
+:root[data-interface="rpg"] .quest-console textarea:-webkit-autofill:hover textarea:-webkit-autofill:focus,
+:root[data-interface="rpg"] .quest-console select:-webkit-autofill,
+:root[data-interface="rpg"] .quest-console select:-webkit-autofill:hover,
+:root[data-interface="rpg"] .quest-console select:-webkit-autofill:focus {
+  border: 1px solid var(--font-color);
+  -webkit-text-fill-color: var(--font-color);
+  box-shadow: 0 0 0 1e3pxx var(--invert-font-color) inset;
+  transition: background-color 5e3ss ease-in-out 0s;
+}
+
+:root[data-interface="rpg"] .quest-console .form-group {
+  margin-bottom: var(--global-line-height);
+  overflow: auto;
+}
+
+:root[data-interface="rpg"] .quest-console .btn {
+  border-style: solid;
+  border-width: 1px;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  padding: 0.65em 2em;
+  font-size: 1em;
+  font-family: inherit;
+  user-select: none;
+  position: relative;
+  z-index: 1;
+}
+
+:root[data-interface="rpg"] .quest-console .btn:active {
+  box-shadow: none;
+}
+
+:root[data-interface="rpg"] .quest-console .btn.btn-ghost {
+  border-color: var(--font-color);
+  color: var(--font-color);
+  background-color: transparent;
+}
+
+:root[data-interface="rpg"] .quest-console .btn.btn-ghost:focus,
+:root[data-interface="rpg"] .quest-console .btn.btn-ghost:hover {
+  border-color: var(--tertiary-color);
+  color: var(--tertiary-color);
+  z-index: 2;
+}
+
+:root[data-interface="rpg"] .quest-console .btn.btn-ghost:hover {
+  background-color: transparent;
+}
+
+:root[data-interface="rpg"] .quest-console .btn-block {
+  width: 100%;
+  display: flex;
+}
+
+:root[data-interface="rpg"] .quest-console .btn-default {
+  background-color: var(--font-color);
+  border-color: var(--invert-font-color);
+  color: var(--invert-font-color);
+}
+
+:root[data-interface="rpg"] .quest-console .btn-default:hover,
+:root[data-interface="rpg"] .quest-console .btn-default:focus:not(.btn-ghost) {
+  background-color: var(--secondary-color);
+  color: var(--invert-font-color);
+}
+
+:root[data-interface="rpg"] .quest-console .btn-default.btn-ghost:focus,
+:root[data-interface="rpg"] .quest-console .btn-default.btn-ghost:hover {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+  z-index: 2;
+}
+
+:root[data-interface="rpg"] .quest-console .btn-error {
+  color: var(--invert-font-color);
+  background-color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+:root[data-interface="rpg"] .quest-console .btn-error:hover,
+:root[data-interface="rpg"] .quest-console .btn-error:focus:not(.btn-ghost) {
+  background-color: var(--error-color);
+  border-color: var(--error-color);
+}
+
+:root[data-interface="rpg"] .quest-console .btn-error.btn-ghost {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+:root[data-interface="rpg"] .quest-console .btn-error.btn-ghost:focus,
+:root[data-interface="rpg"] .quest-console .btn-error.btn-ghost:hover {
+  border-color: var(--error-color);
+  color: var(--error-color);
+  z-index: 2;
+}
+
+:root[data-interface="rpg"] .quest-console .btn-primary {
+  color: var(--invert-font-color);
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .btn-primary:hover,
+:root[data-interface="rpg"] .quest-console .btn-primary:focus:not(.btn-ghost) {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .btn-primary.btn-ghost {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .btn-primary.btn-ghost:focus,
+:root[data-interface="rpg"] .quest-console .btn-primary.btn-ghost:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  z-index: 2;
+}
+
+:root[data-interface="rpg"] .quest-console .btn-small {
+  padding: 0.5em 1.3em !important;
+  font-size: 0.9em !important;
+}
+
+:root[data-interface="rpg"] .quest-console .btn-group {
+  overflow: auto;
+}
+
+:root[data-interface="rpg"] .quest-console .btn-group .btn {
+  float: left;
+}
+
+:root[data-interface="rpg"] .quest-console .btn-group .btn-ghost:not(:first-child) {
+  margin-left: -1px;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-card {
+  border: 1px solid var(--secondary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-card > header {
+  color: var(--invert-font-color);
+  text-align: center;
+  background-color: var(--secondary-color);
+  padding: 0.5em 0;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-card > div:first-of-type {
+  padding: var(--global-space);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-timeline {
+  position: relative;
+  padding-left: 70px;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-timeline::before {
+  content: ' ';
+  background: var(--secondary-color);
+  display: inline-block;
+  position: absolute;
+  left: 35px;
+  width: 2px;
+  height: 100%;
+  z-index: 400;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-timeline .terminal-card {
+  margin-bottom: 25px;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-timeline .terminal-card::before {
+  content: ' ';
+  background: var(--invert-font-color);
+  border: 2px solid var(--secondary-color);
+  display: inline-block;
+  position: absolute;
+  margin-top: 25px;
+  left: 26px;
+  width: 15px;
+  height: 15px;
+  z-index: 400;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-alert {
+  color: var(--font-color);
+  padding: 1em;
+  border: 1px solid var(--font-color);
+  margin-bottom: var(--global-space);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-alert-error {
+  color: var(--error-color);
+  border-color: var(--error-color);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-alert-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* stylelint-disable */
+@media screen and (min-width: 960px) {
+/* stylelint-enable */
+
+  :root[data-interface="rpg"] .quest-console label {
+    display: block;
+    width: 100%;
+  }
+
+  :root[data-interface="rpg"] .quest-console pre::-webkit-scrollbar {
+    height: 3px;
+  }
+}
+
+/* stylelint-disable */
+@media screen and (min-width: 480px) {
+/* stylelint-enable */
+  :root[data-interface="rpg"] .quest-console form {
+    width: 100%;
+  }
+}
+
+/* stylelint-disable */
+@media screen and (min-width: 30rem) {
+/* stylelint-enable */
+  :root[data-interface="rpg"] .quest-console .terminal-nav {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  :root[data-interface="rpg"] .quest-console .terminal-menu ul {
+    flex-direction: row;
+    place-items: center flex-end;
+    justify-content: flex-end;
+    margin-top: calc(var(--global-space) * 2);
+  }
+
+  :root[data-interface="rpg"] .quest-console .terminal-menu li {
+    margin: 0 2em 0 0;
+  }
+
+  :root[data-interface="rpg"] .quest-console .terminal-menu li:last-child {
+    margin-right: 0;
+  }
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-media:not(:last-child) {
+  margin-bottom: 1.25rem;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-media-left {
+  padding-right: var(--global-space);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-media-left,
+:root[data-interface="rpg"] .quest-console .terminal-media-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-media-right {
+  padding-left: var(--global-space);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-media-body {
+  display: table-cell;
+  vertical-align: top;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-media-heading {
+  font-size: 1em;
+  font-weight: 700;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-media-content {
+  margin-top: 0.3rem;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-placeholder {
+  background-color: var(--secondary-color);
+  text-align: center;
+  color: var(--font-color);
+  font-size: 1rem;
+  border: 1px solid var(--secondary-color);
+}
+
+:root[data-interface="rpg"] .quest-console figure > img {
+  padding: 0;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-avatarholder {
+  width: calc(var(--global-space) * 5);
+  height: calc(var(--global-space) * 5);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-avatarholder img {
+  padding: 0;
+}
+
+:root[data-interface="rpg"] .quest-console figure {
+  margin: 0;
+}
+
+:root[data-interface="rpg"] .quest-console figure > figcaption {
+  color: var(--secondary-color);
+  text-align: center;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-banner {
+  background-color: var(--font-color);
+  color: var(--invert-font-color);
+  padding: calc(var(--global-space) * 2);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-banner > .container {
+  max-width: var(--page-width);
+}
+
+:root[data-interface="rpg"] .quest-console .terminal-banner > .container,
+:root[data-interface="rpg"] .quest-console .terminal-banner > .container-fluid {
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* stylelint-disable */
+@media screen and (min-width: 30rem) {
+  /* stylelint-enable */
+  :root[data-interface="rpg"] .quest-console .terminal-banner {
+    flex-direction: row;
+  }
+}
+
+:root[data-interface="rpg"] .quest-console .hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: var(--block-background-color);
+  color: var(--font-color);
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-comment,
+:root[data-interface="rpg"] .quest-console .hljs-quote {
+  color: var(--secondary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-variable {
+  color: var(--font-color);
+}
+
+/* stylelint-disable */
+:root[data-interface="rpg"] .quest-console .hljs-keyword,
+:root[data-interface="rpg"] .quest-console .hljs-selector-tag,
+:root[data-interface="rpg"] .quest-console .hljs-built_in,
+:root[data-interface="rpg"] .quest-console .hljs-name,
+:root[data-interface="rpg"] .quest-console .hljs-tag {
+/* stylelint-enable */
+  color: var(--primary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-string,
+:root[data-interface="rpg"] .quest-console .hljs-title,
+:root[data-interface="rpg"] .quest-console .hljs-section,
+:root[data-interface="rpg"] .quest-console .hljs-attribute,
+:root[data-interface="rpg"] .quest-console .hljs-literal,
+:root[data-interface="rpg"] .quest-console .hljs-template-tag,
+:root[data-interface="rpg"] .quest-console .hljs-template-variable,
+:root[data-interface="rpg"] .quest-console .hljs-type,
+:root[data-interface="rpg"] .quest-console .hljs-addition {
+  color: var(--secondary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-string {
+  color: var(--secondary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-deletion,
+:root[data-interface="rpg"] .quest-console .hljs-selector-attr,
+:root[data-interface="rpg"] .quest-console .hljs-selector-pseudo,
+:root[data-interface="rpg"] .quest-console .hljs-meta {
+  color: var(--primary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-doctag {
+  color: var(--secondary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-attr {
+  color: var(--primary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-symbol,
+:root[data-interface="rpg"] .quest-console .hljs-bullet,
+:root[data-interface="rpg"] .quest-console .hljs-link {
+  color: var(--primary-color);
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-emphasis {
+  font-style: italic;
+}
+
+:root[data-interface="rpg"] .quest-console .hljs-strong {
+  font-weight: bold;
+}

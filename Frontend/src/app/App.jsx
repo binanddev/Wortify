@@ -1,3 +1,4 @@
+import QuestConsole from "../themes/rpg/QuestConsole.jsx";
 import Home from "../home/home.jsx";
 import { interfaceName } from "../themes/registry.js";
 import { installAutoContrast } from "../features/appearance/auto-contrast.js";
@@ -400,6 +401,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       };
     }),
     [navBack, setNavBack] = useState(false);
+  const [terminalOpen, setTerminalOpen] = useState(false);
   const navWidth = widthForScale(prefs.navScale);
   const [smallScreen, setSmallScreen] = useState(
     () => window.matchMedia("(max-width: 1024px)").matches,
@@ -599,6 +601,8 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                   inert={navBack}
                   aria-hidden={navBack}
                 >
+                  {prefs.interface === "rpg" && <button className="nav-link" onClick={() => setTerminalOpen(v => !v)}>{terminalOpen ? "Exit terminal" : "Terminal"}</button>}
+                  {prefs.interface === "rpg" && terminalOpen ? <QuestConsole lang={lang} onExit={() => setTerminalOpen(false)} /> : <>
                   <nav>
                     {[
                       ["flashcard", "cards", "Flashcard"],
@@ -614,7 +618,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                       >
                         <Icon name={icon} />
                         {title}
-                        {section === id && <span className="nav-dot" />}
+                        
                       </Link>
                     ))}
                   </nav>
@@ -680,6 +684,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                     </div>
                     <Status error={action.error || sync.error} />
                   </div>
+                  </>}
                 </aside>
               </div>
               <div
@@ -716,6 +721,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       )}
       {prefs.interface !== "xp" && (
         <div className="main-shell">
+          
           {prefs.interface === "studio" && (
             <header className="studio-masthead">
               <div>
@@ -815,7 +821,7 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
           sound={prefs.sound}
         />
       ) : (
-        <Library lang={lang} />
+        <Library lang={lang} interfaceName={prefs.interface} />
       );
   } else if (legacyDestination)
     content = (

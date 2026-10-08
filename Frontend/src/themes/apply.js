@@ -50,8 +50,10 @@ export function applyAppearance(p = {}) {
     ? p.textColor
     : night
       ? "#f0f5ff"
-      : style === "space"
-        ? "#eef2ff"
+      : style === "rpg"
+        ? "#8df579"
+        : style === "notebook"
+          ? "#332a20"
         : style === "retro"
           ? "#292419"
           : style === "xp"

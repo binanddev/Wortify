@@ -1,0 +1,90 @@
+/* Notebook page treatments. Preserve the navigation's 3D/backface contract. */
+:root[data-interface="notebook"] body .nav-face {
+ @apply bg-[#fff1b8]! border-0! rounded-[3px_5px_24px_3px]! [background-image:linear-gradient(180deg,#e8d68a45,transparent_90px),repeating-linear-gradient(transparent_0_31px,#9b976418_31px_32px)]! shadow-[3px_9px_18px_-8px_#55472865]!;
+}
+:root[data-interface="notebook"] body .nav-face.nav-back {
+ @apply bg-[#f4edcd]!;
+}
+:root[data-interface="notebook"] body .nav-face::before {
+ @apply content-[''] absolute top-0 left-[36%] w-24 h-5 bg-[#d6c7a8]/60 rotate-[-2deg] pointer-events-none z-1;
+}
+:root[data-interface="notebook"] body .nav-face::after {
+ @apply content-[''] absolute bottom-0 right-0 w-6 h-6 [background:linear-gradient(135deg,#cfbb7d66_49%,#f8f5e9_51%)] pointer-events-none;
+}
+:root[data-interface="notebook"] body .nav-static {
+ @apply border-0 bg-transparent! shadow-none!;
+}
+:root[data-interface="notebook"] body .nav-face :is(.sidebar,.workspace-context) {
+ @apply rounded-none bg-transparent! border-0! shadow-none! pb-8;
+}
+:root[data-interface="notebook"] body :is(.nav-rotate,.mobile-nav-close) {
+ @apply rounded-full bg-transparent border-0 shadow-none text-[#52604a];
+}
+:root[data-interface="notebook"] body .nav-link.active {
+ @apply [background:linear-gradient(transparent_15%,#e4bd5370_15%_85%,transparent_85%)]!;
+}
+/* Long-form content sits on the notebook, without nested card shells. */
+:root[data-interface="notebook"] body :is(.practice-catalog,.learning-welcome,.exercise-workspace,.learner-profile,.profile-identity,.profile-panel,.author-panel,.author-question,.reading-document) {
+ @apply bg-transparent! bg-none! border-0! rounded-none! shadow-none!;
+}
+:root[data-interface="notebook"] body :is(.profile-panel,.author-question)::before {
+ @apply hidden!;
+}
+:root[data-interface="notebook"] body .practice-catalog {
+ @apply py-5;
+}
+:root[data-interface="notebook"] body .catalog-card {
+ @apply bg-[#fffdf5]! border-0! border-b border-dashed border-[#a2a58e]! rounded-[2px_2px_12px_2px]! shadow-[0_4px_8px_-6px_#55472860]!;
+}
+:root[data-interface="notebook"] body .catalog-preview {
+ @apply bg-transparent! border-0! rounded-none!;
+}
+:root[data-interface="notebook"] body .journey-question {
+ @apply relative bg-[#fffdf5]! border-0! rounded-[2px_3px_14px_2px]! shadow-[0_8px_16px_-12px_#55472870]! [background-image:repeating-linear-gradient(transparent_0_35px,#8499a012_35px_36px)]!;
+}
+:root[data-interface="notebook"] body :is(.exercise-instruction,.work-prompt) {
+ @apply bg-transparent! rounded-none border-0 border-l-2 border-[#c79486] shadow-none pl-4;
+}
+:root[data-interface="notebook"] body .journey-feedback {
+ @apply rounded-none bg-transparent border-0 shadow-none;
+}
+:root[data-interface="notebook"] body .journey-feedback.right {
+ @apply text-[#356447] border-l-2 border-[#83a078];
+}
+:root[data-interface="notebook"] body .journey-feedback.wrong {
+ @apply text-[#963f38] border-l-2 border-[#c79486];
+}
+:root[data-interface="notebook"] body .exercise-check-actions .btn {
+ @apply rounded-[50%_20%_45%_15%] shadow-none!;
+}
+:root[data-interface="notebook"] body :is(.profile-panel,.profile-identity,.author-question) {
+ @apply border-b! border-dashed! border-[#939c8355]! py-6;
+}
+:root[data-interface="notebook"] body .profile-metric {
+ @apply border-b-0! border-l! border-[#939c8355]!;
+}
+:root[data-interface="notebook"] body :is(.profile-deck,.profile-milestones > *, .profile-avatar) {
+ @apply bg-transparent shadow-none rounded-none;
+}
+:root[data-interface="notebook"] body .profile-section-title h2 {
+ @apply text-2xl underline decoration-[#d6bd72]/60 underline-offset-8;
+}
+:root[data-interface="notebook"] body .profile-identity {
+ @apply mb-3;
+}
+:root[data-interface="notebook"] body :is(.author-panel,.reading-document) {
+ @apply border-l! border-[#c7948655]! pl-5;
+}
+:root[data-interface="notebook"] body :is(.exercise-style-card,.explore-suggestions) {
+ @apply bg-[#fffdf5]! rounded-[3px_8px_3px_12px] border border-[#a2a58e] shadow-none;
+}
+:root[data-interface="notebook"] body :is(.settings-nav [role="tab"],.profile-index a) {
+ @apply rounded-none border-0 shadow-none;
+}
+:root[data-interface="notebook"] body :is([role="dialog"],[data-slot="popover-content"]) {
+ @apply bg-[#fffdf5]! border border-[#b7b49f]! rounded-[3px_5px_14px_3px]! shadow-[0_12px_36px_-12px_#55472860]!;
+}
+@media(max-width:640px) {
+ :root[data-interface="notebook"] body .profile-metric { @apply px-3; }
+ :root[data-interface="notebook"] body .journey-question { @apply px-4; }
+}

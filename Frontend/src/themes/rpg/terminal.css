@@ -1,0 +1,92 @@
+/* MS-DOS command UI. The persisted rpg ID is retained for existing preferences. */
+:root[data-interface="rpg"] { --accent:#33ff00; --icon-ink:#8df579; }
+:root[data-interface="rpg"] body { @apply [font-family:ui-monospace,Consolas,monospace]; }
+:root[data-interface="rpg"] .default-background { @apply bg-[#000000] [background-image:linear-gradient(#625a4110_1px,transparent_1px),linear-gradient(90deg,#625a4110_1px,transparent_1px)] [background-size:32px_32px]; }
+:root[data-interface="rpg"] body .nav-face {
+ --ink:#8df579; --muted:#a3c99a; --line:#4d9c3b; --icon-ink:#8df579;
+ @apply bg-[#050a05]! text-[#8df579]! border-[#4d9c3b]! shadow-[4px_4px_0_#050a0540]!;
+}
+:root[data-interface="rpg"] body .nav-face :is(.nav-link,.brand,.account-name,.nav-rotate,.context-panel h2) { @apply text-[#8df579]; }
+:root[data-interface="rpg"] body .nav-face .nav-link.active { @apply text-[#050a05]! bg-[#33ff00]!; }
+:root[data-interface="rpg"] body .nav-face .nav-link:hover { @apply bg-[#152d10] text-[#b1ff9e]; }
+:root[data-interface="rpg"] body .quest-console {
+ --background-color:#050a05; --font-color:#8df579; --primary-color:#33ff00; --secondary-color:#a3c99a; --invert-font-color:#050a05; --global-font-size:14px;
+ @apply bg-[#050a05] text-[#8df579] p-3 mb-6 border border-[#4d9c3b] text-sm leading-relaxed;
+}
+:root[data-interface="rpg"] body .quest-console header { @apply text-[#33ff00] border-b border-dashed border-[#4d9c3b] pb-2 mb-3; }
+:root[data-interface="rpg"] body .quest-console summary { @apply cursor-pointer min-h-9; }
+:root[data-interface="rpg"] body .quest-console p { @apply text-xs wrap-anywhere my-2; }
+:root[data-interface="rpg"] body .quest-prompt { @apply flex items-center gap-2; }
+:root[data-interface="rpg"] body .quest-prompt input { @apply min-w-0 w-full bg-transparent! text-[#8df579]! border-0 border-b border-[#4d9c3b] rounded-none shadow-none; }
+:root[data-interface="rpg"] body .quest-command-list { @apply flex flex-wrap gap-2 mt-3; }
+:root[data-interface="rpg"] body .quest-command-list button { @apply bg-transparent text-[#33ff00] border-0 border-b border-dashed border-[#4d9c3b] min-h-9 px-1; }
+:root[data-interface="rpg"] body .quest-console :is(input,button):focus-visible { @apply outline-2 outline-[#33ff00] outline-offset-2; }
+:root[data-interface="rpg"] body .flash-library-grid { @apply gap-5; }
+:root[data-interface="rpg"] body :is(.deck-tile,.catalog-card,.hub-tile) { @apply rounded-none border border-[#4d9c3b]! border-t-4! shadow-[3px_3px_0_#51443130]!; }
+:root[data-interface="rpg"] body :is(.tile-top,.profile-section-title,.journey-topline) { @apply border-b border-dashed border-[#4d9c3b66] pb-3; }
+:root[data-interface="rpg"] body :is(.practice-catalog,.learning-welcome,.author-panel) { @apply bg-transparent! border-0! shadow-none!; }
+:root[data-interface="rpg"] body .journey-question { @apply border-double border-4! rounded-none! bg-[#050a05]!; }
+:root[data-interface="rpg"] body :is(.exercise-instruction,.reading-document) { @apply bg-[#0b1808] border-l-4 border-[#4d9c3b] rounded-none shadow-none; }
+:root[data-interface="rpg"] body .journey-feedback { @apply rounded-none border-l-4 font-mono shadow-none; }
+:root[data-interface="rpg"] body .journey-feedback.right { @apply border-[#33ff00] bg-[#10250b] text-[#8df579]; }
+:root[data-interface="rpg"] body .journey-feedback.wrong { @apply border-[#dd946a] bg-[#29150d] text-[#ffc099]; }
+:root[data-interface="rpg"] body .profile-panel { @apply rounded-none border border-dashed! shadow-none!; }
+:root[data-interface="rpg"] body :is(.profile-metric,.profile-milestones > *) { @apply rounded-none; }
+:root[data-interface="rpg"] body .btn:not(:disabled):active { @apply translate-x-px translate-y-px shadow-none; }
+:root[data-interface="rpg"] body .btn:disabled { @apply shadow-none; }
+
+/* DOS is deliberately crisp: no glowing text or scanlines over study content. */
+:root[data-interface="rpg"] {
+ --font-sans: 'VT323', monospace;
+ --surface:#050a05; --solid:#050a05; --line:#4d9c3b; --accent:#33ff00; --icon-ink:#8df579;
+}
+:root[data-interface="rpg"] body { @apply [font-family:'VT323',monospace] text-[#8df579]; }
+:root[data-interface="rpg"] .default-background { @apply bg-black bg-none; }
+:root[data-interface="rpg"] body :is(.glass,.nav-face,.work-paper,.flip-face,.profile-panel,.profile-identity,.catalog-card,.author-panel,.author-question,.hub-tile,.library-card,.deck-tile,.practice-catalog,.learning-welcome,[role="dialog"],[data-slot="popover-content"],.reading-document) {
+ @apply bg-[#050a05]! border border-solid border-[#4d9c3b]! rounded-none! shadow-none! text-[#8df579];
+}
+:root[data-interface="rpg"] body :is(.btn,.word-chip,.pair-card,.category-bin,.native-field-wrap,[data-slot="input-wrapper"],input,textarea,select,.notebook-folder-tab) { @apply rounded-none shadow-none border-[#4d9c3b] bg-[#050a05] text-[#8df579]; }
+:root[data-interface="rpg"] body :is(.btn,.nav-link) { @apply transition-none; }
+:root[data-interface="rpg"] body :is(.btn,.nav-link):not(:disabled):hover { @apply bg-[#33ff00]! text-black!; }
+:root[data-interface="rpg"] body :is(.btn.primary,.nav-link.active) { @apply bg-[#33ff00]! text-black!; }
+:root[data-interface="rpg"] body :is(.btn,.nav-link):hover svg.app-icon { @apply text-current!; }
+:root[data-interface="rpg"] body .nav-link > svg { @apply hidden; }
+:root[data-interface="rpg"] body .nav-link::after { @apply content-['[__]'] order-first shrink-0; }
+:root[data-interface="rpg"] body .nav-link.active::after { @apply content-['[X]']; }
+:root[data-interface="rpg"] body :is(.heading h1,.flash-library-heading h1) { @apply uppercase tracking-wide text-[clamp(28px,3vw,42px)] wrap-anywhere; }
+:root[data-interface="rpg"] body :is(.heading h1,.flash-library-heading h1)::before { @apply content-['C:\005c_Wortify\005c_'] text-[#6eba5d]; }
+:root[data-interface="rpg"] body .notebook-folder-tab::before { @apply content-['DIR:'] shrink-0; }
+:root[data-interface="rpg"] body .notebook-folder-tab { @apply text-left; }
+:root[data-interface="rpg"] body .flash-library-grid .deck-tile .glass-body { @apply min-h-0 gap-3 p-4; }
+:root[data-interface="rpg"] body .deck-tile h3 { @apply text-2xl; }
+:root[data-interface="rpg"] body :is(.pill,.tile-icon,.profile-avatar) { @apply rounded-none bg-transparent text-[#8df579]; }
+:root[data-interface="rpg"] body :is(.quest-console,.quest-console input,.quest-console button) { @apply [font-family:'VT323',monospace] text-lg; }
+:root[data-interface="rpg"] body .quest-console p { @apply text-base; }
+:root[data-interface="rpg"] body * { @apply [scrollbar-color:#4d9c3b_#050a05]; }
+
+:root[data-interface="rpg"] { --ink:#8df579; --muted:#a3c99a; }
+:root[data-interface="rpg"] body :is(.heading h1,.flash-library-heading h1,.eyebrow,.example,.heading p) { @apply text-[#8df579]; }
+:root[data-interface="rpg"] body .nav-link { @apply rounded-none shadow-none bg-none; }
+:root[data-interface="rpg"] body .nav-link.active { @apply shadow-none bg-none; }
+
+/* Responsive layout with a cosmetic CRT mask, never a scaled app/portal. */
+:root[data-interface="rpg"] body { @apply [-webkit-font-smoothing:none] [image-rendering:pixelated]; }
+:root[data-interface="rpg"] body .dos-log { @apply max-h-[300px] overflow-auto; }
+:root[data-interface="rpg"] body .dos-log p { @apply whitespace-pre-wrap; }
+/* A subtle pixel lattice breaks up the image without blurring text or hit targets.
+   Only the mask flickers; content, focus and scroll positions remain stable. */
+:root[data-interface="rpg"] body::after {
+ @apply block! content-[''] fixed! inset-0! w-full! h-full! pointer-events-none! z-[2147483001] rounded-none! [transform:none]! [filter:none]! [background:repeating-linear-gradient(0deg,#000_0_1px,transparent_1px_3px),repeating-linear-gradient(90deg,#001a00_0_1px,transparent_1px_3px)] opacity-[0.12] [animation:dos-crt-flicker_19s_steps(1,end)_infinite];
+}
+@keyframes dos-crt-flicker {
+ 0%, 91%, 92.2%, 100% { opacity: 0.12; }
+ 91.3% { opacity: 0.22; }
+ 91.65% { opacity: 0.15; }
+ 92% { opacity: 0.19; }
+}
+@media(prefers-reduced-motion:reduce) {
+ :root[data-interface="rpg"] body::after { @apply animate-none; }
+}
+@media print {
+ :root[data-interface="rpg"] body::after { @apply hidden!; }
+}

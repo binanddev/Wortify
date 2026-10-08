@@ -22,6 +22,7 @@ export function restoreAppearance(p, theme, restoreSelection = false) {
     p = { ...p, ...p.appearanceSelections?.[theme ?? "default"] };
   return glassPolicy({
     ...p,
+    interface: interfaceName(p.interface),
     ...(p.appearanceProfiles?.[keyOf(p, theme)] || {}),
   });
 }
