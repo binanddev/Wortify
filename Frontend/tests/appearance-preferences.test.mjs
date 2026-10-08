@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { applyAppearance } from "../src/appearance-preferences.js";
+import { applyAppearance } from "../src/themes/apply.js";
 
 test("appearance clamps values, keeps glass visible at 100%, and clears another account color", () => {
   const values = new Map();

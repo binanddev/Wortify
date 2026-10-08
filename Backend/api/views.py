@@ -26,7 +26,7 @@ def form_save(form, **fields):
 def decks(request):
     if request.method == 'POST':
         if body(request).get('language', request.language) != request.language:
-            raise ValueError('Ngôn ngữ phải khớp không gian hiện tại.')
+            raise ValueError('Language must match the current workspace.')
         deck = form_save(DeckForm({**body(request), 'language': request.language, 'level': body(request).get('level','A1')}, user=request.user, language=request.language), owner=request.user)
         return JsonResponse({'id': deck.pk}, status=201)
     qs = Deck.objects.filter(owner=request.user, language=request.language)
@@ -52,7 +52,7 @@ def deck(request, pk):
         return JsonResponse({'ok': True})
     if request.method == 'PATCH':
         if body(request).get('language', request.language) != request.language:
-            raise ValueError('Không thể chuyển bộ thẻ sang không gian ngôn ngữ khác.')
+            raise ValueError('A deck cannot be moved to another language workspace.')
         item = form_save(DeckForm({**model_to_dict(item), **body(request), 'language': request.language}, instance=item, user=request.user, language=request.language))
     from cards.models import DeckLearningState, LearningEvent
     from .learning_sync import state_payload
@@ -67,7 +67,7 @@ def card(request, deck_id, pk=None):
     item = get_object_or_404(Card, pk=pk, deck=parent) if pk else None
     if request.method == 'DELETE':
         if item is None:
-            raise ValueError('Chưa chọn thẻ.')
+            raise ValueError('Not selected cards.')
         item.delete()
         return JsonResponse({'ok': True})
     data = model_to_dict(item) if item else {'position': parent.cards.count()}
@@ -87,12 +87,12 @@ def folder(request, pk=None):
     item = get_object_or_404(Folder, pk=pk, owner=request.user, language=request.language) if pk else None
     if request.method == 'DELETE':
         if not item:
-            raise ValueError('Chưa chọn thư mục.')
+            raise ValueError('No folder selected.')
         item.delete()
         return JsonResponse({'ok': True})
     data = {**(model_to_dict(item) if item else {}), **body(request)}
     if Folder.objects.filter(owner=request.user, language=request.language, name=data.get('name')).exclude(pk=pk).exists():
-        raise ValueError('Thư mục đã tồn tại.')
+        raise ValueError('This folder already exists.')
     item = form_save(FolderForm(data, instance=item, user=request.user, language=request.language), owner=request.user, language=request.language)
     return JsonResponse({'id': item.pk})
 
@@ -115,7 +115,7 @@ def import_cards(request, pk):
         if batch.confirmed_at:
             return JsonResponse({'imported': len(batch.rows)})
         if batch.created_at < timezone.now() - timedelta(minutes=30):
-            raise ValueError('Bản xem trước hết hạn. Hãy nhập lại.')
+            raise ValueError('The preview has expired. Import again.')
         claimed = ImportBatch.objects.filter(pk=batch.pk, confirmed_at__isnull=True).update(confirmed_at=timezone.now())
         if claimed:
             start = parent.cards.count()
@@ -123,7 +123,7 @@ def import_cards(request, pk):
         return JsonResponse({'imported': len(batch.rows)})
     text = data.get('text', '')
     if not isinstance(text, str) or len(text) > 500000:
-        raise ValueError('Nội dung quá dài.')
+        raise ValueError('Content is too long.')
     rows = parse_cards(text, data.get('separator', ','))
     batch = ImportBatch.objects.create(deck=parent, rows=rows)
     return JsonResponse({'token': str(batch.token), 'count': len(rows), 'preview': rows[:10]})
@@ -136,7 +136,7 @@ def reorder_cards(request,pk):
     ids=body(request).get('ids')
     cards=list(parent.cards.select_for_update())
     if not isinstance(ids,list) or any(type(i) is not int for i in ids) or len(ids)!=len(cards) or set(ids)!={c.pk for c in cards}:
-        raise ValueError('Danh sách thứ tự phải chứa mỗi thẻ trong bộ đúng một lần.')
+        raise ValueError('The order list must contain every card in the deck exactly once.')
     positions={pk:i for i,pk in enumerate(ids)}
     for card in cards:card.position=positions[card.pk]
     Card.objects.bulk_update(cards,['position'])

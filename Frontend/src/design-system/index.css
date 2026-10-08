@@ -5,6 +5,8 @@
 @theme {
   --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+@import "../vendor/retro-libraries.css";
+@import "../vendor/windows-libraries.css";
 @import "./tokens.css";
 @import "./profile.css";
 @import "./foundation.css";
@@ -32,17 +34,22 @@
 @import "./flashcard-workspace.css";
 
 @import "./personal-appearance.css";
-@import "./glass-materials.css";
-@import "./interaction-glass.css";
+@import "../themes/shared/materials.css";
+@import "../themes/glass/interactions.css";
 @import "./modal-layers.css";
-@import "./studio.css";
+@import "../themes/studio/styles.css";
 @import "./readability.css";
 @import "./exercise-refinements.css";
 
 /* Final interaction and contrast rules must follow every theme. */
 @import "./crisp-interface.css";
 
-@import "./glass-spatial.css";
+@import "../themes/glass/styles.css";
 
-@import "./identity-themes.css";
+@import "../themes/identity.css";
 @import "./home.css";
+@import "../themes/shared/backgrounds.css";
+@import "../themes/shared/default-background.css";
+@import "../themes/retro/arcade.css";
+@import "../themes/retro/pixel-polish.css";
+@import "../themes/windows-xp/desktop.css";

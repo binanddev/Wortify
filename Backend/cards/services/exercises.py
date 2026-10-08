@@ -10,7 +10,7 @@ from .study import finish
 def sentence_items(text):
     words = text.split()
     if not 2 <= len(words) <= 40:
-        raise ValueError('Cần câu ví dụ từ 2 đến 40 từ để sắp xếp câu.')
+        raise ValueError('Sentence ordering requires an example sentence of 2–40 words.')
     items = [{'id': str(i), 'text': word} for i, word in enumerate(words)]
     random.shuffle(items)
     if [item['id'] for item in items] == [str(i) for i in range(len(words))]:
@@ -33,7 +33,7 @@ def create_match(deck, wrong_only=False):
         if len(selected) == 6:
             break
     if len(selected) < 2:
-        raise ValueError('Cần ít nhất hai thẻ có từ và nghĩa khác nhau để ghép thẻ. Nếu đang lọc từ yếu, hãy chọn tất cả thẻ.')
+        raise ValueError('Matching requires at least two cards with distinct terms and meanings. If filtering weak words, choose all cards.')
     with transaction.atomic():
         pairs = []
         for card in selected:
@@ -55,7 +55,7 @@ def match_payload(round):
 @transaction.atomic
 def submit_match(round, mapping):
     if not isinstance(mapping, dict) or set(mapping) != {p['id'] for p in round.pairs} or set(mapping.values()) != {str(i) for i in range(len(round.pairs))}:
-        raise ValueError('Hãy ghép mỗi từ với một nghĩa, không để trống hoặc dùng lại một nghĩa.')
+        raise ValueError('Match each word to a different meaning, without gaps or repeated meanings.')
     if not MatchRound.objects.filter(pk=round.pk, completed_at__isnull=True).update(completed_at=timezone.now()):
         round.refresh_from_db()
         return round.result

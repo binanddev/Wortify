@@ -19,7 +19,7 @@ def choices(card):
         if len(answers) == 4:
             random.shuffle(answers)
             return answers
-    raise ValueError('Cần ít nhất bốn nghĩa tiếng Việt khác nhau trong bộ thẻ để làm trắc nghiệm.')
+    raise ValueError('Multiple choice requires at least four distinct meanings in the deck.')
 
 
 def schedule(progress, correct, now):

@@ -1,0 +1,2 @@
+.interface-option-glass .interface-sample { @apply bg-gradient-to-br from-[#34516b] to-[#312746]; }
+.interface-option-glass .interface-sample > span { @apply bg-slate-900/60 border-white/20; }

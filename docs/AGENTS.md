@@ -80,3 +80,7 @@ Kiểm tra: npm test, npm run build, manage.py test, manage.py makemigrations --
 ## Repo độc lập (2026-10-05)
 
 Backend và Frontend có dependency, env, deploy và README riêng. Backend không được đọc file trong Frontend; mẫu dùng cho test/seed nằm ở Backend/sample_data. Các script gốc chỉ hỗ trợ chạy chung local. Database/media/static path tương đối tính từ Backend, không phụ thuộc working directory. Chạy manage.py trong Backend hoặc dùng Backend/manage.py từ gốc.
+
+## Cấu trúc Frontend hiện hành (2026-10-08)
+
+Đường dẫn module ở các mô tả lịch sử phía trên đã được tổ chức lại. Xem `Frontend/README.md` để tra cấu trúc hiện hành: shell ở `src/app`, component chung ở `src/components`, nghiệp vụ ở `src/features`, định nghĩa giao diện ở `src/themes`. Không tạo lại module ở đường dẫn cũ. Các tính năng và API không thay đổi trong lần tổ chức này.

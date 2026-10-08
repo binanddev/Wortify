@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {glassPolicy} from '../src/glass-policy.js';
+import {glassPolicy} from '../src/themes/glass/policy.js';
 test('Glass fixes typography and geometry, clamps transparency without modifying Studio',()=>{
  const old={interface:'glass',textColor:'#000000',navScale:150,textSize:22,transparency:0};
  const fixed=glassPolicy(old);

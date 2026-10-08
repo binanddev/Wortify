@@ -3,7 +3,7 @@ from django.core.files.uploadhandler import TemporaryFileUploadHandler, StopFutu
 
 class BackgroundUploadHandler(TemporaryFileUploadHandler):
     def new_file(self, *args, **kwargs):
-        self.enabled = self.request.path in ('/api/me/background/', '/api/manage/appearance/') or self.request.path.startswith('/api/themes/')
+        self.enabled = self.request.path in ('/api/me/background/', '/api/me/backgrounds/', '/api/manage/appearance/') or self.request.path.startswith('/api/themes/')
         if not self.enabled: return
         super().new_file(*args, **kwargs)
         raise StopFutureHandlers()

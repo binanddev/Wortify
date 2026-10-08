@@ -20,7 +20,7 @@ def memory_card(progress, now):
 
 def duration(value):
     if value is None: return None
-    if type(value) is not int or not 0 <= value <= 86_400_000: raise ValueError('Thời gian trả lời không hợp lệ.')
+    if type(value) is not int or not 0 <= value <= 86_400_000: raise ValueError('Invalid response time.')
     return value if 250 <= value <= 120_000 else None
 
 
@@ -28,7 +28,7 @@ def review(progress, correct, mode, now, response_ms=None, rating=None, options=
     options = options or {}
     response_ms = duration(response_ms)
     if rating is not None and (type(rating) is not int or rating not in (1,2,3,4) or (rating==1) == correct):
-        raise ValueError('Mức ghi nhớ không hợp lệ.')
+        raise ValueError('Invalid recall rating.')
     now = now.astimezone(datetime_timezone.utc)
     if progress.last_reviewed_at and now < progress.last_reviewed_at: return
     memory = dict(progress.memory)

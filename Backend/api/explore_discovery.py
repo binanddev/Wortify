@@ -11,8 +11,8 @@ def browse(request):
     query = request.GET.get('q', '').strip()[:200]
     mode = request.GET.get('mode', '')
     sort = request.GET.get('sort', 'relevance')
-    if mode and mode not in PUBLIC_MODES: raise ValueError('Dạng bài không hợp lệ.')
-    if sort not in ('relevance', 'newest'): raise ValueError('Thứ tự không hợp lệ.')
+    if mode and mode not in PUBLIC_MODES: raise ValueError('Invalid exercise type.')
+    if sort not in ('relevance', 'newest'): raise ValueError('Invalid order.')
     page = max(1, int(request.GET.get('page', 1)))
     parent = int(request.GET.get('folder') or 0)
     seed = request.GET.get('seed', 'daily')[:80]

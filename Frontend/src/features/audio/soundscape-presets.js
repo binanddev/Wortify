@@ -1,0 +1,103 @@
+// Original, locally synthesized loops; no downloads, recordings or uploads.
+export const AMBIENT_TRACKS = [
+  {
+    id: "morning",
+    name: "Morning sunshine",
+    description: "Soft bells and a bright melody",
+    notes: [72, 76, 79, 76, 74, 79, 81, 79],
+    bpm: 78,
+    type: "sine",
+    duration: 1.2,
+  },
+  {
+    id: "marimba",
+    name: "Marimba vui",
+    description: "Short wooden taps with a steady rhythm",
+    notes: [60, 67, 64, 69, 67, 64, 62, 67],
+    bpm: 96,
+    type: "triangle",
+    duration: 0.38,
+  },
+  {
+    id: "picnic",
+    name: "A gentle stroll",
+    description: "Soft plucked notes and a relaxed rhythm",
+    notes: [67, 71, 74, 71, 69, 74, 76, 74],
+    bpm: 84,
+    type: "triangle",
+    duration: 0.55,
+  },
+  {
+    id: "bubbles",
+    name: "Bubbles",
+    description: "Round, high and playful tones",
+    notes: [79, 84, 81, 76, 79, 81, 84, 88],
+    bpm: 100,
+    type: "sine",
+    duration: 0.28,
+  },
+  {
+    id: "cafe",
+    name: "Coffee corner",
+    description: "Slow rhythm and soft tones for focus",
+    notes: [60, 64, 67, 71, 62, 65, 69, 72],
+    bpm: 68,
+    type: "sine",
+    duration: 0.9,
+  },
+  {
+    id: "garden",
+    name: "Green garden",
+    description: "Clear bells and a pentatonic melody",
+    notes: [74, 78, 81, 83, 81, 78, 76, 74],
+    bpm: 74,
+    type: "sine",
+    duration: 1.5,
+  },
+  {
+    id: "puzzle",
+    name: "Jigsaw",
+    description: "Bright, short percussion",
+    notes: [65, 69, 72, 74, 72, 69, 67, 69],
+    bpm: 104,
+    type: "triangle",
+    duration: 0.3,
+  },
+  {
+    id: "clouds",
+    name: "Fluffy clouds",
+    description: "Sparse, gentle sustained tones",
+    notes: [72, 79, 76, 84, 81, 79, 76, 74],
+    bpm: 60,
+    type: "sine",
+    duration: 1.8,
+  },
+  {
+    id: "starlight",
+    name: "Twinkling stars",
+    description: "High bells with plucked notes",
+    notes: [84, 79, 88, 81, 86, 79, 84, 76],
+    bpm: 82,
+    type: "sine",
+    duration: 0.75,
+  },
+  {
+    id: "steps",
+    name: "Small steps",
+    description: "An uplifting melody with a cheerful rhythm",
+    notes: [60, 62, 64, 67, 69, 67, 64, 62],
+    bpm: 92,
+    type: "triangle",
+    duration: 0.48,
+  },
+];
+export const ambientTrack = (id) =>
+  AMBIENT_TRACKS.find((track) => track.id === id) || AMBIENT_TRACKS[0];
+export function ambientStep(track, index) {
+  return {
+    frequency: 440 * 2 ** ((track.notes[index % track.notes.length] - 69) / 12),
+    interval: 60 / track.bpm,
+    duration: track.duration,
+    type: track.type,
+  };
+}

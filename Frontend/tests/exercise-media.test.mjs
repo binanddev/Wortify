@@ -4,7 +4,7 @@ import {
   MAX_MEDIA_BYTES,
   remapQuestionMedia,
   validateMediaSelection,
-} from "../src/exercise-media-utils.js";
+} from "../src/features/practice/exercise-media-utils.js";
 test("optional media supports images and MP3 up to 200 MB combined", () => {
   assert.doesNotThrow(() => validateMediaSelection([], []));
   assert.doesNotThrow(() =>

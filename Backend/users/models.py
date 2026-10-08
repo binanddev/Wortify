@@ -11,6 +11,7 @@ class Theme(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class Profile(models.Model):
+    use_default_background = models.BooleanField(default=True)
     theme_de = models.ForeignKey(Theme, null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
     theme_en = models.ForeignKey(Theme, null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
     background_image = models.FileField(upload_to="users/backgrounds/", blank=True)

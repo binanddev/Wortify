@@ -17,10 +17,10 @@ def review_queue(request, pk):
     config={'retention':.9,'new_limit':20,'review_limit':100,'adapt_time':True, **state.options.get('srs',{})}
     if request.method=='PATCH':
         values=body(request)
-        if set(values)-set(config):raise ValueError('Tùy chọn không hợp lệ.')
+        if set(values)-set(config):raise ValueError('Invalid options.')
         config.update(values)
-        if type(config['retention']) not in (float,int) or not .8<=config['retention']<=.97:raise ValueError('Mức ghi nhớ từ 80% đến 97%.')
-        if any(type(config[k]) is not int or not 0<=config[k]<=500 for k in ('new_limit','review_limit')) or type(config['adapt_time']) is not bool:raise ValueError('Giới hạn từ 0–500 thẻ.')
+        if type(config['retention']) not in (float,int) or not .8<=config['retention']<=.97:raise ValueError('Retention must be between 80% and 97%.')
+        if any(type(config[k]) is not int or not 0<=config[k]<=500 for k in ('new_limit','review_limit')) or type(config['adapt_time']) is not bool:raise ValueError('Limits must be between 0 and 500 cards.')
         state.options={**state.options,'srs':config};state.save(update_fields=['options'])
     now=timezone.now(); today=timezone.localdate()
     progress={p.card_id:p for p in StudyProgress.objects.filter(user=request.user,card__deck=deck)}

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
 import postcss from "postcss";
-import { ICON_PATHS } from "../src/icon-paths.js";
+import { ICON_PATHS } from "../src/components/ui/icon-paths.js";
 import { compileDesign } from "../scripts/design-system.mjs";
 
 test("shared icon catalog covers every literal Icon and action icon in the app", async () => {

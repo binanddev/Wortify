@@ -15,7 +15,7 @@ def owned(request, token):
 
 def attempts(session):
     rows = {str(a.token): a for a in StudyAttempt.objects.filter(token__in=session.tokens).select_related('card')}
-    if any(token not in rows for token in session.tokens): raise ValueError('Nội dung buổi học đã thay đổi. Hãy tạo buổi học mới.')
+    if any(token not in rows for token in session.tokens): raise ValueError('Session content has changed. Create a new study session.')
     return [rows[token] for token in session.tokens]
 
 def public_question(attempt):
@@ -42,13 +42,13 @@ def calculate(attempt, value):
         q = attempt.question
         return {'is_correct': False, 'skipped': True, 'target': q['target'], 'card': q['card'], 'answer': value}
     if not isinstance(value, str) or not value.strip() or len(value) > 4000:
-        raise ValueError('Hãy nhập câu trả lời hợp lệ.')
+        raise ValueError('Enter a valid answer.')
     q = attempt.question
     if attempt.mode == 'flash':
-        if value not in ['remember','again']: raise ValueError('Chọn mức độ ghi nhớ.')
+        if value not in ['remember','again']: raise ValueError('Choose a recall rating.')
         correct = value == 'remember'
     elif attempt.mode == 'quiz':
-        if value not in q['options']: raise ValueError('Hãy chọn một đáp án.')
+        if value not in q['options']: raise ValueError('Choose an answer.')
         correct = value == q['meaning']
     else:
         correct = compare(q['target'], value, q['alternatives'], **q['grading'])['is_correct']
@@ -65,11 +65,11 @@ def summarize(session):
 @transaction.atomic
 def create(request):
     data = body(request); kind = data.get('kind', 'learn')
-    if kind not in ['flash','learn','test']: raise ValueError('Cách học không hợp lệ.')
+    if kind not in ['flash','learn','test']: raise ValueError('Invalid study mode.')
     prefs, _ = StudySettings.objects.get_or_create(user=request.user, language=request.language)
     deck = get_object_or_404(Deck, pk=data['deck'], owner=request.user, language=request.language) if data.get('deck') else None
     count = int(data.get('count', 20))
-    if not 1 <= count <= 100: raise ValueError('Chọn từ 1 đến 100 câu.')
+    if not 1 <= count <= 100: raise ValueError('Choose between 1 and 100 questions.')
     pool = queue(request.user, prefs, deck.pk if deck else None, data.get('filter','all'), learn=data.get('today',False) is True, language=request.language)
     if data.get('review_session'):
         previous = owned(request, data['review_session'])
@@ -80,7 +80,7 @@ def create(request):
         pool.sort(key=lambda c: (0 if c.pk in progress and (progress[c.pk].state=='weak' or progress[c.pk].due_at<=timezone.now()) else 1, -(progress[c.pk].incorrect_count if c.pk in progress else 0)))
     elif kind == 'test': random.shuffle(pool)
     pool = pool[:count]
-    if not pool: raise ValueError('Chưa có thẻ phù hợp để học. Hãy thêm thẻ hoặc chọn bộ lọc khác.')
+    if not pool: raise ValueError('No matching cards to study. Add cards or change filters.')
     session = StudySession.objects.create(user=request.user, language=request.language, deck=deck, kind=kind)
     for i, card in enumerate(pool):
         mode = 'flash' if kind == 'flash' else ('quiz' if i % 2 == 0 else 'write')
@@ -104,12 +104,12 @@ def detail(request, token):
 @transaction.atomic
 def answer(request, token):
     session = owned(request, token)
-    if session.kind == 'test': raise ValueError('Bài kiểm tra chỉ chấm khi nộp toàn bài.')
+    if session.kind == 'test': raise ValueError('Tests are graded only when the entire test is submitted.')
     data = body(request)
-    if data.get('question') not in session.tokens: raise ValueError('Câu hỏi không thuộc buổi học.')
+    if data.get('question') not in session.tokens: raise ValueError('This question does not belong to the session.')
     a = get_object_or_404(StudyAttempt, token=data['question'], user=request.user)
     pending = next((row for row in attempts(session) if not row.completed_at), None)
-    if not a.completed_at and (pending is None or pending.pk != a.pk): raise ValueError('Hãy trả lời câu hiện tại trước.')
+    if not a.completed_at and (pending is None or pending.pk != a.pk): raise ValueError('Answer the current question first.')
     result = a.result if a.completed_at else finish(a, data.get('answer',''), calculate(a, data.get('answer','')), data.get('response_ms'), use_fsrs='response_ms' in data)
     if not StudyAttempt.objects.filter(token__in=session.tokens, completed_at__isnull=True).exists(): summarize(session)
     return JsonResponse({'feedback': result, 'session': payload(session)})
@@ -123,8 +123,8 @@ def finish_test(request, token):
     data = body(request)
     values = data.get('answers', {})
     timings = data.get('timings', {})
-    if not isinstance(timings,dict):raise ValueError('Thời gian không hợp lệ.')
-    if not isinstance(values, dict) or set(values) != set(session.tokens): raise ValueError('Hãy trả lời đủ các câu trước khi nộp.')
+    if not isinstance(timings,dict):raise ValueError('Invalid timestamp.')
+    if not isinstance(values, dict) or set(values) != set(session.tokens): raise ValueError('Answer all questions before submitting.')
     graded = [(a, calculate(a, values[str(a.token)])) for a in attempts(session)]
     for a, result in graded:
         if not a.completed_at: finish(a, values[str(a.token)], result, timings.get(str(a.token)), use_fsrs=str(a.token) in timings)

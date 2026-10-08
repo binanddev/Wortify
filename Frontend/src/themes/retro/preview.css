@@ -1,0 +1,6 @@
+.interface-option-retro .interface-sample {
+  @apply rounded-none bg-[#c1b788];
+}
+.interface-option-retro .interface-sample > span {
+  @apply rounded-none bg-[#fff5d7] border-2 border-[#302b25] shadow-[2px_2px_0_#302b25];
+}

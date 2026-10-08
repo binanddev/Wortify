@@ -1,0 +1,44 @@
+/* Shared background is applied only inside a learning workspace, never home. */
+:root[data-has-background="true"]:not([data-interface="home"]) body {
+  @apply [background-image:var(--site-bg-image)]! bg-cover! bg-center! bg-fixed!;
+}
+.background-library {
+  @apply grid gap-4 py-5 border-b border-(--line) mb-5;
+}
+.background-library-heading {
+  @apply flex flex-wrap items-center justify-between gap-3;
+}
+.background-library-heading h3 {
+  @apply font-semibold;
+}
+.background-library-heading p,
+.background-help {
+  @apply text-sm text-(--muted);
+}
+.background-grid {
+  @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4;
+}
+.background-item {
+  @apply min-w-0 flex flex-col gap-2;
+}
+.background-choice {
+  @apply w-full min-w-0 overflow-hidden rounded-xl border-2 border-(--line) text-left bg-(--surface) transition-colors;
+}
+.background-choice img {
+  @apply aspect-video w-full object-cover;
+}
+.background-choice > span {
+  @apply block truncate p-2;
+}
+.background-choice > strong {
+  @apply block px-2 pb-2 text-sm;
+}
+.background-choice[aria-pressed="true"] {
+  @apply border-(--accent) ring-2 ring-(--accent) ring-offset-2;
+}
+.background-choice:focus-visible {
+  @apply outline-2 outline-offset-4 outline-(--accent);
+}
+.background-default {
+  @apply min-h-28 p-4;
+}

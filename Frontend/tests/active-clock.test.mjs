@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ActiveClock} from '../src/active-clock.js';
+import {ActiveClock} from '../src/features/learning/active-clock.js';
 test('answer clock excludes paused time and repeated visibility events',()=>{
   let now=100;const clock=new ActiveClock(()=>now);
   clock.resume();now=1100;assert.equal(clock.read(),1000);

@@ -1,0 +1,65 @@
+:root[data-interface="xp"] {
+  --surface: #ece9d8;
+  --solid: #ffffff;
+  --line: #7391b5;
+  --accent: #1657d8;
+  --icon-ink: #14213c;
+  --icon-tile: #ece9d8;
+}
+:root[data-interface="xp"] body {
+  @apply bg-[#3c7fc0]! text-[#14213c];
+}
+:root[data-interface="xp"] body::before,
+:root[data-interface="xp"] body::after {
+  @apply hidden!;
+}
+:root[data-interface="xp"]
+  body
+  :is(
+    .glass,
+    .nav-face,
+    .work-paper,
+    .flip-face,
+    .profile-panel,
+    .profile-identity,
+    .catalog-card,
+    .author-panel,
+    .author-question,
+    .hub-tile,
+    .library-card,
+    .practice-catalog,
+    .learning-welcome,
+    [role="dialog"]
+  ) {
+  @apply bg-[#ece9d8]! bg-none! border border-[#7391b5]! text-[#14213c]! backdrop-filter-none!;
+}
+:root[data-interface="xp"]
+  body
+  :is(
+    .btn,
+    input,
+    textarea,
+    select,
+    .native-field-wrap,
+    .word-chip,
+    .pair-card,
+    .category-bin
+  ) {
+  @apply bg-[#ffffff]! text-[#14213c]! border-[#7391b5]!;
+}
+:root[data-interface="xp"]
+  body
+  :is(
+    .btn.primary,
+    .nav-link.active,
+    .selected,
+    [role="tab"][aria-selected="true"]
+  ) {
+  @apply bg-[#1657d8]! text-white!;
+}
+:root[data-interface="xp"] .icon-default {
+  @apply hidden;
+}
+:root[data-interface="xp"] .icon-xp {
+  @apply block;
+}

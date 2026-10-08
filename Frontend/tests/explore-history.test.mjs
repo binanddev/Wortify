@@ -5,7 +5,7 @@ import {
   normalizeHistory,
   rememberSearch,
   cleanSearch,
-} from "../src/explore-history.js";
+} from "../src/features/explore/explore-history.js";
 test("search history isolates accounts and languages", () => {
   assert.notEqual(searchHistoryKey(1, "en"), searchHistoryKey(1, "de"));
   assert.notEqual(searchHistoryKey(1, "en"), searchHistoryKey(2, "en"));

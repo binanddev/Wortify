@@ -8,7 +8,7 @@ def namespace(view):
     @wraps(view)
     def scoped(request, language, *args, **kwargs):
         if language not in ('de', 'en'):
-            return JsonResponse({'error': 'Không gian không tồn tại.'}, status=404)
+            return JsonResponse({'error': 'Workspace not found.'}, status=404)
         request.language = language
         return view(request, *args, **kwargs)
     return scoped
@@ -17,20 +17,20 @@ def body(request):
     try:
         data = json.loads(request.body or b'{}')
     except (ValueError, UnicodeDecodeError):
-        raise ValueError('JSON không hợp lệ.')
+        raise ValueError('Invalid JSON.')
     if not isinstance(data, dict):
-        raise ValueError('JSON phải là một đối tượng.')
+        raise ValueError('JSON must be an object.')
     return data
 
 def endpoint(view):
     @wraps(view)
     def wrapped(request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return JsonResponse({'error': 'Vui lòng đăng nhập.'}, status=401)
+            return JsonResponse({'error': 'Please sign in.'}, status=401)
         try:
             return view(request, *args, **kwargs)
         except Http404:
-            return JsonResponse({'error': 'Không tìm thấy nội dung.'}, status=404)
+            return JsonResponse({'error': 'Content not found.'}, status=404)
         except (ValueError, TypeError, ValidationError) as exc:
             return JsonResponse({'error': '; '.join(exc.messages) if isinstance(exc, ValidationError) else str(exc)}, status=400)
     return wrapped
@@ -59,7 +59,7 @@ def legacy_json(view):
             get_object_or_404(MatchRound, token=kwargs['token'], deck__owner=request.user, deck__language=language)
         elif 'token' in kwargs:
             if any(str(kwargs['token']) in tokens for tokens in StudySession.objects.filter(user=request.user,kind='test').values_list('tokens',flat=True)):
-                raise ValueError('Bài kiểm tra chỉ trả kết quả tại màn hình nộp toàn bài.')
+                raise ValueError('Test results are available only after submitting the entire test.')
             get_object_or_404(StudyAttempt, token=kwargs['token'], user=request.user, card__deck__language=language)
         return view(request, *args, **kwargs)
     return wrapped

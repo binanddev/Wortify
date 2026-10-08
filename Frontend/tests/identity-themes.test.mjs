@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,stat} from 'node:fs/promises';
-import {interfaceName,INTERFACES} from '../src/interface-themes.js';
-import {updateAppearance,restoreAppearance} from '../src/appearance-profiles.js';
-import {AMBIENT_TRACKS,ambientTrack} from '../src/ambient-recordings.js';
+import {interfaceName,INTERFACES} from '../src/themes/registry.js';
+import {updateAppearance,restoreAppearance} from '../src/themes/preferences.js';
+import {AMBIENT_TRACKS,ambientTrack} from '../src/features/audio/ambient-recordings.js';
 test('all five interfaces retain independent preferences and Studio is the default',()=>{
  assert.equal(interfaceName(undefined),'studio');assert.equal(interfaceName('invalid'),'studio');
  for(const mode of INTERFACES.filter(x=>x!=='glass')) {

@@ -4,7 +4,7 @@ import {
   allocateGapTokens,
   gapMove,
   canFillGapBank,
-} from "../src/gap-tokens.js";
+} from "../src/features/practice/gap-tokens.js";
 const chips = [
   { id: "0", text: "the" },
   { id: "1", text: "the" },

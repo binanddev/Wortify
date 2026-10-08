@@ -37,25 +37,11 @@ class InterfacePreferenceSyncTests(TestCase):
         other.force_login(user)
         self.assertEqual(other.get('/api/session/').json()['user']['preferences'], values)
 
-    def test_saved_themes_preserve_the_selected_interface(self):
-        user = get_user_model().objects.create_user('theme-interface-user')
+    def test_saved_theme_endpoint_is_retired(self):
+        user = get_user_model().objects.create_user('retired-theme-user')
         self.client.force_login(user)
-        for preferences, expected in (({}, 'studio'), ({'interface':'glass'}, 'glass')):
-            response = self.client.post('/api/themes/', {'name':expected, 'preferences':json.dumps(preferences)})
-            self.assertEqual(response.status_code, 201, response.content)
-        themes = self.client.get('/api/themes/').json()['themes']
-        self.assertEqual({theme['name']:theme['preferences']['interface'] for theme in themes}, {'studio':'studio','glass':'glass'})
-
-class GlassThemePolicyTests(TestCase):
-    def test_glass_theme_locks_display_and_clamps_transparency(self):
-        user = get_user_model().objects.create_user('glass-policy-user')
-        self.client.force_login(user)
-        response = self.client.post('/api/themes/', {'name':'Glass locked', 'preferences':json.dumps({'interface':'glass','textColor':'#000000','textSize':22,'transparency':0})})
-        self.assertEqual(response.status_code,201,response.content)
-        prefs=self.client.get('/api/themes/').json()['themes'][0]['preferences']
-        self.assertEqual(prefs['textColor'],'#ffffff')
-        self.assertEqual(prefs['textSize'],18)
-        self.assertEqual(prefs['transparency'],10)
+        response = self.client.post('/api/themes/', {'name':'Preset','preferences':'{}'})
+        self.assertEqual(response.status_code,410)
 
 class ExtendedThemePreferencesTests(TestCase):
     def test_new_modes_and_recordings_survive_account_sync(self):

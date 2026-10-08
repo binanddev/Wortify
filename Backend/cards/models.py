@@ -8,9 +8,9 @@ from django.utils import timezone
 
 class Folder(models.Model):
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.SET_NULL, related_name="children")
-    language = models.CharField(max_length=2, default='de', choices=[('de', 'Tiếng Đức'), ('en', 'Tiếng Anh')])
+    language = models.CharField(max_length=2, default='de', choices=[('de', 'German'), ('en', 'English')])
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField('Tên thư mục', max_length=100)
+    name = models.CharField('Folder name', max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     theory_format = models.CharField(max_length=10, choices=[('markdown', 'Markdown'), ('html', 'HTML')], blank=True)
     theory_content = models.TextField(blank=True)
@@ -24,13 +24,13 @@ class Folder(models.Model):
 
 
 class Deck(models.Model):
-    folder = models.ForeignKey(Folder, verbose_name='Thư mục', null=True, blank=True, on_delete=models.SET_NULL, related_name='decks')
+    folder = models.ForeignKey(Folder, verbose_name='Folder', null=True, blank=True, on_delete=models.SET_NULL, related_name='decks')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField('Tên bộ thẻ', max_length=150)
-    description = models.TextField('Mô tả', blank=True)
-    level = models.CharField('Trình độ', max_length=10, default='A2')
-    topic = models.CharField('Chủ đề', max_length=100, blank=True)
-    language = models.CharField(max_length=10, default='de', choices=[('de', 'Tiếng Đức'), ('en', 'Tiếng Anh')])
+    title = models.CharField('Deck name', max_length=150)
+    description = models.TextField('Description', blank=True)
+    level = models.CharField('Level', max_length=10, default='A2')
+    topic = models.CharField('Topic', max_length=100, blank=True)
+    language = models.CharField(max_length=10, default='de', choices=[('de', 'German'), ('en', 'English')])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -40,18 +40,18 @@ class Deck(models.Model):
 
 class Card(models.Model):
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE, related_name='cards')
-    german_text = models.CharField('Từ / cụm từ', max_length=500)
-    vietnamese_meaning = models.CharField('Nghĩa tiếng Việt', max_length=500)
-    example_german = models.TextField('Câu ví dụ', blank=True, max_length=2000)
-    example_vietnamese = models.TextField('Nghĩa câu ví dụ', blank=True, max_length=2000)
-    part_of_speech = models.CharField('Loại từ', max_length=50, blank=True)
-    article = models.CharField('Mạo từ', max_length=10, blank=True)
-    plural_form = models.CharField('Số nhiều', max_length=100, blank=True)
-    notes = models.TextField('Ghi chú', blank=True, max_length=2000)
-    usage = models.TextField('Cách sử dụng', blank=True, max_length=2000)
-    accepted_answers = models.JSONField('Đáp án từ được chấp nhận (danh sách JSON)', default=list, blank=True)
-    accepted_examples = models.JSONField('Đáp án câu được chấp nhận (danh sách JSON)', default=list, blank=True)
-    position = models.PositiveIntegerField('Thứ tự', default=0)
+    german_text = models.CharField('Word / phrase', max_length=500)
+    vietnamese_meaning = models.CharField('Vietnamese meaning', max_length=500)
+    example_german = models.TextField('Example sentence', blank=True, max_length=2000)
+    example_vietnamese = models.TextField('Example sentence meaning', blank=True, max_length=2000)
+    part_of_speech = models.CharField('Part of speech', max_length=50, blank=True)
+    article = models.CharField('Article', max_length=10, blank=True)
+    plural_form = models.CharField('Plural', max_length=100, blank=True)
+    notes = models.TextField('Notes', blank=True, max_length=2000)
+    usage = models.TextField('Usage', blank=True, max_length=2000)
+    accepted_answers = models.JSONField('Accepted term answers (JSON list)', default=list, blank=True)
+    accepted_examples = models.JSONField('Accepted sentence answers (JSON list)', default=list, blank=True)
+    position = models.PositiveIntegerField('Order', default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -63,14 +63,14 @@ class Card(models.Model):
 
 
 class StudySettings(models.Model):
-    language = models.CharField(max_length=2, default='de', choices=[('de', 'Tiếng Đức'), ('en', 'Tiếng Anh')])
+    language = models.CharField(max_length=2, default='de', choices=[('de', 'German'), ('en', 'English')])
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    autoplay = models.BooleanField('Tự động đọc ngôn ngữ học', default=False)
-    ignore_case = models.BooleanField('Bỏ qua viết hoa', default=True)
-    ignore_punctuation = models.BooleanField('Bỏ qua dấu câu', default=True)
-    transliteration = models.BooleanField('Chấp nhận ae/oe/ue/ss', default=False)
-    new_cards_per_day = models.PositiveSmallIntegerField('Thẻ mới mỗi ngày', default=20)
-    session_minutes = models.PositiveSmallIntegerField('Số phút mỗi buổi', default=15)
+    autoplay = models.BooleanField('Automatically read the learning language aloud', default=False)
+    ignore_case = models.BooleanField('Ignore case', default=True)
+    ignore_punctuation = models.BooleanField('Ignore punctuation', default=True)
+    transliteration = models.BooleanField('Accept ae/oe/ue/ss', default=False)
+    new_cards_per_day = models.PositiveSmallIntegerField('New cards per day', default=20)
+    session_minutes = models.PositiveSmallIntegerField('Minutes per session', default=15)
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['user','language'], name='unique_user_language_settings')]

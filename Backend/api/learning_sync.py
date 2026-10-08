@@ -42,7 +42,7 @@ def grade_payload(payload, submitted):
 def sync(request):
     events=body(request).get('events')
     if not isinstance(events,list) or not 1<=len(events)<=100:
-        raise ValueError('Gửi 1–100 thay đổi mỗi đợt.')
+        raise ValueError('Send 1–100 changes per batch.')
     accepted=[];errors=[]
     for event in events:
         try:
@@ -55,17 +55,17 @@ def sync(request):
             from django.core.exceptions import ValidationError
             from django.http import Http404
             if not isinstance(exc,(ValidationError,Http404)):raise
-            errors.append({'token':event.get('token'),'error':'; '.join(exc.messages) if isinstance(exc,ValidationError) else 'Nội dung không còn truy cập được.', 'code':'validation' if isinstance(exc,ValidationError) else 'content_unavailable'})
+            errors.append({'token':event.get('token'),'error':'; '.join(exc.messages) if isinstance(exc,ValidationError) else 'This content is no longer accessible.', 'code':'validation' if isinstance(exc,ValidationError) else 'content_unavailable'})
     return JsonResponse({'accepted':accepted,'errors':errors})
 
 
 def apply_event(request,event):
-    if not isinstance(event,dict):raise ValueError('Thay đổi không hợp lệ.')
+    if not isinstance(event,dict):raise ValueError('Invalid change.')
     token=uuid.UUID(event['token']);kind=event['kind'];data=event['payload']
-    if not isinstance(data,dict):raise ValueError('payload phải là đối tượng.')
+    if not isinstance(data,dict):raise ValueError('payload must be an object.')
     log,created=LearningEvent.objects.get_or_create(token=token,defaults={
         'user':request.user,'language':request.language,'kind':kind,'payload':data})
-    if log.user_id!=request.user.pk or log.language!=request.language:raise ValueError('Mã đồng bộ không hợp lệ.')
+    if log.user_id!=request.user.pk or log.language!=request.language:raise ValueError('Invalid sync token.')
     if not created:return log.result
     if kind=='preferences':
         from users.models import Profile
@@ -74,7 +74,7 @@ def apply_event(request,event):
         profile,_=Profile.objects.get_or_create(user=request.user)
         profile=Profile.objects.select_for_update().get(pk=profile.pk)
         stamp=parse_datetime(event.get('at',''))
-        if not stamp or timezone.is_naive(stamp):raise ValueError('Thời gian không hợp lệ.')
+        if not stamp or timezone.is_naive(stamp):raise ValueError('Invalid timestamp.')
         stamp=min(stamp,timezone.now()).isoformat()
         for key,value in changes.items():
             if stamp>=profile.preferences_at.get(key,''):
@@ -107,7 +107,7 @@ def apply_event(request,event):
             completed=data.get('completed')
             valid={str(q['id']) for q in node.payload['questions'] if not q.get('example')}
             if not isinstance(completed,list) or len(completed)>100 or any(not isinstance(q,str) or q not in valid for q in completed):
-                raise ValueError('Tiến độ chứa câu hỏi không hợp lệ.')
+                raise ValueError('Progress contains invalid questions.')
             progress,_=PracticeProgress.objects.get_or_create(user=request.user,node=node,defaults={'revision':revision})
             previous=progress.completed if progress.revision==revision else []
             progress.completed=sorted(set(previous+completed),key=int)
@@ -122,7 +122,7 @@ def apply_event(request,event):
         state,_=DeckLearningState.objects.get_or_create(user=request.user,deck=deck)
         state=DeckLearningState.objects.select_for_update().get(pk=state.pk)
         stamp=parse_datetime(event.get('at',''))
-        if not stamp or timezone.is_naive(stamp):raise ValueError('Thời gian thay đổi không hợp lệ.')
+        if not stamp or timezone.is_naive(stamp):raise ValueError('Invalid change timestamp.')
         stamp=min(stamp,timezone.now()).isoformat()
         card_ids=set(deck.cards.values_list('id',flat=True))
         if kind=='reset':
@@ -132,13 +132,13 @@ def apply_event(request,event):
             result={'reset':True}
         elif kind in ('star','review'):
             card=int(data['card'])
-            if card not in card_ids:raise ValueError('Thẻ không thuộc bộ này.')
+            if card not in card_ids:raise ValueError('This card does not belong to this deck.')
             key=str(card)
             if kind=='star':
-                if type(data.get('value')) is not bool:raise ValueError('Trạng thái sao không hợp lệ.')
+                if type(data.get('value')) is not bool:raise ValueError('Invalid star state.')
                 if stamp>=state.stars.get(key,{}).get('at',''):state.stars[key]={'value':data['value'],'at':stamp}
             else:
-                if type(data.get('correct')) is not bool or data.get('type') not in ('choice','written','truefalse','matching','flash','spell','order','write'):raise ValueError('Lượt học không hợp lệ.')
+                if type(data.get('correct')) is not bool or data.get('type') not in ('choice','written','truefalse','matching','flash','spell','order','write'):raise ValueError('Invalid study session.')
                 correct=data['correct'];p=state.progress.get(key,{'hits':0,'misses':0,'streak':0,'written':False})
                 p['hits']=p.get('hits',0)+int(correct);p['misses']=p.get('misses',0)+int(not correct)
                 p['streak']=p.get('streak',0)+1 if correct else 0;p['written']=p.get('written',False) or (correct and data['type']=='written')
@@ -150,16 +150,16 @@ def apply_event(request,event):
                 progress.save()
         elif kind=='options':
             options=data.get('options')
-            if not isinstance(options,dict) or len(str(options))>10000:raise ValueError('Tùy chọn không hợp lệ.')
+            if not isinstance(options,dict) or len(str(options))>10000:raise ValueError('Invalid options.')
             # FSRS options are validated and owned by the review settings endpoint.
             options.pop('srs',None)
             if 'srs' in state.options:options['srs']=state.options['srs']
             if stamp>=state.options_at:state.options=options;state.options_at=stamp
         elif kind=='test':
             results=data.get('results')
-            if not isinstance(results,list) or not results or len(results)>len(card_ids) or any(type(x) is not bool for x in results):raise ValueError('Kết quả bài kiểm tra không hợp lệ.')
+            if not isinstance(results,list) or not results or len(results)>len(card_ids) or any(type(x) is not bool for x in results):raise ValueError('Invalid test results.')
             result={'correct':sum(results),'total':len(results),'deck':deck.pk,'title':deck.title}
-        else:raise ValueError('Loại đồng bộ không hợp lệ.')
+        else:raise ValueError('Invalid sync type.')
         state.save()
         if kind!='test':result={'saved':True,'deck':deck.pk}
     log.result=result;log.save(update_fields=['result'])

@@ -4,12 +4,12 @@ import {
   advanceQueue,
   activeQuestions,
   needsManualCheck,
-} from "../src/practice-session.js";
+} from "../src/features/practice/practice-session.js";
 import {
   placeSentenceToken,
   sentenceInsertionIndex,
-} from "../src/sentence-tokens.js";
-import { gradeExercise } from "../src/local-learning.js";
+} from "../src/features/practice/sentence-tokens.js";
+import { gradeExercise } from "../src/features/learning/local-learning.js";
 
 test("categorization presents and grades all words as one exercise, including retries", () => {
   const questions = [
@@ -90,7 +90,7 @@ test("sentence insertion handles the beginning, end and wrapped lines", () => {
 
 test("partial input requires manual checking and random retries preserve the remaining questions", async () => {
   const { needsManualCheck, repeatLater } = await import(
-    "../src/practice-session.js"
+    "../src/features/practice/practice-session.js"
   );
   assert.equal(needsManualCheck("short_answer", "partial_input"), true);
   assert.deepEqual(

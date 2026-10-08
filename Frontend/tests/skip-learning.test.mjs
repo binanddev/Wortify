@@ -4,15 +4,15 @@ import {
   exerciseSolution,
   cardSolution,
   SKIPPED_ANSWER,
-} from "../src/skip-learning.js";
-import { gradeCard } from "../src/local-learning.js";
+} from "../src/features/learning/skip-learning.js";
+import { gradeCard } from "../src/features/learning/local-learning.js";
 test("skip reveals readable solutions for blanks, multi-select and order without editing answers", () => {
   const q = {
     id: 1,
     kind: "text",
     blanks: [{ answers: ["bin", "sei"] }, { answers: ["gut"] }],
   };
-  assert.deepEqual(exerciseSolution({}, q), ["Ô 1: bin / sei", "Ô 2: gut"]);
+  assert.deepEqual(exerciseSolution({}, q), ["Gap 1: bin / sei", "Gap 2: gut"]);
   assert.deepEqual(
     exerciseSolution(
       {},
@@ -41,7 +41,7 @@ test("skip reveals readable solutions for blanks, multi-select and order without
 test("flashcard solutions cover both true/false and every matching pair", () => {
   assert.deepEqual(
     cardSolution({ type: "truefalse", truth: false, expected: "house" }),
-    ["Sai — house"],
+    ["False — house"],
   );
   assert.deepEqual(
     cardSolution({

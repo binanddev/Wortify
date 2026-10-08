@@ -11,7 +11,7 @@ from .practice_hub import visible
 def text(data, key, limit, required=False):
     value = data.get(key, '')
     if not isinstance(value, str) or len(value) > limit or (required and not value.strip()):
-        raise ValueError('Nội dung không hợp lệ: ' + key)
+        raise ValueError('Invalid content: ' + key)
     return value.strip()
 
 
@@ -29,7 +29,7 @@ def profile(request):
             if 'bio' in data:p.bio=text(data,'bio',2000)
             if 'daily_goal' in data:
                 goal=data['daily_goal']
-                if type(goal) is not int or not 1<=goal<=500:raise ValueError('Mục tiêu cần từ 1 đến 500 câu mỗi ngày.')
+                if type(goal) is not int or not 1<=goal<=500:raise ValueError('The goal must be between 1 and 500 questions per day.')
                 p.preferences={**p.preferences,'dailyGoals':{**p.preferences.get('dailyGoals',{}),request.language:goal}}
             p.save()
     return JsonResponse(profile_data(request,p))
@@ -44,7 +44,7 @@ def classroom_assignments(request,pk):
         c.assignments.filter(pk=data.get('id')).delete();return JsonResponse({'ok':True})
     node=get_object_or_404(visible(request),pk=data.get('node'))
     due=parse_datetime(data['due_at']) if data.get('due_at') else None
-    if data.get('due_at') and not due:raise ValueError('Hạn làm bài không hợp lệ.')
+    if data.get('due_at') and not due:raise ValueError('Invalid assignment deadline.')
     a,_=ClassroomAssignment.objects.update_or_create(classroom=c,node=node,defaults={'assigned_by':request.user,'due_at':due})
     return JsonResponse({'id':a.pk},status=201)
 @endpoint
@@ -66,7 +66,7 @@ def classroom(request,pk):
     c=get_object_or_404(Classroom.objects.filter(Q(owner=request.user)|Q(members=request.user)).distinct(),pk=pk,language=request.language)
     manager=c.owner_id==request.user.pk
     if request.method!='GET':
-        if not manager: return JsonResponse({'error':'Chỉ người tạo lớp được quản lý lớp.'},status=403)
+        if not manager: return JsonResponse({'error':'Only the class creator can manage the class.'},status=403)
         if request.method=='DELETE':c.delete();return JsonResponse({'ok':True})
         data=body(request)
         if 'remove_member' in data:c.members.remove(data['remove_member'])

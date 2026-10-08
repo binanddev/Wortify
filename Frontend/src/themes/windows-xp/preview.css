@@ -1,0 +1,6 @@
+.interface-option-xp .interface-sample {
+  @apply bg-[#4284ca];
+}
+.interface-option-xp .interface-sample > span {
+  @apply rounded-sm bg-[#ece9d8] border-t-4 border-[#2168de];
+}

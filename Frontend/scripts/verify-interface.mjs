@@ -4,8 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
-import { THEME_ICONS } from "../src/theme-icons.js";
-import { ICON_PATHS } from "../src/icon-paths.js";
+import { THEME_ICONS } from "../src/themes/icons.js";
+import { ICON_PATHS } from "../src/components/ui/icon-paths.js";
 const browser =
   process.env.CHROME_PATH ||
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
@@ -26,15 +26,16 @@ if (liveOrigin) {
   css = await response.text();
   if (!css.includes('--auto-ink')) throw new Error('The running dev server is serving stale CSS: automatic contrast rules are missing.');
 } else css = await fs.readFile(path.join(dist, cssFile), "utf8");
+css=css.replaceAll('/assets/',pathToFileURL(dist).href+'/');
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), "wortify-interface-"));
 const icon = (name) =>
   `<svg class="app-icon" data-icon="${name}" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path class="icon-family icon-default" d="${ICON_PATHS[name]}"/>${Object.entries(THEME_ICONS).map(([theme,paths])=>`<g class="icon-family icon-${theme}"><path d="${paths[name] || ICON_PATHS[name]}"/></g>`).join("")}</svg>`;
-const autoCode = (await fs.readFile(new URL("../src/auto-contrast.js", import.meta.url), "utf8")).replaceAll("export ", "");
+const autoCode = (await fs.readFile(new URL("../src/features/appearance/auto-contrast.js", import.meta.url), "utf8")).replaceAll("export ", "");
 const html = `<!doctype html><html data-interface="studio" data-background="mist"><meta charset="utf-8"><style>${css}</style>
 <style>${css.replaceAll(":hover", "[data-test-hover]")}</style>
 <body><div class="app-shell" style="--nav-width:320px;--nav-scale:1">
-<div class="nav-flip"><div class="nav-flip-inner"><div class="nav-face is-active"><div class="nav-static"><strong class="brand">Wortify</strong>${icon("flip")}</div><aside class="sidebar open"><a class="workspace-select">DE · Deutsch ${icon("chevron_down")}</a><nav><a class="nav-link active">${icon("cards")} Flashcard</a><a class="nav-link">${icon("book")} Practice Hub</a><a class="nav-link">${icon("search")} Explore</a><a class="nav-link">${icon("edit")} Create</a></nav><nav><a class="nav-link">${icon("user")} Hành trình học</a><a class="nav-link">${icon("settings")} Cài đặt học tập</a></nav></aside></div></div></div>
-<div class="main-shell"><header class="studio-masthead"><div><span class="studio-kicker">WORTIFY / KHÔNG GIAN HỌC</span><strong>Flashcard</strong></div><div class="studio-session-badge">${icon("spark")} Mỗi ngày, một bước tiến</div></header><main><div class="page"><div class="heading"><div><span class="eyebrow">TIẾNG ĐỨC · A1</span><h1>Một chút tiếng Đức,<br>mỗi ngày.</h1><p>Những từ quen thuộc cho cuộc sống hàng ngày.</p></div></div><div class="toolbar"><button class="btn primary">${icon("cards")} Thẻ ghi nhớ</button><button class="btn">${icon("exercise")} Luyện tập</button><button class="btn">${icon("check")} Kiểm tra</button></div><button class="flip-stage" aria-pressed="false" style="margin-top:28px"><span class="flip-inner"><span class="flip-face"><span class="eyebrow">TỪ VỰNG</span><strong>die Sonnenblume</strong><span class="example">Một từ mới, một khám phá mới.</span></span><span class="flip-face flip-back"><strong>hoa hướng dương</strong></span></span></button><div class="card-navigation"><button class="btn">${icon("chevron_left")}</button><span>3 / 24</span><button class="btn primary">${icon("chevron_right")}</button></div></div></main></div></div><div class="exercise-workspace"><label class="partial-rewrite"><span>Ich möchte</span><input value="lernen"></label><div class="category-bin"><button class="word-chip is-wrong">Fehler</button></div><div class="fluid-passage" style="font-size:24px"><span class="gap-token"><button class="gap-drop"><span class="movable-token">Wort</span></button></span><button class="inline-choice">Wort</button></div><button class="inline-choice">Wort</button><span class="inline-pills"><button>Wort</button></span><button class="gap-drop is-active">Wort</button><div class="sentence-target"></div><div class="pairing-work"><div class="pair-column"><button class="pair-card paired">Richtig</button></div><div class="pair-column"><button class="pair-card pair-error">Falsch</button></div></div></div><div class="exercise-workspace" data-ui-style="sentence_rewrite"><textarea aria-label="Test">Ich lerne Deutsch.</textarea></div><div class="session-controls" style="width:500px"><button class="end-session">Kết thúc</button><div class="flashcard-actions"><button class="check-action">Kiểm tra</button><button class="next-question">Tiếp tục</button></div></div><pre id="results" hidden></pre>
+<div class="nav-flip"><div class="nav-flip-inner"><div class="nav-face is-active"><div class="nav-static"><strong class="brand">Wortify</strong>${icon("flip")}</div><aside class="sidebar open"><nav><a class="nav-link active">${icon("cards")} Flashcard</a><a class="nav-link">${icon("book")} Practice Hub</a><a class="nav-link">${icon("search")} Explore</a><a class="nav-link">${icon("edit")} Create</a></nav><nav><a class="nav-link">${icon("user")} Hành trình học</a><a class="nav-link">${icon("settings")} Cài đặt học tập</a></nav></aside></div></div></div>
+<div class="main-shell"><header class="studio-masthead"><div><span class="studio-kicker">WORTIFY / KHÔNG GIAN HỌC</span><strong>Flashcard</strong></div></header><main><div class="page"><div class="heading"><div><span class="eyebrow">TIẾNG ĐỨC · A1</span><h1>Một chút tiếng Đức,<br>mỗi ngày.</h1><p>Những từ quen thuộc cho cuộc sống hàng ngày.</p></div></div><div class="toolbar"><button class="btn primary">${icon("cards")} Thẻ ghi nhớ</button><button class="btn">${icon("exercise")} Luyện tập</button><button class="btn">${icon("check")} Kiểm tra</button></div><button class="flip-stage" aria-pressed="false" style="margin-top:28px"><span class="flip-inner"><span class="flip-face"><span class="eyebrow">TỪ VỰNG</span><strong>die Sonnenblume</strong><span class="example">Một từ mới, một khám phá mới.</span></span><span class="flip-face flip-back"><strong>hoa hướng dương</strong></span></span></button><div class="card-navigation"><button class="btn">${icon("chevron_left")}</button><span>3 / 24</span><button class="btn primary">${icon("chevron_right")}</button></div></div></main></div></div><div class="exercise-workspace"><label class="partial-rewrite"><span>Ich möchte</span><input value="lernen"></label><div class="category-bin"><button class="word-chip is-wrong">Fehler</button></div><div class="fluid-passage" style="font-size:24px"><span class="gap-token"><button class="gap-drop"><span class="movable-token">Wort</span></button></span><button class="inline-choice">Wort</button></div><button class="inline-choice">Wort</button><span class="inline-pills"><button>Wort</button></span><button class="gap-drop is-active">Wort</button><div class="sentence-target"></div><div class="pairing-work"><div class="pair-column"><button class="pair-card paired">Richtig</button></div><div class="pair-column"><button class="pair-card pair-error">Falsch</button></div></div></div><div class="exercise-workspace" data-ui-style="sentence_rewrite"><textarea aria-label="Test">Ich lerne Deutsch.</textarea></div><div class="session-controls" style="width:500px"><button class="end-session">Kết thúc</button><div class="flashcard-actions"><button class="check-action">Kiểm tra</button><button class="next-question">Tiếp tục</button></div></div><pre id="results" hidden></pre>
 <script>
 ${autoCode}
 (async () => {
@@ -121,6 +122,21 @@ for(const color of ['#ffffff','#111111']) {
  if(c !== (color==='#ffffff'?'rgb(0, 0, 0)':'rgb(255, 255, 255)')) errors.push('auto foreground '+color+': '+c);
 }
 cleanup();probe.remove();
+for (const el of document.querySelectorAll('[data-auto-ink]')) { el.removeAttribute('data-auto-ink'); el.style.removeProperty('--auto-ink'); }
+root.dataset.interface='retro';
+await new Promise(resolve=>setTimeout(resolve,200));
+for (const [selector, expected] of [['.pair-card.paired','rgb(220, 235, 220)'],['.pair-card.pair-error','rgb(250, 226, 216)']]) {
+ const el=document.querySelector(selector);
+ el.removeAttribute('data-test-hover');el.style.setProperty('transition','none','important');
+ if(getComputedStyle(el).backgroundColor!==expected) errors.push('Retro feedback '+selector+': '+getComputedStyle(el).backgroundColor);
+}
+root.dataset.hasBackground='true';root.style.setProperty('--site-bg-image','linear-gradient(rgb(1,2,3),rgb(4,5,6))');
+for(const mode of ['studio','glass','xp','retro','space']) {
+ root.dataset.interface=mode;
+ if(!getComputedStyle(document.body).backgroundImage.includes('rgb(1, 2, 3)')) errors.push(mode+' shared background lost');
+}
+root.dataset.hasBackground='false';root.style.removeProperty('--site-bg-image');
+document.activeElement?.blur();window.scrollTo(0,0);
 root.dataset.interface='${process.env.INTERFACE_THEME || 'studio'}';
 for(const el of document.querySelectorAll('button, .nav-face, .glass, .app-icon')) {
  const st=getComputedStyle(el);if(st.filter!=='none'||(root.dataset.interface==='studio' && st.backdropFilter!=='none')) errors.push('filter remains '+el.className);

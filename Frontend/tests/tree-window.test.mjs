@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { treeWindow } from "../src/tree-window.js";
+import { treeWindow } from "../src/components/navigation/tree-window.js";
 test("long branches stay compact while preserving the active path and every item when expanded", () => {
   const nodes = Array.from({ length: 20 }, (_, id) => ({ id }));
   assert.equal(treeWindow(nodes, new Set()).length, 8);

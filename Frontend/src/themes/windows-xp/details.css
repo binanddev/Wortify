@@ -1,0 +1,17 @@
+:root[data-interface="xp"] body {
+  @apply [font-family:Tahoma,Verdana,sans-serif];
+}
+:root[data-interface="xp"]
+  body
+  :is(.nav-face, .glass, .work-paper, .profile-panel, .author-panel) {
+  @apply rounded-t-lg! rounded-b-sm! shadow-[2px_4px_0_#143c7970]! border-2!;
+}
+:root[data-interface="xp"] body .nav-static {
+  @apply bg-gradient-to-b from-[#4c99ff] via-[#1766df] to-[#1044ad] text-white!;
+}
+:root[data-interface="xp"] body .nav-static :is(button, a, svg) {
+  @apply text-white!;
+}
+:root[data-interface="xp"] body .app-icon {
+  @apply [stroke-width:1.8] [stroke-linejoin:miter];
+}

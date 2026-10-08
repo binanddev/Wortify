@@ -82,18 +82,18 @@ def resume_question(request, token):
 def next_question(request):
     mode = request.POST.get('mode', 'flash')
     if mode not in ('flash', 'quiz', 'spell', 'speak', 'learn', 'write', 'order'):
-        return JsonResponse({'error': 'Chế độ học không hợp lệ.'}, status=400)
+        return JsonResponse({'error': 'Invalid study mode.'}, status=400)
     prefs = preferences(request.user, getattr(request, 'language', 'de'))
     deck_id = request.POST.get('deck')
     if deck_id:
         if not deck_id.isdigit():
-            return JsonResponse({'error': 'Bộ thẻ không hợp lệ.'}, status=400)
+            return JsonResponse({'error': 'Invalid deck.'}, status=400)
         get_object_or_404(Deck, pk=deck_id, owner=request.user)
     cards = study.queue(request.user, prefs, deck_id, request.POST.get('filter', 'all'), mode == 'learn', language=getattr(request, 'language', 'de'))
     if mode == 'order':
         cards = [card for card in cards if 2 <= len(card.example_german.split()) <= 40]
     if not cards:
-        message = 'Chưa có câu phù hợp. Hãy thêm ví dụ tiếng Đức dài từ 2 đến 40 từ, hoặc đổi bộ lọc.' if mode == 'order' else 'Đã hoàn thành các thẻ phù hợp. Bạn có thể chọn bộ thẻ khác hoặc quay lại khi đến hạn ôn.'
+        message = 'No matching questions. Add German example sentences of 2–40 words or change filters.' if mode == 'order' else 'All matching cards are complete. Choose another deck or return when reviews are due.'
         return JsonResponse({'done': True, 'message': message})
     if request.POST.get('shuffle') == '1' and mode != 'learn':
         seed = request.POST.get('seed', '')[:100]
@@ -142,17 +142,17 @@ def submit(request, token):
     if attempt.completed_at:
         return JsonResponse(attempt.result)
     if attempt.abandoned:
-        return JsonResponse({'error': 'Lượt học đã kết thúc.'}, status=409)
+        return JsonResponse({'error': 'This study session has ended.'}, status=409)
     answer = request.POST.get('answer', '')
     if len(answer) > 4000 or len(answer.split()) > 500:
-        return JsonResponse({'error': 'Câu trả lời quá dài.'}, status=400)
+        return JsonResponse({'error': 'The answer is too long.'}, status=400)
     if attempt.mode == 'quiz':
         if answer not in attempt.question['options']:
-            return JsonResponse({'error': 'Hãy chọn một đáp án.'}, status=400)
+            return JsonResponse({'error': 'Choose an answer.'}, status=400)
         result = {'is_correct': answer == attempt.question['meaning']}
     elif attempt.mode == 'flash':
         if answer not in ('remember', 'again'):
-            return JsonResponse({'error': 'Hãy chọn mức độ nhớ.'}, status=400)
+            return JsonResponse({'error': 'Choose a recall rating.'}, status=400)
         result = {'is_correct': answer == 'remember'}
     elif attempt.mode == 'order':
         try:
@@ -162,12 +162,12 @@ def submit(request, token):
                 raise ValueError
             answer = ' '.join(items[i] for i in ids)
         except (ValueError, TypeError):
-            return JsonResponse({'error': 'Hãy sử dụng đủ các từ để tạo thành câu.'}, status=400)
+            return JsonResponse({'error': 'Use all words to form the sentence.'}, status=400)
         result = compare(attempt.question['target'], answer, attempt.question['alternatives'], **attempt.question['grading'])
     elif attempt.mode in ('spell', 'write'):
         result = compare(attempt.question['target'], answer, attempt.question['alternatives'], **attempt.question['grading'])
     else:
-        return JsonResponse({'error': 'Hãy gửi bản thu để kiểm tra.'}, status=400)
+        return JsonResponse({'error': 'Submit a recording to check.'}, status=400)
     result['card'] = attempt.question.get('card', card_data(attempt.card))
     result['target'] = attempt.question['target']
     elapsed = min(7200000, max(0, int((timezone.now() - attempt.created_at).total_seconds() * 1000)))
@@ -179,19 +179,19 @@ def audio(request, token):
     attempt = get_object_or_404(StudyAttempt.objects.select_related('card'), token=token, user=request.user)
     audio_type = request.POST.get('type', attempt.question['target_type'])
     if audio_type not in ('term', 'example'):
-        return JsonResponse({'error': 'Nội dung nghe không hợp lệ.'}, status=400)
+        return JsonResponse({'error': 'Invalid listening content.'}, status=400)
     snapshot = attempt.question.get('card', card_data(attempt.card))
     text = snapshot['example_german'] if audio_type == 'example' else snapshot['german_text']
     if not text:
-        return JsonResponse({'error': 'Thẻ chưa có câu ví dụ.'}, status=400)
+        return JsonResponse({'error': 'This card has no example sentence.'}, status=400)
     speed = .7 if request.POST.get('slow') == '1' else 1
     if not settings.TTS_PROVIDER:
-        return JsonResponse({'fallback': True, 'text': text, 'speed': speed, 'message': 'Đang dùng giọng máy của trình duyệt.'})
+        return JsonResponse({'fallback': True, 'text': text, 'speed': speed, 'message': 'Using the browser voice.'})
     try:
         obj = TextToSpeechService().audio(attempt.card, audio_type, text, speed)
         return JsonResponse({'url': f'/api/{attempt.card.deck.language}/audio-file/{obj.pk}/'})
     except SpeechError as exc:
-        return JsonResponse({'fallback': True, 'text': text, 'speed': speed, 'message': str(exc) + ' Đang dùng giọng trình duyệt.'})
+        return JsonResponse({'fallback': True, 'text': text, 'speed': speed, 'message': str(exc) + ' Using the browser voice.'})
 
 
 def tts_file(request, pk):
@@ -205,14 +205,14 @@ def card_audio(request, pk):
     kind = request.POST.get('type', 'term')
     text = card.example_german if kind == 'example' else card.german_text
     if not text:
-        return JsonResponse({'error': 'Thẻ chưa có câu ví dụ.'}, status=400)
+        return JsonResponse({'error': 'This card has no example sentence.'}, status=400)
     if settings.TTS_PROVIDER:
         try:
             audio = TextToSpeechService().audio(card, kind, text, 1)
             return JsonResponse({'url': f'/api/{card.deck.language}/audio-file/{audio.pk}/'})
         except SpeechError:
             pass
-    return JsonResponse({'fallback': True, 'text': text, 'speed': 1, 'message': 'Đang dùng giọng máy của trình duyệt.'})
+    return JsonResponse({'fallback': True, 'text': text, 'speed': 1, 'message': 'Using the browser voice.'})
 
 
 def private_file(field, mime):
@@ -222,7 +222,7 @@ def private_file(field, mime):
         response['X-Content-Type-Options'] = 'nosniff'
         return response
     except FileNotFoundError:
-        return JsonResponse({'error':'Bản thu không còn được lưu.'}, status=404)
+        return JsonResponse({'error':'This recording is no longer stored.'}, status=404)
 
 
 @require_POST
@@ -231,12 +231,12 @@ def speaking_check(request, token):
     if attempt.completed_at:
         return JsonResponse({'status': 'done', 'result': attempt.result, 'ephemeral': True})
     if attempt.abandoned:
-        return JsonResponse({'error': 'Lượt học đã kết thúc. Hãy thu lại trong lượt mới.'}, status=409)
+        return JsonResponse({'error': 'This session has ended. Record again in a new session.'}, status=409)
     if request.POST.get('consent') != 'yes':
-        return JsonResponse({'error': 'Hãy đồng ý gửi âm thanh tạm thời đến dịch vụ nhận dạng.'}, status=400)
+        return JsonResponse({'error': 'Consent to sending temporary audio to the recognition service.'}, status=400)
     upload = request.FILES.get('audio')
     if not upload:
-        return JsonResponse({'error': 'Chưa có âm thanh.'}, status=400)
+        return JsonResponse({'error': 'No audio yet.'}, status=400)
     claimed = False
     try:
         data, ext, mime, duration = validate_audio(upload)
@@ -244,16 +244,16 @@ def speaking_check(request, token):
         StudyAttempt.objects.filter(pk=attempt.pk, processing_started_at__lt=now-timedelta(seconds=settings.SPEECH_TIMEOUT+60)).update(processing_started_at=None)
         claimed = StudyAttempt.objects.filter(pk=attempt.pk, completed_at__isnull=True, abandoned=False, processing_started_at__isnull=True).update(processing_started_at=now)
         if not claimed:
-            return JsonResponse({'error': 'Lượt kiểm tra đang được xử lý hoặc đã hoàn thành. Hãy tải lại trạng thái.'}, status=409)
+            return JsonResponse({'error': 'This test is processing or already complete. Reload its status.'}, status=409)
         response = SpeechToTextService().transcribe(data, uuid.uuid4().hex+'.'+ext, mime, language=attempt.card.deck.language)
         transcript = response.get('transcript', '').strip()
         if not transcript:
-            raise SpeechError('Không phát hiện giọng nói. Hãy thu lại rõ hơn.')
+            raise SpeechError('No speech detected. Record again clearly.')
         if len(transcript) > 4000 or len(transcript.split()) > 500:
-            raise SpeechError('Nội dung quá dài. Hãy thu một đoạn ngắn hơn.')
+            raise SpeechError('Content is too long. Record a shorter segment.')
         confidence = response.get('confidence')
         if confidence is not None and (not isinstance(confidence, (int, float)) or not 0 <= confidence <= 1):
-            raise SpeechError('Dịch vụ nhận dạng chưa trả về kết quả hợp lệ.')
+            raise SpeechError('The recognition service returned no valid result.')
         uncertain = response.get('uncertain', False) or (confidence is not None and confidence < .6)
         result = compare(attempt.question['target'], transcript, attempt.question['alternatives'], ignore_case=True, ignore_punctuation=True, transliteration=attempt.question['grading']['transliteration'])
         result.update({'uncertain': uncertain, 'confidence': confidence, 'card': attempt.question.get('card', card_data(attempt.card))})
@@ -263,9 +263,9 @@ def speaking_check(request, token):
         response['Cache-Control'] = 'no-store'
         return response
     except (SpeechError, TimeoutError) as exc:
-        return JsonResponse({'status': 'error', 'error': str(exc) if isinstance(exc, SpeechError) else 'Dịch vụ mất quá nhiều thời gian. Hãy thử lại.'}, status=200 if claimed else 400)
+        return JsonResponse({'status': 'error', 'error': str(exc) if isinstance(exc, SpeechError) else 'The service timed out. Please try again.'}, status=200 if claimed else 400)
     except Exception:
-        return JsonResponse({'status': 'error', 'error': 'Không xử lý được âm thanh. Vui lòng thử lại.'})
+        return JsonResponse({'status': 'error', 'error': 'Unable to process audio. Please try again.'})
     finally:
         if claimed:
             StudyAttempt.objects.filter(pk=attempt.pk).update(processing_started_at=None)
@@ -289,7 +289,7 @@ def match_new(request, pk):
             round = create_match(deck, request.POST.get('weak') == '1')
         return JsonResponse(match_payload(round))
     except (ValueError, ValidationError):
-        return JsonResponse({'error': 'Cần ít nhất hai thẻ có từ và nghĩa khác nhau. Nếu đang lọc từ yếu, hãy chọn tất cả thẻ.'}, status=400)
+        return JsonResponse({'error': 'At least two cards with distinct terms and meanings are required. If filtering weak words, choose all cards.'}, status=400)
 
 
 @require_POST
@@ -299,5 +299,5 @@ def match_submit(request, token):
         mapping = json.loads(request.POST.get('pairs', '{}'))
         return JsonResponse(submit_match(round, mapping))
     except (ValueError, TypeError):
-        return JsonResponse({'error': 'Hãy ghép đủ các cặp trước khi kiểm tra.'}, status=400)
+        return JsonResponse({'error': 'Complete all pairs before checking.'}, status=400)
 

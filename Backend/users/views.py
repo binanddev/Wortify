@@ -14,7 +14,7 @@ from api.common import body
 def superuser_registration(request, setup_key):
     key = settings.SUPERUSER_SETUP_KEY
     if len(key) < 32 or not secrets.compare_digest(setup_key.encode(), key.encode()):
-        return JsonResponse({'error': 'Đường dẫn không tồn tại hoặc đã hết hiệu lực.'}, status=404)
+        return JsonResponse({'error': 'This link does not exist or has expired.'}, status=404)
     if request.method == 'GET':
         return JsonResponse({'enabled': True})
     return session(request, superuser_registration=True)
@@ -28,9 +28,9 @@ def session(request, superuser_registration=False):
         try:
             data = body(request)
         except ValueError:
-            return JsonResponse({'error': 'JSON không hợp lệ.'}, status=400)
+            return JsonResponse({'error': 'Invalid JSON.'}, status=400)
         if any(not isinstance(data.get(key, ''), str) for key in ['username', 'password', 'password1', 'password2']):
-            return JsonResponse({'error': 'Thông tin đăng nhập không hợp lệ.'}, status=400)
+            return JsonResponse({'error': 'Invalid credentials.'}, status=400)
         if data.get('register') or superuser_registration:
             form = UserCreationForm(data)
             if not form.is_valid():
@@ -43,11 +43,11 @@ def session(request, superuser_registration=False):
                         user.is_superuser = True
                     user.save()
             except IntegrityError:
-                return JsonResponse({'error': 'Tên tài khoản đã được sử dụng.'}, status=400)
+                return JsonResponse({'error': 'This username is already taken.'}, status=400)
         else:
             user = authenticate(request, username=data.get('username', ''), password=data.get('password', ''))
         if user is None:
-            return JsonResponse({'error': 'Tên đăng nhập hoặc mật khẩu không đúng.'}, status=400)
+            return JsonResponse({'error': 'Incorrect username or password.'}, status=400)
         login(request, user)
         request.session["appearance_session"] = uuid.uuid4().hex
     user = request.user

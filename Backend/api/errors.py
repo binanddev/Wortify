@@ -2,4 +2,4 @@ from django.http import JsonResponse
 
 
 def csrf_failure(request, reason=""):
-    return JsonResponse({'error':'Phiên bảo mật đã thay đổi. Hãy tải lại trang rồi thử lại.'}, status=403)
+    return JsonResponse({'error':'Your security session has changed. Reload the page and try again.'}, status=403)

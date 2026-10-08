@@ -19,7 +19,7 @@ class FolderForm(forms.ModelForm):
         depth = 1
         while cursor:
             if cursor.pk in seen:
-                raise forms.ValidationError('Không thể chuyển folde vào chính nó hoặc folde bên trong nó.')
+                raise forms.ValidationError('A folder cannot be moved into itself or its descendants.')
             seen.add(cursor.pk)
             cursor = cursor.parent
             depth += 1
@@ -32,16 +32,16 @@ class FolderForm(forms.ModelForm):
         while frontier:
             height += 1
             if visited.intersection(frontier):
-                raise forms.ValidationError('Cấu trúc folde không hợp lệ.')
+                raise forms.ValidationError('Invalid folder structure.')
             visited.update(frontier)
             frontier = [child for pk in frontier for child in children.get(pk, [])]
         if depth + max(0, height - 1) > 10:
-            raise forms.ValidationError('Folde hỗ trợ tối đa 10 cấp.')
+            raise forms.ValidationError('Folders support up to 10 levels.')
         return parent
 
 
 class DeckForm(forms.ModelForm):
-    language = forms.ChoiceField(choices=[('de', 'Tiếng Đức'), ('en', 'Tiếng Anh')])
+    language = forms.ChoiceField(choices=[('de', 'German'), ('en', 'English')])
     level = forms.ChoiceField(choices=[(x,x) for x in ['A1','A2','B1','B2','C1','C2']])
     class Meta:
         model = Deck
@@ -50,12 +50,12 @@ class DeckForm(forms.ModelForm):
     def __init__(self, *args, user, language=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['folder'].queryset = Folder.objects.filter(owner=user, **({'language': language} if language else {}))
-        self.fields['folder'].empty_label = 'Chưa xếp thư mục'
+        self.fields['folder'].empty_label = 'Unfiled'
 
 
 class CardForm(forms.ModelForm):
-    accepted_answers = forms.CharField(label='Cách trả lời khác cho từ', required=False, help_text='Mỗi dòng một cách trả lời được chấp nhận. Có thể để trống.')
-    accepted_examples = forms.CharField(label='Cách nói khác cho câu ví dụ', required=False, help_text='Mỗi dòng một câu hợp lệ. Có thể để trống.')
+    accepted_answers = forms.CharField(label='Alternative term answers', required=False, help_text='One accepted answer per line. May be empty.')
+    accepted_examples = forms.CharField(label='Alternative example sentences', required=False, help_text='One valid sentence per line. May be empty.')
 
     class Meta:
         model = Card
@@ -71,7 +71,7 @@ class CardForm(forms.ModelForm):
         for name in ('accepted_answers', 'accepted_examples'):
             value = [line.strip() for line in (data.get(name) or '').splitlines() if line.strip()]
             if len(value) > 20 or any(len(v) > 2000 for v in value):
-                self.add_error(name, 'Nhập tối đa 20 dòng, mỗi dòng không quá 2000 ký tự.')
+                self.add_error(name, 'Enter up to 20 lines, no longer than 2000 characters each.')
             else:
                 data[name] = value
         return data
@@ -85,11 +85,11 @@ class SettingsForm(forms.ModelForm):
     def clean_new_cards_per_day(self):
         value = self.cleaned_data['new_cards_per_day']
         if value > 200:
-            raise forms.ValidationError('Chọn từ 0 đến 200 thẻ.')
+            raise forms.ValidationError('Choose between 0 and 200 cards.')
         return value
 
     def clean_session_minutes(self):
         value = self.cleaned_data['session_minutes']
         if not 1 <= value <= 120:
-            raise forms.ValidationError('Chọn từ 1 đến 120 phút.')
+            raise forms.ValidationError('Choose between 1 and 120 minutes.')
         return value

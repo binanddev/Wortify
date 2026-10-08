@@ -1,0 +1,17 @@
+[Unit]
+Description=Wortify API
+After=network.target
+
+[Service]
+User=wortify
+Group=wortify
+WorkingDirectory=/srv/wortify/backend
+# Django loads /srv/wortify/backend/.env itself.
+ExecStart=/srv/wortify/backend/.venv/bin/gunicorn config.wsgi:application --bind 127.0.0.1:8000 --workers 2 --timeout 120 --access-logfile - --error-logfile -
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

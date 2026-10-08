@@ -4,7 +4,7 @@ import {
   enqueueLearning,
   flushLearning,
   pendingLearning,
-} from "../src/learning-sync.js";
+} from "../src/features/learning/learning-sync.js";
 test("offline practice progress coalesces without losing completed questions", () => {
   const stored = new Map();
   globalThis.localStorage = {

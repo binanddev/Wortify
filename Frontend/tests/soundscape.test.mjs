@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { playAmbientNote } from "../src/soundscape-engine.js";
+import { playAmbientNote } from "../src/features/audio/soundscape-engine.js";
 import {
   AMBIENT_TRACKS,
   ambientTrack,
   ambientStep,
-} from "../src/soundscape-presets.js";
+} from "../src/features/audio/soundscape-presets.js";
 
 test("ten distinct built-in melodies loop with safe finite tones and a fallback", () => {
   assert.equal(AMBIENT_TRACKS.length, 10);

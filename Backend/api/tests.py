@@ -1176,7 +1176,7 @@ class PersonalAppearanceAndMonitoringTests(TestCase):
         result=self.client.get('/api/manage/monitor/?failures=1').json()
         self.assertEqual(result['total'],1)
         self.assertEqual(result['logs'][0]['error'],'timeout')
-        self.assertEqual(result['logs'][0]['source'],'Máy chủ frontend')
+        self.assertEqual(result['logs'][0]['source'],'Frontend server')
         self.assertNotIn('user',result['logs'][0])
 
     def test_monitor_validation_retention_and_database_failure(self):
@@ -1210,99 +1210,83 @@ class DeploymentEnvironmentTests(SimpleTestCase):
                 with self.assertRaises(ValueError):
                     load_environment()
 
-class ThemeTests(TestCase):
+class BackgroundLibraryTests(TestCase):
     def setUp(self):
         PersonalAppearanceAndMonitoringTests.setUp(self)
 
-    def create_theme(self, **extra):
-        return self.client.post('/api/themes/', {'name': 'Quiet', 'preferences': json.dumps({'textSize': 20, 'curvature': 24}), **extra})
+    def upload(self):
+        return self.client.post('/api/me/backgrounds/', {'image': PracticeMediaTests.image(self)})
 
-    def test_private_themes_quota_and_access(self):
+    def test_limit_access_and_preset_retirement(self):
         from users.models import Theme
-        for _ in range(5): self.assertEqual(self.create_theme().status_code, 201)
-        self.assertEqual(self.create_theme().status_code, 400)
-        theme = Theme.objects.filter(owner=self.user).first()
+        for _ in range(10): self.assertEqual(self.upload().status_code, 201)
+        self.assertEqual(self.upload().status_code, 400)
+        self.assertEqual(self.client.post('/api/me/background/', {'image': PracticeMediaTests.image(self)}).status_code, 400)
+        rows = self.client.get('/api/me/backgrounds/').json()['images']
+        self.assertEqual(len(rows), 10)
+        self.assertTrue(all(t.preferences == {} for t in Theme.objects.filter(owner=self.user)))
+        self.assertEqual(self.client.post('/api/themes/', {'name':'Old preset'}).status_code, 410)
+        self.assertEqual(self.client.post('/api/themes/select/', '{}', content_type='application/json').status_code, 410)
         self.client.force_login(self.other)
-        self.assertEqual(self.client.get('/api/themes/').json()['themes'], [])
-        self.assertEqual(self.client.get(f'/api/themes/{theme.pk}/image/').status_code, 404)
-        self.assertEqual(self.client.post(f'/api/themes/{theme.pk}/', {'name':'hijack'}).status_code, 403)
-        self.assertEqual(self.client.delete(f'/api/themes/{theme.pk}/delete/').status_code, 403)
-        self.assertEqual(self.client.post('/api/themes/select/', json.dumps({'theme_id':theme.pk,'scope':'both'}), content_type='application/json').status_code, 404)
-        self.client.force_login(self.user)
-        self.assertEqual(self.client.delete(f'/api/themes/{theme.pk}/delete/').status_code, 200)
-        self.assertEqual(self.create_theme().status_code, 201)
+        self.assertEqual(self.client.get('/api/me/backgrounds/').json()['images'], [])
+        pk=rows[0]['id']
+        self.assertEqual(self.client.post('/api/me/backgrounds/select/', json.dumps({'id':pk}), content_type='application/json').status_code,404)
+        self.assertEqual(self.client.delete(f'/api/me/backgrounds/{pk}/').status_code,404)
+        self.assertEqual(self.client.get(rows[0]['url']).status_code,404)
 
-    def test_system_themes_hide_creator_and_require_staff(self):
-        self.assertEqual(self.create_theme(shared='true').status_code, 403)
-        self.client.force_login(self.staff)
-        result = self.create_theme(shared='true', image=PracticeMediaTests.image(self))
-        self.assertEqual(result.status_code, 201, result.content)
-        pk = result.json()['id']
-        self.client.force_login(self.user)
-        rows = self.client.get('/api/themes/').json()['themes']
-        self.assertEqual(len(rows), 1)
-        self.assertTrue(rows[0]['system']); self.assertFalse(rows[0]['can_edit'])
-        self.assertNotIn('owner', rows[0]); self.assertNotIn('username', rows[0])
-        image = self.client.get(f'/api/themes/{pk}/image/')
-        self.assertEqual(image.status_code, 200); image.close()
-        self.assertEqual(self.client.post(f'/api/themes/{pk}/', {'name':'change'}).status_code, 403)
-        self.assertEqual(Client().get('/api/themes/').status_code, 401)
-        self.assertEqual(Client().get(f'/api/themes/{pk}/image/').status_code, 401)
-
-    def test_language_selection_unpublish_and_delete(self):
+    def test_selection_is_shared_and_deletion_falls_back(self):
         from users.models import Theme
-        self.client.force_login(self.staff)
-        pk = self.create_theme(shared='true').json()['id']
-        self.client.force_login(self.user)
-        def select(scope, theme_id=pk):
-            return self.client.post('/api/themes/select/', json.dumps({'theme_id':theme_id,'scope':scope}), content_type='application/json')
-        self.assertEqual(select('de').status_code,200)
-        manifest = self.client.get('/api/me/appearance/').json()
-        self.assertEqual(manifest['de']['theme_id'],pk)
-        self.assertEqual(manifest['de']['preferences']['textSize'],20)
-        self.assertIsNone(manifest['en']['theme_id'])
-        self.assertEqual(select('both').status_code,200)
-        self.client.force_login(self.staff)
-        self.assertEqual(self.client.post(f'/api/themes/{pk}/', {'name':'Private', 'preferences':'{}', 'shared':'false'}).status_code,200)
+        first=self.upload().json()['id']
+        second=self.upload().json()['id']
+        self.assertEqual(self.client.post('/api/me/backgrounds/select/', json.dumps({'id':first}), content_type='application/json').status_code,200)
         profile=Profile.objects.get(user=self.user)
-        self.assertIsNone(profile.theme_de_id); self.assertIsNone(profile.theme_en_id)
-        self.client.force_login(self.user)
-        own=self.create_theme().json()['id']
-        self.assertEqual(select('both',own).status_code,200)
-        self.assertEqual(select('en',None).status_code,200)
-        self.assertEqual(Profile.objects.get(user=self.user).theme_de_id,own)
-        self.assertEqual(self.client.delete(f'/api/themes/{own}/delete/').status_code,200)
-        self.assertIsNone(Profile.objects.get(user=self.user).theme_de_id)
-        self.assertTrue(Theme.objects.filter(pk=pk).exists())
+        self.assertEqual((profile.theme_de_id,profile.theme_en_id),(first,first))
+        manifest=self.client.get('/api/me/appearance/').json()
+        self.assertEqual(manifest['de'],manifest['en'])
+        self.assertEqual(manifest['de']['preferences'],{})
+        self.assertIn(f'/themes/{first}/image/',manifest['de']['background_url'])
+        image_path=Theme.objects.get(pk=first).background_image.path
+        with self.captureOnCommitCallbacks(execute=True):
+            self.assertEqual(self.client.delete(f'/api/me/backgrounds/{first}/').status_code,200)
+        self.assertFalse(Path(image_path).exists())
+        self.assertTrue(Theme.objects.filter(pk=second).exists())
+        self.assertIsNone(self.client.get('/api/me/backgrounds/').json()['selected'])
 
-    def test_upload_over_recorder_limit_and_30_mb_boundary(self):
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        png = PracticeMediaTests.image(self).read()
-        large = png + b'\0' * (30 * 1024 * 1024 - len(png))
-        result=self.client.post('/api/me/background/', {'image':SimpleUploadedFile('large.png',large,'image/png')})
-        self.assertEqual(result.status_code,200,result.content)
-        self.assertEqual(Profile.objects.get(user=self.user).background_image.size,30*1024*1024)
-        oversized=SimpleUploadedFile('large.png',large+b'x','image/png')
-        self.assertEqual(self.client.post('/api/me/background/',{'image':oversized}).status_code,400)
-        response=self.create_theme(image_mode='upload',image=SimpleUploadedFile('large.png',large+b'x','image/png'))
-        self.assertEqual(response.status_code,400,response.content)
-        result=self.create_theme(image_mode='upload',image=SimpleUploadedFile('large.png',large,'image/png'))
-        self.assertEqual(result.status_code,201,result.content)
-
-    def test_theme_copies_image_and_replacement_cleans_old_file(self):
+    def test_legacy_images_are_preserved_without_visual_preferences(self):
         from users.models import Theme
         self.client.post('/api/me/background/',{'image':PracticeMediaTests.image(self)})
-        pk=self.create_theme(image_mode='current',language='de').json()['id']
-        theme=Theme.objects.get(pk=pk)
-        path=theme.background_image.path
-        self.assertNotEqual(theme.background_image.name,Profile.objects.get(user=self.user).background_image.name)
-        with self.captureOnCommitCallbacks(execute=True):
-            self.client.delete('/api/me/background/')
-        self.assertTrue(Path(path).exists())
-        with self.captureOnCommitCallbacks(execute=True):
-            response=self.client.post(f'/api/themes/{pk}/',{'name':'Updated','preferences':'{}','image_mode':'remove'})
+        rows=self.client.get('/api/me/backgrounds/').json()['images']
+        self.assertEqual(rows[0]['id'],0)
+        item=Theme.objects.create(owner=self.user,name='Legacy',preferences={'interface':'glass'})
+        item.background_image.save('legacy.png',PracticeMediaTests.image(self))
+        Profile.objects.filter(user=self.user).update(theme_de=item)
+        manifest=self.client.get('/api/me/appearance/').json()
+        self.assertEqual(manifest['de']['preferences'],{})
+        self.assertEqual(manifest['de'],manifest['en'])
+        self.assertEqual(len(self.client.get('/api/me/backgrounds/').json()['images']),2)
+
+    def test_reset_uses_code_background_without_deleting_images(self):
+        pk=self.upload().json()['id']
+        response=self.client.post('/api/me/backgrounds/select/',json.dumps({'id':None}),content_type='application/json')
         self.assertEqual(response.status_code,200)
-        self.assertFalse(Path(path).exists())
+        self.assertEqual(self.client.get('/api/me/appearance/').json()['de']['background_url'],'')
+        self.assertEqual(len(self.client.get('/api/me/backgrounds/').json()['images']),1)
+        self.client.post('/api/me/backgrounds/select/',json.dumps({'id':pk}),content_type='application/json')
+        self.assertIn(f'/themes/{pk}/image/',self.client.get('/api/me/appearance/').json()['en']['background_url'])
+
+    def test_upload_validation_and_csrf(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        self.assertEqual(self.client.post('/api/me/backgrounds/',{}).status_code,400)
+        self.assertEqual(self.client.post('/api/me/backgrounds/',{'image':SimpleUploadedFile('bad.png',b'bad','image/png')}).status_code,400)
+        png=PracticeMediaTests.image(self).read()
+        large=png+b'\0'*(30*1024*1024-len(png))
+        self.assertEqual(self.client.post('/api/me/backgrounds/',{'image':SimpleUploadedFile('large.png',large,'image/png')}).status_code,201)
+        self.assertEqual(self.client.post('/api/me/backgrounds/',{'image':SimpleUploadedFile('large.png',large+b'x','image/png')}).status_code,400)
+        strict=Client(enforce_csrf_checks=True);strict.force_login(self.user)
+        self.assertEqual(strict.post('/api/me/backgrounds/',{}).status_code,403)
+        self.assertEqual(Client().get('/api/me/backgrounds/').status_code,401)
+        for value in (True,-1,'1'):
+            self.assertEqual(self.client.post('/api/me/backgrounds/select/',json.dumps({'id':value}),content_type='application/json').status_code,400)
 
     def test_login_cache_identity_is_stable_until_new_login(self):
         self.user.set_password('Testing!883392');self.user.save();self.client.force_login(self.user)
@@ -1314,13 +1298,6 @@ class ThemeTests(TestCase):
         self.assertNotEqual(first,second)
         self.assertEqual(second,self.client.get('/api/session/').json()['user']['appearance_session'])
 
-    def test_theme_validation_and_csrf(self):
-        for prefs in ('[]','bad',json.dumps({'sound':True}),json.dumps({'curvature':33}),json.dumps({'glassLens':-1})):
-            self.assertEqual(self.create_theme(preferences=prefs).status_code,400)
-        self.assertEqual(self.create_theme(name=' ').status_code,400)
-        self.assertEqual(self.create_theme(image_mode='upload').status_code,400)
-        strict=Client(enforce_csrf_checks=True);strict.force_login(self.user)
-        self.assertEqual(strict.post('/api/themes/',{'name':'No CSRF'}).status_code,403)
 
 class ServerMonitoringAndSkipTests(TestCase):
     def setUp(self):

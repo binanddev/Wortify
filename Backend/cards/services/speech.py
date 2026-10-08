@@ -21,12 +21,12 @@ def call_api(endpoint, body, content_type):
         with request.urlopen(req, timeout=settings.SPEECH_TIMEOUT) as response:
             data = response.read(20 * 1024 * 1024 + 1)
             if len(data) > 20 * 1024 * 1024:
-                raise SpeechError('Phản hồi âm thanh quá lớn. Vui lòng thử lại.')
+                raise SpeechError('The audio response is too large. Please try again.')
             return data
     except (TimeoutError, socket.timeout):
-        raise SpeechError('Dịch vụ mất quá nhiều thời gian. Vui lòng thử lại.') from None
+        raise SpeechError('The service timed out. Please try again.') from None
     except error.URLError:
-        raise SpeechError('Không kết nối được dịch vụ âm thanh. Vui lòng thử lại sau.') from None
+        raise SpeechError('Unable to reach the audio service. Please try again later.') from None
 
 
 class OpenAISpeechProvider:
@@ -40,35 +40,35 @@ class OpenAISpeechProvider:
             result = json.loads(call_api('transcriptions', b''.join(parts), f'multipart/form-data; boundary={boundary}'))
             text = result.get('text', '').strip()
             if not text:
-                raise SpeechError('Không phát hiện giọng nói hoặc bản chép lời trống. Hãy thu lại rõ hơn.')
+                raise SpeechError('No speech detected or the transcript is empty. Record again clearly.')
             if result.get('language', '').lower() not in ({'de': ('de', 'german', 'deutsch'), 'en': ('en', 'english')}[language]):
-                raise SpeechError('Hệ thống chưa nhận dạng đúng ngôn ngữ của bộ thẻ. Hãy thu lại.')
+                raise SpeechError('The detected language does not match the deck. Record again.')
             segments = result.get('segments', [])
             uncertain = any(s.get('no_speech_prob', 0) > .6 or s.get('avg_logprob', 0) < -1 for s in segments)
             if len(text) > 4000:
-                raise SpeechError('Nội dung nhận dạng quá dài. Hãy thu một đoạn ngắn hơn.')
+                raise SpeechError('The recognized content is too long. Record a shorter segment.')
             return {'transcript': text, 'confidence': None, 'uncertain': uncertain}
         except (ValueError, TypeError, AttributeError):
-            raise SpeechError('Dịch vụ trả về dữ liệu không hợp lệ. Vui lòng thử lại.') from None
+            raise SpeechError('The service returned invalid data. Please try again.') from None
 
     def synthesize(self, text, voice, speed):
         data = call_api('speech', json.dumps({'model': settings.TTS_MODEL, 'input': text, 'voice': voice, 'speed': speed, 'response_format': 'mp3'}).encode(), 'application/json')
         if not data or not (data.startswith(b'ID3') or (data[0] == 255 and len(data) > 1 and data[1] & 224 == 224)):
-            raise SpeechError('Không tạo được âm thanh. Vui lòng thử giọng trình duyệt.')
+            raise SpeechError('Unable to generate audio. Try the browser voice.')
         return data
 
 
 def provider(name):
     if not name:
-        raise SpeechError('Chưa cấu hình dịch vụ âm thanh. Vui lòng liên hệ người quản lý.')
+        raise SpeechError('The audio service is not configured. Contact an administrator.')
     if name == 'openai':
         if not settings.SPEECH_API_KEY:
-            raise SpeechError('Chưa cấu hình khóa dịch vụ âm thanh.')
+            raise SpeechError('The audio service key is not configured.')
         return OpenAISpeechProvider()
     try:
         return import_string(name)()
     except (ImportError, AttributeError, TypeError):
-        raise SpeechError('Cấu hình dịch vụ âm thanh chưa hợp lệ. Vui lòng liên hệ người quản lý.') from None
+        raise SpeechError('Invalid audio service configuration. Contact an administrator.') from None
 
 
 class SpeechToTextService:
@@ -86,7 +86,7 @@ class TextToSpeechService:
         except SpeechError:
             raise
         except Exception:
-            raise SpeechError('Không tạo hoặc lưu được âm thanh. Vui lòng thử lại sau.') from None
+            raise SpeechError('Unable to generate or save audio. Please try again later.') from None
 
     def _audio(self, card, audio_type, text, speed):
         voice = settings.TTS_VOICE
@@ -99,9 +99,9 @@ class TextToSpeechService:
         except SpeechError:
             raise
         except Exception:
-            raise SpeechError('Không tạo được âm thanh. Vui lòng thử lại sau.') from None
+            raise SpeechError('Unable to generate audio. Please try again later.') from None
         if not data:
-            raise SpeechError('Không tạo được âm thanh. Vui lòng thử lại sau.')
+            raise SpeechError('Unable to generate audio. Please try again later.')
         obj = cached or CardAudio(card=card, audio_type=audio_type, provider=settings.TTS_PROVIDER, voice=voice, content_hash=key)
         obj.audio_file.save(key + '.mp3', ContentFile(data), save=False)
         if cached:

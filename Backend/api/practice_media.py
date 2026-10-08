@@ -16,19 +16,19 @@ def media_data(item):
 
 def validated_attachments(request, payload):
     values = payload.get('attachments', [])
-    if not isinstance(values,list) or len(values)>200:raise ValueError('Tối đa 200 tệp, tổng dung lượng 200 MB mỗi bài.')
+    if not isinstance(values,list) or len(values)>200:raise ValueError('Up to 200 files and 200 MB total per exercise.')
     try: ids = [uuid.UUID(str(item['id'])) for item in values]
-    except (ValueError,TypeError,KeyError,AttributeError):raise ValueError('Tệp đính kèm không hợp lệ.')
-    if len(set(ids))!=len(ids):raise ValueError('Tệp đính kèm bị lặp.')
+    except (ValueError,TypeError,KeyError,AttributeError):raise ValueError('Invalid attachments.')
+    if len(set(ids))!=len(ids):raise ValueError('Attachments is duplicated.')
     rows = {item.pk:item for item in PracticeMedia.objects.filter(pk__in=ids,owner=request.user,language=request.language)}
-    if len(rows)!=len(ids):raise ValueError('Tệp không thuộc tài khoản hoặc ngôn ngữ hiện tại.')
+    if len(rows)!=len(ids):raise ValueError('The file does not belong to the current account or language.')
     items=[rows[pk] for pk in ids]
-    if sum(item.size for item in items)>MAX_BYTES:raise ValueError('Tổng tệp đính kèm tối đa 200 MB mỗi bài.')
+    if sum(item.size for item in items)>MAX_BYTES:raise ValueError('Attachments must not exceed 200 MB per exercise.')
     questions={str(q.get('id')) for q in payload.get('questions',[])}
     cleaned=[]
     for value,item in zip(values,items):
         question=str(value.get('question') or '')
-        if question and question not in questions:raise ValueError('Chọn lại câu hỏi cho tệp đính kèm.')
+        if question and question not in questions:raise ValueError('Choose the question for this attachment again.')
         cleaned.append({**media_data(item), **({'question':question} if question else {})})
     if values or 'attachments' in payload:payload['attachments']=cleaned
     return items
@@ -37,25 +37,25 @@ def validated_attachments(request, payload):
 @require_http_methods(['POST'])
 def upload(request):
     files=request.FILES.getlist('file')
-    if len(files)!=1:raise ValueError('Chọn một tệp MP3 hoặc hình ảnh, tối đa 200 MB.')
+    if len(files)!=1:raise ValueError('Choose one MP3 or image file, up to 200 MB.')
     source=files[0]
-    if not 0 < source.size <= MAX_BYTES:raise ValueError('Tệp tối đa 200 MB.')
+    if not 0 < source.size <= MAX_BYTES:raise ValueError('Files must not exceed 200 MB.')
     extension=source.name.rsplit('.',1)[-1].lower()
     allowed={'mp3':'audio/mpeg','png':'image/png','jpg':'image/jpeg','jpeg':'image/jpeg','webp':'image/webp','gif':'image/gif'}
-    if extension not in allowed:raise ValueError('Chỉ nhận MP3, PNG, JPG, WebP hoặc GIF.')
+    if extension not in allowed:raise ValueError('Only MP3, PNG, JPG, WebP or GIF files are supported.')
     try:
         formats={'mp3':'mp3','png':'png_pipe','jpg':'jpeg_pipe','jpeg':'jpeg_pipe','webp':'webp_pipe','gif':'gif'}
         # Force the expected demuxer; never auto-detect playlists or network formats.
         with av.open(source,format=formats[extension]) as container:
             streams=container.streams.audio if extension=='mp3' else container.streams.video
-            if not streams:raise ValueError('Không đọc được tệp.')
+            if not streams:raise ValueError('Unable to read the file.')
             stream=streams[0]
             codecs={'mp3':{'mp3','mp3float'},'png':{'png'},'jpg':{'mjpeg'},'jpeg':{'mjpeg'},'webp':{'webp'},'gif':{'gif'}}
-            if stream.codec_context.name not in codecs[extension]:raise ValueError('Định dạng tệp không khớp phần mở rộng.')
-            if extension!='mp3' and stream.codec_context.width*stream.codec_context.height>40_000_000:raise ValueError('Hình ảnh tối đa 40 triệu điểm ảnh.')
+            if stream.codec_context.name not in codecs[extension]:raise ValueError('The file format does not match its extension.')
+            if extension!='mp3' and stream.codec_context.width*stream.codec_context.height>40_000_000:raise ValueError('Images must not exceed 40 megapixels.')
             next(container.decode(stream))
     except Exception as exc:
-        raise ValueError('Tệp bị lỗi hoặc không đúng định dạng MP3/hình ảnh.') from exc
+        raise ValueError('The file is corrupt or is not a valid MP3/image.') from exc
     source.seek(0)
     item=PracticeMedia(owner=request.user,language=request.language,name=source.name[:255],size=source.size,content_type=allowed[extension])
     try:

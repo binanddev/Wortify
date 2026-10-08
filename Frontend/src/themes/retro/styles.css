@@ -1,0 +1,66 @@
+/* Retro desk: warm paper, forest-green actions and tactile, restrained edges. */
+:root[data-interface="retro"] {
+  --surface: #fff9e9;
+  --solid: #fffdf5;
+  --line: #a89b79;
+  --accent: #28594a;
+  --icon-ink: #302d25;
+  --icon-tile: #eee5cc;
+}
+:root[data-interface="retro"] body {
+  @apply bg-[#e8dfc5]! text-[#302d25];
+}
+:root[data-interface="retro"] body::before,
+:root[data-interface="retro"] body::after {
+  @apply hidden!;
+}
+:root[data-interface="retro"]
+  body
+  :is(
+    .glass,
+    .nav-face,
+    .work-paper,
+    .flip-face,
+    .profile-panel,
+    .profile-identity,
+    .catalog-card,
+    .author-panel,
+    .author-question,
+    .hub-tile,
+    .library-card,
+    .practice-catalog,
+    .learning-welcome,
+    [role="dialog"]
+  ) {
+  @apply bg-[#fff9e9]! bg-none! border border-[#a89b79]! text-[#302d25]! backdrop-filter-none!;
+}
+:root[data-interface="retro"]
+  body
+  :is(
+    .btn,
+    input,
+    textarea,
+    select,
+    .native-field-wrap,
+    .word-chip,
+    .pair-card,
+    .category-bin
+  ) {
+  @apply bg-[#fffdf5]! text-[#302d25]! border-[#a89b79]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(
+    .btn.primary,
+    .nav-link.active,
+    .selected,
+    [role="tab"][aria-selected="true"]
+  ) {
+  @apply bg-[#28594a]! text-[#fffdf5]! border-[#28594a]!;
+}
+:root[data-interface="retro"] .icon-default {
+  @apply hidden;
+}
+:root[data-interface="retro"] .icon-retro {
+  @apply block;
+}

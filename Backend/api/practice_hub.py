@@ -21,29 +21,29 @@ def node_data(n,user):
     return {'id':n.pk,'parent':n.parent_id,'kind':n.kind,'title':n.title,'payload':n.payload,'tags':n.payload.get('tags',[]) if n.kind=='folder' and not n.parent_id else [],'links':[r.pk for r in n.links.all()], 'visibility':n.visibility,'position':n.position,'can_edit':n.owner_id==user.pk,'updated_at':n.updated_at.isoformat(),'interaction':n.payload.get('presentation',{}).get('interaction') if n.kind=='exercise' else None,'progress':{'completed':progress.completed if progress else []}}
 
 def validate_payload(kind,payload):
-    if not isinstance(payload,dict):raise ValueError('Nội dung phải là đối tượng JSON.')
+    if not isinstance(payload,dict):raise ValueError('Content must be a JSON object.')
     if kind=='theory':
-        if payload.get('format','markdown') not in ('markdown','html'):raise ValueError('Lý thuyết dùng HTML hoặc Markdown.')
-        if not isinstance(payload.get('content',''),str) or len(payload.get('content',''))>2_000_000:raise ValueError('Lý thuyết tối đa 2 MB văn bản.')
+        if payload.get('format','markdown') not in ('markdown','html'):raise ValueError('Theory supports HTML or Markdown.')
+        if not isinstance(payload.get('content',''),str) or len(payload.get('content',''))>2_000_000:raise ValueError('Theory text must not exceed 2 MB.')
     if kind=='exercise':
-        if payload.get('kind')=='writing':raise ValueError('Bài viết dài không được hỗ trợ.')
-        if not isinstance(payload.get('presentation',{}),dict):raise ValueError('presentation phải là đối tượng JSON.')
+        if payload.get('kind')=='writing':raise ValueError('Long-form writing exercises are not supported.')
+        if not isinstance(payload.get('presentation',{}),dict):raise ValueError('presentation must be a JSON object.')
         mode=payload.get('presentation',{}).get('interaction','short_answer')
-        if mode not in MODES:raise ValueError('Dạng bài không hợp lệ.')
+        if mode not in MODES:raise ValueError('Invalid exercise type.')
         question_kind=MODES[mode]
         if mode=='multiple_choice' and payload.get('kind')=='multi':question_kind='multi'
         payload['kind']=question_kind
         payload['check_mode']='auto_check'
         questions=payload.get('questions',[])
-        if not isinstance(questions,list) or not 1<=len(questions)<=100:raise ValueError('Mỗi bài cần 1–100 câu hỏi.')
+        if not isinstance(questions,list) or not 1<=len(questions)<=100:raise ValueError('Each exercise requires 1–100 questions.')
         e=SimpleNamespace(kind=question_kind,check_mode=payload['check_mode'])
         cleaned=[]
         for i,data in enumerate(questions,1):
-            if not isinstance(data,dict):raise ValueError('Câu hỏi phải là đối tượng.')
+            if not isinstance(data,dict):raise ValueError('A question must be an object.')
             q=SimpleNamespace(exercise=e,position=i,kind=question_kind,prompt=data.get('prompt',''),accepted_answers=data.get('accepted_answers',[]),options=data.get('options',[]),blanks=data.get('blanks',[]),presentation=data.get('presentation',{}),example=bool(data.get('example',False)))
             
-            if not isinstance(q.prompt,str) or not q.prompt.strip():raise ValueError('Câu hỏi cần nội dung.')
-            if not isinstance(q.blanks,list):raise ValueError('blanks phải là mảng.')
+            if not isinstance(q.prompt,str) or not q.prompt.strip():raise ValueError('Questions require content.')
+            if not isinstance(q.blanks,list):raise ValueError('blanks must be an array.')
             if isinstance(q.presentation,dict):q.presentation.pop('manual',None)
             validate_question(q);validate_presentation(q,mode)
             cleaned.append({'id':str(i),'position':i,'kind':question_kind,'prompt':q.prompt,'accepted_answers':q.accepted_answers,'options':q.options,'blanks':q.blanks,'presentation':q.presentation,'example':q.example,'blank_count':len(q.blanks),'blank_options':[b.get('options',[]) for b in q.blanks]})
@@ -55,38 +55,38 @@ def tree_height(node):
 
 def save_node(request,data,node=None):
     kind=data.get('kind',node.kind if node else 'exercise')
-    if kind not in ('folder','exercise','theory'):raise ValueError('Chọn thư mục, bài tập hoặc lý thuyết.')
-    if node and kind!=node.kind:raise ValueError('Không đổi loại nội dung đang tồn tại.')
+    if kind not in ('folder','exercise','theory'):raise ValueError('Choose folder, exercise or theory.')
+    if node and kind!=node.kind:raise ValueError('The type of existing content cannot be changed.')
     title=data.get('title',node.title if node else '')
-    if not isinstance(title,str) or not title.strip() or len(title)>200:raise ValueError('Tên nội dung cần 1–200 ký tự.')
+    if not isinstance(title,str) or not title.strip() or len(title)>200:raise ValueError('Content titles must contain 1–200 characters.')
     parent_id=data.get('parent',node.parent_id if node else None) or None
     parent=get_object_or_404(PracticeNode,pk=parent_id,owner=request.user,language=request.language,kind='folder') if parent_id else None
-    if kind=='exercise' and parent is None:raise ValueError('Chọn thư mục trước khi thêm hoặc di chuyển bài tập.')
+    if kind=='exercise' and parent is None:raise ValueError('Choose a folder before adding or moving exercises.')
     p=parent;depth=0;seen=set()
     while p:
-        if p.pk in seen or (node and p.pk==node.pk):raise ValueError('Không chuyển thư mục vào chính nó hoặc con của nó.')
+        if p.pk in seen or (node and p.pk==node.pk):raise ValueError('A folder cannot be moved into itself or a descendant.')
         seen.add(p.pk);depth+=1;p=p.parent
     height=tree_height(node) if node else (1 if kind=='folder' else 0)
-    if depth+height>10:raise ValueError('Tối đa 10 cấp thư mục, kể cả thư mục con được di chuyển.')
+    if depth+height>10:raise ValueError('Up to 10 folder levels, including moved descendants.')
     previous_payload=deepcopy(node.payload) if node else None
     payload=validate_payload(kind,data.get('payload',node.payload if node else {}))
     tags=data.get('tags',payload.get('tags',[]))
-    if not isinstance(tags,list) or len(tags)>12 or any(not isinstance(t,str) or not 1<=len(t.strip())<=40 for t in tags):raise ValueError('Tối đa 12 tag, mỗi tag 1–40 ký tự.')
+    if not isinstance(tags,list) or len(tags)>12 or any(not isinstance(t,str) or not 1<=len(t.strip())<=40 for t in tags):raise ValueError('Up to 12 tags, each 1–40 characters.')
     if kind=='folder' and parent is None:
         payload['tags']=list(dict.fromkeys(t.strip().casefold() for t in tags))
     else:
-        if data.get('tags'):raise ValueError('Chỉ folde gốc có tag.')
+        if data.get('tags'):raise ValueError('Only root folders can have tags.')
         payload.pop('tags',None)
     from .practice_media import validated_attachments
     attachments=validated_attachments(request,payload) if kind=='exercise' else []
     content_changed=not node or {k:v for k,v in payload.items() if k!='title'}!={k:v for k,v in previous_payload.items() if k!='title'}
     links=data.get('links',list(node.links.values_list('id',flat=True)) if node else [])
-    if not isinstance(links,list) or len(links)>100:raise ValueError('Tối đa 100 liên kết.')
+    if not isinstance(links,list) or len(links)>100:raise ValueError('Up to 100 links.')
     targets=list(visible(request).filter(pk__in=links))
-    if len(targets)!=len(set(links)):raise ValueError('Nội dung liên kết không tồn tại hoặc không được truy cập.')
-    if node and node.pk in links:raise ValueError('Không liên kết nội dung với chính nó.')
+    if len(targets)!=len(set(links)):raise ValueError('Linked content does not exist or is inaccessible.')
+    if node and node.pk in links:raise ValueError('Content cannot link to itself.')
     visibility=data.get('visibility',node.visibility if node else 'private')
-    if visibility not in ('private','public'):raise ValueError('Chia sẻ không hợp lệ.')
+    if visibility not in ('private','public'):raise ValueError('Invalid sharing setting.')
     n=node or PracticeNode(owner=request.user,language=request.language)
     n.kind=kind;n.parent=parent;n.title=title.strip();n.payload=payload;n.visibility=visibility;n.position=int(data.get('position',n.position))
     n.full_clean()
@@ -115,7 +115,7 @@ def nodes(request):
 def node(request,pk):
     n=get_object_or_404(visible(request).prefetch_related('links',Prefetch('learning_progress',queryset=PracticeProgress.objects.filter(user=request.user))),pk=pk)
     if request.method=='GET':return JsonResponse({'node':node_data(n,request.user)})
-    if n.owner_id!=request.user.pk:return JsonResponse({'error':'Chỉ chủ sở hữu được sửa nội dung.'},status=403)
+    if n.owner_id!=request.user.pk:return JsonResponse({'error':'Only the owner can edit this content.'},status=403)
     if request.method=='DELETE':n.delete();return JsonResponse({'ok':True})
     return JsonResponse({'node':node_data(save_node(request,body(request),n),request.user)})
 
@@ -124,17 +124,17 @@ def node(request,pk):
 @transaction.atomic
 def import_nodes(request):
     data=body(request);rows=data.get('nodes')
-    if not isinstance(rows,list) or not 1<=len(rows)<=100:raise ValueError('JSON cần mảng nodes gồm 1–100 mục.')
+    if not isinstance(rows,list) or not 1<=len(rows)<=100:raise ValueError('JSON requires a nodes array with 1–100 items.')
     created=[]
     def add(items,parent,depth=0):
-        if depth>10:raise ValueError('Tối đa 10 cấp thư mục.')
+        if depth>10:raise ValueError('Up to 10 folder levels.')
         for row in items:
-            if len(created)>=500:raise ValueError('Tối đa 500 nội dung trong một lần nhập.')
-            if not isinstance(row,dict):raise ValueError('Mỗi mục phải là đối tượng.')
+            if len(created)>=500:raise ValueError('Up to 500 items per import.')
+            if not isinstance(row,dict):raise ValueError('Each item must be an object.')
             n=save_node(request,{**row,'parent':parent,'links':[]});created.append(n.pk)
             children=row.get('children',[])
             if children:
-                if n.kind!='folder' or not isinstance(children,list):raise ValueError('Chỉ thư mục chứa children.')
+                if n.kind!='folder' or not isinstance(children,list):raise ValueError('Only folders can contain children.')
                 add(children,n.pk,depth+1)
     add(rows,data.get('parent'))
     return JsonResponse({'created':created},status=201)
@@ -147,20 +147,20 @@ def organize(request):
     data=body(request)
     ids=data.get('ids')
     if not isinstance(ids,list) or not 1<=len(ids)<=100 or any(type(i) is not int for i in ids) or len(set(ids))!=len(ids):
-        raise ValueError('Chọn 1–100 nội dung khác nhau.')
+        raise ValueError('Choose 1–100 distinct items.')
     owned={n.pk:n for n in PracticeNode.objects.select_for_update().filter(owner=request.user,language=request.language)}
-    if any(i not in owned for i in ids):raise ValueError('Chỉ chủ sở hữu được sắp xếp nội dung.')
+    if any(i not in owned for i in ids):raise ValueError('Only the owner can organize this content.')
     action=data.get('action','move')
     if action=='restore':
         placements=data.get('placements')
         if not isinstance(placements,list) or len(placements)!=len(ids) or any(not isinstance(p,dict) or p.get('id')!=pk for p,pk in zip(placements,ids)):
-            raise ValueError('Dữ liệu hoàn tác không hợp lệ.')
+            raise ValueError('Invalid undo data.')
         for placement in placements:
             save_node(request,{'parent':placement.get('parent'),'position':placement.get('position',0)},owned[placement['id']])
         return JsonResponse({'ok':True})
     if action=='reorder':
         parents={owned[i].parent_id for i in ids}
-        if len(parents)!=1:raise ValueError('Chỉ sắp xếp thứ tự trong cùng một thư mục.')
+        if len(parents)!=1:raise ValueError('Reorder items within the same folder only.')
         siblings=[n.pk for n in owned.values() if n.parent_id==owned[ids[0]].parent_id]
         # Preserve the positions of retired/hidden items outside this selection.
         replacement=iter(ids)
@@ -168,17 +168,17 @@ def organize(request):
         for position,pk in enumerate(ordered):
             PracticeNode.objects.filter(pk=pk).update(position=position)
         return JsonResponse({'ok':True})
-    if action not in ('move','group'):raise ValueError('Thao tác không hợp lệ.')
+    if action not in ('move','group'):raise ValueError('Invalid action.')
     for pk in ids:
         ancestor=owned[pk].parent_id
         while ancestor in owned:
-            if ancestor in ids:raise ValueError('Chọn thư mục hoặc nội dung con, không chọn cả hai.')
+            if ancestor in ids:raise ValueError('Choose either the folder or its children, not both.')
             ancestor=owned[ancestor].parent_id
     parent=data.get('parent') or None
     if parent is not None and (type(parent) is not int or parent not in owned or owned[parent].kind!='folder'):
-        raise ValueError('Chọn thư mục thuộc sở hữu của bạn.')
+        raise ValueError('Choose a folder you own.')
     if action=='group':
-        folder=save_node(request,{'kind':'folder','title':data.get('title','Nhóm bài mới'),'parent':parent})
+        folder=save_node(request,{'kind':'folder','title':data.get('title','New exercise group'),'parent':parent})
         parent=folder.pk
     offset=PracticeNode.objects.filter(owner=request.user,language=request.language,parent_id=parent).count()
     for index,pk in enumerate(ids):
@@ -204,9 +204,9 @@ def explore(request):
     mode = request.GET.get('mode', '')
     kind = request.GET.get('kind', '')
     sort = request.GET.get('sort', 'relevance')
-    if mode and mode not in PUBLIC_MODES: raise ValueError('Dạng bài không hợp lệ.')
-    if kind not in ('', 'exercise', 'theory', 'folder'): raise ValueError('Loại nội dung không hợp lệ.')
-    if sort not in ('relevance', 'newest'): raise ValueError('Thứ tự không hợp lệ.')
+    if mode and mode not in PUBLIC_MODES: raise ValueError('Invalid exercise type.')
+    if kind not in ('', 'exercise', 'theory', 'folder'): raise ValueError('Invalid content type.')
+    if sort not in ('relevance', 'newest'): raise ValueError('Invalid order.')
     page = max(1, int(request.GET.get('page', 1)))
     terms = search_text(query).split()
     # Recognize common bilingual topic names without pretending to be semantic search.

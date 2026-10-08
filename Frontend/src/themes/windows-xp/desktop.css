@@ -1,0 +1,366 @@
+/* Theme-local desktop material. Third-party resets never reach other themes. */
+.windows-landscape {
+  @apply hidden;
+}
+:root[data-interface="xp"] .windows-landscape {
+  @apply block;
+}
+:root[data-interface="xp"] .default-background .ambient-symbols {
+  @apply hidden;
+}
+:root[data-interface="xp"] body {
+  @apply [font-family:Tahoma,Verdana,sans-serif] text-[#182536];
+}
+:root[data-interface="xp"]
+  body
+  :is(.glass, .work-paper, .nav-face, .flip-face, [role="dialog"]) {
+  @apply text-base! leading-relaxed! border-[#2366c5]! shadow-[2px_3px_0_#12376866,0_12px_30px_#17396833]!;
+}
+:root[data-interface="xp"] body :is(.main-shell, .practice-catalog) {
+  @apply bg-transparent! bg-none! border-0! shadow-none!;
+}
+:root[data-interface="xp"] body .main-shell {
+  @apply pb-20!;
+}
+:root[data-interface="xp"] body .nav-static {
+  @apply rounded-t-md px-4 py-3 shadow-[inset_0_1px_0_#8bbaff]!;
+}
+:root[data-interface="xp"] body :is(.win-title-bar, .nav-static) {
+  @apply bg-linear-to-b! from-[#4095ff]! via-[#1765df]! to-[#0844ba]! text-white!;
+}
+:root[data-interface="xp"]
+  body
+  :is(.btn, .next-question, .check-action, .exercise-next) {
+  @apply min-h-10 rounded-[3px]! border border-[#536982]! bg-linear-to-b! from-white! via-[#f4f2eb]! to-[#d8d5c6]! px-4 text-[#172b44]! shadow-[inset_1px_1px_0_white,inset_-1px_-1px_0_#aaa89a]!;
+}
+:root[data-interface="xp"] body .btn.primary {
+  @apply border-[#1254bd]! shadow-[inset_0_0_0_2px_#a5c7f4,inset_1px_1px_0_white]! font-semibold;
+}
+:root[data-interface="xp"]
+  body
+  :is(.btn, .next-question, .check-action, .exercise-next):not(
+    :disabled
+  ):hover {
+  @apply shadow-[inset_0_0_0_2px_#edbb65]!;
+}
+:root[data-interface="xp"]
+  body
+  :is(.btn, .next-question, .check-action, .exercise-next):not(
+    :disabled
+  ):active {
+  @apply bg-[#dddacf]! bg-none! shadow-[inset_1px_2px_2px_#868476]!;
+}
+:root[data-interface="xp"]
+  body
+  :is(button, a, input, textarea, select):focus-visible {
+  @apply outline-2 outline-offset-2 outline-[#164ea8];
+}
+:root[data-interface="xp"]
+  body
+  :is(.nav-link.active, [role="tab"][aria-selected="true"]) {
+  @apply bg-linear-to-b! from-[#3888ed]! to-[#1552b9]! text-white! shadow-[inset_0_1px_0_#7cb8ff];
+}
+:root[data-interface="xp"] body :is(.word-chip, .pair-card, .category-bin) {
+  @apply rounded-[3px]! shadow-[inset_1px_1px_0_white,1px_1px_0_#a7a597];
+}
+:root[data-interface="xp"] .windows-taskbar {
+  @apply fixed inset-x-0 bottom-0 z-80 border-t-2 border-[#77b6ff] bg-linear-to-b from-[#2e83ec] via-[#1a60d6] to-[#1655bd] px-2 py-1 shadow-[0_-2px_10px_#102c4933] text-[#172b44];
+}
+:root[data-interface="xp"] .windows-taskbar > div {
+  @apply flex gap-2 p-0;
+}
+:root[data-interface="xp"] .windows-taskbar button {
+  @apply min-h-10 [font-family:Tahoma,Verdana,sans-serif] text-sm font-semibold gap-2;
+}
+:root[data-interface="xp"] .windows-taskbar .windows-task-title {
+  @apply flex min-w-0 max-w-md flex-1 items-center gap-2 truncate px-3 py-1 text-sm;
+}
+:root[data-interface="xp"] .windows-task-title .app-icon {
+  @apply shrink-0;
+}
+:root[data-interface="xp"] .windows-start-mark {
+  @apply text-xl text-[#218532];
+}
+:root[data-interface="xp"] .windows-language {
+  @apply ml-auto px-3 text-sm font-semibold text-white;
+}
+:root[data-interface="xp"] .windows-taskbar .windows-start-menu {
+  @apply absolute bottom-[calc(100%+4px)] left-2 flex w-72 max-w-[calc(100vw-16px)] flex-col gap-3 p-2 shadow-[3px_4px_0_#16396f55];
+}
+:root[data-interface="xp"] .windows-start-menu > strong {
+  @apply block bg-linear-to-b from-[#398ce9] to-[#1253ba] px-3 py-4 text-white;
+}
+:root[data-interface="xp"] .windows-start-menu nav {
+  @apply grid gap-1;
+}
+:root[data-interface="xp"] .windows-start-menu nav button {
+  @apply justify-start;
+}
+@media (max-width: 640px) {
+  :root[data-interface="xp"] .windows-language {
+    @apply hidden;
+  }
+}
+
+:root[data-interface="xp"] .nav-flip {
+  @apply h-[calc(100dvh-80px)]!;
+}
+@media (max-width: 1024px) {
+  :root[data-interface="xp"] .nav-flip {
+    @apply h-[calc(100dvh-140px)]!;
+  }
+}
+
+:root[data-interface="xp"]
+  body
+  :is(
+    .glass,
+    .work-paper,
+    .nav-face,
+    .flip-face,
+    [role="dialog"],
+    .btn,
+    .heading,
+    h1,
+    h2,
+    h3
+  ) {
+  @apply [font-family:Tahoma,Verdana,sans-serif]!;
+}
+:root[data-interface="xp"] body .btn.primary {
+  @apply text-[#172b44]!;
+}
+
+/* XP desktop windows: content remains mounted while minimized. */
+:root[data-interface="xp"] body .nav-static {
+  @apply min-h-[60px]! h-[60px]! flex! items-center! gap-3! px-3! py-2! cursor-move;
+}
+:root[data-interface="xp"] body .nav-static .brand {
+  @apply text-white! text-xl! font-bold! min-w-0;
+}
+:root[data-interface="xp"] body .nav-static :is(.nav-rotate, .xp-nav-minimize) {
+  @apply shrink-0 w-9! h-9! min-w-9! rounded-[3px]! border! border-white! bg-[#226de2]! text-white! shadow-[inset_1px_1px_0_#8cb8ff]!;
+}
+:root[data-interface="xp"] body .nav-face > :is(.sidebar, .workspace-context) {
+  @apply top-[60px]! rounded-none!;
+}
+:root[data-interface="xp"] body .main-shell {
+  @apply flex flex-col bg-[#ece9d8]! border-[3px]! border-[#1255c8]! rounded-t-lg! rounded-b-sm! shadow-[3px_5px_16px_#12325866]! p-0! overflow-hidden;
+}
+:root[data-interface="xp"] .xp-window-title {
+  @apply order-first flex shrink-0 items-center gap-2 min-h-11 px-3 py-1 bg-linear-to-b from-[#3991ff] via-[#0962e7] to-[#034abf] text-white cursor-move select-none;
+}
+:root[data-interface="xp"] .xp-window-title strong {
+  @apply flex-1 truncate text-sm [text-shadow:1px_1px_#153b86];
+}
+:root[data-interface="xp"] .xp-window-controls {
+  @apply flex gap-1;
+}
+:root[data-interface="xp"] .xp-window-controls button {
+  @apply flex items-center justify-center w-7 h-7 rounded-[3px] border border-white bg-linear-to-b from-[#5294ef] to-[#0754c5] text-white text-lg font-bold shadow-[inset_1px_1px_0_#a2c4ff];
+}
+:root[data-interface="xp"] .xp-window-controls button:hover {
+  @apply brightness-125;
+}
+:root[data-interface="xp"] body .main-shell #main-content {
+  @apply min-h-0 flex-1 overflow-auto p-5;
+}
+:root[data-interface="xp"] [data-xp-minimized="true"] {
+  @apply hidden!;
+}
+:root[data-interface="xp"] .windows-task-title span {
+  @apply truncate;
+}
+:root[data-interface="xp"] body .btn.primary :is(svg, .app-icon) {
+  @apply text-[#172b44]!;
+}
+@media (min-width: 1025px) {
+  :root[data-interface="xp"] body .main-shell {
+    @apply fixed! top-3! right-3! bottom-[64px]! left-[calc(var(--nav-width)+28px)]! m-0! [transform:translate(var(--xp-x,0px),var(--xp-y,0px))]! z-50;
+  }
+  :root[data-interface="xp"] .nav-flip {
+    @apply [translate:var(--xp-x,0px)_var(--xp-y,0px)]! z-50!;
+  }
+  :root[data-interface="xp"]
+    :is(.nav-flip, .main-shell)[data-xp-active="true"] {
+    @apply z-[73]!;
+  }
+  :root[data-interface="xp"] body .main-shell[data-xp-maximized="true"] {
+    @apply left-1! right-1! top-1!;
+  }
+}
+@media (max-width: 1024px) {
+  :root[data-interface="xp"] body .main-shell {
+    @apply mx-2! mt-2! mb-20!;
+  }
+  :root[data-interface="xp"] .xp-window-title {
+    @apply cursor-default;
+  }
+}
+
+:root[data-interface="xp"] .windows-taskbar button {
+  @apply [font-family:Tahoma,Verdana,sans-serif]!;
+}
+:root[data-interface="xp"]
+  .windows-taskbar
+  button[aria-controls="windows-start-navigation"] {
+  @apply rounded-r-lg! bg-linear-to-b! from-[#72bc5d]! via-[#3a9837]! to-[#25752d]! text-white! italic!;
+}
+:root[data-interface="xp"] .windows-start-mark {
+  @apply text-white!;
+}
+:root[data-interface="xp"] .sidebar::before,
+:root[data-interface="xp"] .sidebar::after {
+  @apply hidden!;
+}
+:root[data-interface="xp"]
+  .main-shell[data-xp-active="false"]
+  .xp-window-title {
+  @apply from-[#8caed6] via-[#7196c3] to-[#5b83b4];
+}
+:root[data-interface="xp"] .nav-flip[data-xp-active="false"] .nav-static {
+  @apply from-[#8caed6]! via-[#7196c3]! to-[#5b83b4]!;
+}
+
+/* Desktop applications keep a fixed-width content canvas inside a scrollable window. */
+:root[data-interface="xp"] .xp-desktop-area {
+  @apply fixed inset-x-0 top-0 bottom-[58px] overflow-hidden;
+}
+:root[data-interface="xp"] .xp-app-window {
+  @apply absolute flex flex-col min-w-[300px] min-h-[200px] max-w-full max-h-full border-[3px] border-[#1255c8] rounded-t-lg rounded-b-sm bg-[#ece9d8] shadow-[3px_5px_16px_#12325877] overflow-hidden text-[#172b44];
+}
+:root[data-interface="xp"] :is(.xp-app-window, .xp-tools-window)[hidden] {
+  @apply hidden!;
+}
+:root[data-interface="xp"] .xp-app-window[data-maximized="true"] {
+  @apply inset-0! w-full! h-full!;
+}
+:root[data-interface="xp"] .xp-app-window .xp-window-title {
+  @apply touch-none;
+}
+:root[data-interface="xp"]
+  .xp-app-window[data-active="false"]
+  .xp-window-title {
+  @apply from-[#8caed6] via-[#7196c3] to-[#5b83b4];
+}
+:root[data-interface="xp"] .xp-window-viewport {
+  @apply flex-1 min-h-0 overflow-auto bg-[#ece9d8] [scrollbar-color:#c7c4b5_#f1eee1] [scrollbar-width:auto];
+}
+:root[data-interface="xp"] .xp-window-core {
+  @apply min-w-[760px] p-5;
+}
+:root[data-interface="xp"] .xp-window-status {
+  @apply flex h-6 shrink-0 items-center border-t border-[#aaa697] px-2 text-xs gap-2;
+}
+:root[data-interface="xp"] .xp-window-status span {
+  @apply flex-1;
+}
+:root[data-interface="xp"] .xp-window-resize {
+  @apply cursor-se-resize touch-none;
+}
+:root[data-interface="xp"] .xp-window-controls .xp-close {
+  @apply bg-linear-to-b from-[#ee987b] to-[#c73516];
+}
+:root[data-interface="xp"] .xp-desktop-launchers {
+  @apply absolute inset-0 flex flex-col flex-wrap content-start items-start gap-3 p-4 overflow-auto;
+}
+:root[data-interface="xp"] .xp-desktop-launchers button {
+  @apply flex flex-col items-center justify-center gap-1 w-28 min-h-20 p-1 rounded-sm border border-transparent text-sm text-white [text-shadow:1px_1px_2px_black];
+}
+:root[data-interface="xp"] .xp-desktop-launchers button:hover {
+  @apply border-white/50 bg-[#1959b5]/60;
+}
+:root[data-interface="xp"] .xp-desktop-launchers .app-icon {
+  @apply text-white! drop-shadow-[2px_2px_1px_#174b80];
+}
+:root[data-interface="xp"] .windows-taskbar > div:not(.windows-start-menu) {
+  @apply overflow-x-auto;
+}
+:root[data-interface="xp"] .windows-taskbar .windows-task-title {
+  @apply min-w-28 max-w-52 shrink-0;
+}
+:root[data-interface="xp"] .xp-window-viewport::-webkit-scrollbar {
+  @apply w-4 h-4 bg-[#eeeadd];
+}
+:root[data-interface="xp"] .xp-window-viewport::-webkit-scrollbar-thumb {
+  @apply border-2 border-[#fffdf4] bg-[#c5c2b3] shadow-[inset_-1px_-1px_0_#77756d];
+}
+:root[data-interface="xp"] .xp-window-viewport::-webkit-scrollbar-corner {
+  @apply bg-[#c5c2b3];
+}
+:root[data-interface="xp"] .xp-tools-window {
+  @apply absolute top-3 right-3 bottom-3 z-[75] w-[360px] max-w-full flex flex-col bg-[#ece9d8] border-[3px] border-[#1255c8] rounded-t-lg shadow-xl overflow-hidden;
+}
+:root[data-interface="xp"] .xp-tools-body {
+  @apply flex-1 overflow-auto p-4;
+}
+:root[data-interface="xp"] .xp-tools-body .context-panel {
+  @apply static! w-auto! h-auto! p-0!;
+}
+:root[data-interface="xp"] body .app-modal {
+  @apply rounded-t-lg! rounded-b-sm! border-[3px]! border-[#1255c8]! bg-[#ece9d8]! shadow-[4px_6px_20px_#12325888]!;
+}
+:root[data-interface="xp"] body .app-modal header {
+  @apply bg-linear-to-b from-[#3991ff] via-[#0962e7] to-[#034abf] text-white! min-h-11 pr-14! cursor-move touch-none select-none;
+}
+:root[data-interface="xp"] body .app-modal [aria-label="Close"] {
+  @apply rounded-[3px]! border! border-white! bg-[#d64724]! text-white!;
+}
+:root[data-interface="xp"] body .app-modal-backdrop {
+  @apply bg-black/10! backdrop-filter-none!;
+}
+:root[data-interface="xp"] body .app-modal-body {
+  @apply overflow-auto!;
+}
+
+:root[data-interface="xp"] .xp-window-body {
+  @apply flex flex-1 min-h-0 overflow-hidden;
+}
+:root[data-interface="xp"] .xp-app-sidebar {
+  @apply w-[248px] shrink-0 overflow-auto border-r border-[#7d9fcb] bg-linear-to-b from-[#d5e5fb] to-[#9dbfea] p-3 text-[#153f7b];
+}
+:root[data-interface="xp"] .xp-app-sidebar[hidden] {
+  @apply hidden!;
+}
+:root[data-interface="xp"] .xp-app-sidebar > h2 {
+  @apply text-base font-bold bg-linear-to-b from-white to-[#d9e7fa] rounded-t-md px-3 py-2 mb-3 border-b border-[#7d9fcb];
+}
+:root[data-interface="xp"] .xp-app-sidebar .sidebar-tools-group {
+  @apply my-3;
+}
+:root[data-interface="xp"] .xp-app-sidebar :is(button, input, select) {
+  @apply max-w-full;
+}
+:root[data-interface="xp"] .xp-window-body .xp-window-viewport {
+  @apply min-w-0;
+}
+:root[data-interface="xp"] .xp-desktop-launchers .xp-desktop-shortcut {
+  @apply absolute touch-none select-none cursor-default;
+}
+:root[data-interface="xp"] .xp-shortcut-art {
+  @apply relative flex items-center justify-center w-14 h-14 rounded-xl border border-white/80 bg-linear-to-br from-[#8dd8ff] via-[#287edf] to-[#104daa] shadow-[inset_0_2px_2px_#ffffff99,2px_4px_3px_#18396077];
+}
+:root[data-interface="xp"] [data-app="practice"] .xp-shortcut-art {
+  @apply from-[#bcf27f] via-[#55a640] to-[#276432];
+}
+:root[data-interface="xp"] [data-app="explore"] .xp-shortcut-art {
+  @apply from-[#80e7e4] via-[#249acb] to-[#1a548e];
+}
+:root[data-interface="xp"] [data-app="create"] .xp-shortcut-art {
+  @apply from-[#ffe99e] via-[#f3b245] to-[#c77814];
+}
+:root[data-interface="xp"] [data-app="profile"] .xp-shortcut-art {
+  @apply from-[#ffcc99] via-[#f57d59] to-[#b64527];
+}
+:root[data-interface="xp"] [data-app="classes"] .xp-shortcut-art {
+  @apply from-[#d7baff] via-[#9170d3] to-[#584090];
+}
+:root[data-interface="xp"] [data-app="settings"] .xp-shortcut-art {
+  @apply from-[#e2edf7] via-[#839bb3] to-[#3d5c7d];
+}
+:root[data-interface="xp"] .xp-shortcut-arrow {
+  @apply absolute -left-1 -bottom-1 bg-white text-[#1254ad] border border-[#325780] w-5 h-5 text-sm leading-4 font-bold [text-shadow:none];
+}
+:root[data-interface="xp"] .windows-taskbar .windows-start-menu {
+  @apply max-h-[calc(100dvh-64px)] overflow-y-auto;
+}

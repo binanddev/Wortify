@@ -29,11 +29,11 @@ class PracticeNode(models.Model):
     def clean(self):
         super().clean()
         if self.kind == 'exercise' and not self.parent_id:
-            raise ValidationError({'parent': 'Bài tập phải nằm trong một thư mục.'})
+            raise ValidationError({'parent': 'Exercises must be inside a folder.'})
         if self.parent_id:
             parent = self.parent
             if parent.kind != 'folder' or parent.language != self.language or parent.owner_id != self.owner_id:
-                raise ValidationError({'parent': 'Chọn thư mục cùng ngôn ngữ và thuộc sở hữu của bạn.'})
+                raise ValidationError({'parent': 'Choose a folder you own in the same language.'})
 
     class Meta:
         constraints = [models.CheckConstraint(condition=~models.Q(kind='exercise') | models.Q(parent__isnull=False), name='practice_exercise_requires_folder')]

@@ -18,24 +18,24 @@ from .management import management, managed_user, audit, revoke_sessions
 # model, owner lookup, display label; no arbitrary model or lookup from the client.
 DATA = {
     'folders': ('cards.Folder', 'owner', 'Folde flashcard'),
-    'decks': ('cards.Deck', 'owner', 'Bộ thẻ'),
-    'cards': ('cards.Card', 'deck__owner', 'Thẻ'),
-    'practice': ('practice.PracticeNode', 'owner', 'Folde và bài tập'),
-    'media': ('practice.PracticeMedia', 'owner', 'Media bài tập'),
-    'classes': ('users.Classroom', 'owner', 'Lớp học'),
-    'assignments': ('users.ClassroomAssignment', 'assigned_by', 'Bài giao'),
-    'profile': ('users.Profile', 'user', 'Hồ sơ và tùy chọn'),
-    'settings': ('cards.StudySettings', 'user', 'Cài đặt học'),
-    'progress': ('cards.StudyProgress', 'user', 'Lịch ôn thẻ'),
-    'attempts': ('cards.StudyAttempt', 'user', 'Lượt học thẻ'),
-    'sessions': ('cards.StudySession', 'user', 'Phiên học'),
-    'learning': ('cards.DeckLearningState', 'user', 'Tiến độ bộ thẻ'),
-    'events': ('cards.LearningEvent', 'user', 'Sự kiện đồng bộ'),
-    'practice-progress': ('practice.PracticeProgress', 'user', 'Tiến độ bài tập'),
-    'practice-attempts': ('practice.PracticeAttempt', 'user', 'Lượt làm bài'),
-    'imports': ('cards.ImportBatch', 'deck__owner', 'Bản nhập thẻ'),
-    'matching': ('cards.MatchRound', 'deck__owner', 'Lượt ghép thẻ'),
-    'audio': ('cards.CardAudio', 'card__deck__owner', 'Âm thanh thẻ'),
+    'decks': ('cards.Deck', 'owner', 'Decks'),
+    'cards': ('cards.Card', 'deck__owner', 'Card'),
+    'practice': ('practice.PracticeNode', 'owner', 'Folders and exercises'),
+    'media': ('practice.PracticeMedia', 'owner', 'Exercise media'),
+    'classes': ('users.Classroom', 'owner', 'Classes'),
+    'assignments': ('users.ClassroomAssignment', 'assigned_by', 'Exercise giao'),
+    'profile': ('users.Profile', 'user', 'Profile and preferences'),
+    'settings': ('cards.StudySettings', 'user', 'Study settings'),
+    'progress': ('cards.StudyProgress', 'user', 'Review schedule cards'),
+    'attempts': ('cards.StudyAttempt', 'user', 'Card study sessions'),
+    'sessions': ('cards.StudySession', 'user', 'Study session'),
+    'learning': ('cards.DeckLearningState', 'user', 'Deck progress'),
+    'events': ('cards.LearningEvent', 'user', 'Sync events'),
+    'practice-progress': ('practice.PracticeProgress', 'user', 'Exercise progress'),
+    'practice-attempts': ('practice.PracticeAttempt', 'user', 'Exercise attempts'),
+    'imports': ('cards.ImportBatch', 'deck__owner', 'Card import'),
+    'matching': ('cards.MatchRound', 'deck__owner', 'Card matching sessions'),
+    'audio': ('cards.CardAudio', 'card__deck__owner', 'Audio cards'),
 }
 
 def collection(kind, user):
@@ -67,9 +67,9 @@ def user_data(request, pk):
     user = managed_user(request, pk, lock=True)
     if request.method == 'DELETE':
         if user.pk == request.user.pk or user.is_staff or user.is_superuser:
-            raise ValueError('Chỉ xóa toàn bộ dữ liệu của tài khoản thường khác.')
+            raise ValueError('You can only clear data for another regular account.')
         if body(request).get('confirm') != user.username:
-            raise ValueError('Nhập đúng tên tài khoản để xác nhận.')
+            raise ValueError('Enter the exact username to confirm.')
         # Keep credentials and audit history; remove owned and personal learning data.
         from users.models import Classroom, ClassroomAssignment, Theme
         ClassroomAssignment.objects.filter(assigned_by=user).delete()
@@ -79,7 +79,7 @@ def user_data(request, pk):
             collection(kind, user).delete()
         Theme.objects.filter(owner=user).delete()
         revoke_sessions(user)
-        audit(request, user, 'Xóa toàn bộ dữ liệu học tập và hồ sơ; giữ tài khoản. ' + str(counts))
+        audit(request, user, 'Delete learning and profile data; retain the account. ' + str(counts))
         return JsonResponse({'ok': True, 'deleted': counts})
     return JsonResponse({'username': user.username, 'collections': [
         {'key': key, 'label': value[2], 'count': collection(key, user).count()}
@@ -91,12 +91,12 @@ def validate_relation(field, value, user, language):
     target = field.remote_field.model
     match = next((k for k, (name, _, _) in DATA.items() if apps.get_model(name) == target), None)
     if not match:
-        raise ValueError('Không được sửa liên kết này.')
+        raise ValueError('This link cannot be edited.')
     qs = collection(match, user)
     if language and any(f.name == 'language' for f in target._meta.fields):
         qs = qs.filter(language=language)
     if not qs.filter(pk=value).exists():
-        raise ValueError('Liên kết phải thuộc cùng tài khoản và không gian ngôn ngữ.')
+        raise ValueError('Links must belong to the same account and language workspace.')
 
 @management('auth.change_user')
 @require_http_methods(['GET', 'POST', 'PATCH', 'DELETE'])
@@ -129,21 +129,21 @@ def records(request, pk, kind, item_id=None):
                              'total': qs.count(), 'page': page, 'fields': fields,
                              'can_create': kind not in ('media', 'audio')})
     if request.method in ('PATCH', 'DELETE') and item is None: raise Http404
-    if request.method == 'POST' and item is not None: raise ValueError('Dùng danh sách để tạo dữ liệu.')
+    if request.method == 'POST' and item is not None: raise ValueError('Use the collection endpoint to create records.')
     if request.method == 'DELETE':
-        audit(request, user, f'Xóa {kind} #{item.pk}.')
+        audit(request, user, f'Delete {kind} #{item.pk}.')
         item.delete()
         return JsonResponse({'ok': True})
     data = body(request)
     allowed = {f.name: f for f in editable_fields(model)}
     extra = {'members'} if kind == 'classes' else {'links'} if kind == 'practice' else set()
-    if set(data) - set(allowed) - extra: raise ValueError('Có trường không được phép chỉnh sửa.')
+    if set(data) - set(allowed) - extra: raise ValueError('Some fields cannot be edited.')
     existing_relations = {f.name: getattr(item, f.attname) for f in allowed.values() if f.is_relation} if item else {}
     item = item or model()
     direct_owner = DATA[kind][1]
     if '__' not in direct_owner: setattr(item, direct_owner, user)
     if item.pk and 'language' in data and data['language'] != getattr(item, 'language', None):
-        raise ValueError('Không chuyển dữ liệu sang ngôn ngữ khác.')
+        raise ValueError('Data cannot be moved to a different language.')
     for key, value in data.items():
         if key in extra: continue
         field = allowed[key]
@@ -156,7 +156,7 @@ def records(request, pk, kind, item_id=None):
     if kind == 'sessions' and 'tokens' in data:
         tokens = data['tokens']
         if not isinstance(tokens, list) or collection('attempts', user).filter(token__in=tokens).count() != len(set(tokens)):
-            raise ValueError('Phiên học chỉ chứa lượt làm bài của tài khoản này.')
+            raise ValueError('Study sessions contain only attempts belonging to this account.')
     # Reuse authoring validators for content, media ownership and tree constraints.
     if kind == 'practice':
         from .practice_hub import save_node
@@ -178,7 +178,7 @@ def records(request, pk, kind, item_id=None):
         item.save()
     else:
         if kind in ('media', 'audio') and request.method == 'POST':
-            raise ValueError('Tệp cần được tải lên qua công cụ Media.')
+            raise ValueError('Upload files using the Media tool.')
         # Existing learner endpoints legitimately persist empty default JSON containers.
         empty_defaults = [f.name for f in model._meta.fields if isinstance(f, models.JSONField)
                           and f.has_default() and getattr(item, f.name) in ({}, [])]
@@ -187,12 +187,12 @@ def records(request, pk, kind, item_id=None):
         item.save()
     if kind == 'classes' and 'members' in data:
         ids = data['members']
-        if not isinstance(ids, list) or any(type(v) is not int for v in ids): raise ValueError('Thành viên cần danh sách ID.')
+        if not isinstance(ids, list) or any(type(v) is not int for v in ids): raise ValueError('Members must be a list of IDs.')
         members = get_user_model().objects.filter(pk__in=ids)
         if not request.user.is_superuser: members = members.filter(is_staff=False,is_superuser=False)
-        if members.count() != len(set(ids)): raise ValueError('Thành viên không hợp lệ hoặc không có quyền quản lý.')
+        if members.count() != len(set(ids)): raise ValueError('Invalid members or insufficient management permission.')
         item.members.set(members)
-    audit(request, user, f'{"Tạo" if request.method == "POST" else "Sửa"} {kind} #{item.pk}.')
+    audit(request, user, f'{"Create" if request.method == "POST" else "Edit"} {kind} #{item.pk}.')
     return JsonResponse(record(item), status=201 if request.method == 'POST' else 200)
 
 @management('system.view')

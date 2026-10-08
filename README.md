@@ -2,8 +2,8 @@
 
 Ứng dụng học tiếng Anh/Đức, gồm hai dự án có thể đưa vào hai repo và triển khai trên hai server riêng:
 
-- **Backend/**: Django API, database/migrations, media riêng tư, requirements, dữ liệu mẫu, cấu hình môi trường và Docker/Gunicorn/PostgreSQL.
-- **Frontend/**: React/Vite, package-lock, static assets, tests, cấu hình môi trường và Docker/Nginx/Netlify.
+- **Backend/**: Django API, database/migrations, media riêng tư, requirements, dữ liệu mẫu, cấu hình môi trường và Gunicorn/PostgreSQL.
+- **Frontend/**: React/Vite, package-lock, static assets, tests, cấu hình môi trường và Nginx/Netlify.
 
 Hai bên giao tiếp qua HTTP `/api/`, không đọc file của nhau. Frontend proxy API tới địa chỉ backend cấu hình được. Browser dùng cùng origin cho giao diện và API để session, CSRF và media có xác thực hoạt động.
 
@@ -25,7 +25,7 @@ Terminal backend:
 
 ```powershell
 cd Backend
-Copy-Item .env.example .env
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
 .\start.ps1
 ```
 
@@ -33,7 +33,7 @@ Terminal frontend:
 
 ```powershell
 cd Frontend
-Copy-Item .env.example .env
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
 .\start.ps1
 ```
 
@@ -67,6 +67,16 @@ Hoặc chạy `python manage.py ...` trong Backend với virtualenv của riêng
 Hướng dẫn đầy đủ:
 
 - [Backend: cài đặt, môi trường, deploy và dữ liệu](Backend/README.md)
-- [Frontend: local, proxy, Docker và Netlify](Frontend/README.md)
+- [Frontend: local, proxy và triển khai](Frontend/README.md)
 
-Deploy backend trước, migrate database, sau đó đặt `BACKEND_ORIGIN` trên server frontend trỏ tới backend. Ví dụ backend ở private IP `10.20.0.2:8000`, frontend public ở `https://learn.example.com`. Backend cho phép domain frontend trong Host/CSRF, frontend kết thúc HTTPS và proxy API qua mạng private/VPN. Hai server không chia sẻ filesystem.
+Deploy backend trước và migrate database, sau đó đặt `proxy_pass` trong Nginx frontend trỏ tới backend. Chỉ phương án Netlify dùng biến `BACKEND_ORIGIN`. Ví dụ backend ở private IP `10.20.0.2:8000`, frontend public ở `https://learn.example.com`. Backend cho phép domain frontend trong Host/CSRF, frontend kết thúc HTTPS và proxy API qua mạng private/VPN. Hai server không chia sẻ filesystem.
+
+## File môi trường: chọn đúng một lối chạy
+
+- Local Backend: `.env.example` → `.env` trong Backend.
+- Production Backend trực tiếp: `.env.production.example` → `.env` trong Backend. Hướng dẫn: [Backend/deploy/README.md](Backend/deploy/README.md).
+- Local Frontend: `.env.example` → `.env` trong Frontend.
+- Frontend Nginx: không cần file môi trường production; sửa upstream trong `deploy/nginx/native.conf.example`.
+- Frontend Netlify: đặt BACKEND_ORIGIN trên Netlify; `.env.production.example` chỉ để build thử local.
+
+Không copy đè `.env` đang có. File thật không được commit; chỉ commit `.example`. Những file env bên trong deploy dành cho Docker được giữ nguyên và không nằm trong quy trình trực tiếp.

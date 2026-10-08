@@ -17,16 +17,16 @@ def copy_collection(request, pk):
     # Validate every ancestor before copying the selected public subtree.
     seen = set()
     while source.parent_id:
-        if source.pk in seen: raise ValueError('Cây folde không hợp lệ.')
+        if source.pk in seen: raise ValueError('Invalid folder tree.')
         seen.add(source.pk)
         source = get_object_or_404(PracticeNode, pk=source.parent_id, language=request.language, visibility='public')
-    if source.owner_id == request.user.pk: raise ValueError('Nội dung của bạn đã có trong My Exercise Library.')
+    if source.owner_id == request.user.pk: raise ValueError('Your content is already in My Exercise Library.')
     nodes = list(PracticeNode.objects.filter(owner=source.owner, language=request.language, visibility='public').prefetch_related('attachments','links'))
     children = {}
     for node in nodes: children.setdefault(node.parent_id, []).append(node)
     mapping, assets = {}, {}
     def clone(node, parent=None, depth=1):
-        if depth > 11 or (node.kind=='folder' and depth>10): raise ValueError('Tối đa 10 cấp folde.')
+        if depth > 11 or (node.kind=='folder' and depth>10): raise ValueError('Up to 10 folder levels.')
         payload = deepcopy(node.payload)
         attached = []
         for asset in node.attachments.all():

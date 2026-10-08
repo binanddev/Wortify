@@ -80,13 +80,13 @@ def content(request):
         data = body(request)
         language = data.pop('language', 'en')
         if language not in ('en', 'de'):
-            raise ValueError('Chọn tiếng Anh hoặc tiếng Đức.')
+            raise ValueError('Choose English or German.')
         # Content created by an operator belongs to that operator. Ownership
         # cannot be reassigned through a client-provided owner ID.
         if set(data) - {'title', 'kind', 'parent', 'payload', 'visibility', 'position', 'links'}:
-            raise ValueError('Có trường không được phép chỉnh sửa.')
+            raise ValueError('Some fields cannot be edited.')
         node = save_node(SimpleNamespace(user=request.user, language=language), data)
-        audit(request, node, f'Tạo nội dung: {node.title}.', True)
+        audit(request, node, f'Create content: {node.title}.', True)
         return JsonResponse(content_row(node, True), status=201)
     qs = nodes()
     if request.GET.get('options') == 'folders':
@@ -99,13 +99,13 @@ def content(request):
         value = request.GET.get(field, '')
         if value:
             if value not in allowed:
-                raise ValueError('Bộ lọc không hợp lệ.')
+                raise ValueError('Invalid filters.')
             qs = qs.filter(**{field: value})
     source = request.GET.get('source', '')
     if source == 'system': qs = qs.filter(Q(owner__is_staff=True) | Q(owner__is_superuser=True))
     elif source == 'users': qs = qs.filter(owner__is_staff=False, owner__is_superuser=False)
     elif source == 'mine': qs = qs.filter(owner=request.user)
-    elif source: raise ValueError('Nguồn nội dung không hợp lệ.')
+    elif source: raise ValueError('Invalid content source.')
     if request.GET.get('owner'):
         qs = qs.filter(owner_id=int(request.GET['owner']))
     page = max(1, int(request.GET.get('page', 1)))
@@ -128,40 +128,40 @@ def content_detail(request, pk):
         return JsonResponse(result)
     data = body(request)
     if data.get('version') != content_row(node)['version']:
-        return JsonResponse({'error': 'Nội dung đã thay đổi. Đóng và mở lại để lấy bản mới trước khi lưu.'}, status=409)
+        return JsonResponse({'error': 'Content has changed. Close and reopen it to get the latest version before saving.'}, status=409)
     if request.method == 'DELETE':
         if data.get('confirm') != node.title:
-            raise ValueError('Nhập đúng tên nội dung để xác nhận xóa.')
+            raise ValueError('Enter the exact content title to confirm deletion.')
         reason = data.get('reason', '')
         if not isinstance(reason, str) or not 3 <= len(reason.strip()) <= 500:
-            raise ValueError('Nhập lý do xóa (3–500 ký tự).')
-        audit(request, node, f'Xóa nội dung và các mục con: {node.title}. Lý do: {reason}')
+            raise ValueError('Enter a deletion reason (3–500 characters).')
+        audit(request, node, f'Delete content and children: {node.title}. Reason: {reason}')
         node.delete()
         return JsonResponse({'ok': True})
     data.pop('version')
     reason = data.pop('reason', '')
     cascade = data.pop('cascade', False)
     if type(cascade) is not bool:
-        raise ValueError('Phạm vi không hợp lệ.')
+        raise ValueError('Invalid scope.')
     if not isinstance(reason, str) or len(reason) > 500:
-        raise ValueError('Lý do tối đa 500 ký tự.')
+        raise ValueError('Reasons must not exceed 500 characters.')
     if set(data) - {'title', 'parent', 'payload', 'visibility', 'position', 'links'}:
-        raise ValueError('Không đổi chủ sở hữu, ngôn ngữ hoặc loại nội dung.')
+        raise ValueError('Owner, language and content type cannot be changed.')
     before = node.visibility
     if 'visibility' in data and (data['visibility'] != before or cascade) and len(reason.strip()) < 3:
-        raise ValueError('Nhập lý do thay đổi trạng thái (ít nhất 3 ký tự).')
+        raise ValueError('Enter a reason for changing visibility (at least 3 characters).')
     node = save_node(SimpleNamespace(user=node.owner, language=node.language), data, node)
     changed = 1
     if cascade:
         if node.kind != 'folder' or 'visibility' not in data:
-            raise ValueError('Chỉ áp dụng trạng thái cho cây thư mục.')
+            raise ValueError('Cascading visibility applies to folder trees only.')
         frontier = [node.pk]
         descendants = set()
         while frontier:
             frontier = list(PracticeNode.objects.filter(parent_id__in=frontier, owner=node.owner).exclude(pk__in=descendants).values_list('pk', flat=True))
             descendants.update(frontier)
         changed += PracticeNode.objects.filter(pk__in=descendants).update(visibility=node.visibility)
-    audit(request, node, f'Sửa nội dung: {node.title}. Trạng thái {before} → {node.visibility}; {changed} mục. {reason}')
+    audit(request, node, f'Edit content: {node.title}. Status {before} → {node.visibility}; {changed} items. {reason}')
     return JsonResponse(content_row(node, True))
 
 
@@ -178,5 +178,5 @@ def content_upload(request, pk):
     finally:
         request.user = operator
     if response.status_code == 201:
-        audit(request, node, f'Tải media cho nội dung: {node.title}.')
+        audit(request, node, f'Upload media for content: {node.title}.')
     return response

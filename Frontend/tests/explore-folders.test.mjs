@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { publicExploreNodes, exploreFolders } from "../src/explore-folders.js";
+import { publicExploreNodes, exploreFolders } from "../src/features/explore/explore-folders.js";
 const all = [
   {
     id: 1,

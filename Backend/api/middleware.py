@@ -9,8 +9,8 @@ class PrivateResponsesMiddleware:
         if request.path.startswith('/api/'):
             if response.status_code >= 400 and response.get('Content-Type', '').startswith('text/html'):
                 original = response
-                messages = {400:'Yêu cầu không hợp lệ.',403:'Bạn không có quyền truy cập.',404:'API không tồn tại.',405:'Phương thức không được hỗ trợ.'}
-                response = JsonResponse({'error':messages.get(original.status_code,'Máy chủ chưa xử lý được yêu cầu.')}, status=original.status_code)
+                messages = {400:'Invalid request.',403:'You do not have access.',404:'API endpoint not found.',405:'Method not supported.'}
+                response = JsonResponse({'error':messages.get(original.status_code,'The server could not process this request.')}, status=original.status_code)
                 if original.has_header('Allow'): response['Allow'] = original['Allow']
             response['Cache-Control'] = 'private, no-store'
         return response

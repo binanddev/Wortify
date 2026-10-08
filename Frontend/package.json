@@ -14,19 +14,26 @@
     "test:styles": "node --test tests/design-system.test.mjs"
   },
   "dependencies": {
+    "@fontsource/vt323": "5.3.0",
     "@heroui/react": "^2.8.10",
+    "98.css": "0.1.21",
     "framer-motion": "^12.0.0",
+    "nes.css": "2.3.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react95": "4.0.0",
+    "rpgui": "1.0.3",
+    "styled-components": "6.5.3",
+    "xp.css": "0.2.6"
   },
   "devDependencies": {
+    "@tailwindcss/node": "4.3.3",
     "@tailwindcss/vite": "^4.0.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "postcss": "8.5.28",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.0.0",
-    "vite": "^8.3.0",
-    "@tailwindcss/node": "4.3.3",
-    "postcss": "8.5.28"
+    "vite": "^8.3.0"
   },
   "engines": {
     "node": ">=22.12.0",

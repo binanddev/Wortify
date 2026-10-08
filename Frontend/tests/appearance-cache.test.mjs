@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   loadLoginSnapshot,
   clearLoginAppearance,
-} from "../src/appearance-cache.js";
+} from "../src/features/appearance/appearance-cache.js";
 function store() {
   const rows = new Map();
   return {
@@ -39,7 +39,7 @@ test("same background in both languages downloads once and a page reload reads o
   assert.equal(images, 1);
   assert.equal(a.images["/image"].size, 5);
   assert.equal(b.warning, "");
-  const reload = await import("../src/appearance-cache.js?reload");
+  const reload = await import("../src/features/appearance/appearance-cache.js?reload");
   const cached = await reload.loadLoginSnapshot(
     "user:login",
     () => assert.fail("metadata fetched on reload"),
@@ -95,7 +95,7 @@ test("interrupted download marker and failed downloads do not silently retry on 
     async () => ({ ok: false }),
     storage,
   );
-  const reload = await import("../src/appearance-cache.js?failure-reload");
+  const reload = await import("../src/features/appearance/appearance-cache.js?failure-reload");
   const failure = await reload.loadLoginSnapshot(
     "failed",
     () => assert.fail(),

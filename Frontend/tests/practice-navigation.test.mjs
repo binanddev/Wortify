@@ -10,7 +10,7 @@ import {
   folderItems,
   practiceRoutes,
   legacyPracticeDestination,
-} from "../src/practice-navigation.js";
+} from "../src/features/practice/practice-navigation.js";
 
 const nodes = [
   { id: 1, title: "Folder", kind: "folder", parent: null, can_edit: true },

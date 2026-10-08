@@ -7,30 +7,30 @@ FIELDS = ['german_text', 'vietnamese_meaning', 'example_german', 'example_vietna
 def parse_cards(text, separator):
     from cards.forms import CardForm
     if separator not in (',', '\t', ';', '|'):
-        raise ValidationError('Dấu phân cách không hợp lệ.')
+        raise ValidationError('Invalid separator.')
     rows, errors = [], []
     for line_number, line in enumerate(text.splitlines(), 1):
         if not line.strip():
             continue
         if len(rows) >= 2000:
-            raise ValidationError('Mỗi lần nhập tối đa 2000 thẻ.')
+            raise ValidationError('Up to 2000 cards per import.')
         try:
             columns = next(csv.reader([line], delimiter=separator, skipinitialspace=True, strict=True))
         except csv.Error:
-            errors.append(f'Dòng {line_number}: dấu ngoặc kép chưa đúng.')
+            errors.append(f'Line {line_number}: invalid quotation marks.')
             continue
         if not 2 <= len(columns) <= len(FIELDS):
-            errors.append(f'Dòng {line_number}: cần 2–9 cột. Nếu nội dung có dấu phân cách, đặt nội dung trong ngoặc kép.')
+            errors.append(f'Line {line_number}: expected 2–9 columns. Quote content that contains the separator.')
             continue
         data = dict(zip(FIELDS, [value.strip() for value in columns]))
         form = CardForm({**data, 'position': len(rows)})
         if not form.is_valid():
             labels = ', '.join(str(form.fields[key].label or key) for key in form.errors if key in form.fields)
-            errors.append(f'Dòng {line_number}: kiểm tra {labels}.')
+            errors.append(f'Line {line_number}: check {labels}.')
             continue
         rows.append({field: form.cleaned_data.get(field, '') for field in FIELDS})
     if errors:
         raise ValidationError(errors[:20])
     if not rows:
-        raise ValidationError('Hãy nhập ít nhất một dòng gồm từ tiếng Đức và nghĩa tiếng Việt.')
+        raise ValidationError('Enter at least one line containing a German term and Vietnamese meaning.')
     return rows

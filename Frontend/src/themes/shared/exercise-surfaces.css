@@ -1,0 +1,17 @@
+:root:is(
+    [data-interface="xp"],
+    [data-interface="retro"],
+    [data-interface="space"]
+  )
+  body
+  .exercise-workspace
+  :is(
+    #identity-inline,
+    .inline-choice,
+    .gap-drop,
+    .partial-rewrite input,
+    .inline-pills,
+    .sentence-target
+  ) {
+  @apply bg-transparent!;
+}

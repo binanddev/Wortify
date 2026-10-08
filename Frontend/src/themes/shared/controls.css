@@ -1,0 +1,9 @@
+.settings-nav {
+  @apply flex-col w-full;
+}
+.settings-nav [role="tab"] {
+  @apply w-full text-left;
+}
+.icon-family:not(.icon-default) {
+  @apply hidden;
+}

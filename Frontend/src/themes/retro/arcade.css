@@ -1,0 +1,198 @@
+/* NES controls + RPGUI nine-slice frames. Only this interface opts in. */
+:root[data-interface="retro"] {
+  --surface: #fff4d8;
+  --solid: #fff9e9;
+  --line: #765977;
+  --accent: #6750a4;
+  --icon-tile: #ffe0a4;
+  --icon-ink: #393050;
+}
+:root[data-interface="retro"] body {
+  @apply [cursor:var(--retro-cursor-default),auto]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(button, a, [role="button"], summary):not(:disabled),
+:root[data-interface="retro"] body :is(button, a, [role="button"]) * {
+  @apply [cursor:var(--retro-cursor-point)_10_0,pointer]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(input, textarea, [contenteditable="true"]) {
+  @apply [cursor:var(--retro-cursor-select)_10_0,text]!;
+}
+:root[data-interface="retro"] body [draggable="true"] {
+  @apply [cursor:var(--retro-cursor-grab-open)_10_0,grab]!;
+}
+:root[data-interface="retro"] body :disabled {
+  @apply cursor-not-allowed!;
+}
+:root[data-interface="retro"]
+  body
+  :is(
+    .glass,
+    .work-paper,
+    .flip-face,
+    .profile-panel,
+    .catalog-card,
+    .library-card,
+    .author-panel,
+    [role="dialog"],
+    .nav-face
+  ) {
+  @apply rounded-none! border-solid! border-[12px]! [border-image-width:14px]! [border-image-repeat:stretch]! shadow-[5px_6px_0_#241b3e40]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(.glass, .work-paper, .profile-panel, .author-panel, [role="dialog"]) {
+  @apply p-5!;
+}
+:root[data-interface="retro"] body .nav-face {
+  @apply bg-[#f3e5c7]!;
+}
+:root[data-interface="retro"] body .nav-static {
+  @apply bg-[#4c3b70]! text-[#fff4cf]! border-b-4 border-[#d6a15b]!;
+}
+:root[data-interface="retro"] body .nav-static :is(.brand, button, svg, a) {
+  @apply text-[#fff4cf]!;
+}
+:root[data-interface="retro"] body .nav-link {
+  @apply border-2 border-transparent! rounded-none! min-h-12 px-3! shadow-none!;
+}
+:root[data-interface="retro"] body .nav-link.active {
+  @apply bg-[#66518e]! text-white! border-[#bca0d5]! shadow-[inset_0_-4px_0_#493768]!;
+}
+:root[data-interface="retro"] body .nav-link.active::before {
+  @apply hidden!;
+}
+:root[data-interface="retro"] body .nav-link:nth-child(3n + 1) .app-icon {
+  @apply bg-[#ffe3a7]! text-[#614327]!;
+}
+:root[data-interface="retro"] body .nav-link:nth-child(3n + 2) .app-icon {
+  @apply bg-[#bde6d3]! text-[#295647]!;
+}
+:root[data-interface="retro"] body .nav-link:nth-child(3n) .app-icon {
+  @apply bg-[#f8c6c1]! text-[#7c3a48]!;
+}
+:root[data-interface="retro"] body .btn {
+  @apply rounded-none! border-4! border-[#3c3048]! bg-[#fff4d6]! text-[#3c3048]! shadow-none! min-h-11 px-4 py-2 text-base [border-image-slice:2]!;
+}
+:root[data-interface="retro"] body .btn.primary {
+  @apply bg-[#7457b0]! text-white!;
+}
+:root[data-interface="retro"] body .btn.primary::after {
+  @apply shadow-[inset_-4px_-4px_#463166]!;
+}
+:root[data-interface="retro"] body .btn.primary:not(:disabled):hover {
+  @apply bg-[#62459c]! text-white!;
+}
+:root[data-interface="retro"] body .btn:not(.primary):not(:disabled):hover {
+  @apply bg-[#ffe7a8]!;
+}
+:root[data-interface="retro"] body .toolbar .btn:nth-child(2):not(.primary) {
+  @apply bg-[#bde6d3]!;
+}
+:root[data-interface="retro"] body .toolbar .btn:nth-child(3):not(.primary) {
+  @apply bg-[#f8c6c1]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(.word-chip, .pair-card, .background-choice, .interface-option) {
+  @apply rounded-none! border-2! border-[#776080]! shadow-[3px_3px_0_#46365330]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(input, textarea, select, .native-field-wrap) {
+  @apply rounded-none!;
+}
+:root[data-interface="retro"]
+  body
+  :is(button, a, input, textarea, select):focus-visible {
+  @apply outline-2 outline-offset-4 outline-[#11847f]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(.selected, [role="tab"][aria-selected="true"]) {
+  @apply bg-[#66518e]! text-white!;
+}
+:root[data-interface="retro"] body .interface-option[aria-pressed="true"] {
+  @apply bg-[#eadff6]! border-[#7457b0]!;
+}
+:root[data-interface="retro"] body :is(h1, h2, h3) {
+  @apply text-[#493554]!;
+}
+:root[data-interface="retro"] body .heading h1 {
+  @apply [text-shadow:2px_2px_0_#fff1c0];
+}
+:root[data-interface="retro"] body :is(.eyebrow, .studio-kicker) {
+  @apply text-[#685175]! tracking-widest;
+}
+:root[data-interface="retro"] body .heading {
+  @apply bg-[#fff1d6]/95 border-l-4 border-[#df9b68] px-5 py-4;
+}
+.retro-companions {
+  @apply hidden absolute inset-0 z-10;
+}
+:root[data-interface="retro"] .retro-companions {
+  @apply block;
+}
+.retro-firefly {
+  @apply absolute flex items-center gap-3 text-[#fff2bb] [font-family:monospace] font-bold text-sm [text-shadow:2px_2px_0_#39294c] [animation:retro-friend-float_9s_ease-in-out_infinite_alternate];
+}
+.retro-firefly-one {
+  @apply top-[18%] right-[8%];
+}
+.retro-firefly-two {
+  @apply bottom-[24%] left-[8%] [animation-delay:-4s];
+}
+.retro-book-buddy {
+  @apply absolute bottom-[11%] right-[20%] w-10 h-12 bg-[#94dacd] border-4 border-[#3c3656] shadow-[4px_4px_0_#30244440] [animation:retro-book-hop_7s_steps(6,end)_infinite];
+}
+.buddy-eyes {
+  @apply block text-center text-[#3c3656] leading-4;
+}
+.buddy-pages {
+  @apply block bg-[#fff2c9] text-[#8f6d6b] leading-3 text-center border-t-2 border-[#3c3656];
+}
+@keyframes retro-friend-float {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-28px, 18px);
+  }
+}
+@keyframes retro-book-hop {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  80% {
+    transform: translateY(-12px) rotate(-6deg);
+  }
+  90% {
+    transform: translateY(-5px) rotate(5deg);
+  }
+}
+@media (max-width: 640px) {
+  :root[data-interface="retro"]
+    body
+    :is(.glass, .work-paper, .profile-panel, .author-panel, [role="dialog"]) {
+    @apply border-[9px]! [border-image-width:11px]! p-3!;
+  }
+  .retro-firefly-one {
+    @apply top-[48%] right-[10%];
+  }
+  .retro-firefly-two {
+    @apply hidden;
+  }
+  .retro-book-buddy {
+    @apply right-[12%];
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .retro-companions * {
+    @apply animate-none!;
+  }
+}

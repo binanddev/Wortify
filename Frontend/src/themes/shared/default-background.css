@@ -1,0 +1,108 @@
+/* One non-interactive decorative plane; content and modal stacking stay intact. */
+.default-background {
+  @apply fixed inset-0 -z-10 pointer-events-none overflow-hidden hidden;
+}
+:root:not([data-interface="home"]):not([data-has-background="true"])
+  .default-background {
+  @apply block;
+}
+body {
+  @apply isolate;
+}
+.default-background svg {
+  @apply absolute inset-0 w-full h-full;
+}
+.retro-world {
+  @apply hidden;
+}
+.ambient-symbols {
+  @apply opacity-15 text-[#52647b];
+}
+:root[data-interface="studio"] .default-background {
+  @apply bg-[#f4f1e9] [background-image:radial-gradient(ellipse_at_85%_10%,#e1e9df,transparent_60%)];
+}
+:root[data-interface="glass"] .default-background {
+  @apply bg-[#18293c] [background-image:radial-gradient(ellipse_at_15%_80%,#3c6669,transparent_60%),radial-gradient(ellipse_at_85%_15%,#555175,transparent_60%)];
+}
+:root[data-interface="glass"] .ambient-symbols {
+  @apply text-white opacity-10;
+}
+:root[data-interface="xp"] .default-background {
+  @apply bg-[#8cc6e6] [background-image:radial-gradient(ellipse_at_25%_130%,#648653_0%,#a1b57c_55%,transparent_56%)];
+}
+:root[data-interface="space"] .default-background {
+  @apply bg-[#0b1329] [background-image:radial-gradient(ellipse_at_85%_15%,#343353,transparent_60%)];
+}
+:root[data-interface="space"] .ambient-symbols {
+  @apply text-[#a4d1e4] opacity-30;
+}
+:root[data-interface="retro"] .retro-world {
+  @apply block;
+}
+:root[data-interface="retro"] .ambient-symbols {
+  @apply hidden;
+}
+.retro-clouds {
+  @apply [animation:retro-drift_45s_ease-in-out_infinite_alternate];
+}
+.retro-traveler {
+  @apply [animation:retro-walk_70s_linear_infinite_alternate];
+}
+.retro-treasure {
+  @apply [animation:retro-float_5s_steps(5,end)_infinite_alternate];
+}
+.retro-stars {
+  @apply [animation:retro-stars_8s_ease-in-out_infinite_alternate];
+}
+:root[data-background-paused="true"] .default-background * {
+  @apply [animation-play-state:paused]!;
+}
+@keyframes retro-drift {
+  from {
+    transform: translateX(-18px);
+  }
+  to {
+    transform: translateX(45px);
+  }
+}
+@keyframes retro-walk {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(800px);
+  }
+}
+@keyframes retro-float {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-8px);
+  }
+}
+@keyframes retro-stars {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0.85;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .default-background * {
+    @apply animate-none!;
+  }
+}
+@media (max-width: 640px) {
+  .retro-traveler {
+    @apply animate-none;
+  }
+}
+
+@media (max-width:640px) {
+  .retro-village { @apply -translate-x-[350px]; }
+  .retro-moon { @apply -translate-x-[420px]; }
+  .retro-traveler { @apply translate-x-[520px]; }
+  .retro-treasure { @apply translate-x-[180px] animate-none; }
+}

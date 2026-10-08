@@ -1,0 +1,2 @@
+@media(max-width:540px) { .interface-picker { @apply grid-cols-1; } }
+:root:is([data-interface="xp"],[data-interface="retro"]) body { @apply bg-none!; }

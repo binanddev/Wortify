@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {gradeExercise,gradeCard,normalize} from '../src/local-learning.js';
-import {parseImport,jsonTemplate} from '../src/json-import.js';
-import {EXERCISE_TYPES} from '../src/exercise-types.js';
-import {request,clearContentCache} from '../src/core.js';
+import {gradeExercise,gradeCard,normalize} from '../src/features/learning/local-learning.js';
+import {parseImport,jsonTemplate} from '../src/features/practice/json-import.js';
+import {EXERCISE_TYPES} from '../src/features/practice/exercise-types.js';
+import {request,clearContentCache} from '../src/lib/core.js';
 test('current JSON compatibility examples survive import and grade locally without fetch', () => {
  globalThis.fetch=()=>{throw new Error('Unexpected network');};
  for(const [mode] of EXERCISE_TYPES) {

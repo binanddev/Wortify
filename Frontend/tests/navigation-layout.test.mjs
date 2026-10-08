@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import postcss from "postcss";
 import { compileDesign } from "../scripts/design-system.mjs";
-import { navScale, navWidth } from "../src/navigation-settings.js";
+import { navScale, navWidth } from "../src/components/navigation/navigation-settings.js";
 
 test("navigation scales both below and above its original size within bounds", () => {
   assert.equal(navWidth(50), 211);

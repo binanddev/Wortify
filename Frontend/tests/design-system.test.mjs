@@ -20,10 +20,11 @@ for (const name of ["react"]) {
   });
 }
 test("application styling has one entry and uses Tailwind composition outside tokens and keyframes", async () => {
-  const names = await fs.readdir(designRoot);
+  const styleRoot = path.resolve(designRoot, "..");
+  const names = (await fs.readdir(styleRoot, { recursive: true })).filter((name) => /^(design-system|themes)[\\/]/.test(name));
   for (const name of names.filter((n) => n.endsWith(".css"))) {
     const ast = postcss.parse(
-      await fs.readFile(path.join(designRoot, name), "utf8"),
+      await fs.readFile(path.join(styleRoot, name), "utf8"),
     );
     ast.walkDecls((decl) => {
       if (decl.prop.startsWith("--")) return;

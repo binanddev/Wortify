@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {makeQuestion,checkQuestion,advanceProgress,nextLearningCard,createTest} from '../src/flashcard-engine.js';
+import {makeQuestion,checkQuestion,advanceProgress,nextLearningCard,createTest} from '../src/features/flashcards/flashcard-engine.js';
 const cards = ['one','two','three','four'].map((word,i)=>({id:i+1,german_text:word,vietnamese_meaning:`meaning ${i}`,accepted_answers:[]}));
 test('every test format evaluates locally in both directions',()=>{
   for(const direction of ['term','definition']) for(const type of ['choice','written','truefalse','matching']) {

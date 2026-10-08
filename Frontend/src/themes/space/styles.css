@@ -1,0 +1,71 @@
+:root[data-interface="space"] {
+  --surface: #111b36;
+  --solid: #192747;
+  --line: #345078;
+  --accent: #7ce2ff;
+  --icon-ink: #e9f1ff;
+  --icon-tile: #111b36;
+}
+:root[data-interface="space"] body {
+  @apply bg-[#080e22]! text-[#e9f1ff];
+}
+:root[data-interface="space"] body::before,
+:root[data-interface="space"] body::after {
+  @apply hidden!;
+}
+:root[data-interface="space"]
+  body
+  :is(
+    #theme-panel,
+    .glass,
+    .nav-face,
+    .work-paper,
+    .flip-face,
+    .profile-panel,
+    .profile-identity,
+    .catalog-card,
+    .author-panel,
+    .author-question,
+    .hub-tile,
+    .library-card,
+    .practice-catalog,
+    .learning-welcome,
+    [role="dialog"]
+  ) {
+  @apply bg-[#111b36]! bg-none! border border-[#345078]! text-[#e9f1ff]! backdrop-filter-none!;
+}
+:root[data-interface="space"]
+  body
+  :is(
+    #theme-control,
+    .btn,
+    input,
+    textarea,
+    select,
+    .native-field-wrap,
+    .word-chip,
+    .pair-card,
+    .category-bin
+  ) {
+  @apply bg-[#192747]! text-[#e9f1ff]! border-[#345078]!;
+}
+:root[data-interface="space"]
+  body
+  :is(
+    #theme-selected,
+    .btn.primary,
+    .nav-link.active,
+    .selected,
+    [role="tab"][aria-selected="true"]
+  ) {
+  @apply bg-[#7ce2ff]! text-[#102035]!;
+}
+:root[data-interface="space"] .icon-default {
+  @apply hidden;
+}
+:root[data-interface="space"] .icon-space {
+  @apply block;
+}
+:root[data-interface="space"] body :is(button, a):not(:disabled):hover {
+  @apply outline-2 outline-offset-2 outline-[#7ce2ff];
+}

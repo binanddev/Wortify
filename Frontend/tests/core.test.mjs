@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { request, endpoint, shuffled, readPreference } from "../src/core.js";
+import { request, endpoint, shuffled, readPreference } from "../src/lib/core.js";
 test("namespace rejects missing language and keeps en/de separate", () => {
   assert.equal(endpoint("en", "decks/"), "/api/en/decks/");
   assert.equal(endpoint("de", "decks/"), "/api/de/decks/");
@@ -31,7 +31,7 @@ test("HTML error responses become readable errors and preserve caller input", as
   });
   await assert.rejects(
     request("/api/en/sessions/test/answer/", "POST", input),
-    /Phiên bảo mật/,
+    /security session/,
   );
   assert.deepEqual(input, { answer: "water" });
 });

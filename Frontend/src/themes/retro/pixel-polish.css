@@ -1,0 +1,177 @@
+/* Local VT323 includes Vietnamese, German and Latin extensions. */
+@import "@fontsource/vt323/400.css";
+:root[data-interface="retro"] body,
+:root[data-interface="retro"] body * {
+  @apply [font-family:'VT323',monospace]!;
+}
+:root[data-interface="retro"] body {
+  @apply text-[max(22px,var(--ui-font))] leading-[1.3];
+}
+:root[data-interface="retro"]
+  body
+  :is(.btn, .nav-link, .word-chip, .pair-card, .field-label, .select-field) {
+  @apply text-[max(22px,var(--ui-font))]!;
+}
+/* Shells are empty space; paper belongs to individual content panels only. */
+:root[data-interface="retro"]
+  body
+  :is(
+    .app-shell,
+    .main-shell,
+    .page,
+    .practice-catalog,
+    .practice-library,
+    .exercise-workspace,
+    .practice-journey,
+    .learning-stage,
+    .study-layout,
+    .studio-flash,
+    .flash-library-grid,
+    .flash-library-list,
+    .hub-grid
+  ),
+:root[data-interface="retro"]
+  body
+  :is(.glass, .work-paper):has(> .exercise-workspace) {
+  @apply bg-transparent! bg-none! border-0! [border-image:none]! shadow-none!;
+}
+:root[data-interface="retro"] body .studio-masthead {
+  @apply bg-transparent! border-0! text-[#fff1cc]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(.studio-masthead, .journey-topline)
+  :is(span, strong) {
+  @apply text-[#fff1cc]!;
+}
+:root[data-interface="retro"] body .journey-topline {
+  @apply bg-[#302649]/90 border-2 border-[#bba0d0] px-3 py-2;
+}
+:root[data-interface="retro"]
+  body
+  :is(
+    button,
+    input,
+    textarea,
+    select,
+    .native-field-wrap,
+    .word-chip,
+    .pair-card,
+    .gap-drop,
+    .inline-choice,
+    .category-bin,
+    .sentence-target,
+    .drop-placeholder,
+    .placed-token,
+    .answer-option,
+    .choice,
+    .pill,
+    .app-icon,
+    .library-card,
+    .catalog-card,
+    .interface-option,
+    .background-choice,
+    .nav-face,
+    .sidebar,
+    .glass,
+    .work-paper,
+    .flip-face,
+    .journey-feedback
+  ),
+:root[data-interface="retro"] body :is(button, .word-chip, .gap-drop)::before,
+:root[data-interface="retro"] body :is(button, .word-chip, .gap-drop)::after {
+  @apply rounded-none!;
+}
+:root[data-interface="retro"]
+  body
+  .exercise-workspace
+  :is(.word-chip, .placed-token, .category-bin, .answer-option, .choice) {
+  @apply border-2! border-solid! border-[#594467]! shadow-[3px_3px_0_#35263f]!;
+}
+:root[data-interface="retro"]
+  body
+  .exercise-workspace
+  :is(.gap-drop, .inline-choice) {
+  @apply rounded-none! border-b-[3px]! border-solid! [box-shadow:0_2px_0_#594467]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(
+    .next-question,
+    .exercise-next,
+    .check-action,
+    .answer-enter,
+    .exercise-sound-toggle,
+    .star-button,
+    .nav-rotate,
+    .nav-hide
+  ) {
+  @apply rounded-none! border-[3px]! border-solid! border-[#32253f]! bg-[#7457b0]! text-[#fff8dd]! shadow-[4px_4px_0_#32253f]! min-w-11 min-h-11;
+}
+:root[data-interface="retro"]
+  body
+  :is(
+    .next-question,
+    .exercise-next,
+    .check-action,
+    .answer-enter,
+    .exercise-sound-toggle,
+    .star-button
+  ):not(:disabled):hover {
+  @apply bg-[#59408c]!;
+}
+:root[data-interface="retro"]
+  body
+  :is(.next-question, .exercise-next, .check-action, .answer-enter):not(
+    :disabled
+  ):active {
+  @apply translate-x-px translate-y-px shadow-[2px_2px_0_#32253f]!;
+}
+/* Preserve native progress semantics; stripes divide the fill into square blocks. */
+:root[data-interface="retro"] body progress,
+:root[data-interface="retro"] body .thin-progress {
+  @apply appearance-none! rounded-none! h-5! border-2! border-solid! border-[#352940]! bg-[#352940]! overflow-hidden;
+}
+:root[data-interface="retro"] body progress::-webkit-progress-bar {
+  @apply rounded-none! bg-[#352940]!;
+}
+:root[data-interface="retro"] body progress::-webkit-progress-value {
+  @apply rounded-none! transition-none! [background:repeating-linear-gradient(90deg,#77d6b4_0px,#77d6b4_12px,#352940_12px,#352940_16px)]!;
+}
+:root[data-interface="retro"] body progress::-moz-progress-bar {
+  @apply rounded-none! transition-none! [background:repeating-linear-gradient(90deg,#77d6b4_0px,#77d6b4_12px,#352940_12px,#352940_16px)]!;
+}
+:root[data-interface="retro"] body .thin-progress > span {
+  @apply rounded-none! transition-none! h-full! [background:repeating-linear-gradient(90deg,#77d6b4_0px,#77d6b4_12px,#352940_12px,#352940_16px)]!;
+}
+@media (max-width: 640px) {
+  :root[data-interface="retro"]
+    body
+    :is(.btn, .nav-link, .word-chip, .pair-card) {
+    @apply text-[22px]!;
+  }
+  :root[data-interface="retro"] body .journey-topline {
+    @apply flex-wrap;
+  }
+}
+
+/* Quiet graph paper: 1px lines at 6% opacity, only on individual paper panels.
+   Border-image and hard pixel shadows remain owned by arcade.css. */
+:root[data-interface="retro"]
+  body
+  :is(
+    .nav-face,
+    .heading,
+    .glass,
+    .work-paper,
+    .flip-face,
+    .author-panel,
+    .author-question,
+    .profile-panel,
+    .profile-identity,
+    .catalog-card,
+    .library-card
+  ):not(:has(> .exercise-workspace)):not(.practice-catalog) {
+  @apply [background-image:linear-gradient(to_right,rgba(100,80,115,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(100,80,115,0.06)_1px,transparent_1px)]!;
+  @apply [background-size:24px_24px]! [background-position:0_0]! [background-origin:padding-box]! [background-clip:padding-box]!;
+}

@@ -214,7 +214,7 @@ button[aria-pressed="true"] {
     @apply block! [border:0] text-[black] [background:white];
   }
   .print-test .toolbar:has(button[aria-pressed])::after {
-    @apply [content:"□_Đúng_____□_Sai"];
+    @apply [content:"□_True_____□_False"];
   }
   .print-test h2,
   .print-test h3,

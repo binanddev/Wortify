@@ -5,10 +5,10 @@ import {
   completePracticeGuide,
   textTemplate,
   exerciseToText,
-} from "../src/practice-text.js";
-import { EXERCISE_TYPES, previewData } from "../src/exercise-types.js";
-import { gradeExercise } from "../src/local-learning.js";
-import { readyToCheck, mergeProgress } from "../src/practice-session.js";
+} from "../src/features/practice/practice-text.js";
+import { EXERCISE_TYPES, previewData } from "../src/features/practice/exercise-types.js";
+import { gradeExercise } from "../src/features/learning/local-learning.js";
+import { readyToCheck, mergeProgress } from "../src/features/practice/practice-session.js";
 
 test("seven text formats round trip and grade through the existing engine", () => {
   assert.equal(EXERCISE_TYPES.length, 7);
@@ -43,7 +43,7 @@ test("invalid text is rejected with useful line errors before saving", () => {
     textTemplate().replace("STYLE: drag_drop", "STYLE: made_up"),
     textTemplate() + "ANSWER: a\nANSWER: b",
   ]) {
-    assert.throws(() => parsePracticeText(text), /Dòng/);
+    assert.throws(() => parsePracticeText(text), /Line/);
   }
 });
 test("batch imports accept BOM, CRLF, comments and duplicate sentence words keep separate IDs", () => {
@@ -70,7 +70,7 @@ test("all eleven styles parse and invalid cross-out and partial tasks are reject
       parsePracticeText(
         textTemplate("error_correction").replace("click_edit", "cross_out"),
       ),
-    /bỏ từ/,
+    /removing words/,
   );
   assert.throws(
     () =>

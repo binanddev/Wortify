@@ -10,48 +10,48 @@ from django.views.decorators.http import require_http_methods
 from .management import management
 
 GUIDE = [
-    {'title': '1. Chọn địa chỉ API', 'text': 'Local mặc định: http://127.0.0.1:8000. Nếu dùng proxy frontend: http://127.0.0.1:5173. Production dùng HTTPS, ví dụ https://learn.example.com. baseUrl không có dấu / cuối và chưa gồm /api. Dùng cùng một origin trong suốt phiên; localhost và 127.0.0.1 là hai host khác nhau. Trang này chỉ đọc tài liệu, không tự gửi thử request.'},
-    {'title': '2. Xác thực bằng session cookie', 'text': 'API hiện dùng session Django, không có Bearer token/API key cho người dùng. Trong Postman chọn No Auth và bật cookie jar. Gửi GET /api/session/ để nhận csrftoken, sau đó POST /api/session/ với username/password. Postman giữ sessionid tự động. Đăng nhập làm đổi CSRF token, vì vậy phải lấy lại csrftoken từ response đăng nhập. Không copy sessionid hay mật khẩu vào Git hoặc collection được chia sẻ.'},
-    {'title': '3. CSRF cho request ghi', 'text': 'POST, PATCH và DELETE cần X-CSRFToken khớp cookie csrftoken, cùng cookie sessionid khi đã đăng nhập. Collection tải xuống tự lấy CSRF từ Set-Cookie sau mỗi response và đặt header cho request tiếp theo. Origin đặt bằng {{baseUrl}}; với HTTPS, Referer là {{baseUrl}}/. Production phải cho phép hostname qua DJANGO_ALLOWED_HOSTS và origin frontend qua DJANGO_CSRF_TRUSTED_ORIGINS. POST /api/monitor/ là ngoại lệ, dùng khóa máy chủ riêng và được miễn CSRF.'},
-    {'title': '4. Nhập và dùng Postman', 'text': 'Tải Collection v2.1 rồi chọn Import trong Postman. Tạo Environment riêng với baseUrl, username, password; giữ password ở giá trị local hoặc Vault, không chia sẻ giá trị thật. Chạy thư mục 00 theo thứ tự: nhận CSRF → đăng nhập → kiểm tra phiên. Chọn từng request trong danh mục, thay pk/deck_id/token/item_id bằng ID thật. Các ID số mặc định 1 chỉ là ví dụ. Không chạy toàn bộ collection tự động vì có request thay đổi quyền và xóa dữ liệu. Collection không chứa credential thực tế. Không tạo biến Environment csrfToken/contentVersion/contentTitle vì sẽ che giá trị Collection tự cập nhật. eventToken cần UUID mới cho mỗi sự kiện (giữ nguyên khi retry), checkedAt dùng ISO8601 hiện tại có múi giờ, ví dụ 2026-10-05T10:00:00Z.'},
-    {'title': '5. Luồng thử bộ thẻ', 'text': 'POST /api/en/decks/ với title, level=A1; lấy id trả về làm deck_id và pk. POST /api/en/decks/{deck_id}/cards/ với german_text và vietnamese_meaning. GET /api/en/decks/{pk}/ để kiểm tra thẻ vừa thêm. PATCH cùng URL để đổi tiêu đề. Các endpoint học chỉ truy cập dữ liệu của tài khoản đang đăng nhập, kể cả khi tài khoản đó là Admin.'},
-    {'title': '6. Luồng biên tập và công bố', 'text': 'Dùng tài khoản Staff/Admin. POST /api/manage/content/ để tạo folder riêng tư, sau đó tạo theory/exercise có parent là thư mục cùng chủ sở hữu và ngôn ngữ. GET /api/manage/content/{pk}/ lấy version hiện tại trước PATCH/DELETE. PATCH công bố/ẩn cần visibility và reason; cascade=true áp dụng cho cả cây thư mục. HTTP 409 yêu cầu đọc lại bản mới rồi hợp nhất thay đổi; không tự ghi đè. DELETE yêu cầu version, confirm đúng tiêu đề và reason.'},
-    {'title': '7. Phân quyền', 'text': 'Người dùng: dữ liệu học của mình, nội dung công khai hoặc lớp được giao. Staff: quản lý tài khoản thường, hỗ trợ dữ liệu của họ, biên tập nội dung học tập và media toàn hệ thống; không cấp quyền, quản lý tài khoản Staff/Admin hoặc cấu hình hệ thống. Admin: toàn bộ chức năng quản trị và phân quyền. API tài liệu, tình trạng hệ thống, nhật ký giám sát và giao diện chung chỉ dành Admin. Nhật ký workspace của Staff chỉ hiển thị thao tác của chính họ.'},
-    {'title': '8. Định dạng và giới hạn', 'text': 'Giữ dấu / cuối URL. JSON dùng Content-Type: application/json; upload dùng form-data và để Postman tự đặt boundary. language chỉ en/de. Danh sách người dùng: 50/trang; nội dung, nhật ký workspace, dữ liệu người dùng: 25/trang. Media bài tập tối đa 200 MB, ảnh nền/theme 30 MB. Đồng bộ 1–100 sự kiện, token UUID ổn định khi retry; cần kiểm tra cả accepted và errors dù HTTP 200. File và audio trả binary, không parse như JSON.'},
-    {'title': '9. Xử lý lỗi', 'text': '400: dữ liệu/đăng nhập không hợp lệ; 401: thiếu phiên; 403: thiếu quyền hoặc CSRF; 404: không tồn tại hoặc ngoài phạm vi được phép; 405: sai method; 409: phiên bản/trạng thái xung đột; 413: proxy từ chối file lớn; 429: giới hạn báo cáo monitor; 503: probe database lỗi. Lỗi API thường có {"error":"…"}; lỗi proxy hoặc 405 có thể không phải JSON. Đọc status và Content-Type trước khi parse.'},
+    {'title': '1. Choose the API address', 'text': 'Local default: http://127.0.0.1:8000. With the frontend proxy: http://127.0.0.1:5173. Production uses HTTPS, for example https://learn.example.com. baseUrl excludes a trailing slash and /api. Use the same origin throughout the session; localhost and 127.0.0.1 are different hosts. This page displays documentation without sending test requests.'},
+    {'title': '2. Authenticate with a session cookie', 'text': 'The API uses Django sessions, with no user Bearer token or API key. Select No Auth and enable the Postman cookie jar. GET /api/session/ obtains csrftoken; POST /api/session/ with username/password signs in. Postman stores sessionid automatically. Sign-in rotates the CSRF token, so retrieve the new csrftoken from its response. Never commit session cookies or passwords to Git or shared collections.'},
+    {'title': '3. CSRF cho request ghi', 'text': 'POST, PATCH and DELETE require X-CSRFToken matching the csrftoken cookie, plus sessionid after sign-in. The collection reads CSRF from Set-Cookie after each response and sets the next request header. Origin is {{baseUrl}}; HTTPS Referer is {{baseUrl}}/. Production must allow the hostname in DJANGO_ALLOWED_HOSTS and the frontend origin in DJANGO_CSRF_TRUSTED_ORIGINS. POST /api/monitor/ is exempt from CSRF and uses a separate server key.'},
+    {'title': '4. Import and use Postman', 'text': 'Download the v2.1 collection and import it into Postman. Create a private environment with baseUrl, username and password; keep passwords in local values or Vault. Run folder 00 in order: obtain CSRF, sign in, verify session. Send requests individually and replace pk/deck_id/token/item_id with real IDs. Default numeric ID 1 is only an example. Do not run the entire collection automatically: it includes role changes and deletion. No real credentials are included. Do not create environment variables named csrfToken/contentVersion/contentTitle, as they would shadow automatically updated collection values. Each eventToken needs a new UUID, reused on retries; checkedAt must be a current ISO8601 timestamp with a timezone, for example 2026-10-05T10:00:00Z.'},
+    {'title': '5. Test the flashcard workflow', 'text': 'POST /api/en/decks/ with title and level=A1; use the returned id as deck_id and pk. POST /api/en/decks/{deck_id}/cards/ with german_text and vietnamese_meaning. GET /api/en/decks/{pk}/ to verify the card, and PATCH the same URL to rename the deck. Learning endpoints access only data owned by the signed-in account, including admins.'},
+    {'title': '6. Edit and publish content', 'text': 'Use a Staff/Admin account. POST /api/manage/content/ creates a private folder, then theory/exercise with a parent sharing its owner and language. GET /api/manage/content/{pk}/ retrieves the current version before PATCH/DELETE. Publishing/unpublishing requires visibility and reason; cascade=true applies to a folder tree. On HTTP 409, reload and merge changes rather than overwriting. DELETE requires version, confirm matching the title, and reason.'},
+    {'title': '7. Assign roles', 'text': 'Users: own learning data, public content and assigned classes. Staff: manage regular accounts, support their data and edit system learning content/media; cannot grant roles, manage Staff/Admin accounts or change system configuration. Admin: all administrative features and roles. API docs, system status, monitor logs and shared appearance are admin-only. Staff workspace logs show only their own actions.'},
+    {'title': '8. Formats and limits', 'text': 'Keep the trailing slash in URLs. JSON uses Content-Type: application/json; uploads use form-data with the boundary generated by Postman. language is en/de. Users: 50 per page; content, workspace logs and user data: 25 per page. Exercise media: 200 MB; backgrounds/themes: 30 MB. Sync 1–100 events with stable UUID tokens on retry; inspect accepted and errors even on HTTP 200. File/audio responses are binary, not JSON.'},
+    {'title': '9. Handle errors', 'text': '400: invalid data or credentials; 401: missing session; 403: permission or CSRF failure; 404: missing or inaccessible resource; 405: wrong method; 409: version or state conflict; 413: proxy rejected a large file; 429: monitor rate limit; 503: database probe failed. API errors usually contain {"error":"…"}; proxy errors and 405 responses may not be JSON. Check status and Content-Type before parsing.'},
 ]
 
 # Examples are deliberately inert: placeholders and illustrative IDs, no secrets.
 EXAMPLES = {
     'users.views.session': {'POST': {'username':'{{username}}','password':'{{password}}'}, 'response': {'user':{'id':1,'username':'example','staff':False,'superuser':False,'preferences':{},'appearance_session':'opaque-session-value'}}},
     'users.views.superuser_registration': {'POST':{'username':'new-admin','password1':'{{password}}','password2':'{{password}}'}},
-    'api.views.decks': {'POST':{'title':'Postman demo','level':'A1','description':'Bộ thẻ thử nghiệm'}, 'response':{'id':1}},
-    'api.views.deck': {'PATCH':{'title':'Tiêu đề mới'}},
+    'api.views.decks': {'POST':{'title':'Postman demo','level':'A1','description':'Test deck'}, 'response':{'id':1}},
+    'api.views.deck': {'PATCH':{'title':'New title'}},
     'api.views.card': {'POST':{'german_text':'hello','vietnamese_meaning':'xin chào'}, 'PATCH':{'vietnamese_meaning':'chào bạn'}},
-    'api.views.folder': {'POST':{'name':'Từ vựng','parent':None},'PATCH':{'name':'Từ vựng A1'}},
+    'api.views.folder': {'POST':{'name':'Vocabulary','parent':None},'PATCH':{'name':'Vocabulary A1'}},
     'api.views.preferences': {'PATCH':{'new_cards_per_day':20,'session_minutes':15}},
     'api.spaced_review.review_queue': {'PATCH':{'retention':0.9,'new_limit':20,'review_limit':100,'adapt_time':True}},
     'api.views.import_cards': {'POST':{'text':'hello,xin chào\nbook,quyển sách','separator':','}},
     'api.views.reorder_cards': {'POST':{'ids':[1,2]}},
-    'api.community.profile': {'PATCH':{'display_name':'Người học','bio':'Giới thiệu','daily_goal':20}},
-    'api.community.classes': {'POST':{'title':'Lớp tiếng Anh'}},
-    'api.community.classroom': {'PATCH':{'title':'Lớp A1'}},
+    'api.community.profile': {'PATCH':{'display_name':'Learner','bio':'Introduction','daily_goal':20}},
+    'api.community.classes': {'POST':{'title':'English class'}},
+    'api.community.classroom': {'PATCH':{'title':'A1 class'}},
     'api.community.classroom_assignments': {'POST':{'node':1,'due_at':None},'DELETE':{'id':1}},
-    'api.practice_hub.nodes': {'POST':{'kind':'folder','title':'Bài học mới','visibility':'private'}},
-    'api.practice_hub.node': {'PATCH':{'title':'Tên bài mới'}},
-    'api.practice_hub.import_nodes': {'POST':{'nodes':[{'kind':'folder','title':'Bài nhập','children':[{'kind':'theory','title':'Chào hỏi','payload':{'format':'markdown','content':'# Hello'}}]}]}},
+    'api.practice_hub.nodes': {'POST':{'kind':'folder','title':'New lesson','visibility':'private'}},
+    'api.practice_hub.node': {'PATCH':{'title':'New exercise title'}},
+    'api.practice_hub.import_nodes': {'POST':{'nodes':[{'kind':'folder','title':'Imported exercise','children':[{'kind':'theory','title':'Greetings','payload':{'format':'markdown','content':'# Hello'}}]}]}},
     'api.practice_hub.organize': {'POST':{'ids':[1],'parent':None}},
     'api.sessions.create': {'POST':{'kind':'learn','deck':1,'count':10}},
     'api.sessions.answer': {'POST':{'question':'{{questionToken}}','answer':'hello','response_ms':1500}},
     'api.sessions.finish_test': {'POST':{'answers':{'{{questionToken}}':'hello'}}},
     'api.learning_sync.sync': {'POST':{'events':[{'token':'{{eventToken}}','kind':'study_settings','payload':{'new_cards_per_day':20}}]}, 'response':{'accepted':[{'token':'example-uuid','result':{'saved':True}}],'errors':[]}},
     'api.management.users': {'POST':{'username':'postman-user','email':'example@example.com','password':'{{newPassword}}','role':'user'}},
-    'api.management.user_detail': {'PATCH':{'role':'staff'},'DELETE':{'confirm':'{{targetUsername}}','reason':'Xóa tài khoản thử nghiệm'}},
+    'api.management.user_detail': {'PATCH':{'role':'staff'},'DELETE':{'confirm':'{{targetUsername}}','reason':'Delete test account'}},
     'api.management_data.user_data': {'DELETE':{'confirm':'{{targetUsername}}'}},
-    'api.management_data.records': {'POST':{'title':'Bộ thẻ hỗ trợ','language':'en','level':'A1'},'PATCH':{'title':'Tiêu đề mới'}},
-    'api.management_center.content': {'POST':{'kind':'folder','title':'Thư mục hệ thống','language':'en','visibility':'private'}},
-    'api.management_center.content_detail': {'PATCH':{'version':'{{contentVersion}}','visibility':'public','cascade':False,'reason':'Đã kiểm tra nội dung'},'DELETE':{'version':'{{contentVersion}}','confirm':'{{contentTitle}}','reason':'Xóa bản thử nghiệm'}},
-    'api.themes.select_theme': {'POST':{'scope':'both','theme_id':None}},
+    'api.management_data.records': {'POST':{'title':'Support deck','language':'en','level':'A1'},'PATCH':{'title':'New title'}},
+    'api.management_center.content': {'POST':{'kind':'folder','title':'System folder','language':'en','visibility':'private'}},
+    'api.management_center.content_detail': {'PATCH':{'version':'{{contentVersion}}','visibility':'public','cascade':False,'reason':'Content reviewed'},'DELETE':{'version':'{{contentVersion}}','confirm':'{{contentTitle}}','reason':'Delete test draft'}},
+    'api.backgrounds.select': {'POST':{'id':None}},
     'api.card_learning.next_question': {'POST':{'deck':1,'mode':'write','filter':'all'}},
     'api.card_learning.submit': {'POST':{'answer':'hello'}},
     'api.card_learning.audio': {'POST':{'type':'term','slow':'0'}},
@@ -62,71 +62,74 @@ EXAMPLES = {
 }
 
 NOTES = {
-    'config.urls.health': 'Public GET, trả app=Wortify và workspace fingerprint để nhận diện instance local; không phải phép kiểm tra database. Dùng /api/health/check/ để kiểm tra database.',
-    'api.themes.theme_image': 'GET/HEAD trả ảnh binary của theme mà người dùng được truy cập. 404 khi không tồn tại/không có quyền/không có ảnh.',
-    'api.themes.manifest': 'GET manifest ảnh/theme của phiên hiện tại cho cả tiếng Anh và tiếng Đức; dùng các URL trả về thay vì tự ghép đường dẫn tệp.',
-    'api.personal_appearance.image': 'GET/HEAD ảnh nền riêng của tài khoản đang đăng nhập; trả binary và Cache-Control private,no-store.',
-    'api.management.public_appearance': 'GET thông tin ảnh nền dùng chung, vẫn yêu cầu đăng nhập; trả background_image và background_url nếu có.',
-    'api.management.site_appearance_image': 'GET ảnh nền chung dưới dạng binary, cần đăng nhập. Không có quyền sửa ảnh qua endpoint này.',
-    'api.community.profile': 'GET hồ sơ/thống kê học tập theo language. PATCH display_name (tối đa 100 ký tự), bio (2000 ký tự), daily_goal (số nguyên 1–500). Không dùng để sửa quyền hoặc mật khẩu.',
-    'api.spaced_review.review_queue': 'GET hàng đợi ôn, config, due,new,reviewed_today,next_due,forecast,cards,difficult. PATCH retention=0.8–0.97, new_limit/review_limit=0–500 và adapt_time boolean; chỉ bộ thẻ thuộc tài khoản.',
-    'api.learning_sync.deck_state': 'GET trạng thái học đã đồng bộ của bộ thẻ đang sở hữu; dùng /learning/sync/ để gửi thay đổi thay vì PATCH endpoint này.',
-    'api.views.preferences': 'GET/PATCH cài đặt học theo ngôn ngữ. Các trường gồm autoplay,ignore_case,ignore_punctuation,transliteration,new_cards_per_day,session_minutes. Giá trị boolean phải là JSON boolean.',
-    'api.sessions.detail': 'GET phiên học bằng UUID token của chính tài khoản/ngôn ngữ. Không dùng ID số. Phiên test chưa nộp không trả đáp án.',
-    'api.card_learning.resume_question': 'GET câu hỏi theo UUID token thuộc tài khoản và ngôn ngữ hiện tại. Không truy cập token của tài khoản khác hoặc token thuộc phiên test chưa nộp.',
-    'api.card_learning.submit': 'POST answer là đáp án văn bản cho token câu hỏi, response_ms tùy chọn. Server chấm và lưu tiến độ; gửi lại token hoàn thành không chấm trùng.',
-    'api.card_learning.tts_file': 'GET audio binary theo ID bản âm thanh đã tạo; chỉ tài khoản sở hữu thẻ. URL thường nhận từ response tạo TTS.',
-    'api.card_learning.retry': 'POST thử lại câu hỏi bằng token hợp lệ; token phải thuộc tài khoản/ngôn ngữ. Không cần body ngoài JSON rỗng.',
-    'api.card_learning.match_new': 'POST tạo lượt ghép từ bộ thẻ pk của mình. weak=1 lọc thẻ yếu; resume là UUID để tiếp tục lượt ghép hiện có. Gửi pairs tới /match/{token}/submit/ để chấm.',
-    'users.views.session': 'GET cấp cookie CSRF và trả user/null. POST đăng nhập; đăng ký thường dùng register=true, username, password1, password2. DELETE đăng xuất phiên hiện tại. Đăng nhập sai trả 400, không phải 401.',
-    'users.views.superuser_registration': 'Chỉ hoạt động khi setup_key khớp cấu hình SUPERUSER_SETUP_KEY (ít nhất 32 ký tự). Không nhúng khóa thật vào tài liệu. POST tạo Admin; dùng công cụ triển khai để tạo Admin nếu tính năng này tắt.',
-    'api.views.decks': 'GET trả decks, folders, due, resume. POST cần title; level mặc định A1, folder tùy chọn phải thuộc cùng người dùng/ngôn ngữ. ID tạo mới nằm ở trường id.',
-    'api.views.deck': 'GET trả deck, cards, folders, learning và study_defaults. PATCH giữ ngôn ngữ. DELETE xóa bộ thẻ và dữ liệu phụ thuộc.',
-    'api.views.card': 'Tạo thẻ ở URL danh sách; sửa/xóa ở URL có pk. german_text là từ cần học cho cả EN/DE. Bắt buộc german_text và vietnamese_meaning. Danh sách thẻ được đọc từ chi tiết bộ thẻ.',
-    'api.views.folder': 'Tạo ở URL danh sách; sửa/xóa ở URL có pk. Không có GET danh sách folder riêng; đọc folders trong GET /api/{language}/decks/. parent thuộc cùng chủ sở hữu/ngôn ngữ.',
-    'api.views.import_cards': 'Hai bước: gửi text+separator nhận token/count/preview, sau đó POST {"token":"UUID nhận được"} để xác nhận. Preview hết hạn sau 30 phút; gửi lại token đã xác nhận không nhân bản.',
-    'api.views.reorder_cards': 'ids phải chứa mọi ID thẻ của bộ đúng một lần.',
-    'api.views.study_pack': 'Query deck tùy chọn và filter; chỉ trả các thẻ người dùng sở hữu.',
-    'api.practice_hub.nodes': 'GET metadata; full=1 thêm payload. POST kind=folder/exercise/theory, title, parent, payload, visibility. Exercise bắt buộc nằm trong folder cùng chủ sở hữu/ngôn ngữ. Xem Backend/sample_data để xem các mẫu dạng bài.',
-    'api.practice_hub.node': 'Đọc theo quyền sở hữu/công khai/lớp được giao. PATCH/DELETE của API học chỉ dành chủ sở hữu. Nhân viên biên tập dùng /api/manage/content/{pk}/.',
-    'api.practice_hub.import_nodes': 'Tối đa 100 mục gốc, 500 mục tổng; lỗi hoàn tác toàn bộ. links dùng các ID nội dung mà người dùng được truy cập.',
-    'api.practice_hub.organize': 'Thao tác sắp xếp/di chuyển cây của chính người dùng. parent=null là gốc; không được tạo chu trình hoặc trộn ngôn ngữ.',
-    'api.practice_copy.copy_collection': 'Sao chép bộ nội dung được phép truy cập thành bản thuộc tài khoản hiện tại. Nội dung/mối liên kết được kiểm tra tại API.',
-    'api.practice_hub.explore': 'Danh mục nội dung công khai có lọc/tìm kiếm; vẫn cần đăng nhập.',
-    'api.practice_media.upload': 'Multipart: file, tối đa 200 MB; MP3/PNG/JPG/JPEG/WebP/GIF. Response media có id/name/size/type/url. Đưa media vào payload.attachments để gắn với bài.',
-    'api.practice_media.content': 'Trả binary có kiểm tra quyền. Hỗ trợ GET/HEAD và Range bytes; 206 khi đọc một phần. Staff/Admin được đọc media cho công việc biên tập.',
-    'api.learning_sync.sync': '1–100 events; mỗi event có UUID token, kind, payload. kind gồm preferences, study_settings, practice_progress, practice, review, test, star, options. preferences cần at dạng ISO8601 có múi giờ. payload hỗ trợ interface=studio/glass/xp/retro/space (Studio mặc định), navScale=50–150, ambient boolean, volume=0–1 và ambientTrack=morning/marimba/picnic/bubbles/cafe/garden/puzzle/clouds/starlight/steps/bounce/ghost/begin/ukulele/island/tropical/sunshine/arcade/dew/hearth. Retry cùng token giữ tính idempotent; HTTP 200 có thể chứa errors từng mục.',
-    'api.sessions.create': 'kind=flash/learn/test; count 1–100; deck tùy chọn. Cần có thẻ phù hợp. Response chứa token phiên và các câu hỏi.',
-    'api.sessions.answer': 'question phải là token câu hiện tại trong phiên; chỉ dùng cho flash/learn. Test nộp qua finish. response_ms tùy chọn.',
-    'api.sessions.finish_test': 'Nộp answers ánh xạ question token sang đáp án; không dùng ID thẻ. Gửi lại phiên đã chấm trả kết quả cũ.',
-    'api.community.classes': 'POST title tạo lớp; POST invite tham gia lớp. GET chỉ các lớp sở hữu hoặc tham gia.',
-    'api.community.classroom': 'GET cho chủ lớp/thành viên; PATCH/DELETE chỉ chủ lớp. PATCH remove_member với ID để bỏ thành viên.',
-    'api.community.classroom_assignments': 'Chỉ chủ lớp. POST node + due_at (ISO8601 hoặc null). DELETE {id} là ID bài giao, không phải ID node.',
-    'api.management.users': 'GET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. 50/trang. POST cần username,password; email,first_name,last_name tùy chọn. Staff chỉ tạo user, Admin mới cấp staff/superuser.',
-    'api.management.user_detail': 'GET nhật ký tài khoản. PATCH username,email,first_name,last_name,password,role,is_active,revoke_sessions,reason. Staff chỉ nhắm tài khoản thường. Không tự khóa/xóa/hạ quyền và phải giữ Admin hoạt động. Đổi quyền/mật khẩu thu hồi phiên; mật khẩu không ghi vào nhật ký. DELETE cần confirm tên và reason 3–500 ký tự.',
-    'api.management_data.user_data': 'GET danh sách collections và số lượng. DELETE xóa dữ liệu học/hồ sơ nhưng giữ tài khoản; confirm phải khớp username. Chỉ nhắm tài khoản thường khác.',
-    'api.management_data.records': 'kind là collection trong GET data/: decks,cards,folders,practice,classes,... GET danh sách trả fields và can_create để dựng biểu mẫu. POST vào danh sách, PATCH/DELETE vào item_id. Ví dụ body bên dưới áp dụng kind=decks; các collection khác theo fields. Quan hệ phải cùng chủ sở hữu/ngôn ngữ; không được sửa auth hoặc đường dẫn tệp.',
-    'api.management_center.content': 'GET q,language,kind,visibility,source=system/users/mine,owner,page (25/trang). GET options=folders trả thư mục của người đang đăng nhập. POST tạo nội dung của người thao tác; không chấp nhận owner từ client.',
-    'api.management_center.content_detail': 'GET trả payload, folders, children, version. PATCH chỉ title,parent,payload,visibility,position,links; không đổi owner/language/kind. Bắt buộc version đọc gần nhất. Thay đổi công khai cần reason; cascade=true chỉ cho thư mục. DELETE cần version, confirm đúng tiêu đề, reason; xóa cả cây và dữ liệu liên quan.',
-    'api.management_center.content_upload': 'Multipart file; chỉ bài exercise. File được lưu dưới chủ sở hữu nội dung, kiểm tra định dạng như upload thông thường. Gắn media trả về vào payload.attachments khi lưu bài.',
-    'api.management_center.activity': 'q và page, 25/trang. Admin xem toàn bộ; Staff chỉ xem nhật ký của chính mình. Không có API sửa/xóa audit.',
-    'api.management_center.summary': 'Tổng quan công việc. Số tài khoản của Staff chỉ tính tài khoản thường; thống kê nội dung gồm nội dung học tập hệ thống.',
-    'api.management_data.overview': 'Chỉ Admin: thống kê tài khoản/nội dung, kết nối database, migration, runtime và nhật ký. Không trả cấu hình chứa secret.',
-    'api.management.site_appearance': 'Chỉ Admin. GET trạng thái, POST multipart background_image (PNG/JPG/WebP tối đa 30 MB), DELETE gỡ ảnh chung.',
-    'api.themes.themes': 'GET các theme truy cập được. POST multipart name, preferences (chuỗi JSON), shared=true/false; image tùy chọn. URL có pk để sửa theme. Mỗi tài khoản tối đa 5 theme, chỉ Staff/Admin tạo shared.',
-    'api.themes.select_theme': 'scope=en/de/both; theme_id=null trở về mặc định.',
-    'api.themes.delete_theme': 'Chỉ người có quyền sửa theme. Xóa theme gỡ lựa chọn của các tài khoản liên quan.',
-    'api.personal_appearance.background': 'GET trạng thái; POST multipart image (PNG/JPG/WebP tối đa 30 MB); DELETE gỡ nền cá nhân.',
-    'api.monitoring.report': 'Server-to-server: X-Wortify-Monitor-Key, không dùng session và không cần CSRF. checks 1–50; token UUID, at ISO8601 có timezone, ok boolean, latency_ms 0–60000, error rỗng/timeout/network/http/invalid-response. at trong 7 ngày gần đây, không quá 5 phút tương lai. Không đưa monitor secret vào frontend.',
-    'api.monitoring.logs': 'Chỉ Admin. page 50/trang; failures=1 chỉ xem lỗi.',
-    'api.monitoring.probe': 'Public, kiểm tra kết nối database; {ok:true} hoặc 503 {ok:false}.',
-    'api.card_learning.export_deck': 'fmt=json hoặc csv; response là tệp tải xuống của bộ thẻ thuộc người dùng.',
-    'api.card_learning.speaking_check': 'Multipart audio + consent=yes. Bản ghi tối đa 10 MB/60 giây; nhà cung cấp speech phải được cấu hình ở backend. Không tự gửi ghi âm khi chưa có đồng ý.',
-    'api.card_learning.audio': 'Tạo/lấy TTS cho câu hỏi; phụ thuộc cấu hình speech ở backend. type=term/example, slow=1 tùy chọn.',
-    'api.card_learning.card_audio': 'TTS cho thẻ của người dùng; type=term/example.',
-    'api.card_learning.next_question': 'deck, mode, filter tùy chọn; JSON được adapter chuyển sang form. Trả câu/token để submit.',
-    'api.card_learning.match_submit': 'pairs ánh xạ ID/token của lượt ghép theo dữ liệu match/new. JSON được adapter chuyển đổi.',
-    'api.api_reference.reference': 'Chỉ Admin. GET JSON để hiển thị trang; format=postman tải collection v2.1; format=markdown tải tài liệu. Chỉ chứa ví dụ và placeholder, không xuất secret hay dữ liệu tài khoản.',
+    'config.urls.health': 'Public GET returns app=Wortify and a workspace fingerprint to identify a local instance. It does not test the database; use /api/health/check/ for that.',
+    'api.themes.theme_image': 'GET/HEAD accessible theme image binary. Returns 404 if missing, inaccessible or without an image.',
+    'api.themes.manifest': 'GET the session background/theme manifest for English and German. Use returned URLs instead of constructing file paths.',
+    'api.personal_appearance.image': 'GET/HEAD the signed-in account background binary with Cache-Control private,no-store.',
+    'api.management.public_appearance': 'GET shared background information; sign-in is required. Returns background_image and background_url when available.',
+    'api.management.site_appearance_image': 'GET shared background binary; sign-in required. This endpoint cannot modify the image.',
+    'api.community.profile': 'GET profile and learning statistics by language. PATCH display_name (up to 100 characters), bio (2000 characters), daily_goal (integer 1–500). Cannot change roles or passwords.',
+    'api.spaced_review.review_queue': 'GET review queue, config, due, new, reviewed_today, next_due, forecast, cards and difficult. PATCH retention=0.8–0.97, new_limit/review_limit=0–500 and adapt_time boolean. Deck owner only.',
+    'api.learning_sync.deck_state': 'GET synced learning state for an owned deck. Send changes through /learning/sync/ rather than PATCH to this endpoint.',
+    'api.views.preferences': 'GET/PATCH study settings by language: autoplay,ignore_case,ignore_punctuation,transliteration,new_cards_per_day,session_minutes. Boolean values must be JSON booleans.',
+    'api.sessions.detail': 'GET a study session by UUID token scoped to the account and language. Do not use a numeric ID. Unsubmitted tests do not expose answers.',
+    'api.card_learning.resume_question': 'GET a question by UUID token scoped to the account and language. Tokens belonging to other accounts or unsubmitted tests are inaccessible.',
+    'api.card_learning.submit': 'POST answer as text for the question token, with optional response_ms. The server grades and saves progress; repeating a completed token does not grade twice.',
+    'api.card_learning.tts_file': 'GET audio binary by generated audio ID, for the card owner only. The URL is normally returned by the TTS creation response.',
+    'api.card_learning.retry': 'POST a valid question token to retry. The token must belong to the account and language. Only an empty JSON body is needed.',
+    'api.card_learning.match_new': 'POST to create a matching session for an owned deck pk. weak=1 filters weak cards; resume is a UUID for an existing session. Submit pairs to /match/{token}/submit/ for grading.',
+    'users.views.session': 'GET sets the CSRF cookie and returns user/null. POST signs in; registration uses register=true, username, password1 and password2. DELETE signs out the current session. Invalid credentials return 400, not 401.',
+    'users.views.superuser_registration': 'Enabled only when setup_key matches SUPERUSER_SETUP_KEY (at least 32 characters). Never embed the real key in documentation. POST creates an admin; use deployment tools if this feature is disabled.',
+    'api.views.decks': 'GET returns decks, folders, due and resume. POST requires title; level defaults to A1. Optional folder must share owner and language. The new ID is returned in id.',
+    'api.views.deck': 'GET returns deck, cards, folders, learning and study_defaults. PATCH preserves language. DELETE removes the deck and dependent data.',
+    'api.views.card': 'Create cards at the collection URL; edit/delete at the URL with pk. german_text is the learning term for both EN/DE. german_text and vietnamese_meaning are required. Read cards from the deck detail endpoint.',
+    'api.views.folder': 'Create at the collection URL; edit/delete at the URL with pk. There is no separate folder list GET; read folders from GET /api/{language}/decks/. The parent must share the owner and language.',
+    'api.views.import_cards': 'Two steps: send text+separator to obtain token/count/preview, then POST {"token":"returned UUID"} to confirm. Preview expires after 30 minutes; repeating a confirmed token does not create duplicates.',
+    'api.views.reorder_cards': 'ids must contain every card ID in the deck exactly once.',
+    'api.views.study_pack': 'Optional deck and filter query parameters; returns only owned cards.',
+    'api.practice_hub.nodes': 'GET metadata; full=1 includes payload. POST kind=folder/exercise/theory, title, parent, payload, visibility. Exercises require a folder with the same owner and language. See Backend/sample_data for exercise examples.',
+    'api.practice_hub.node': 'Read access follows ownership, public visibility or class assignment. Learning API PATCH/DELETE is owner-only. Staff editors use /api/manage/content/{pk}/.',
+    'api.practice_hub.import_nodes': 'Up to 100 root items and 500 total items. Errors roll back the entire import. links must refer to accessible content IDs.',
+    'api.practice_hub.organize': 'Organize or move the current user content tree. parent=null is root. Cycles and mixed languages are prohibited.',
+    'api.practice_copy.copy_collection': 'Copy accessible content into the current account. Content and links are validated by the API.',
+    'api.practice_hub.explore': 'Search and filter public content. Sign-in is required.',
+    'api.practice_media.upload': 'Multipart file, up to 200 MB; MP3/PNG/JPG/JPEG/WebP/GIF. Response media includes id/name/size/type/url. Add it to payload.attachments to attach it to an exercise.',
+    'api.practice_media.content': 'Returns binary after checking permissions. Supports GET/HEAD and byte ranges; partial responses use 206. Staff/Admin may read media for editing.',
+    'api.learning_sync.sync': 'Submit 1–100 events, each with a UUID token, kind and payload. Supported kinds: preferences, study_settings, practice_progress, practice, review, test, star, options. Preferences require an ISO8601 at timestamp with a timezone. Payload supports interface=studio/glass/xp/retro/space (default Studio), navScale=50–150, ambient boolean, volume=0–1, and ambientTrack=morning/marimba/picnic/bubbles/cafe/garden/puzzle/clouds/starlight/steps/bounce/ghost/begin/ukulele/island/tropical/sunshine/arcade/dew/hearth. Retrying the same token is idempotent. HTTP 200 may include per-item errors.',
+    'api.sessions.create': 'kind=flash/learn/test; count 1–100; optional deck. Requires matching cards. Returns a session token and questions.',
+    'api.sessions.answer': 'question must be the current question token in the session; flash/learn only. Tests submit through finish. response_ms is optional.',
+    'api.sessions.finish_test': 'Submit answers mapping question tokens to answers, not card IDs. Resubmitting a graded session returns its existing result.',
+    'api.community.classes': 'POST title to create a class; POST invite to join a class. GET lists owned and joined classes only.',
+    'api.community.classroom': 'GET is available to class owners and members; PATCH/DELETE requires the owner. PATCH remove_member with a member ID to remove them.',
+    'api.community.classroom_assignments': 'Class owner only. POST node + due_at (ISO8601 or null). DELETE {id} uses the assignment ID, not the node ID.',
+    'api.management.users': 'GET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. 50 records per page. POST requires username,password; email,first_name,last_name are optional. Staff create regular users; only admins grant staff/superuser roles.',
+    'api.management.user_detail': 'GET account audit log. PATCH username,email,first_name,last_name,password,role,is_active,revoke_sessions,reason. Staff may target regular users only. Self-locking/deletion/demotion is prohibited and an active admin must remain. Role/password changes revoke sessions; passwords are not logged. DELETE requires confirm matching the username and a 3–500 character reason.',
+    'api.management_data.user_data': 'GET collections and counts. DELETE clears learning/profile data but retains the account; confirm must match the username. Only other regular accounts can be targeted.',
+    'api.management_data.records': 'kind is a collection from GET data/: decks,cards,folders,practice,classes,... List GET returns fields and can_create for forms. POST to the list; PATCH/DELETE to item_id. The example body uses kind=decks; use fields for other collections. Relations must share owner/language. Auth fields and file paths cannot be edited.',
+    'api.management_center.content': 'GET q,language,kind,visibility,source=system/users/mine,owner,page (25 per page). GET options=folders returns folders owned by the signed-in user. POST creates content owned by the actor; owner from the client is not accepted.',
+    'api.management_center.content_detail': 'GET returns payload, folders, children and version. PATCH allows title,parent,payload,visibility,position,links only; owner/language/kind cannot change. Requires the latest version. Visibility changes require reason; cascade=true is for folders only. DELETE requires version, confirm matching the title and reason, and removes the tree and related data.',
+    'api.management_center.content_upload': 'Multipart file; exercises only. Files are stored under the content owner and validated like regular uploads. Attach returned media to payload.attachments when saving the exercise.',
+    'api.management_center.activity': 'q and page, 25 per page. Admins see all activity; staff see only their own log. Audit records cannot be edited or deleted through the API.',
+    'api.management_center.summary': 'Work overview. Staff account counts include regular users only; content statistics include system learning content.',
+    'api.management_data.overview': 'Admin only: account/content statistics, database connectivity, migrations, runtime and logs. Secret configuration is excluded.',
+    'api.management.site_appearance': 'Admin only. GET status, POST multipart background_image (PNG/JPG/WebP up to 30 MB), DELETE removes the shared image.',
+    'api.themes.themes': 'Legacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images.',
+    'api.backgrounds.library': 'GET the private library; POST multipart image (JPG/PNG/WebP up to 30 MB), optional name. Up to 10 images including the legacy personal background. Upload immediately selects the image across both languages and every theme.',
+    'api.backgrounds.select': 'POST JSON id: an image ID owned by the account; null restores the code-generated default background; 0 selects the legacy personal image if present. Appearance settings are unchanged.',
+    'api.backgrounds.remove': 'DELETE an account background. ID 0 removes the legacy personal image. Deleting the selected image restores the default background.',
+    'api.themes.select_theme': 'Deprecated; returns 410. Use /api/me/backgrounds/select/.',
+    'api.themes.delete_theme': 'Requires theme editing permission. Deleting a theme clears affected account selections.',
+    'api.personal_appearance.background': 'GET status; POST multipart image (PNG/JPG/WebP up to 30 MB); DELETE removes the personal background.',
+    'api.monitoring.report': 'Server-to-server: X-Wortify-Monitor-Key, no session or CSRF. Submit 1–50 checks; UUID token, ISO8601 at with timezone, boolean ok, latency_ms 0–60000, error empty/timeout/network/http/invalid-response. at must be within the last 7 days and no more than 5 minutes in the future. Never expose the monitor secret to the frontend.',
+    'api.monitoring.logs': 'Admin only. 50 records per page; failures=1 shows errors only.',
+    'api.monitoring.probe': 'Public database connectivity check: {ok:true} or HTTP 503 with {ok:false}.',
+    'api.card_learning.export_deck': 'fmt=json or csv; downloads an owned deck.',
+    'api.card_learning.speaking_check': 'Multipart audio + consent=yes. Recording limit: 10 MB/60 seconds. A speech provider must be configured on the backend. Recordings are not sent without consent.',
+    'api.card_learning.audio': 'Create or retrieve question TTS. Requires backend speech configuration. type=term/example; optional slow=1.',
+    'api.card_learning.card_audio': 'TTS for owned cards; type=term/example.',
+    'api.card_learning.next_question': 'Optional deck, mode and filter. The adapter converts JSON to form data. Returns a question and token for submission.',
+    'api.card_learning.match_submit': 'pairs maps session IDs/tokens using match/new data. The adapter converts JSON.',
+    'api.api_reference.reference': 'Admin only. GET JSON for the documentation page; format=postman downloads a v2.1 collection; format=markdown downloads documentation. Contains only examples and placeholders, never secrets or account data.',
 }
 
 MULTIPART = {
@@ -134,28 +137,28 @@ MULTIPART = {
     'api.management_center.content_upload': [('file','file','')],
     'api.management.site_appearance': [('background_image','file','')],
     'api.personal_appearance.background': [('image','file','')],
-    'api.themes.themes': [('name','text','Theme mẫu'),('preferences','text','{}'),('shared','text','false')],
+    'api.backgrounds.library': [('name','text','My backgrounds'),('image','file','')],
     'api.card_learning.speaking_check': [('audio','file',''),('consent','text','yes')],
 }
 
 RECIPES = [
-    {'title':'Tạo bài tập trong thư mục', 'method':'POST', 'path':'/api/manage/content/',
-     'description':'Staff/Admin: tạo folder trước và thay parent=1 bằng ID folder của chính tài khoản. Lưu riêng tư, xem trước rồi công bố. Đây là body bài viết lại câu tối thiểu.',
-     'body':{'kind':'exercise','title':'Chào hỏi','language':'en','parent':1,'visibility':'private',
-             'payload':{'title':'Chào hỏi','kind':'text','presentation':{'interaction':'short_answer'},
-                        'questions':[{'prompt':'Viết hello bằng tiếng Anh','accepted_answers':['hello'],'options':[],'blanks':[],'presentation':{}}]}}},
-    {'title':'Cấp quyền Staff', 'method':'PATCH', 'path':'/api/manage/users/{pk}/',
-     'description':'Chỉ Admin. pk là ID tài khoản đích; đổi quyền đăng xuất các phiên hiện tại. Không được tự hạ quyền Admin đang sử dụng.',
-     'body':{'role':'staff','reason':'Bổ nhiệm nhân viên quản lý nội dung'}},
-    {'title':'Khóa tài khoản', 'method':'PATCH', 'path':'/api/manage/users/{pk}/',
-     'description':'Staff chỉ nhắm tài khoản thường. is_active=false khóa đăng nhập và thu hồi phiên, không xóa dữ liệu. Mở lại bằng true.',
-     'body':{'is_active':False,'reason':'Yêu cầu tạm khóa từ người dùng'}},
-    {'title':'Đặt lại mật khẩu', 'method':'PATCH', 'path':'/api/manage/users/{pk}/',
-     'description':'Dùng biến Environment local newPassword, không ghi mật khẩu thật trong collection. Server áp dụng kiểm tra độ mạnh mật khẩu.',
+    {'title':'Create an exercise in a folder', 'method':'POST', 'path':'/api/manage/content/',
+     'description':'Staff/Admin: create a folder first and replace parent=1 with its ID. Save privately, preview, then publish. This is a minimal sentence-rewriting exercise body.',
+     'body':{'kind':'exercise','title':'Greetings','language':'en','parent':1,'visibility':'private',
+             'payload':{'title':'Greetings','kind':'text','presentation':{'interaction':'short_answer'},
+                        'questions':[{'prompt':'Write hello in English','accepted_answers':['hello'],'options':[],'blanks':[],'presentation':{}}]}}},
+    {'title':'Assign staff role', 'method':'PATCH', 'path':'/api/manage/users/{pk}/',
+     'description':'Admin only. pk identifies the target account. Role changes revoke existing sessions. You cannot demote the active admin account.',
+     'body':{'role':'staff','reason':'Assign a content management staff member'}},
+    {'title':'Lock account', 'method':'PATCH', 'path':'/api/manage/users/{pk}/',
+     'description':'Staff may target regular accounts only. is_active=false blocks sign-in and revokes sessions without deleting data. Restore access with true.',
+     'body':{'is_active':False,'reason':'User requested temporary account lock'}},
+    {'title':'Reset password', 'method':'PATCH', 'path':'/api/manage/users/{pk}/',
+     'description':'Use a local newPassword environment variable; do not store real passwords in the collection. The server validates password strength.',
      'body':{'password':'{{newPassword}}'}},
-    {'title':'Công bố cả cây nội dung', 'method':'PATCH', 'path':'/api/manage/content/{pk}/',
-     'description':'GET chi tiết trước để lấy version. Collection cập nhật contentVersion từ response. Chọn pk của folder; cascade=true đổi trạng thái của toàn bộ mục con.',
-     'body':{'version':'{{contentVersion}}','visibility':'public','cascade':True,'reason':'Đã duyệt bài và media'}}
+    {'title':'Publish the content tree', 'method':'PATCH', 'path':'/api/manage/content/{pk}/',
+     'description':'GET details first to obtain the version. The collection updates contentVersion from the response. Choose a folder pk; cascade=true changes visibility for all descendants.',
+     'body':{'version':'{{contentVersion}}','visibility':'public','cascade':True,'reason':'Exercise and media reviewed'}}
 ]
 
 
@@ -181,17 +184,17 @@ def reference_data():
             methods = (['GET','PATCH','DELETE'] if item else ['GET','POST']) if key.endswith('.records') else (['PATCH','DELETE'] if item else ['POST'])
         path = '/' + re.sub(r'<\w+:(\w+)>', r'{\1}', route)
         public = key in ('config.urls.health','api.monitoring.probe','users.views.session','users.views.superuser_registration')
-        role = 'Public / session' if public else 'Người dùng đăng nhập'
-        group = 'Học tập & nội dung'
+        role = 'Public / session' if public else 'Signed-in users'
+        group = 'Learning & content'
         if '/manage/' in path:
-            group = 'Quản trị'
+            group = 'Administration'
             role = 'Admin' if key in ('api.management_data.overview','api.monitoring.logs','api.management.site_appearance','api.api_reference.reference') else 'Admin / Staff'
-        elif key.startswith('api.themes.') or '/me/' in path or '/site/' in path: group = 'Giao diện & media'
-        elif public: group = 'Phiên & sức khỏe'
-        elif key == 'api.monitoring.report': group, role = 'Giám sát máy chủ', 'Monitor key'
+        elif key.startswith('api.themes.') or '/me/' in path or '/site/' in path: group = 'Appearance & media'
+        elif public: group = 'Session & health'
+        elif key == 'api.monitoring.report': group, role = 'Server monitoring', 'Monitor key'
         examples = EXAMPLES.get(key, {})
         rows.append({'path':path, 'methods':methods, 'group':group, 'role':role,
-                     'description':NOTES.get(key, f'{view.__name__}: tài nguyên trong phạm vi tài khoản/ngôn ngữ. Xem mã xử lý {key} để mở rộng tích hợp.'),
+                     'description':NOTES.get(key, f'{view.__name__}: resources are scoped to the account and language. See handler {key} to extend the integration.'),
                      'source':key, 'examples':{m:examples[m] for m in methods if m in examples},
                      'response_example':examples.get('response'),
                      'multipart':MULTIPART.get(key, []),
@@ -208,7 +211,7 @@ def postman_collection(data):
                 headers.append({'key':'X-Wortify-Monitor-Key','value':'{{monitorKey}}'})
             else:
                 headers.extend([{'key':'X-CSRFToken','value':'{{csrfToken}}'}, {'key':'Origin','value':'{{baseUrl}}'}, {'key':'Referer','value':'{{baseUrl}}/'}])
-        request = {'method':method,'header':headers,'url':url,'description':f"Quyền: {row['role']}\n\n{row['description']}"}
+        request = {'method':method,'header':headers,'url':url,'description':f"Permission: {row['role']}\n\n{row['description']}"}
         if method in ('POST','PATCH','DELETE'):
             if method == 'POST' and row['multipart']:
                 request['body']={'mode':'formdata','formdata':[{'key':k,'type':t,**({'src':[]} if t=='file' else {'value':v})} for k,t,v in row['multipart']]}
@@ -217,13 +220,13 @@ def postman_collection(data):
                 request['body']={'mode':'raw','raw':json.dumps(row['examples'].get(method,{}),ensure_ascii=False,indent=2),'options':{'raw':{'language':'json'}}}
         return {'name':name or f'{method} {row["path"]}', 'request':request, 'response':[]}
     session = next(row for row in data['endpoints'] if row['path']=='/api/session/')
-    folders = [{'name':'00 · Bắt đầu — chạy theo thứ tự','item':[item(session,'GET','01 · Nhận CSRF cookie'),item(session,'POST','02 · Đăng nhập'),item(session,'GET','03 · Kiểm tra phiên')]}]
+    folders = [{'name':'00 · Start — run in order','item':[item(session,'GET','01 · Obtain CSRF cookie'),item(session,'POST','02 · Sign in'),item(session,'GET','03 · Verify session')]}]
     recipes = []
     for recipe in RECIPES:
         row = next(row for row in data['endpoints'] if row['path'] == recipe['path'])
         recipe_row = {**row, 'description':recipe['description'], 'examples':{recipe['method']:recipe['body']}}
         recipes.append(item(recipe_row, recipe['method'], recipe['title']))
-    folders.append({'name':'01 · Ví dụ nghiệp vụ — gửi từng request', 'item':recipes})
+    folders.append({'name':'01 · Workflow examples — send requests individually', 'item':recipes})
     for group in dict.fromkeys(row['group'] for row in data['endpoints']):
         folders.append({'name':group,'item':[item(row,method) for row in data['endpoints'] if row['group']==group for method in row['methods']]})
     variables={'baseUrl':'http://127.0.0.1:8000','username':'','password':'','newPassword':'','csrfToken':'','language':'en','pk':'1','deck_id':'1','item_id':'1','kind':'decks','fmt':'json','token':'','questionToken':'','eventToken':'','checkedAt':'','setup_key':'','monitorKey':'','contentVersion':'','contentTitle':'','targetUsername':''}
@@ -237,13 +240,13 @@ def postman_collection(data):
 
 
 def markdown_reference(data):
-    lines = ['# '+data['title'], '', 'Tài liệu từ URLconf và ví dụ đã khai báo. Không chứa thông tin xác thực thực tế.', '']
+    lines = ['# '+data['title'], '', 'Documentation generated from URLconf and declared examples. Contains no real credentials.', '']
     for guide in data['guide']:
         lines.extend(['## '+guide['title'], '', guide['text'], ''])
     for recipe in data['recipes']:
-        lines.extend(['## Ví dụ: '+recipe['title'], '', recipe['method']+' '+recipe['path'], '', recipe['description'], '', '```json', json.dumps(recipe['body'],ensure_ascii=False,indent=2), '```', ''])
+        lines.extend(['## Example: '+recipe['title'], '', recipe['method']+' '+recipe['path'], '', recipe['description'], '', '```json', json.dumps(recipe['body'],ensure_ascii=False,indent=2), '```', ''])
     for row in data['endpoints']:
-        lines.extend(['## '+', '.join(row['methods'])+' '+row['path'], '', '**Quyền:** '+row['role'], '', row['description'], ''])
+        lines.extend(['## '+', '.join(row['methods'])+' '+row['path'], '', '**Permission:** '+row['role'], '', row['description'], ''])
         for method, example in row['examples'].items():
             lines.extend([f'Body {method}:', '', '```json', json.dumps(example,ensure_ascii=False,indent=2), '```', ''])
         if row['multipart']:
@@ -263,6 +266,6 @@ def reference(request):
     elif format == 'markdown':
         response = HttpResponse(markdown_reference(data),content_type='text/markdown; charset=utf-8')
         filename = 'API_REFERENCE.md'
-    else: raise ValueError('Định dạng không hợp lệ.')
+    else: raise ValueError('Invalid format.')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response

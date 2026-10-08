@@ -1,4 +1,4 @@
-from api import api_reference, management_center, spaced_review, management_data, personal_appearance, monitoring, themes
+from api import api_reference, management_center, spaced_review, management_data, personal_appearance, monitoring, themes, backgrounds
 from django.urls import path,re_path
 from django.http import JsonResponse
 from api import views,sessions,community,management,practice_hub,learning_sync,practice_media,practice_copy
@@ -20,6 +20,9 @@ urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_regis
  path('api/themes/<int:pk>/delete/',themes.delete_theme),
  path('api/themes/<int:pk>/image/',themes.theme_image),
  path('api/me/appearance/',themes.manifest),
+ path('api/me/backgrounds/',backgrounds.library),
+ path('api/me/backgrounds/select/',backgrounds.select),
+ path('api/me/backgrounds/<int:pk>/',backgrounds.remove),
  path('api/me/background/',personal_appearance.background),
  path('api/me/background/image/',personal_appearance.image),
  path('api/manage/summary/',management_center.summary),
@@ -52,4 +55,4 @@ for pattern, view in [
  ('speaking/<uuid:token>/',cards.speaking_check),('retry/<uuid:token>/',cards.retry),('match/<int:pk>/new/',cards.match_new),('match/<uuid:token>/submit/',cards.match_submit),
 ]:route(pattern,legacy_json(view))
 # React owns every non-API application URL. Django only exposes APIs and admin.
-urlpatterns += [re_path(r'^.*$',lambda request:JsonResponse({'error':'Không có API tại đường dẫn này. Hãy mở giao diện React.'},status=404))]
+urlpatterns += [re_path(r'^.*$',lambda request:JsonResponse({'error':'There is no API at this path. Open the React interface.'},status=404))]

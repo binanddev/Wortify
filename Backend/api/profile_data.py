@@ -77,7 +77,7 @@ def profile_data(request, profile):
     available = set(Deck.objects.filter(pk__in=test_decks, owner=user, language=lang).values_list('pk', flat=True))
     history += [{'id': h['token'], 'kind': 'test', 'title': h['result'].get('title', 'Flashcard'), 'score': h['result'].get('correct', 0), 'total': h['result'].get('total', 0), 'date': h['date'], 'path': f'/{lang}/flashcard/deck/{h["result"]["deck"]}' if h['result'].get('deck') in available else None} for h in study_history]
     for session in sessions.filter(completed_at__isnull=False).select_related('deck').order_by('-completed_at')[:30]:
-        history.append({'id': str(session.token), 'kind': 'session', 'title': session.deck.title if session.deck else 'Ôn tập', 'score': session.result.get('correct', 0), 'total': session.result.get('total', 0), 'date': session.completed_at.isoformat(), 'path': f'/{lang}/flashcard/session/{session.token}'})
+        history.append({'id': str(session.token), 'kind': 'session', 'title': session.deck.title if session.deck else 'Review', 'score': session.result.get('correct', 0), 'total': session.result.get('total', 0), 'date': session.completed_at.isoformat(), 'path': f'/{lang}/flashcard/session/{session.token}'})
     history.sort(key=lambda h: h['date'], reverse=True)
     resume = sessions.filter(completed_at__isnull=True).exclude(tokens=[]).order_by('-created_at').values_list('token', flat=True).first()
     all_questions = sum(v['total'] for v in days.values())
@@ -88,4 +88,4 @@ def profile_data(request, profile):
             'decks': decks, 'resume': f'/{lang}/flashcard/session/{resume}' if resume else None,
             'timeline': history[:60], 'history': practice_history, 'study_history': study_history,
             'reviews': events.filter(kind='review').count() + legacy.count(), 'mastered': counts['mastered'], 'sessions': sum(v['completed'] for v in days.values()),
-            'milestones': [{'label': 'Buổi học đầu tiên', 'earned': bool(all_questions)}, {'label': '7 ngày liên tiếp', 'earned': longest >= 7}, {'label': '50 thẻ thành thạo', 'earned': counts['mastered'] >= 50}]}
+            'milestones': [{'label': 'First study session', 'earned': bool(all_questions)}, {'label': '7 consecutive days', 'earned': longest >= 7}, {'label': '50 mastered cards', 'earned': counts['mastered'] >= 50}]}

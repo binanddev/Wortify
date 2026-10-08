@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   updateAppearance,
   restoreAppearance,
-} from "../src/appearance-profiles.js";
+} from "../src/themes/preferences.js";
 test("appearance profiles isolate interfaces, backgrounds and saved themes", () => {
   let p = {
     interface: "studio",
