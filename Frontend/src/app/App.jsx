@@ -1,3 +1,5 @@
+import CrtOverlay from "../themes/rpg/CrtOverlay.jsx";
+import { useThemeBackground } from "../themes/shared/useThemeBackground.js";
 import QuestConsole from "../themes/rpg/QuestConsole.jsx";
 import Home from "../home/home.jsx";
 import { interfaceName } from "../themes/registry.js";
@@ -140,19 +142,6 @@ export default function App() {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [appearanceKey, user === null, backgroundRevision]);
-  useLayoutEffect(() => {
-    const url =
-      isWorkspace && appearance.key === appearanceKey
-        ? appearance.data?.[activeLanguage]?.background_url
-        : "";
-    document.documentElement.dataset.hasBackground = String(Boolean(url));
-    document.documentElement.style.setProperty(
-      "--site-bg-image",
-      url ? `url("${url}")` : "none",
-    );
-    return () =>
-      document.documentElement.style.removeProperty("--site-bg-image");
-  }, [appearance, appearanceKey, activeLanguage, isWorkspace]);
   const parts = route.split("?")[0].split("/").filter(Boolean),
     lang = ["en", "de"].includes(parts[0]) ? parts[0] : null;
   const setupKey = /^\/setup-7f3c91d8\/([A-Za-z0-9_-]+)\/?$/.exec(
@@ -402,6 +391,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
     }),
     [navBack, setNavBack] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
+  useThemeBackground(prefs.interface, user.id);
   const navWidth = widthForScale(prefs.navScale);
   const [smallScreen, setSmallScreen] = useState(
     () => window.matchMedia("(max-width: 1024px)").matches,
@@ -484,7 +474,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       className="app-shell"
       style={{
         "--nav-width": `${navWidth}px`,
-        "--nav-scale": prefs.navScale / 100,
+
       }}
     >
       {prefs.interface === "xp" && (
@@ -574,7 +564,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                 setNavOpen(false);
             }}
           >
-            {prefs.interface !== "glass" && (
+            {(
               <NavResize
                 width={navWidth}
                 setWidth={(width) =>
@@ -721,6 +711,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       )}
       {prefs.interface !== "xp" && (
         <div className="main-shell">
+          {prefs.interface === "rpg" && <CrtOverlay />}
           
           {prefs.interface === "studio" && (
             <header className="studio-masthead">

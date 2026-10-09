@@ -340,9 +340,6 @@ body {
   @apply bg-cover bg-center bg-no-repeat [background-blend-mode:normal];
   @apply bg-fixed;
 }
-.sidebar::before {
-  @apply opacity-[0.25];
-}
 .glass,
 .workspace-context {
   @apply bg-[linear-gradient(125deg,rgb(255_255_255/0.14),transparent_40%,rgb(255_255_255/0.06))]!;

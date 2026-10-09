@@ -1,4 +1,6 @@
 export const EXERCISE_TYPES = [
+  ["multiple_choice", "Choose a response", "08", "choice"],
+  ["true_false_not_given", "Read and judge", "09", "choice"],
   ["cloze_drag_drop", "Fill in the gap", "01", "cloze"],
   ["error_correction", "Find and correct mistakes", "02", "text"],
   ["matching", "Match answers", "03", "matching"],
@@ -8,6 +10,8 @@ export const EXERCISE_TYPES = [
   ["short_answer", "Rewrite sentence", "07", "text"],
 ];
 export const EXERCISE_STYLES = {
+  multiple_choice: [["dialogue_reply", "Dialogue replies", "Read the situation and choose your reply."], ["elimination", "Eliminate and decide", "Cross out distractors, then choose the best answer."]],
+  true_false_not_given: [["evidence_judge", "Evidence desk", "Read the passage and decide what it actually says."]],
   cloze_drag_drop: [
     [
       "drag_drop",

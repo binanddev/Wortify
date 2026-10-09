@@ -79,6 +79,7 @@ for(const mode of ['studio','glass']) {
    const box=nav.getBoundingClientRect(), faceBox=frame.getBoundingClientRect();heights.push(box.height);
    if(Math.abs(box.width-422*scale)>2 || Math.abs(box.width-faceBox.width)>2 || Math.abs(box.height-faceBox.height)>2) errors.push(mode+' nav frame scale '+scale+': '+JSON.stringify({width:box.width,faceWidth:faceBox.width,height:box.height,faceHeight:faceBox.height}));
  }
+ if(getComputedStyle(document.querySelector('.nav-flip-inner')).scale!=='1') errors.push(mode+' nav content is scaled');
  if(Math.max(...heights)-Math.min(...heights)>1) errors.push(mode+' nav height changes with scale');
  shell.style.setProperty('--nav-scale','1');shell.style.setProperty('--nav-width','422px');
  const controls=document.querySelector('.session-controls'), nextButton=controls.querySelector('.next-question'), checkButton=controls.querySelector('.check-action');
@@ -104,6 +105,7 @@ for(const mode of ['studio','glass']) {
  if(new Set(colors).size!==1) errors.push(mode+' icons change with glass alpha');
 }
 root.dataset.interface='studio';card.firstElementChild.classList.remove('flipped');card.removeAttribute('data-test-hover');card.setAttribute('aria-pressed','false');root.style.setProperty('--glass-alpha','0.75');
+for(const mode of ['studio','glass','xp','retro','notebook','rpg']) { root.dataset.interface=mode; const decoration=getComputedStyle(document.querySelector('.sidebar'),'::before'); if(!['none','normal'].includes(decoration.content) && decoration.display!=='none') errors.push(mode+' sidebar decorative dot remains'); }
 const themeBackgrounds=[];
 for(const mode of ['xp','retro','notebook','rpg']) {
  root.dataset.interface=mode;

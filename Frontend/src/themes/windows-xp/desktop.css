@@ -364,3 +364,11 @@
 :root[data-interface="xp"] .windows-taskbar .windows-start-menu {
   @apply max-h-[calc(100dvh-64px)] overflow-y-auto;
 }
+
+/* A splitter changes layout width only, never the content scale. */
+:root[data-interface="xp"] .xp-sidebar-resize {
+ @apply w-[7px] shrink-0 cursor-col-resize touch-none select-none bg-[#c4d3e4] border-x border-l-[#f5f8ff] border-r-[#839bb8] outline-none;
+}
+:root[data-interface="xp"] .xp-sidebar-resize:is(:hover,:focus-visible) {
+ @apply bg-[#83b5ee] shadow-[inset_0_0_0_1px_#2465aa];
+}

@@ -1211,6 +1211,23 @@ class DeploymentEnvironmentTests(SimpleTestCase):
                     load_environment()
 
 class BackgroundLibraryTests(TestCase):
+    def test_background_selection_is_independent_per_interface(self):
+        from users.models import Theme
+        user = get_user_model().objects.create_user(username='theme-background-test', password='test')
+        self.client.force_login(user)
+        a = Theme.objects.create(owner=user, name='A', background_image='test-a.png')
+        b = Theme.objects.create(owner=user, name='B', background_image='test-b.png')
+        for theme, pk in [('studio', a.pk), ('retro', b.pk)]:
+            response = self.client.post('/api/me/backgrounds/select/', json.dumps({'id':pk, 'interface':theme}), content_type='application/json')
+            self.assertEqual(response.status_code,200)
+        self.assertEqual(self.client.get('/api/me/backgrounds/?interface=studio').json()['selected'],a.pk)
+        self.assertEqual(self.client.get('/api/me/backgrounds/?interface=retro').json()['selected'],b.pk)
+        self.client.post('/api/me/backgrounds/select/', json.dumps({'id':None, 'interface':'retro'}), content_type='application/json')
+        self.assertEqual(self.client.get('/api/me/backgrounds/?interface=studio').json()['selected'],a.pk)
+        self.assertIsNone(self.client.get('/api/me/backgrounds/?interface=retro').json()['selected'])
+        self.client.delete(f'/api/me/backgrounds/{a.pk}/')
+        self.assertIsNone(self.client.get('/api/me/backgrounds/?interface=studio').json()['selected'])
+
     def setUp(self):
         PersonalAppearanceAndMonitoringTests.setUp(self)
 

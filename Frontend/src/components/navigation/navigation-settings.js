@@ -4,7 +4,7 @@ export const NAV_MAX = NAV_BASE * 1.5;
 export function navScale(value) {
   const number = Number(value);
   return Number.isFinite(number)
-    ? Math.max(50, Math.min(150, Math.round(number)))
+    ? Math.max(50, Math.min(150, number))
     : 100;
 }
 export const navWidth = (value) => (NAV_BASE * navScale(value)) / 100;

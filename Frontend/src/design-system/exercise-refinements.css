@@ -175,3 +175,68 @@
   .correction-work {
   @apply border-b-2 border-red-500 text-red-700;
 }
+
+/* Passage exercises read as paragraphs, not centered captions. */
+.exercise-workspace .fluid-passage {
+  @apply text-left;
+}
+.exercise-workspace:has(.fluid-passage) :is(.exercise-instruction,.work-prompt) {
+  @apply text-left;
+}
+.exercise-workspace:has(.fluid-passage) .word-bank {
+  @apply justify-start text-left;
+}
+
+/* Inline answers share the text baseline, not the paragraph's generous leading. */
+:root[data-interface] body .exercise-workspace .fluid-passage .gap-token {
+ @apply inline-flex! items-baseline! align-baseline! [line-height:1.2]!;
+}
+:root[data-interface] body .exercise-workspace .fluid-passage :is(.gap-drop,.inline-choice,.gap-input),
+:root[data-interface] body .exercise-workspace .partial-rewrite input,
+:root[data-interface] body .exercise-workspace .inline-pills button {
+ @apply [line-height:1.2]! min-h-0! h-auto! align-baseline! py-0! px-1! border-b!;
+}
+:root[data-interface] body .exercise-workspace .fluid-passage .movable-token {
+ @apply [line-height:1.2]! align-baseline!;
+}
+:root[data-interface] body .exercise-workspace .fluid-passage :is(.gap-drop,.inline-choice,.gap-input) {
+ @apply min-w-[3.5ch]!;
+}
+
+/* Writing stays on the baseline; expanding textareas add ruled lines naturally. */
+:root[data-interface] body .exercise-workspace textarea.writing-answer,
+:root[data-interface] body .exercise-workspace textarea.writing-answer:is(:hover,:focus,:focus-visible) {
+ --writing-rule: var(--line);
+ @apply bg-transparent! border-0! border-b! border-solid! border-(--line)! rounded-none! shadow-none! outline-none! min-h-0! resize-none! overflow-hidden! px-0! py-0! [font:inherit]! text-inherit! [line-height:1.5]! [background-image:repeating-linear-gradient(to_bottom,transparent_0,transparent_calc(1.5em_-_1px),var(--writing-rule)_calc(1.5em_-_1px),var(--writing-rule)_1.5em)]!;
+}
+:root[data-interface] body .exercise-workspace textarea.writing-answer:focus {
+ --writing-rule: var(--accent);
+ @apply border-(--accent)!;
+}
+:root[data-interface] body .exercise-workspace .correction-work .clickable-passage button,
+:root[data-interface] body .exercise-workspace .correction-work .clickable-passage button:is(:hover,:focus,:focus-visible,[aria-pressed="true"]) {
+ @apply bg-transparent! border-0! rounded-none! shadow-none! outline-none! px-1 py-0 min-h-0 [line-height:1.5];
+}
+:root[data-interface] body .exercise-workspace .correction-work .clickable-passage button:not(.struck-word):is(:hover,:focus-visible,[aria-pressed="true"]) {
+ @apply underline decoration-1 underline-offset-4 decoration-current;
+}
+:root[data-interface] body .exercise-workspace .correction-editor {
+ @apply bg-transparent! border-0! rounded-none! shadow-none! px-0;
+}
+:root[data-interface] body .exercise-workspace .correction-editor input,
+:root[data-interface] body .exercise-workspace .correction-editor input:focus {
+ @apply bg-transparent! border-0! border-b! border-(--line)! rounded-none! shadow-none! outline-none! py-1;
+}
+:root[data-interface] body .exercise-workspace .correction-editor input:focus-visible { @apply border-(--accent)!; }
+
+.choice-lab { @apply text-left grid gap-4; }
+.choice-lab-hint { @apply text-sm text-(--muted); }
+.choice-lab-row { @apply flex items-stretch gap-3 mb-3; }
+.choice-lab-answer { @apply flex-1 text-left border border-(--line) p-4 rounded-lg bg-(--surface) text-(--ink) min-h-12; }
+.dialogue_reply .choice-lab-answer { @apply rounded-[18px_18px_18px_3px] ml-4; }
+.choice-lab-answer[aria-pressed="true"] { @apply outline-2 outline-offset-2 outline-(--accent); }
+.choice-lab-answer:disabled:not([aria-pressed="true"]) { @apply opacity-60; }
+.choice-lab-eliminate { @apply text-sm underline underline-offset-4 px-2 min-h-11 text-(--ink); }
+.choice-lab-row:has(.choice-lab-eliminate[aria-pressed="true"]) .choice-lab-answer { @apply line-through; }
+:root:is([data-interface="rpg"],[data-interface="retro"]) .choice-lab-answer { @apply rounded-none; }
+@media(max-width:540px) { .choice-lab-row { @apply flex-wrap; } }

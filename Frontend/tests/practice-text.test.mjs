@@ -10,8 +10,8 @@ import { EXERCISE_TYPES, previewData } from "../src/features/practice/exercise-t
 import { gradeExercise } from "../src/features/learning/local-learning.js";
 import { readyToCheck, mergeProgress } from "../src/features/practice/practice-session.js";
 
-test("seven text formats round trip and grade through the existing engine", () => {
-  assert.equal(EXERCISE_TYPES.length, 7);
+test("nine text formats round trip and grade through the existing engine", () => {
+  assert.equal(EXERCISE_TYPES.length, 9);
   for (const [mode] of EXERCISE_TYPES) {
     const e = parsePracticeText(textTemplate(mode)).nodes[0].payload;
     const data = previewData(e);
@@ -51,7 +51,7 @@ test("batch imports accept BOM, CRLF, comments and duplicate sentence words keep
     "\uFEFF# comment\r\n" +
       EXERCISE_TYPES.map(([m]) => textTemplate(m)).join("\r\n"),
   );
-  assert.equal(result.nodes.length, 7);
+  assert.equal(result.nodes.length, 9);
   const e = parsePracticeText(
     textTemplate("sentence_building").replace(
       "She | is | reading | a book.",
@@ -61,7 +61,7 @@ test("batch imports accept BOM, CRLF, comments and duplicate sentence words keep
   assert.deepEqual(e.questions[0].accepted_answers, ["1", "2"]);
 });
 
-test("all eleven styles parse and invalid cross-out and partial tasks are rejected", () => {
+test("all fourteen styles parse and invalid cross-out and partial tasks are rejected", () => {
   assert.doesNotThrow(() =>
     parsePracticeText(textTemplate("error_correction", "cross_out")),
   );
@@ -107,12 +107,12 @@ test("progress merges across devices, excludes examples and obsolete IDs", () =>
   assert.deepEqual(mergeProgress(qs, {}, null), []);
 });
 
-test("complete English guide imports all eleven styles and preserves legacy input", () => {
+test("complete English guide imports all fourteen styles and preserves legacy input", () => {
   const result = parsePracticeText(completePracticeGuide());
-  assert.equal(result.nodes.length, 11);
+  assert.equal(result.nodes.length, 14);
   assert.equal(
     new Set(result.nodes.map((n) => n.payload.presentation.interaction)).size,
-    7,
+    9,
   );
   const legacy =
     "BAI: Legacy\nDANG: short_answer\nSTYLE: sentence_rewrite\nPHAN_BIET_HOA: co\nCAU: Write hello\nDAP_AN: Hello";

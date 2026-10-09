@@ -20,7 +20,7 @@ const LEGACY_FIELDS = {
 export const TEXT_GUIDE = `PRACTICE TEXT FORMAT — UTF-8 .txt
 Start each exercise with EXERCISE: title (maximum 200 characters).
 Use uppercase FIELD: value keywords. Content may be in any language.
-TYPE: one of the seven type identifiers below. STYLE: a supported style of that type.
+TYPE: one of the supported type identifiers below. STYLE: a supported style of that type.
 Put all exercise fields before the first QUESTION.
 INSTRUCTIONS: task instructions. CONTEXT: optional shared reading passage.
 GROUPS: category names separated by | (categorization only; at least two unique groups).
@@ -94,6 +94,8 @@ export function completePracticeGuide() {
 }
 
 const samples = {
+  multiple_choice: "QUESTION: What would you like?\nOPTIONS: Tea, please. | Yesterday. | At home.\nANSWER: Tea, please.",
+  true_false_not_given: "CONTEXT: Mia lives in Berlin.\nQUESTION: Mia lives in Berlin.\nOPTIONS: TRUE | FALSE | NOT_GIVEN\nANSWER: TRUE",
   cloze_drag_drop:
     "QUESTION: I {{1}} coffee in the {{2}}.\nBLANK: drink => drink | eat\nBLANK: morning => morning | evening\nWORDS: morning | drink | eat",
   error_correction:
@@ -138,6 +140,7 @@ export function exerciseToText(e) {
     lines.push(`GROUPS: ${e.presentation.categories.join(" | ")}`);
   for (const q of e.questions || []) {
     lines.push("", `QUESTION: ${q.prompt}`);
+    if (["multiple_choice","true_false_not_given"].includes(mode)) lines.push(`OPTIONS: ${q.options.join(" | ")}`);
     if (q.example) lines.push("EXAMPLE: yes");
     if (mode === "sentence_building")
       lines.push(
@@ -273,6 +276,9 @@ export function parsePracticeText(text) {
       case "ANSWER":
         q.accepted_answers = list(value);
         break;
+      case "OPTIONS":
+        q.options = list(value);
+        break;
       case "WORDS":
         q.presentation.word_bank = list(value);
         break;
@@ -342,6 +348,7 @@ export function parsePracticeText(text) {
           fail("At least two distinct GROUPS are required.");
       }
       if (mode === "matching") q.options = pairs;
+      if (["multiple_choice","true_false_not_given"].includes(mode) && (q.options.length < 2 || q.accepted_answers.length !== 1 || !q.options.includes(q.accepted_answers[0]))) fail("Choose one answer from OPTIONS.");
       if (
         ["matching", "categorization"].includes(mode) &&
         (q.accepted_answers.length !== 1 ||

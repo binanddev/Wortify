@@ -75,18 +75,29 @@
 :root[data-interface="rpg"] body .dos-log p { @apply whitespace-pre-wrap; }
 /* A subtle pixel lattice breaks up the image without blurring text or hit targets.
    Only the mask flickers; content, focus and scroll positions remain stable. */
-:root[data-interface="rpg"] body::after {
- @apply block! content-[''] fixed! inset-0! w-full! h-full! pointer-events-none! z-[2147483001] rounded-none! [transform:none]! [filter:none]! [background:repeating-linear-gradient(0deg,#000_0_1px,transparent_1px_3px),repeating-linear-gradient(90deg,#001a00_0_1px,transparent_1px_3px)] opacity-[0.12] [animation:dos-crt-flicker_19s_steps(1,end)_infinite];
+:root[data-interface="rpg"] .dos-crt-overlay {
+ @apply block! content-[''] fixed! inset-0! w-full! h-full! pointer-events-none! z-[2147483001] rounded-none! [transform:none]! [filter:none]! [background:repeating-linear-gradient(0deg,#000_0_1px,transparent_1px_3px),repeating-linear-gradient(90deg,#001a00_0_1px,transparent_1px_3px)] opacity-[0.28] [animation:dos-crt-flicker_19s_steps(1,end)_infinite];
 }
 @keyframes dos-crt-flicker {
- 0%, 91%, 92.2%, 100% { opacity: 0.12; }
- 91.3% { opacity: 0.22; }
- 91.65% { opacity: 0.15; }
- 92% { opacity: 0.19; }
+ 0%, 91%, 92.2%, 100% { opacity: 0.28; }
+ 91.3% { opacity: 0.38; }
+ 91.65% { opacity: 0.30; }
+ 92% { opacity: 0.34; }
 }
 @media(prefers-reduced-motion:reduce) {
- :root[data-interface="rpg"] body::after { @apply animate-none; }
+ :root[data-interface="rpg"] .dos-crt-overlay { @apply animate-none; }
 }
 @media print {
- :root[data-interface="rpg"] body::after { @apply hidden!; }
+ :root[data-interface="rpg"] .dos-crt-overlay { @apply hidden!; }
 }
+
+:root[data-interface="rpg"] .dos-crt-overlay { @apply [mask-image:none]! [clip-path:none]! max-w-none! max-h-none! m-0!; }
+:root[data-interface="rpg"] .dos-crt-overlay i { @apply absolute left-[12%] top-[28%] w-[35%] h-10 opacity-0 [background:repeating-linear-gradient(0deg,#91ff6d_0_1px,transparent_1px_4px)] [animation:dos-local-static_27s_steps(1,end)_infinite]; }
+@keyframes dos-local-static {
+ 0%, 81%, 82.2%, 100% { opacity: 0; }
+ 81.2% { opacity: 0.26; transform: translate(0,0); }
+ 81.5% { opacity: 0.12; transform: translate(60vw,25vh); }
+ 81.9% { opacity: 0.22; transform: translate(15vw,45vh); }
+}
+@media(prefers-reduced-motion:reduce) { :root[data-interface="rpg"] .dos-crt-overlay i { @apply animate-none hidden; } }
+:root[data-interface="rpg"][data-background-paused="true"] .dos-crt-overlay, :root[data-interface="rpg"][data-background-paused="true"] .dos-crt-overlay i { @apply animate-none; }

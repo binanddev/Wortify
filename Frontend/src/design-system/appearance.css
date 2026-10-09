@@ -18,10 +18,6 @@ body {
   @apply [border:1px_solid_rgba(255,255,255,0.92)];
   @apply rounded-[28px] [box-shadow:0_20px_55px_rgba(61,91,133,0.18),inset_0_1px_rgba(255,255,255,0.95)];
 }
-.sidebar::before {
-  @apply [content:""] absolute top-[18px];
-  @apply right-[18px] w-[62px] h-[62px] rounded-[50%] [background:rgba(120,212,255,0.28)] filter-[blur(19px)] pointer-events-none;
-}
 .brand {
   @apply p-[0_8px];
 }

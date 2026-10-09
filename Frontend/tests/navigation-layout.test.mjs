@@ -8,6 +8,7 @@ test("navigation scales both below and above its original size within bounds", (
   assert.equal(navWidth(50), 211);
   assert.equal(navWidth(100), 422);
   assert.equal(navWidth(150), 633);
+  assert.equal(navScale(100.25), 100.25);
   assert.equal(navScale(-1), 50);
   assert.equal(navScale(999), 150);
   assert.equal(navScale("invalid"), 100);
@@ -35,7 +36,7 @@ test("compiled mobile navigation opens, fits the viewport and reserves space for
     values(".nav-flip", "width", true).at(-1),
     /min\(var\(--nav-width.*100vw/,
   );
-  assert.equal(values(".nav-flip-inner", "scale").at(-1), "var(--nav-scale,1)");
+  assert.equal(values(".nav-flip-inner", "scale").at(-1), "1");
   assert.ok(
     Number(values("#modal-root", "z-index").at(-1)) >
       Number(values(".nav-flip", "z-index").at(-1)),

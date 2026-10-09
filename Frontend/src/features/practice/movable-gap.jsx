@@ -152,7 +152,7 @@ export function MovableGap({
                       token ? tap(token) : setActive(index);
                   }}
                 >
-                  {token && !held ? tokenView(token) : <span>{index + 1}</span>}
+                  {token && !held ? tokenView(token) : <span aria-hidden="true">{"\u00a0"}</span>}
                 </button>
               </span>
             );

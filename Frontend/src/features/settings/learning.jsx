@@ -134,7 +134,7 @@ function SettingsContent({
         {tab === "background" && (
           <Glass>
             <h2>Backgrounds</h2>
-            <BackgroundLibrary />
+            <BackgroundLibrary key={prefs.interface} interfaceName={prefs.interface} />
             <Status error={appearance?.warning} />
           </Glass>
         )}

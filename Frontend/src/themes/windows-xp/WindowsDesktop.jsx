@@ -1,3 +1,4 @@
+import SidebarResize from "./SidebarResize.jsx";
 import DesktopShortcut from "./DesktopShortcut.jsx";
 import {
   useEffect,
@@ -122,6 +123,7 @@ function DesktopWindow({
   const drag = useRef(null);
   const [toolsHost, setToolsHost] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarWidth, setSidebarWidth] = useState(248);
   useLayoutEffect(() => {
     if (!toolsHost) return;
     toolsHost.appendChild(target);
@@ -256,6 +258,7 @@ function DesktopWindow({
         <div className="xp-window-body">
           <aside
             className="xp-app-sidebar"
+            style={{ width: sidebarWidth }}
             hidden={!sidebarOpen}
             aria-label={`${win.title} navigation`}
           >
@@ -263,6 +266,7 @@ function DesktopWindow({
             {renderNavigation?.(win.route)}
             <div ref={setToolsHost} className="xp-sidebar-tools" />
           </aside>
+          {sidebarOpen && <SidebarResize width={sidebarWidth} onChange={setSidebarWidth} title={win.title} />}
           <div className="xp-window-viewport">
             <div className="xp-window-core">{children}</div>
           </div>

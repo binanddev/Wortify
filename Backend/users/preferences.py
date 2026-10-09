@@ -27,6 +27,9 @@ def validate_preferences(data):
         elif key=='interface':
             if value == 'space': value = 'studio'
             if value not in ('studio','glass','xp','retro','space','notebook','rpg'):raise ValueError('Invalid appearance.')
+        elif key=='backgroundByInterface':
+            if not isinstance(value,dict) or set(value)-{'studio','glass','xp','retro','notebook','rpg'}: raise ValueError('Invalid background settings.')
+            if any(v is not None and (type(v) is not int or v < 0) for v in value.values()): raise ValueError('Invalid background.')
         elif key=='textColor':
             import re
             if not isinstance(value,str) or (value != 'auto' and not re.fullmatch(r'#[0-9a-fA-F]{6}', value)):raise ValueError('Invalid text color.')

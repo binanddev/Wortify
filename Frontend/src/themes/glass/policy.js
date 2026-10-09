@@ -7,7 +7,7 @@ export function glassPolicy(p) {
     textWeight: 500,
     textContrast: 100,
     font: 36,
-    navScale: 100,
+    navScale: Math.min(150, Math.max(50, Number(p.navScale) || 100)),
     curvature: 24,
     glassLens: 0,
     transparency: Math.min(100, Math.max(10, Number(p.transparency ?? 25) || 10)),

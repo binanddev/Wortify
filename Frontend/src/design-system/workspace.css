@@ -33,7 +33,7 @@
   @apply [transform:rotate(180deg)];
 }
 .nav-flip-inner {
-  @apply [top:0] [scale:var(--nav-scale,1)] origin-top-left w-[calc(100%/var(--nav-scale,1))] h-[calc(100%/var(--nav-scale,1))];
+  @apply [top:0] [scale:1] origin-top-left w-full h-full;
 }
 .nav-flip .sidebar,
 .nav-flip .workspace-context {

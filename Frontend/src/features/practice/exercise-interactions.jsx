@@ -1,3 +1,4 @@
+import { ChoiceLab } from "./choice-lab.jsx";
 import { SentenceBuilder } from "./sentence-builder.jsx";
 export { SentenceBuilder } from "./sentence-builder.jsx";
 import { Icon } from "../../components/ui/ui.jsx";
@@ -14,7 +15,7 @@ export function AutoTextarea({ label, value = "", onChange, ...props }) {
   useEffect(() => {
     if (ref.current) {
       ref.current.style.height = "auto";
-      ref.current.style.height = `${Math.max(88, ref.current.scrollHeight)}px`;
+      ref.current.style.height = `${ref.current.scrollHeight}px`;
     }
   }, [value]);
   return (
@@ -22,7 +23,8 @@ export function AutoTextarea({ label, value = "", onChange, ...props }) {
       <span>{label}</span>
       <textarea
         ref={ref}
-        rows={2}
+        rows={1}
+        className="writing-answer"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         {...props}
@@ -154,7 +156,7 @@ function InlineMenu({ value, options, onChange, disabled, label, invalid }) {
           aria-label={label}
           aria-invalid={invalid}
         >
-          {value || "······"}
+          {value || "\u00a0"}
           <Icon name="chevron_down" />
         </button>
       </PopoverTrigger>
@@ -291,7 +293,7 @@ export function GapPassage({
                     setActiveBlank((current) => (current === n ? null : n))
                   }
                 >
-                  {answers[key] || <span>{n + 1}</span>}
+                  {answers[key] || <span aria-hidden="true">{"\u00a0"}</span>}
                 </button>
               ) : (
                 <input
@@ -584,6 +586,8 @@ export function TypeQuestion({
   const mode = modeOf(exercise),
     key = String(q.id),
     value = answers[key];
+  if (["dialogue_reply", "elimination", "evidence_judge"].includes(uiStyle))
+    return <ChoiceLab key={q.id} q={q} value={value} onChange={v => onAnswer(key,v)} disabled={disabled} style={uiStyle} />;
   if (mode === "error_correction")
     return (
       <CorrectSentence
