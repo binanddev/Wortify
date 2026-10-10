@@ -5,6 +5,18 @@
 
 ---
 
+### [v1.2.3] - 2026-10-10 | Discover Performance & Grammar Library
+
+- Reuse normalized Discover search snapshots and resolve typo alternatives once per search term, rather than per word in every lesson.
+- Refresh search snapshots when content revisions, visibility, hierarchy or author identity changes; retain bounded pagination and private-ancestor exclusion.
+- Include multiple-choice and true/false/not-given content in Discover.
+- Added 100 managed library accounts and 1,000 public grammar exercises (500 English, 500 German), distributed across 12 authors.
+- Each exercise contains 10 distinct questions, shuffled choices and explanations. Grammar references: British Council, Lingolia and Schubert-Verlag; source exercise questions are not copied.
+- This is structured transformation practice using 500 bilingual action phrases across 10 grammar objectives per language, not 10,000 independently written scenarios or a teacher-certified curriculum.
+- Saved pre-import database backup, account list, content export and import report outside runtime application logic.
+
+---
+
 ### [v1.2.2] - 2026-10-10 | Authoring Guide & Launch Library
 
 - Updated Create > Guide for current interaction styles, word-bank scope, lesson markup and feedback authoring.

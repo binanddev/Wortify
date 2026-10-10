@@ -201,7 +201,7 @@ def organize(request):
     return JsonResponse({'ok':True,'parent':parent})
 
 
-PUBLIC_MODES = {'cloze_drag_drop', 'error_correction', 'matching', 'sentence_building', 'categorization', 'inline_selection', 'short_answer'}
+PUBLIC_MODES = {'cloze_drag_drop', 'error_correction', 'matching', 'sentence_building', 'categorization', 'inline_selection', 'short_answer', 'multiple_choice', 'true_false_not_given'}
 
 
 def search_text(value):

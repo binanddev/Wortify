@@ -8,8 +8,9 @@ from users.preferences import validate_preferences
 
 class InterfacePreferenceValidationTests(SimpleTestCase):
     def test_interface_modes_are_whitelisted(self):
-        for mode in ('studio','glass','xp','retro','space'):
+        for mode in ('studio','glass','xp','retro','notebook','rpg'):
             self.assertEqual(validate_preferences({'interface':mode}), {'interface':mode})
+        self.assertEqual(validate_preferences({'interface':'space'}), {'interface':'studio'})
         with self.assertRaises(ValueError):
             validate_preferences({'interface':'unknown'})
 
@@ -47,7 +48,7 @@ class ExtendedThemePreferencesTests(TestCase):
     def test_new_modes_and_recordings_survive_account_sync(self):
         user=get_user_model().objects.create_user('new-themes-user')
         self.client.force_login(user)
-        for mode in ('xp','retro','space'):
+        for mode in ('xp','retro','notebook','rpg'):
             payload={'interface':mode,'ambientTrack':'hearth','appearanceProfiles':{f'default:{mode}:mist':{'textSize':20}}}
             response=self.client.post('/api/en/learning/sync/',json.dumps({'events':[{'token':str(uuid.uuid4()),'kind':'preferences','at':timezone.now().isoformat(),'payload':payload}]}),content_type='application/json')
             self.assertEqual(response.json()['errors'],[])

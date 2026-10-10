@@ -13,3 +13,6 @@ staticfiles/
 *.log
 backup/
 deploy/secrets/
+
+# Local account provisioning credentials
+content-library/**/accounts.csv

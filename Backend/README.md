@@ -55,3 +55,23 @@ Sau khi cập nhật API, xuất lại tài liệu bằng `python tools/export_a
 `api/backgrounds.py`: tối đa 10 ảnh riêng tư mỗi tài khoản, kiểm tra nội dung JPG/PNG/WebP 30 MB, khóa owner khi upload để kiểm soát quota. Chọn nền áp dụng cả EN/DE và mọi interface. Giữ model `Theme` và các khóa lựa chọn cũ để bảo toàn dữ liệu ảnh, nhưng thư viện mới chỉ ghi ảnh/tên, không ghi preset. Manifest không trả thông số theme cũ. POST tạo/sửa/chọn preset cũ trả 410; API đọc ảnh cũ còn hoạt động. Không cần migration database trong thay đổi này. Ảnh cũ không bị xóa tự động; ảnh cá nhân cũ tính vào quota. Các file `private_media` vẫn cần backup.
 
 Nền mặc định theo giao diện dùng `Profile.use_default_background` (migration users/0007). Migration giữ lựa chọn của hồ sơ có ảnh cũ; hồ sơ mới mặc định dùng nền code. `/api/me/backgrounds/select/` nhận `id: null` để đặt lại mà không xóa tệp. Chạy `python manage.py migrate` khi cập nhật bản này.
+
+## Discover search (v1.2.3)
+
+The explore/?browse=1 endpoint returns at most 12 summaries. Each worker keeps
+one normalized public-content snapshot per language. A lightweight metadata
+query on each request detects hierarchy, visibility, title, author and revision
+changes; full JSON is only loaded when rebuilding that snapshot. Fuzzy matches
+are calculated once per query term against the shared vocabulary. Private
+ancestors exclude their entire subtree.
+
+Normal node saves update updated_at. Bulk payload updates made outside the API
+must also update updated_at so all workers refresh their search snapshots.
+The cache is process-local and rebuilds after a restart; it is not a persistent
+full-text search service. Metadata checks still scale with the node count.
+
+The v1.2.3 content was imported directly into the database in one transaction,
+without adding a permanent generator or seeding command. The local
+content-library/v1.2.3/ directory contains exports and an import report, not
+runtime assets. Preserve a database backup when moving or removing those files.
+Account CSV files contain initial credentials and should stay outside Git.

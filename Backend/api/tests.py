@@ -802,6 +802,36 @@ class ExploreDiscoveryTests(TestCase):
         self.assertEqual(response.json()['node']['tags'], [])
         self.assertEqual(self.client.patch(path, json.dumps({'tags':['travel']}), content_type='application/json').status_code, 400)
 
+    def test_snapshot_refreshes_after_edits_and_private_ancestor_changes(self):
+        root = self.roots[0]
+        item = PracticeNode.objects.create(owner=self.user, language='en', parent=root,
+            kind='theory', visibility='public', title='Unique astronomy', payload={'content':'telescope'})
+        self.assertEqual(self.browse(q='telescope').json()['total'], 1)
+        item.payload = {'content':'volcano'}
+        item.save()
+        self.assertEqual(self.browse(q='volcano').json()['total'], 1)
+        self.assertEqual(self.browse(q='telescope').json()['total'], 0)
+        PracticeNode.objects.filter(pk=root.pk).update(visibility='private')
+        self.assertEqual(self.browse(q='volcano').json()['total'], 0)
+        self.assertEqual(self.browse(folder=root.pk).status_code, 404)
+        PracticeNode.objects.filter(pk=root.pk).update(visibility='public')
+        self.assertEqual(self.browse(q='volcano').json()['total'], 1)
+        self.user.first_name = 'Updated author'
+        self.user.save()
+        self.assertEqual(self.browse(q='volcano').json()['results'][0]['author'], 'Updated author')
+        item.delete()
+        self.assertEqual(self.browse(q='volcano').json()['total'], 0)
+
+    def test_warm_snapshot_does_not_reload_json_content(self):
+        from django.db import connection
+        from django.test.utils import CaptureQueriesContext
+        self.browse()
+        with CaptureQueriesContext(connection) as queries:
+            self.browse(q='grammar')
+        node_queries = [q['sql'] for q in queries if 'practice_practicenode' in q['sql']]
+        self.assertEqual(len(node_queries), 1)
+        self.assertNotIn('"payload"', node_queries[0])
+
 class PracticeCopyTests(TestCase):
     def test_copy_is_owned_private_and_independent_with_media_and_links(self):
         from practice.models import PracticeMedia

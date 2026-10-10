@@ -1,9 +1,16 @@
 """Bounded public folder discovery, with lightweight local relevance ranking."""
 import hashlib
-from difflib import SequenceMatcher
+from difflib import get_close_matches
+from collections import Counter
+from threading import RLock
+
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from practice.models import PracticeNode
+
+# One latest snapshot per supported language, local to each worker process.
+_snapshots = {}
+_lock = RLock()
 
 
 def browse(request):
@@ -17,18 +24,33 @@ def browse(request):
     parent = int(request.GET.get('folder') or 0)
     seed = request.GET.get('seed', 'daily')[:80]
     interests = request.GET.get('interests', '')[:600]
-    rows = list(PracticeNode.objects.filter(language=request.language, visibility='public').select_related('owner'))
-    by_id = {n.pk:n for n in rows}
-    def path(node):
-        result, seen = [], set()
-        while node:
-            if node.pk in seen: return []
-            seen.add(node.pk); result.insert(0, node)
-            if not node.parent_id: return result
-            node = by_id.get(node.parent_id)
-        return []  # Do not expose descendants of private parents.
-    paths = {n.pk:path(n) for n in rows}
-    rows = [n for n in rows if paths[n.pk]]
+    # Check cheap metadata on every request, including private ancestors. Never
+    # reuse visibility/path state solely on a TTL or a public-row count.
+    metadata = tuple(PracticeNode.objects.filter(language=request.language).order_by('pk').values_list('pk','parent_id','visibility','updated_at','owner_id','title','position','owner__username','owner__first_name','owner__last_name'))
+    with _lock:
+        cached = _snapshots.get(request.language)
+        if cached is None or cached[0] != metadata:
+            all_rows = list(PracticeNode.objects.filter(language=request.language,visibility='public').select_related('owner'))
+            by_id = {n.pk:n for n in all_rows}
+            paths = {}
+            def path(node):
+                result, seen = [], set()
+                while node:
+                    if node.pk in seen: return []
+                    seen.add(node.pk); result.insert(0,node)
+                    if not node.parent_id: return result
+                    node = by_id.get(node.parent_id)
+                return []
+            paths = {n.pk:path(n) for n in all_rows}
+            rows = [n for n in all_rows if paths[n.pk]]
+            texts = {}
+            for n in rows:
+                root = paths[n.pk][0]
+                texts[n.pk] = search_text(' '.join([n.title,root.title,' '.join(root.payload.get('tags',[])),str(n.payload.get('instruction','')),str(n.payload.get('context','')),str(n.payload.get('content',''))[:2000],' '.join(str(q.get('prompt','')) for q in n.payload.get('questions',[]))[:3000],n.owner.get_username()]))
+            vocabulary = set(word.strip('.,:;!?()') for text in texts.values() for word in text.split())
+            cached = (metadata,rows,paths,texts,vocabulary,Counter(n.parent_id for n in rows))
+            _snapshots[request.language] = cached
+    _,rows,paths,texts,vocabulary,child_counts = cached
     if parent:
         current = get_object_or_404(PracticeNode, pk=parent, language=request.language, visibility='public', kind='folder')
         if not paths.get(current.pk):
@@ -45,9 +67,10 @@ def browse(request):
             if any(alias in text for alias in group): expanded += ' ' + ' '.join(group)
         return set(expanded.split()) - {'thi','the','a','an','va','and','und','der','die','das'}
     wanted, hints = terms(query), terms(interests)
-    def score(tokens, text):
-        words = text.split()
-        return sum(1 if token in text else 0.5 if len(token) >= 4 and any(SequenceMatcher(None, token, w).ratio() >= .8 for w in words) else 0 for token in tokens)
+    # Resolve fuzzy alternatives once per query token, never once per document word.
+    fuzzy = {token:get_close_matches(token,vocabulary,n=3,cutoff=.8) if len(token)>=4 and token not in vocabulary else [] for token in wanted|hints}
+    def score(tokens,text):
+        return sum(1 if token in text else .5 if any(word in text for word in fuzzy[token]) else 0 for token in tokens)
     candidates = {n.pk:n for n in rows if n.parent_id == (parent or None) and (parent or n.kind == 'folder')}
     ranks = {pk:0 for pk in candidates}
     matched = set()
@@ -58,9 +81,7 @@ def browse(request):
         interaction = n.payload.get('presentation', {}).get('interaction', 'short_answer') if n.kind == 'exercise' else ''
         if mode and interaction != mode: continue
         if n.kind == 'exercise' and interaction not in PUBLIC_MODES: continue
-        root = chain[0]
-        tags = root.payload.get('tags', [])
-        text = search_text(' '.join([n.title, root.title, ' '.join(tags), str(n.payload.get('instruction', '')), str(n.payload.get('context', '')), str(n.payload.get('content', ''))[:2000], ' '.join(str(q.get('prompt','')) for q in n.payload.get('questions',[]))[:3000], n.owner.get_username()]))
+        text = texts[n.pk]
         relevance = score(wanted, text) if wanted else 0
         if wanted and relevance == 0: continue
         matched.add(target.pk)
@@ -72,7 +93,7 @@ def browse(request):
                 'visibility':'public','position':n.position,'can_edit':n.owner_id==request.user.pk,
                 'author':n.owner.get_full_name().strip() or n.owner.get_username(),
                 'updated_at':n.updated_at.isoformat(), 'question_count':len(n.payload.get('questions',[])),
-                'child_count':sum(c.parent_id==n.pk for c in rows)}
+                'child_count':child_counts[n.pk]}
     selected = [n for pk,n in candidates.items() if pk in matched]
     selected.sort(key=lambda n: (n.updated_at.isoformat(),n.pk) if sort=='newest' else (ranks[n.pk], hashlib.sha256(f'{seed}:{n.pk}'.encode()).hexdigest()), reverse=True)
     total = len(selected)
