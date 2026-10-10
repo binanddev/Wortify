@@ -189,3 +189,13 @@ The bundled copy is retained when Frontend is deployed as a standalone repo.
 Offline regression: npm test; node scripts/verify-lesson-markup.mjs after building.
 Import public/samples/formatted-practice.txt in Create; paste formatted-theory.txt
 into a Markdown theory document.
+
+### v1.2.1 exercise preferences and comments
+Settings > Learning exposes exerciseTextSize (16–36px, default 22) and
+exerciseTextWeight (400–700, default 500). They use the existing per-user
+preference sync, separate from theme appearance profiles. Only exercise content
+uses these CSS variables; navigation and action buttons keep their own sizing.
+Authors may set COMMENT before the first QUESTION for a shared exercise note,
+and EXPLANATION after any QUESTION, including each matching pair. Both round-trip
+through text import/export and support lesson markup. Explanations stay hidden
+until a correct answer or reveal; matching reveals each solved pair separately.

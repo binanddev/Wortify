@@ -31,6 +31,8 @@ export function applyAppearance(p = {}) {
       0.85 - Math.min(100, Math.max(10, Number(p.transparency) || 10)) * 0.0045,
     ),
   );
+  root.style.setProperty("--exercise-text-size", String(clamp(p.exerciseTextSize,16,36,22))+"px");
+  root.style.setProperty("--exercise-text-weight", String(clamp(p.exerciseTextWeight,400,700,500)));
   const night = style === "glass" && p.background === "night";
   root.dataset.background = p.background || "mist";
   root.style.setProperty(

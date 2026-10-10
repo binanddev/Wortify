@@ -33,7 +33,8 @@ WORDS: tokens separated by |. For cloze_drag_drop these form the word bank; each
 Repeat a token in WORDS when multiple blanks need it. If omitted, the bank uses the first answer of each blank.
 For sentence_building, WORDS must list every token in the correct answer order; duplicate words are allowed.
 PREFIX: beginning of the answer for short_answer. Every accepted answer must include that prefix.
-EXPLANATION: optional feedback after checking. EXAMPLE: yes/no after QUESTION marks a practice example.
+COMMENT: exercise-wide note before the first QUESTION, shown after a correct answer or reveal.
+EXPLANATION: optional explanation for any question or matching pair after answering correctly or revealing. EXAMPLE: yes/no after QUESTION marks a practice example.
 Blank lines and # comment lines are ignored. Use > at the start of a continuation line after QUESTION,
 INSTRUCTIONS, CONTEXT or EXPLANATION. Other fields must stay on one line.
 Do not put | or => inside an individual item. Repeat EXERCISE to import multiple exercises.
@@ -141,6 +142,7 @@ export function exerciseToText(e) {
   if (e.context) lines.push(`CONTEXT: ${e.context}`);
   if (e.presentation.categories?.length)
     lines.push(`GROUPS: ${e.presentation.categories.join(" | ")}`);
+  if (e.presentation?.comment) lines.push("COMMENT: "+e.presentation.comment);
   for (const q of e.questions || []) {
     lines.push("", `QUESTION: ${q.prompt}`);
     if (["multiple_choice","true_false_not_given"].includes(mode)) lines.push(`OPTIONS: ${q.options.join(" | ")}`);
@@ -235,6 +237,7 @@ export function parsePracticeText(text) {
       "CONTEXT",
       "GROUPS",
       "BANK_SCOPE",
+      "COMMENT",
       "CASE_SENSITIVE",
       "KEEP_PUNCTUATION",
     ].includes(key);
@@ -261,6 +264,10 @@ export function parsePracticeText(text) {
       case "CONTEXT":
         e.context = value;
         continuation = [e, "context"];
+        break;
+      case "COMMENT":
+        e.presentation.comment = value;
+        continuation = [e.presentation, "comment"];
         break;
       case "BANK_SCOPE":
         if (!["question", "exercise"].includes(value)) fail("BANK_SCOPE must be question or exercise.");

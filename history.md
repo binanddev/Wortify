@@ -5,6 +5,16 @@
 
 ---
 
+### [v1.2.1] - 2026-10-10 | Exercise Typography & Explanations
+
+- Added Settings > Learning controls for exercise text size (16–36px) and weight (400–700), with preview and reset.
+- Exercise typography is saved per user and applies across themes without resizing navigation.
+- Added exercise-wide COMMENT and per-question EXPLANATION authoring for all exercise types.
+- Matching displays each pair's explanation as soon as it is matched correctly.
+- Correct answers and answer reveals display applicable notes once, including all notes for whole-exercise activities.
+
+---
+
 ### [v1.2.0] - 2026-10-10 | Lesson Formatting & Admin Change Log
 
 #### A. Content Authoring

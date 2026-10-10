@@ -17,3 +17,10 @@
 .lesson-document { @apply text-left leading-relaxed p-4 break-words; }
 .lesson-format-help { @apply my-3 text-sm text-(--ink); }
 .lesson-format-help pre { @apply whitespace-pre-wrap break-words p-3 border border-(--line) rounded-md my-2; }
+
+.exercise-type-preview,
+:root .exercise-workspace :is(.work-prompt,.fluid-passage,.pair-card > span,.choice-lab-answer,.answer-cards > button > span:not(.option-letter):not(.option-tick),.clickable-passage,.clickable-passage > button,.writing-answer,.gap-bank-token,.word-chip,.category-token,.exercise-comment) {
+ @apply [font-size:var(--exercise-text-size,22px)]! [font-weight:var(--exercise-text-weight,500)]! leading-relaxed;
+}
+.exercise-comment { @apply text-left mt-3; }
+.exercise-comment > strong { @apply block text-sm mb-1; }

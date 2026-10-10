@@ -1,5 +1,5 @@
 def validate_preferences(data):
-    numeric={'navScale':(50,150),'font':(24,60),'volume':(0,1),'transparency':(0,100),'textSize':(16,22),'textWeight':(400,700),'textContrast':(0,100),'curvature':(0,32),'glassLens':(0,100)}
+    numeric={'exerciseTextSize':(16,36),'exerciseTextWeight':(400,700),'navScale':(50,150),'font':(24,60),'volume':(0,1),'transparency':(0,100),'textSize':(16,22),'textWeight':(400,700),'textContrast':(0,100),'curvature':(0,32),'glassLens':(0,100)}
     result={}
     for key,value in data.items():
         if key in numeric:

@@ -360,6 +360,18 @@ function SettingsContent({
         {tab === "study" && (
           <Glass>
             <h2>Study preferences</h2>
+            <fieldset className="grid gap-3 my-4">
+              <legend>Exercise typography</legend>
+              <label>Text size · {prefs.exerciseTextSize || 22}px
+                <input aria-label="Exercise text size" type="range" min="16" max="36" step="1" value={prefs.exerciseTextSize || 22} onChange={e=>setPrefs({...prefs,exerciseTextSize:Number(e.target.value)})}/>
+              </label>
+              <label>Text weight · {prefs.exerciseTextWeight || 500}
+                <input aria-label="Exercise text weight" type="range" min="400" max="700" step="100" value={prefs.exerciseTextWeight || 500} onChange={e=>setPrefs({...prefs,exerciseTextWeight:Number(e.target.value)})}/>
+              </label>
+              <p className="exercise-type-preview">Choose the answer that completes the sentence.</p>
+              <Btn onClick={()=>setPrefs({...prefs,exerciseTextSize:22,exerciseTextWeight:500})}>Reset exercise typography</Btn>
+              <p className="text-sm">Applies to exercise content across themes. Navigation and buttons keep their own size.</p>
+            </fieldset>
             <div>
               {Object.entries({
                 autoplay: "Read words aloud automatically",

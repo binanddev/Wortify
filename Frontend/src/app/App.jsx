@@ -373,6 +373,8 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         ambient: p?.ambient === true,
         volume: Math.min(1, Math.max(0, Number(p?.volume ?? 0.25))),
         transparency: Math.min(100, Math.max(0, Number(p?.transparency ?? 25))),
+        exerciseTextSize: Math.min(36, Math.max(16, Number(p.exerciseTextSize) || 22)),
+        exerciseTextWeight: Math.min(700, Math.max(400, Number(p.exerciseTextWeight) || 500)),
         textWeight: Math.min(700, Math.max(400, Number(p.textWeight) || 500)),
         textContrast: Math.min(100, Math.max(0, Number(p.textContrast ?? 80))),
         textColor: /^#[0-9a-f]{6}$/i.test(p.textColor) ? p.textColor : "auto",

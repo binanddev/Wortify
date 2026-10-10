@@ -1,3 +1,4 @@
+import {visibleExerciseComments} from "./exercise-comments.js";
 import { sharedGapQuestions } from "./gap-bank.js";
 import { PracticeRichText } from "./practice-rich-text.jsx";
 import { SkipButton, AnswerReveal } from "../learning/skip-controls.jsx";
@@ -321,7 +322,6 @@ export function PracticeActivity({
             {(revealed || (style === "partial_input" && feedback)) && (
               <AnswerReveal
                 answers={batch.flatMap((q) => exerciseSolution(e, q))}
-                explanation={question.presentation?.explanation}
               />
             )}
             <div className="exercise-check-actions">
@@ -372,16 +372,7 @@ export function PracticeActivity({
                     ? "Correct!"
                     : "Not quite. Try again."
                   : ""}
-              {!revealed &&
-                style !== "partial_input" &&
-                feedback?.correct &&
-                question.presentation?.explanation && (
-                  <p>
-                    <PracticeRichText>
-                      {question.presentation.explanation}
-                    </PracticeRichText>
-                  </p>
-                )}
+              {visibleExerciseComments({exercise:e,questions:batch,mode,answers,correct:Boolean(feedback?.correct),revealed:revealed || (style==="partial_input" && Boolean(feedback))}).map(note=><section className="exercise-comment" key={note.id}><strong>{note.label}</strong><div><PracticeRichText>{note.text}</PracticeRichText></div></section>)}
             </div>
           </section>
         </>

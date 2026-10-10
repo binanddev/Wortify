@@ -62,6 +62,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
   return (
     <section className="author-panel">
       <FormattingHelp/>
+      <AutoTextarea label="Exercise comment · shown after a correct answer or reveal" value={e.presentation?.comment || ""} onChange={comment=>onChange({presentation:{...e.presentation,comment}})}/>
       <AField
         label="Exercise title"
         value={e.title}
@@ -215,6 +216,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
               categories={e.presentation.categories || []}
               onUpload={onUpload}
             />
+            <AutoTextarea label="Explanation / comment · shown after this answer" value={q.presentation?.explanation || ""} onChange={explanation=>update(i,{presentation:{...q.presentation,explanation}})}/>
           </section>
         ))}
       </div>
@@ -390,13 +392,7 @@ function QuestionForm({
           <Btn onClick={() => onChange({ options: [...q.options, ""] })}>
             <Icon name="plus" /> Option
           </Btn>
-          <AutoTextarea
-            label="Explanation after checking"
-            value={q.presentation?.explanation || ""}
-            onChange={(explanation) =>
-              onChange({ presentation: { ...q.presentation, explanation } })
-            }
-          />
+
         </div>
       ) : mode === "true_false_not_given" ? (
         <Select
