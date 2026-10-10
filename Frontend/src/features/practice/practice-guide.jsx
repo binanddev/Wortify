@@ -1,3 +1,4 @@
+import {FormattingHelp} from "./formatting-help.jsx";
 import { useState } from "react";
 import { PracticeModal } from "./practice-workspace.jsx";
 import { Page, Heading, Link, SidebarTools, Select, Btn, Icon } from "../../components/ui/ui.jsx";
@@ -50,7 +51,7 @@ export function PracticeGuide({ lang }) {
     </pre>
   );
   return (
-    <Page>
+    <Page><FormattingHelp/>
       <SidebarTools navOnly>
         <div className="flex flex-wrap gap-2">
           <Link

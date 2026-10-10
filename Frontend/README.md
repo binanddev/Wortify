@@ -166,3 +166,26 @@ changing row height. Identity and Actions columns remain fixed during horizontal
 scrolling. Destructive actions retain the existing confirmation and API checks.
 Offline checks after `npm run build`: `node scripts/verify-admin-grid.mjs` and
 `node scripts/verify-admin-menu.mjs`; neither starts a web server.
+
+### Lesson markup and Admin change log
+Practice display text and Markdown theory share the safe parser in
+src/features/practice/content-markup.js. It supports LaTeX-style line breaks,
+emphasis, alignment, quote/list/tabular environments and includegraphics with
+bounded dimensions and alignment. This is a display subset, not a full TeX/math
+compiler. Raw HTML is escaped; legacy HTML theory remains sandboxed in an iframe.
+Blank callbacks keep answer controls inside the formatting tree; grading data,
+choices, word banks and error-correction tokens remain plain text.
+
+Create includes the Formatting guide, sample downloads and theory preview.
+Theory image uploads use the existing authenticated media endpoint and attachment
+ownership/visibility checks. Keep uploaded images attached when embedding their
+URL. Public-collection copying rewrites embedded media URLs to the new owner.
+External image URLs are not bundled in text downloads or user backups.
+
+Admin > Change log reads src/features/admin/history.md. The sync:history script
+copies ../history.md when present, before dev/build (including Netlify builds).
+The bundled copy is retained when Frontend is deployed as a standalone repo.
+
+Offline regression: npm test; node scripts/verify-lesson-markup.mjs after building.
+Import public/samples/formatted-practice.txt in Create; paste formatted-theory.txt
+into a Markdown theory document.

@@ -1,0 +1,19 @@
+.lesson-block,.lesson-image,.lesson-list,.lesson-list > span { @apply block; }
+.lesson-center,.lesson-align-center { @apply text-center; }
+.lesson-flushleft,.lesson-align-left { @apply text-left; }
+.lesson-flushright,.lesson-align-right { @apply text-right; }
+.lesson-quote { @apply border-l-2 border-(--line) pl-4 my-3; }
+.lesson-image { @apply my-3; }
+.lesson-image img { @apply inline-block max-w-full h-auto align-middle; }
+.lesson-table-scroll { @apply block max-w-full overflow-x-auto my-4; }
+.lesson-table { @apply table border-collapse w-full text-left; }
+.lesson-table > [role="row"] { @apply table-row; }
+.lesson-table [role="cell"] { @apply table-cell border border-(--line) p-3 align-top; }
+.lesson-table .lesson-cell-c { @apply text-center; }
+.lesson-table .lesson-cell-r { @apply text-right; }
+.lesson-list { @apply my-3 pl-4; }
+.lesson-section { @apply block text-[1.45em] font-bold mt-5 mb-2; }
+.lesson-subsection { @apply block text-[1.2em] font-semibold mt-4 mb-2; }
+.lesson-document { @apply text-left leading-relaxed p-4 break-words; }
+.lesson-format-help { @apply my-3 text-sm text-(--ink); }
+.lesson-format-help pre { @apply whitespace-pre-wrap break-words p-3 border border-(--line) rounded-md my-2; }

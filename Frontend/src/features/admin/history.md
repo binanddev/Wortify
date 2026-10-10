@@ -41,7 +41,6 @@
 - **D2.** Completed CSS verification, production build, and interactive browser testing offline (without launching a web server).
 
 ---
+
 ### [v1.0.0] - Baseline Release
 - **BASE.** Stable core baseline incorporating all prior feature developments before formal changelog tracking (`history.md`).
-
----

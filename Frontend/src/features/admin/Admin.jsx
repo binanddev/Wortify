@@ -1,3 +1,4 @@
+import History from "./History.jsx";
 import DataGrid from "./DataGrid.jsx";
 import {sortQuery} from "./grid-state.js";
 import {readPreference,savePreference} from "../../lib/core.js";
@@ -95,6 +96,7 @@ export default function Admin({ user }) {
     ["users", "Users"],
     ["content", "Content"],
     ["activity", "Activity log"],
+    ["history", "Change log"],
     ...(user.superuser
       ? [
           ["backups", "Emergency backups"],
@@ -114,6 +116,7 @@ export default function Admin({ user }) {
       <div className="admin-content">
         <header className="admin-topbar"><div><small>WORKSPACE / ADMINISTRATION</small><h1>{tabs.find(([key])=>key===tab)?.[1]}</h1></div><div className="admin-display-controls"><label>Density <select value={density} onChange={e=>setDensity(e.target.value)}><option value="comfortable">Comfortable</option><option value="cozy">Cozy</option><option value="compact">Compact</option></select></label><button onClick={()=>setMode(mode==='dark'?'light':'dark')} aria-pressed={mode==='dark'}>{mode==='dark'?'Light mode':'Dark mode'}</button><Link to="/">Home ↗</Link></div></header>
         <main className="admin-main" id="main-content">
+      {tab === "history" && <History/>}
       {tab === "dashboard" && <Dashboard user={user} open={setTab} />}
       {tab === "users" && <Users user={user} />}
       {tab === "content" && <Content user={user} />}

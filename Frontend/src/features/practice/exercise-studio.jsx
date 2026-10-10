@@ -1,4 +1,5 @@
-import { ExerciseMediaDialog } from "./exercise-media.jsx";
+import {FormattingHelp} from "./formatting-help.jsx";
+import { MediaEditor, ExerciseMediaDialog } from "./exercise-media.jsx";
 import { PracticeModal } from "./practice-workspace.jsx";
 import { useEffect, useState } from "react";
 import {
@@ -65,6 +66,7 @@ export function ExerciseStudio({
   const [settingId, setSettingId] = useState(null);
   const [removing, setRemoving] = useState(false);
   const [theory, setTheory] = useState(null);
+  const [theoryMediaBusy,setTheoryMediaBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const setting = nodes.find((node) => node.id === settingId);
   useEffect(() => {
@@ -323,13 +325,14 @@ export function ExerciseStudio({
                   setTheory((value) => ({ ...value, format }))
                 }
               >
-                <option value="markdown">Markdown</option>
+                <option value="markdown">Markdown + lesson markup</option>
                 <option value="html">HTML</option>
               </Select>
               <Btn
                 icon="save"
                 primary
                 isLoading={action.pending}
+                isDisabled={theoryMediaBusy}
                 onClick={() =>
                   action.run(async (signal) => {
                     await request(
@@ -346,6 +349,8 @@ export function ExerciseStudio({
                 Save content
               </Btn>
             </div>
+            <FormattingHelp/>
+            <details className="lesson-format-help"><summary>Upload images / media</summary><MediaEditor lang={lang} items={theory.attachments || []} onChange={attachments=>setTheory(value=>({...value,attachments}))} onBusy={setTheoryMediaBusy} disabled={action.pending}/><p>Copy an image command into Theory content. Keep its attachment listed so readers can access it.</p></details>
             <Field
               label="Theory content"
               multiline
@@ -355,6 +360,7 @@ export function ExerciseStudio({
                 setTheory((value) => ({ ...value, content }))
               }
             />
+            <details className="lesson-format-help"><summary>Preview theory</summary><TheoryActivity payload={theory}/></details>
           </>
         ) : current && current.kind !== "folder" ? (
           <>

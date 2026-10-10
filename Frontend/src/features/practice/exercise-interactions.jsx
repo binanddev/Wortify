@@ -203,7 +203,6 @@ export function GapPassage({
     setActiveBlank(null);
     setChips(shuffled(pool.map((text, i) => ({ id: String(i), text }))));
   }, [q.id]);
-  const text = q.prompt.split(/(\{\{\d+\}\})/g);
   const fill = (key, text) => {
     if (disabled || !text) return;
     onAnswer(key, text);
@@ -228,16 +227,9 @@ export function GapPassage({
   return (
     <div className="gap-work">
       <div className="fluid-passage">
-        {text.map((t, i) => {
-          const m = t.match(/^\{\{(\d+)\}\}$/);
-          if (!m)
-            return (
-              <span key={i}>
-                <PracticeRichText>{t}</PracticeRichText>
-              </span>
-            );
-          const n = Number(m[1]) - 1,
-            key = `${q.id}_${n}`,
+        <PracticeRichText renderBlank={(n) => {
+          const i = n;
+          const key = `${q.id}_${n}`,
             row = rows.find((r) => r.key === key);
           return (
             <span
@@ -307,7 +299,7 @@ export function GapPassage({
               )}
             </span>
           );
-        })}
+        }}>{q.prompt}</PracticeRichText>
       </div>
       {mode !== "inline_selection" && chips.length > 0 && (
         <div className="word-bank" aria-label="Word bank">

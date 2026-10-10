@@ -122,15 +122,8 @@ export function MovableGap({
         onLostPointerCapture={cancel}
       >
         <div className="fluid-passage">
-          {q.prompt.split(/(\{\{\d+\}\})/g).map((part, i) => {
-            const match = part.match(/^\{\{(\d+)\}\}$/);
-            if (!match)
-              return (
-                <span key={i}>
-                  <PracticeRichText>{part}</PracticeRichText>
-                </span>
-              );
-            const index = Number(match[1]) - 1;
+          <PracticeRichText renderBlank={(index) => {
+            const i = index;
             const token = slots[index];
             const held =
               token && drag?.moved && !disabled && drag.token.id === token.id;
@@ -156,7 +149,7 @@ export function MovableGap({
                 </button>
               </span>
             );
-          })}
+          }}>{q.prompt}</PracticeRichText>
         </div>
         <div
           className="word-bank"

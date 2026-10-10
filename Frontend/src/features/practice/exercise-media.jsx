@@ -145,7 +145,7 @@ export function MediaEditor({
         disabled={busy || disabled}
         onChange={setScope}
       >
-        <option value="">Entire exercise</option>
+        <option value="">{questions.length ? "Entire exercise" : "Entire document"}</option>
         {questions.length > 1 && (
           <option value="sequence">One question per file · selection order</option>
         )}
@@ -188,13 +188,14 @@ export function MediaEditor({
               )
             }
           >
-            <option value="">Entire exercise</option>
+            <option value="">{questions.length ? "Entire exercise" : "Entire document"}</option>
             {questions.map((q, i) => (
               <option key={q.id || i + 1} value={String(q.id || i + 1)}>
                 Question {i + 1} · {q.prompt.slice(0, 50)}
               </option>
             ))}
           </Select>
+          {item.type?.startsWith("image/") && <input aria-label={"Image markup for "+item.name} readOnly value={"\\includegraphics[width=320px,align=center]{"+item.url+"}"} onFocus={e=>e.target.select()} />}
           <Btn icon="eye" onClick={() => setPreview(item)}>
             View file
           </Btn>

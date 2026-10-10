@@ -1,3 +1,4 @@
+import {FormattingHelp} from "./formatting-help.jsx";
 import { remapQuestionMedia } from "./exercise-media-utils.js";
 import { MediaEditor } from "./exercise-media.jsx";
 import { PracticeModal } from "./practice-workspace.jsx";
@@ -271,6 +272,7 @@ export function PracticeTextEditor({
         </PracticeModal>
       )}
       <h1>{exercise ? exercise.title : "Exercise content"}</h1>
+      <FormattingHelp/>
       {mediaNotice && <p role="status">{mediaNotice}</p>}
       <Field
         label="Text draft"

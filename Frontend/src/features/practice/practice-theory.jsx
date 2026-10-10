@@ -1,17 +1,7 @@
+import {PracticeRichText} from "./practice-rich-text.jsx";
 export function TheoryActivity({ payload }) {
-  const escaped = String(payload.content || "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-  const content =
-    payload.format === "html"
-      ? payload.content
-      : escaped
-          .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-          .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-          .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-          .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-          .replace(/\n/g, "<br/>");
+  if(payload.format !== "html") return <article className="lesson-document"><PracticeRichText>{payload.content || ""}</PracticeRichText></article>;
+  const content = String(payload.content || "");
   return (
     <iframe
       className="hub-theory"

@@ -1,3 +1,4 @@
+import "./sync-history.mjs";
 import { build, loadEnv } from "vite";
 import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";

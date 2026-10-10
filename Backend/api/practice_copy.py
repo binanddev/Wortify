@@ -37,6 +37,15 @@ def copy_collection(request, pk):
         if 'attachments' in payload:
             originals = {str(a.pk):a for a in node.attachments.all()}
             payload['attachments'] = [{**media_data(assets[originals[item['id']].pk]), **({'question':item['question']} if item.get('question') else {})} for item in payload['attachments'] if item.get('id') in originals]
+        # Embedded image URLs must follow the copied immutable media records too.
+        replacements = {media_data(asset)['url']:media_data(assets[asset.pk])['url'] for asset in node.attachments.all()}
+        def remap(value):
+            if isinstance(value, dict): return {k:remap(v) for k,v in value.items()}
+            if isinstance(value, list): return [remap(v) for v in value]
+            if isinstance(value, str):
+                for old,new in replacements.items(): value=value.replace(old,new)
+            return value
+        payload = remap(payload)
         copy = PracticeNode.objects.create(owner=request.user,language=request.language,parent=parent,kind=node.kind,title=node.title,payload=payload,visibility='private',position=node.position)
         copy.attachments.set(attached)
         mapping[node.pk] = copy

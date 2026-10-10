@@ -82,7 +82,7 @@ def save_node(request,data,node=None):
         if data.get('tags'):raise ValueError('Only root folders can have tags.')
         payload.pop('tags',None)
     from .practice_media import validated_attachments
-    attachments=validated_attachments(request,payload) if kind=='exercise' else []
+    attachments=validated_attachments(request,payload) if kind in ('exercise','theory') else []
     content_changed=not node or {k:v for k,v in payload.items() if k!='title'}!={k:v for k,v in previous_payload.items() if k!='title'}
     links=data.get('links',list(node.links.values_list('id',flat=True)) if node else [])
     if not isinstance(links,list) or len(links)>100:raise ValueError('Up to 100 links.')

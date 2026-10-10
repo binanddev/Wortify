@@ -1,0 +1,13 @@
+\section{Asking about objects}
+\begin{quote}Use \textbf{wo-} + preposition. Add \textit{r} before a vowel.\end{quote}
+\begin{tabular}{ll}
+\textbf{Question} & \textbf{Answer} \\
+Worauf wartest du? & Auf den Bus. \\
+Womit fährst du? & Mit dem Zug.
+\end{tabular}
+\subsection{Try it}
+\begin{enumerate}
+\item Read each question.
+\item Underline the preposition.
+\item Say your own answer.
+\end{enumerate}

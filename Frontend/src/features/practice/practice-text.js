@@ -47,13 +47,15 @@ Every exercise must belong to a folder. Loose exercises are not allowed. English
 The whole batch is saved only after validation. Errors include line numbers.
 
 TEXT FORMATTING
+LaTeX-style lesson markup is available: line breaks, emphasis, aligned blocks, lists, tables and images.
+Open the Formatting guide in Create for supported commands and copyable examples. This is not a full TeX compiler.
 Use **bold text**, *italic text*, and [color=blue]colored text[/color].
 Available colors: red, rose, pink, magenta, purple, violet, indigo, blue, sky, cyan,
 teal, emerald, green, lime, yellow, amber, orange, coral, slate, gray.
 Formatting is supported in INSTRUCTIONS, CONTEXT, EXPLANATION and display QUESTION text.
 Keep QUESTION plain for error_correction: its words are editable answer data.
 Keep ANSWER, BLANK, WORDS, PREFIX, GROUPS and titles plain (no formatting markers).
-Close formatting before each {{1}} blank; do not wrap a blank in formatting.
+Formatting may wrap blanks such as {{1}}; interactive blanks also work inside tables and alignment blocks.
 Example: QUESTION: Choose the **correct verb**: She {{1}} [color=teal]every day[/color].
 Example: EXPLANATION: Use *-s* with [color=blue]he, she, it[/color].
 You can combine color with bold or italic; do not nest colors. HTML is not supported.

@@ -23,7 +23,7 @@ export function AnswerReveal({ answers, explanation }) {
       <strong>Answer</strong>
       {answers.map((answer, i) => (
         <p key={i} className="whitespace-pre-wrap wrap-anywhere">
-          {answer}
+          <PracticeRichText>{answer}</PracticeRichText>
         </p>
       ))}
       {explanation &&

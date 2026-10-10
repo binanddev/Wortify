@@ -1,0 +1,15 @@
+EXERCISE: Dialogue on two lines
+TYPE: inline_selection
+STYLE: inline_select
+INSTRUCTIONS: Choose the correct question word.
+QUESTION: Q: {{1}} wartest du? \newline A: Auf den Bus nach Berlin.
+BLANK: Worauf => Worauf | Womit | Woran
+
+EXERCISE: Complete a verb table
+TYPE: cloze_drag_drop
+STYLE: tap_fill
+INSTRUCTIONS: Complete the table.
+QUESTION: \begin{tabular}{lc}\textbf{Pronoun} & \textbf{Verb} \\ ich & {{1}} \\ du & {{2}}\end{tabular}
+BLANK: bin
+BLANK: bist
+WORDS: bin | bist | sind

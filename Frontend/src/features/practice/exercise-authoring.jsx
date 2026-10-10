@@ -1,3 +1,4 @@
+import {FormattingHelp} from "./formatting-help.jsx";
 import { questionWordBank } from "./gap-bank.js";
 import { useRef, useState } from "react";
 import { Btn, Icon, Select } from "../../components/ui/ui.jsx";
@@ -60,6 +61,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
     });
   return (
     <section className="author-panel">
+      <FormattingHelp/>
       <AField
         label="Exercise title"
         value={e.title}
