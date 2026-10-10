@@ -1,3 +1,4 @@
+import { questionWordBank } from "./gap-bank.js";
 import { useRef, useState } from "react";
 import { Btn, Icon, Select } from "../../components/ui/ui.jsx";
 import { AutoTextarea } from "./exercise-interactions.jsx";
@@ -41,10 +42,7 @@ export function prepareExercise(exercise) {
   }));
   if (mode === "cloze_drag_drop")
     e.questions.forEach((q) => {
-      q.presentation.word_bank = [
-        ...q.blanks.map((b) => b.answers[0]).filter(Boolean),
-        ...(q.presentation.distractors || []).filter(Boolean),
-      ];
+      q.presentation.word_bank = questionWordBank(q);
     });
   if (mode === "matching") {
     const all = e.questions.map((q) => q.accepted_answers[0]).filter(Boolean);
@@ -86,14 +84,19 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
           </Select>
         </div>
       )}
+      {mode === "cloze_drag_drop" && <Select label="Word bank" value={e.presentation?.bank_scope || "exercise"} onChange={(bank_scope) => onChange({presentation:{...e.presentation,bank_scope}})}>
+        <option value="question">Separate choices for each question</option>
+        <option value="exercise">Shared choices for the whole exercise</option>
+      </Select>}
       {mode === "multiple_choice" && (
         <Select
           label="Correct answers"
           value={e.kind}
-          onChange={(kind) => onChange({ kind })}
+          onChange={(kind) => { if (kind !== "multi" || !["dialogue_reply", "elimination"].includes(e.presentation?.style || "dialogue_reply")) onChange({ kind }); }}
         >
           <option value="choice">Single answer</option>
-          <option value="multi">Multiple answers</option>
+          {e.kind === "multi" && ["dialogue_reply","elimination"].includes(e.presentation?.style || "dialogue_reply") && <option value="multi" disabled>Choose Single answer for this style</option>}
+          {!["dialogue_reply","elimination"].includes(e.presentation?.style || "dialogue_reply") && <option value="multi">Multiple answers</option>}
         </Select>
       )}
       {mode === "categorization" && (
@@ -325,7 +328,8 @@ function QuestionForm({
       )}
       {mode === "multiple_choice" ? (
         <div className="options-editor">
-          <h4>Answer</h4>
+          <h4>Answer choices</h4>
+          <p>Select the letter beside the correct answer. Choices are shuffled during practice; correctness is saved by answer text.</p>
           {q.options.map((option, i) => (
             <div className="option-editor-row" key={i}>
               <button
@@ -572,13 +576,14 @@ function TokenAuthor({ mode, q, onChange }) {
       )}
       {mode === "cloze_drag_drop" && (
         <AField
-          label="Distractors · separated by commas"
-          value={(q.presentation?.distractors || []).join(", ")}
+          label="Word bank · separated by commas"
+          value={(q.presentation?.word_bank || q.presentation?.distractors || []).join(", ")}
           onChange={(v) =>
             onChange({
               presentation: {
                 ...q.presentation,
-                distractors: v.split(",").map((x) => x.trim()),
+                word_bank: v.split(",").map((x) => x.trim()),
+                distractors: [],
               },
             })
           }

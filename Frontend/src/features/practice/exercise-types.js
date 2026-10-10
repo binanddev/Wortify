@@ -42,6 +42,7 @@ export const EXERCISE_STYLES = {
   inline_selection: [
     ["pill_toggle", "Choice buttons", "Choose an answer within the sentence."],
     ["inline_select", "Dropdown", "Open the dropdown at each gap."],
+    ["fall_away", "Choose and reveal", "Choose a word in the sentence. Incorrect alternatives fall away after a correct answer."],
   ],
   short_answer: [
     [

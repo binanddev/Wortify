@@ -61,7 +61,7 @@ test("batch imports accept BOM, CRLF, comments and duplicate sentence words keep
   assert.deepEqual(e.questions[0].accepted_answers, ["1", "2"]);
 });
 
-test("all fourteen styles parse and invalid cross-out and partial tasks are rejected", () => {
+test("all fifteen styles parse and invalid cross-out and partial tasks are rejected", () => {
   assert.doesNotThrow(() =>
     parsePracticeText(textTemplate("error_correction", "cross_out")),
   );
@@ -107,9 +107,9 @@ test("progress merges across devices, excludes examples and obsolete IDs", () =>
   assert.deepEqual(mergeProgress(qs, {}, null), []);
 });
 
-test("complete English guide imports all fourteen styles and preserves legacy input", () => {
+test("complete English guide imports all fifteen styles and preserves legacy input", () => {
   const result = parsePracticeText(completePracticeGuide());
-  assert.equal(result.nodes.length, 14);
+  assert.equal(result.nodes.length, 15);
   assert.equal(
     new Set(result.nodes.map((n) => n.payload.presentation.interaction)).size,
     9,
@@ -121,4 +121,21 @@ test("complete English guide imports all fourteen styles and preserves legacy in
   assert.match(exerciseToText(e), /CASE_SENSITIVE: yes/);
   assert.match(exerciseToText(e), /QUESTION:/);
   assert.deepEqual(parsePracticeText(exerciseToText(e)).nodes[0].payload, e);
+});
+
+test("word bank scope and reveal style round trip through text authoring", () => {
+ for (const scope of ['question','exercise']) {
+  const input=`EXERCISE: Bank
+TYPE: cloze_drag_drop
+STYLE: drag_drop
+BANK_SCOPE: ${scope}
+QUESTION: She {{1}} here.
+BLANK: is
+WORDS: is | are | am`;
+  const e=parsePracticeText(input).nodes[0].payload;
+  assert.equal(e.presentation.bank_scope,scope);
+  assert.equal(parsePracticeText(exerciseToText(e)).nodes[0].payload.presentation.bank_scope,scope);
+ }
+ const e=parsePracticeText('EXERCISE: Reveal\nTYPE: inline_selection\nSTYLE: fall_away\nQUESTION: She {{1}} a teacher.\nBLANK: is => is | are | am').nodes[0].payload;
+ assert.equal(e.presentation.style,'fall_away');
 });

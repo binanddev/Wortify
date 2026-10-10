@@ -155,7 +155,7 @@ TTS_MODEL = os.environ.get('TTS_MODEL', 'tts-1')
 TTS_VOICE = os.environ.get('TTS_VOICE', 'alloy')
 RECORDING_MAX_BYTES = 10 * 1024 * 1024
 RECORDING_MAX_SECONDS = 60
-FILE_UPLOAD_HANDLERS = ['users.uploads.BackgroundUploadHandler', 'practice.uploads.PracticeMediaUploadHandler', 'cards.uploads.AudioMemoryUploadHandler']
+FILE_UPLOAD_HANDLERS = ['api.backup_uploads.BackupUploadHandler', 'users.uploads.BackgroundUploadHandler', 'practice.uploads.PracticeMediaUploadHandler', 'cards.uploads.AudioMemoryUploadHandler']
 DATA_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024
 
 

@@ -78,6 +78,7 @@ export function PracticeLibrary({
   const [menuId, setMenuId] = useState(null);
   const [groupName, setGroupName] = useState("New folder");
   const [grouping, setGrouping] = useState(false);
+  const [deleting, setDeleting] = useState(null);
   const menu = nodes.find((node) => node.id === menuId);
   const menuSiblings = menu
     ? nodes
@@ -142,7 +143,7 @@ export function PracticeLibrary({
       {(selected.length > 0 || undo) && (
         <SidebarTools navOnly>
           <div
-            className="border-t border-(--line) pt-4"
+            className="create-selection-tools"
             aria-label="Selected item tools"
           >
             {selected.length > 0 && (
@@ -168,6 +169,9 @@ export function PracticeLibrary({
                     onClick={() => setGrouping(true)}
                   >
                     <Icon name="folder" />
+                  </Btn>
+                  <Btn isDisabled={pending} onClick={() => setDeleting([...selected])}>
+                    <Icon name="trash" /> Delete selected ({selected.length})
                   </Btn>
                   <Btn
                     isIconOnly
@@ -205,6 +209,21 @@ export function PracticeLibrary({
             )}
           </div>
         </SidebarTools>
+      )}
+      {deleting && (
+        <PracticeModal title={`Delete ${deleting.length} selected items?`} pending={pending} onClose={() => setDeleting(null)}>
+          <p>Selected folders and everything inside them will be deleted, including their learning progress. This cannot be undone.</p>
+          <ul>{deleting.map(id => <li key={id}>{nodes.find(node => node.id === id)?.title || "Selected item"}</li>)}</ul>
+          <Status error={error} />
+          <div className="flex flex-wrap gap-3">
+            <Btn isDisabled={pending} onClick={() => setDeleting(null)}>Cancel</Btn>
+            <Btn isDisabled={pending} onClick={async () => {
+              if (await onOrganize({action:"delete",ids:deleting})) {
+                setSelected([]);setDeleting(null);setDestination(false);setUndo(null);setMessage("Selected items deleted.");
+              }
+            }}>{pending ? "Deleting…" : "Delete permanently"}</Btn>
+          </div>
+        </PracticeModal>
       )}
       {grouping && (
         <PracticeModal

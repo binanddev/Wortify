@@ -1,3 +1,4 @@
+import { sharedGapQuestions } from "./gap-bank.js";
 import { PracticeRichText } from "./practice-rich-text.jsx";
 import { SkipButton, AnswerReveal } from "../learning/skip-controls.jsx";
 import { exerciseSolution } from "../learning/skip-learning.js";
@@ -30,8 +31,9 @@ export function PracticeActivity({
   uiStyle,
 }) {
   const e = data.exercise;
-  const questions = data.questions.filter((q) => !q.example);
   const mode = modeOf(e);
+  const sourceQuestions = data.questions.filter((q) => !q.example);
+  const questions = mode === "cloze_drag_drop" && e.presentation?.bank_scope !== "question" ? sharedGapQuestions(sourceQuestions) : sourceQuestions;
   const style =
     uiStyle || e.presentation?.style || exerciseStylesOf(mode)[0][0];
   const storageKey = `wortify:practice-progress:${userId}:${lang}:${id}`;

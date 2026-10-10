@@ -1,3 +1,4 @@
+from .grid import ordered
 """Operational workspace. Staff manage learning content, never privileged accounts."""
 import hashlib
 import json
@@ -65,6 +66,7 @@ def activity(request):
     query = request.GET.get('q', '')[:100]
     if query:
         qs = qs.filter(Q(object_repr__icontains=query) | Q(change_message__icontains=query) | Q(user__username__icontains=query))
+    qs=ordered(qs,request.GET.get('ordering',''),{'id':'pk','actor':'user__username','target':'object_repr','message':'change_message','at':'action_time'},['-action_time','-pk'])
     page = max(1, int(request.GET.get('page', 1)))
     return JsonResponse({'total': qs.count(), 'page': page, 'rows': [
         {'id': log.pk, 'at': log.action_time, 'actor': log.user.username,
@@ -110,7 +112,7 @@ def content(request):
         qs = qs.filter(owner_id=int(request.GET['owner']))
     page = max(1, int(request.GET.get('page', 1)))
     return JsonResponse({'total': qs.count(), 'page': page, 'rows': [
-        content_row(n) for n in qs.order_by('-updated_at', '-pk')[(page-1)*25:page*25]]})
+        content_row(n) for n in ordered(qs,request.GET.get('ordering',''),{'title':'title','owner':'owner__username','kind':'kind','language':'language','visibility':'visibility','updated_at':'updated_at'},['-updated_at','-pk'])[(page-1)*25:page*25]]})
 
 
 @management('content.change')

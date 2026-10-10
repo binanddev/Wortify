@@ -317,3 +317,8 @@ button[aria-pressed="true"].btn {
 .explore-suggestions {
   @apply absolute inset-x-0 top-full z-30 mt-2 max-h-80 overflow-y-auto rounded-2xl border border-(--line) bg-(--surface) p-3 text-(--ink) shadow-xl;
 }
+
+/* Create groups already receive a separator from their sidebar wrapper. */
+.studio-navigation > .studio-nav-shortcuts {
+  @apply border-b-0 pb-0;
+}

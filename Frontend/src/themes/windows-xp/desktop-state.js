@@ -1,15 +1,13 @@
 export const desktopApps = [
   ["flashcard", "Flashcard", "cards"],
   ["practice", "Practice Hub", "book"],
-  ["explore", "Explore", "search"],
-  ["create", "Create", "edit"],
   ["profile", "Learning journey", "user"],
   ["classes", "Classes & sharing", "users"],
   ["settings", "Settings", "settings"],
 ];
 export function windowKey(route) {
   const p = route.split("?")[0].split("/").filter(Boolean);
-  return p[0] === "manage" ? "admin" : p[1] || "flashcard";
+  return p[0] === "manage" ? "admin" : ["explore","create"].includes(p[1]) ? "practice" : p[1] || "flashcard";
 }
 export function desktopReducer(state, a) {
   const update = (patch) => ({
@@ -22,7 +20,7 @@ export function desktopReducer(state, a) {
         old = state.windows.find((w) => w.id === id),
         root = /^\/(en|de)\/[^/?]+\/?$/.test(a.route);
       const win = old
-        ? { ...old, route: root ? old.route : a.route, minimized: false }
+        ? { ...old, route: root && a.route.split("/")[2] === id ? old.route : a.route, minimized: false }
         : {
             id,
             route: a.route,

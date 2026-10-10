@@ -292,7 +292,7 @@ function ExploreContent({ lang, userId }) {
           ...previous,
           [node.id]: result.id,
         }));
-        setNotice(`Copied “${result.title}” to My Exercise Library.`);
+        setNotice(`Copied “${result.title}” to Create library.`);
       } catch (error) {
         setNotice(error.message);
       } finally {
@@ -317,8 +317,8 @@ function ExploreContent({ lang, userId }) {
         ? "Remove from workspace"
         : "Add to workspace"
       : copied[node.id]
-        ? "Open copy in My Exercise Library"
-        : "Copy to My Exercise Library";
+        ? "Open copy in Create library"
+        : "Copy to Create library";
   const items = results.key === resultKey ? results.rows : [];
   const loading = results.loading && !items.length;
   const error = results.error;
@@ -327,13 +327,13 @@ function ExploreContent({ lang, userId }) {
     <Page>
       <SidebarTools navOnly>
         <div className="explore-nav">
-          <nav className="studio-nav-shortcuts" aria-label="Explore tools">
+          <nav className="studio-nav-shortcuts" aria-label="Discover tools">
             <Link
               className={`studio-nav-icon ${!parent ? "active" : ""}`}
               to={routes.explore}
               onClick={() => setPage(1)}
-              title="Explore"
-              aria-label="Explore"
+              title="Discover"
+              aria-label="Discover"
             >
               <Icon name="home" size={23} />
             </Link>
@@ -391,8 +391,8 @@ function ExploreContent({ lang, userId }) {
             <Link
               to={routes.explore}
               onClick={() => setPage(1)}
-              title="Explore"
-              aria-label="Explore"
+              title="Discover"
+              aria-label="Discover"
             >
               <Icon name="home" />
             </Link>
@@ -412,7 +412,7 @@ function ExploreContent({ lang, userId }) {
           </nav>
         )}
         <header className="flex flex-wrap items-center justify-between gap-3">
-          <Heading title={current?.title || "Explore"} />
+          <Heading title={current?.title || "Discover"} />
           <div className="flex gap-2">
             {[
               ["grid", "Grid view"],

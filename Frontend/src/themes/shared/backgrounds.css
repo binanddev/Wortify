@@ -1,5 +1,5 @@
 /* Shared background is applied only inside a learning workspace, never home. */
-:root[data-has-background="true"]:not([data-interface="home"]) body {
+:root[data-has-background="true"]:not([data-interface="home"]):not([data-interface="admin"]) body {
   @apply [background-image:var(--site-bg-image)]! bg-cover! bg-center! bg-fixed!;
 }
 .background-library {

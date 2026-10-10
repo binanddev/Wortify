@@ -60,9 +60,7 @@ export default function WindowsDesktop({
         : { type: "open", route: path },
     );
   };
-  const apps = canManage
-    ? [...desktopApps, ["admin", "Administration", "settings"]]
-    : desktopApps;
+  const apps = desktopApps;
   return (
     <>
       <div className="xp-desktop-area" id="main-content" tabIndex={-1}>

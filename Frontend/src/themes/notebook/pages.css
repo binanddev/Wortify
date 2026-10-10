@@ -40,7 +40,7 @@
  @apply bg-transparent! border-0! rounded-none!;
 }
 :root[data-interface="notebook"] body .journey-question {
- @apply relative bg-[#fffdf5]! border-0! rounded-[2px_3px_14px_2px]! shadow-[0_8px_16px_-12px_#55472870]! [background-image:repeating-linear-gradient(transparent_0_35px,#8499a012_35px_36px)]!;
+ @apply relative bg-transparent! bg-none! border-0! rounded-none! shadow-none!;
 }
 :root[data-interface="notebook"] body :is(.exercise-instruction,.work-prompt) {
  @apply bg-transparent! rounded-none border-0 border-l-2 border-[#c79486] shadow-none pl-4;
@@ -87,4 +87,14 @@
 @media(max-width:640px) {
  :root[data-interface="notebook"] body .profile-metric { @apply px-3; }
  :root[data-interface="notebook"] body .journey-question { @apply px-4; }
+}
+
+/* Answers are written on the page; interactive borders and selection remain visible. */
+:root[data-interface="notebook"] body .exercise-workspace :is(.choice-lab-answer,.answer-cards button) {
+ @apply bg-transparent! shadow-none!;
+}
+
+/* Keep draggable words directly on the notebook page. */
+:root[data-interface="notebook"] body .exercise-workspace .word-bank {
+ @apply bg-transparent! bg-none! border-0! shadow-none!;
 }

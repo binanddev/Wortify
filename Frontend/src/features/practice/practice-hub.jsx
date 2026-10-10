@@ -1,5 +1,6 @@
+import { folderPage } from "./practice-area.js";
 import { PracticeTree, PracticeModal } from "./practice-workspace.jsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useNavigate,
   useResource,
@@ -46,7 +47,9 @@ export function PracticeHub({ lang, id, userId, sound }) {
   const [previewId, setPreviewId] = useState(null);
   const [setting, setSetting] = useState(null);
   const [catalogQuery, setCatalogQuery] = useState("");
-  const all = id === "all";
+  const [catalogPage, setCatalogPage] = useState(1);
+  const all = !id || id === "all";
+  useEffect(() => { if (!id) navigate(`${practiceRoutes(lang).learn}/all`); }, [id, lang, navigate]);
   const togglePin = (node) =>
     setPinned((previous) => {
       const next = toggleWorkspaceRoot(nodes, previous, node.id);
@@ -80,6 +83,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
   const current = nodes.find((node) => String(node.id) === String(id));
   const workspace = workspaceNodes(nodes, pinned);
   const catalog = catalogRoots(nodes, catalogQuery);
+  const { page, pageCount, items: visibleCatalog } = folderPage(catalog, catalogPage);
   const roots = workspaceRoots(nodes, pinned);
   const isPinned = (node) => roots.includes(workspaceRoot(nodes, node.id)?.id);
   const preview = nodes.find((node) => node.id === previewId);
@@ -89,16 +93,6 @@ export function PracticeHub({ lang, id, userId, sound }) {
         <div className="learning-navigation">
           <div className="workspace-search">
             <Field label="Find an exercise" value={query} onChange={setQuery} />
-          </div>
-          <div className="flex justify-start">
-            <Link
-              to={`${practiceRoutes(lang).learn}/all`}
-              className="workspace-browse"
-              title="Your exercise library"
-              aria-label="Your exercise library"
-            >
-              <Icon name="home" size={22} />
-            </Link>
           </div>
           <Status error={resource.error} />
           <nav aria-label="Lesson list">
@@ -235,10 +229,10 @@ export function PracticeHub({ lang, id, userId, sound }) {
           <Field
             label="Search all content"
             value={catalogQuery}
-            onChange={setCatalogQuery}
+            onChange={(value) => { setCatalogQuery(value); setCatalogPage(1); }}
           />
           <div className="catalog-grid">
-            {catalog.map((node) => (
+            {visibleCatalog.map((node) => (
               <article key={node.id} className="catalog-card">
                 <Icon
                   name={
@@ -281,7 +275,12 @@ export function PracticeHub({ lang, id, userId, sound }) {
               </article>
             ))}
           </div>
-          {!catalog.length && <p>No matching content.</p>}
+          {pageCount > 1 && <nav className="practice-pagination" aria-label="Folder pages">
+            <Btn isDisabled={page === 1} onClick={() => setCatalogPage(page - 1)}>Previous</Btn>
+            <span role="status">Page {page} of {pageCount}</span>
+            <Btn isDisabled={page === pageCount} onClick={() => setCatalogPage(page + 1)}>Next</Btn>
+          </nav>}
+          {!visibleCatalog.length && <p>No matching content.</p>}
         </section>
       ) : current?.kind === "folder" ? (
         <section className="practice-catalog">

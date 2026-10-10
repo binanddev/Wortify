@@ -1,3 +1,7 @@
+import RowActions from "./RowActions.jsx";
+import DataGrid from "./DataGrid.jsx";
+import InlineSelect from "./InlineSelect.jsx";
+import {sortQuery} from "./grid-state.js";
 import { useState } from "react";
 import { request, useResource } from "../../lib/core.js";
 import { Btn, Field, Select, Loading, Editor, Status } from "../../components/ui/ui.jsx";
@@ -9,14 +13,14 @@ export default function Users({ user }) {
     [search, setSearch] = useState(""),
     [role, setRole] = useState(""),
     [status, setStatus] = useState(""),
-    [sort, setSort] = useState("newest"),
+    [sort, setSort] = useState([{key:"date_joined",desc:true}]),
     [page, setPage] = useState(1);
   const [edit, setEdit] = useState(null),
     [operation, setOperation] = useState(null),
     [target, setTarget] = useState(null),
     [notice, setNotice] = useState("");
   const resource = useResource(
-    `/api/manage/users/?q=${encodeURIComponent(search)}&page=${page}&role=${role}&status=${status}&sort=${sort}`,
+    `/api/manage/users/?q=${encodeURIComponent(search)}&page=${page}&role=${role}&status=${status}&ordering=${sortQuery(sort)}`,
   );
   const reload = (message) => {
     setNotice(message);
@@ -66,7 +70,7 @@ export default function Users({ user }) {
         </p>
       )}
       <form
-        className="mb-5 grid items-end gap-3 sm:grid-cols-2 xl:grid-cols-5"
+        className="mb-3 flex flex-wrap items-end gap-2"
         onSubmit={(e) => {
           e.preventDefault();
           setSearch(query);
@@ -78,24 +82,6 @@ export default function Users({ user }) {
           value={query}
           onChange={setQuery}
         />
-        {user.superuser && (
-          <Select label="Role" value={role} onChange={filter(setRole)}>
-            <option value="">All roles</option>
-            <option value="user">Users</option>
-            <option value="staff">Staff</option>
-            <option value="superuser">Admin</option>
-          </Select>
-        )}
-        <Select label="Status" value={status} onChange={filter(setStatus)}>
-          <option value="">All statuses</option>
-          <option value="active">Activity</option>
-          <option value="inactive">Locked</option>
-        </Select>
-        <Select label="Sort" value={sort} onChange={filter(setSort)}>
-          <option value="newest">Newest</option>
-          <option value="username">Name A–Z</option>
-          <option value="recent">Recently signed in</option>
-        </Select>
         <Btn primary type="submit">
           Search
         </Btn>
@@ -104,109 +90,23 @@ export default function Users({ user }) {
       <Loading label="Loading admin data…" resource={resource}>
         {(d) => (
           <>
-            <div className="grid gap-3">
-              {d.users.map((u) => (
-                <article
-                  key={u.id}
-                  className="rounded-2xl border border-(--line) bg-(--surface) p-5"
-                >
-                  <div className="flex flex-wrap justify-between gap-3">
-                    <div className="min-w-0">
-                      <h3 className="break-words text-lg font-bold">
-                        {u.username}
-                        {u.id === user.id ? " · You" : ""}
-                      </h3>
-                      <p className="break-all text-sm text-(--muted)">
-                        {[u.last_name, u.first_name]
-                          .filter(Boolean)
-                          .join(" ") || "No name provided"}{" "}
-                        · {u.email || "No email provided"}
-                      </p>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="rounded-full border border-(--line) px-3 py-1 text-xs">
-                        {roleName(u)}
-                      </span>
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs ${u.is_active ? "bg-emerald-500/10 text-emerald-700" : "bg-rose-500/10 text-rose-700"}`}
-                      >
-                        {u.is_active ? "Activity" : "Locked"}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="my-3 text-xs text-(--muted)">
-                    Create: {dateText(u.date_joined)} · Sign in:{" "}
-                    {dateText(u.last_login)}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <Btn onClick={() => setEdit({ ...u })}>Edit details</Btn>
-                    <Btn onClick={() => setTarget(u)}>Learning data</Btn>
-                    {user.superuser && (
-                      <Btn
-                        isDisabled={u.id === user.id}
-                        onClick={() =>
-                          setEdit({
-                            ...u,
-                            permissions: true,
-                            role: u.is_superuser
-                              ? "superuser"
-                              : u.is_staff
-                                ? "staff"
-                                : "user",
-                          })
-                        }
-                      >
-                        Assign roles
-                      </Btn>
-                    )}
-                    <details className="min-w-0">
-                      <summary className="cursor-pointer rounded-xl border border-(--line) px-3 py-2 text-sm">
-                        Account actions
-                      </summary>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        <Btn
-                          isDisabled={u.id === user.id}
-                          onClick={() => setOperation({ u, kind: "status" })}
-                        >
-                          {u.is_active ? "Lock account" : "Unlock"}
-                        </Btn>
-                        <Btn
-                          isDisabled={u.id === user.id}
-                          onClick={() => setOperation({ u, kind: "sessions" })}
-                        >
-                          Sign out all devices
-                        </Btn>
-                        <Btn onClick={() => setEdit({ ...u, reset: true })}>
-                          Reset password
-                        </Btn>
-                        <Btn
-                          isDisabled={u.id === user.id}
-                          onClick={() => setOperation({ u, kind: "delete" })}
-                        >
-                          Delete account
-                        </Btn>
-                      </div>
-                    </details>
-                  </div>
-                </article>
-              ))}
-              {!d.users.length && (
-                <div className="py-12 text-center">
-                  <p>No matching accounts.</p>
-                  <Btn
-                    onClick={() => {
-                      setQuery("");
-                      setSearch("");
-                      setRole("");
-                      setStatus("");
-                      setPage(1);
-                    }}
-                  >
-                    Clear filters
-                  </Btn>
-                </div>
-              )}
-            </div>
+            <DataGrid id="users" label="Accounts" rows={d.users} sort={sort} onSort={next=>{setSort(next);setPage(1);}} columns={[
+ {key:'username',label:'Username',required:true,render:u=><strong>{u.username}{u.id===user.id?' · You':''}</strong>},
+ {key:'email',label:'Email'},
+ {key:'name',label:'Name',sortable:false,render:u=>[u.first_name,u.last_name].filter(Boolean).join(' ')||'—'},
+ {key:'role',label:'Role',filtered:!!role,filter:<Select label="Filter role" value={role} onChange={filter(setRole)}><option value="">All roles</option><option value="user">User</option><option value="staff">Staff</option><option value="superuser">Admin</option></Select>,render:u=><InlineSelect label={`Role for ${u.username}`} value={u.is_superuser?'superuser':u.is_staff?'staff':'user'} options={[["user","User"],["staff","Staff"],["superuser","Admin"]]} disabled={!user.superuser||u.id===user.id} onSave={async role=>{await request(`/api/manage/users/${u.id}/`,'PATCH',{role});reload('Role updated. Existing sessions were signed out.');}}/>},
+ {key:'is_active',label:'Status',filtered:!!status,filter:<Select label="Filter status" value={status} onChange={filter(setStatus)}><option value="">All statuses</option><option value="active">Active</option><option value="inactive">Locked</option></Select>,render:u=><InlineSelect label={`Status for ${u.username}`} value={u.is_active?'active':'inactive'} options={[["active","Active"],["inactive","Locked"]]} disabled={u.id===user.id} onSave={async status=>{await request(`/api/manage/users/${u.id}/`,'PATCH',{is_active:status==='active'});reload('Status updated.');}}/>},
+ {key:'date_joined',label:'Created',numeric:true,render:u=>dateText(u.date_joined)},
+ {key:'last_login',label:'Last sign-in',numeric:true,render:u=>dateText(u.last_login)},
+ {key:'id',label:'ID',numeric:true},
+ {key:'actions',label:'Actions',sortable:false,required:true,render:u=><RowActions label={`Actions for ${u.username}`} items={[
+ {key:'edit',label:'Edit details',run:()=>setEdit({...u})},
+ {key:'learning',label:'Learning data',run:()=>setTarget(u)},
+ {key:'sessions',label:'Sign out devices',disabled:u.id===user.id,run:()=>setOperation({u,kind:'sessions'})},
+ {key:'password',label:'Reset password',run:()=>setEdit({...u,reset:true})},
+ {key:'delete',label:'Delete account',danger:true,disabled:u.id===user.id,run:()=>setOperation({u,kind:'delete'})}
+ ]}/>}
+ ]}/>
             <Pagination
               page={page}
               total={d.total}

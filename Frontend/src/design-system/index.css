@@ -72,3 +72,5 @@
 @import "../themes/notebook/pages.css";
 
 @import "../themes/rpg/terminal.css";
+
+@import "./admin.css";

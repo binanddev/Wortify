@@ -20,7 +20,7 @@ export function Pagination({ page, total, size = 25, onChange }) {
           isDisabled={page * size >= total}
           onClick={() => onChange(page + 1)}
         >
-          Sau
+          Next
         </Btn>
       </div>
     </div>

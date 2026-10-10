@@ -23,6 +23,8 @@ GUIDE = [
 
 # Examples are deliberately inert: placeholders and illustrative IDs, no secrets.
 EXAMPLES = {
+    'api.admin_backups.emergency': {'POST': {'scope':'selected','ids':[1],'include_media':True,'include_audit':True,'include_credentials':False,'preview':True}, 'response':{'count':1,'accounts':[{'id':1,'username':'example'}]}},
+    'api.backups.export': {'POST':{'workspace':{'de':[],'en':[]}}},
     'users.views.session': {'POST': {'username':'{{username}}','password':'{{password}}'}, 'response': {'user':{'id':1,'username':'example','staff':False,'superuser':False,'preferences':{},'appearance_session':'opaque-session-value'}}},
     'users.views.superuser_registration': {'POST':{'username':'new-admin','password1':'{{password}}','password2':'{{password}}'}},
     'api.views.decks': {'POST':{'title':'Postman demo','level':'A1','description':'Test deck'}, 'response':{'id':1}},
@@ -62,6 +64,11 @@ EXAMPLES = {
 }
 
 NOTES = {
+
+    'api.admin_backups.emergency': 'SUPERUSER ONLY. POST scope=all, filtered or selected. selected requires ids; filtered accepts q (username/email), role=user/staff/superuser and status=active/inactive. preview=true returns matching account count. To download binary ZIP, remove preview and send confirm=EXPORT. Options: include_media=true (portable per-user ZIPs), include_audit=true, include_credentials=false (opt-in password hashes). Original account identities, roles and content relations are included. No sessions or server secrets. Exports are audited. Maximum 2 GB total and 512 MB per portable user archive; split larger exports. Use Postman Send and Download. Emergency archives require operator-led recovery; they cannot be uploaded to personal restore.',
+    'api.backups.export': 'Authenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges.',
+    'api.backups.restore': 'Multipart file=personal ZIP; preview=true inspects counts. confirm=true restores private copies; optional settings=true replaces profile/study settings. Existing content is retained. Admin emergency ZIPs are not accepted.',
+
     'config.urls.health': 'Public GET returns app=Wortify and a workspace fingerprint to identify a local instance. It does not test the database; use /api/health/check/ for that.',
     'api.themes.theme_image': 'GET/HEAD accessible theme image binary. Returns 404 if missing, inaccessible or without an image.',
     'api.themes.manifest': 'GET the session background/theme manifest for English and German. Use returned URLs instead of constructing file paths.',
@@ -102,15 +109,15 @@ NOTES = {
     'api.community.classes': 'POST title to create a class; POST invite to join a class. GET lists owned and joined classes only.',
     'api.community.classroom': 'GET is available to class owners and members; PATCH/DELETE requires the owner. PATCH remove_member with a member ID to remove them.',
     'api.community.classroom_assignments': 'Class owner only. POST node + due_at (ISO8601 or null). DELETE {id} uses the assignment ID, not the node ID.',
-    'api.management.users': 'GET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. 50 records per page. POST requires username,password; email,first_name,last_name are optional. Staff create regular users; only admins grant staff/superuser roles.',
+    'api.management.users': 'GET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. Multi-sort: ordering=id,username,email,role,is_active,date_joined,last_login (choose columns, prefix - for descending); applied before pagination. 50 records per page. POST requires username,password; email,first_name,last_name are optional. Staff create regular users; only admins grant staff/superuser roles.',
     'api.management.user_detail': 'GET account audit log. PATCH username,email,first_name,last_name,password,role,is_active,revoke_sessions,reason. Staff may target regular users only. Self-locking/deletion/demotion is prohibited and an active admin must remain. Role/password changes revoke sessions; passwords are not logged. DELETE requires confirm matching the username and a 3–500 character reason.',
     'api.management_data.user_data': 'GET collections and counts. DELETE clears learning/profile data but retains the account; confirm must match the username. Only other regular accounts can be targeted.',
     'api.management_data.records': 'kind is a collection from GET data/: decks,cards,folders,practice,classes,... List GET returns fields and can_create for forms. POST to the list; PATCH/DELETE to item_id. The example body uses kind=decks; use fields for other collections. Relations must share owner/language. Auth fields and file paths cannot be edited.',
-    'api.management_center.content': 'GET q,language,kind,visibility,source=system/users/mine,owner,page (25 per page). GET options=folders returns folders owned by the signed-in user. POST creates content owned by the actor; owner from the client is not accepted.',
+    'api.management_center.content': 'GET q,language,kind,visibility,source=system/users/mine,owner,page (25 per page). Multi-sort ordering accepts title,owner,kind,language,visibility,updated_at; prefix - for descending. GET options=folders returns folders owned by the signed-in user. POST creates content owned by the actor; owner from the client is not accepted.',
     'api.management_center.content_detail': 'GET returns payload, folders, children and version. PATCH allows title,parent,payload,visibility,position,links only; owner/language/kind cannot change. Requires the latest version. Visibility changes require reason; cascade=true is for folders only. DELETE requires version, confirm matching the title and reason, and removes the tree and related data.',
     'api.management_center.content_upload': 'Multipart file; exercises only. Files are stored under the content owner and validated like regular uploads. Attach returned media to payload.attachments when saving the exercise.',
-    'api.management_center.activity': 'q and page, 25 per page. Admins see all activity; staff see only their own log. Audit records cannot be edited or deleted through the API.',
-    'api.management_center.summary': 'Work overview. Staff account counts include regular users only; content statistics include system learning content.',
+    'api.management_center.activity': 'q and page, 25 per page. Multi-sort ordering accepts id,actor,target,message,at; prefix - for descending. Admins see all activity; staff see only their own log. Audit records cannot be edited or deleted through the API.',
+    'api.management_center.summary': 'Grid ordering: content supports title, owner, kind, language, visibility, updated_at; activity supports id, actor, target, message, at. Comma-separated fields, - prefix descending, evaluated before pagination. Work overview. Staff account counts include regular users only; content statistics include system learning content.',
     'api.management_data.overview': 'Admin only: account/content statistics, database connectivity, migrations, runtime and logs. Secret configuration is excluded.',
     'api.management.site_appearance': 'Admin only. GET status, POST multipart background_image (PNG/JPG/WebP up to 30 MB), DELETE removes the shared image.',
     'api.themes.themes': 'Legacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images.',
@@ -133,6 +140,7 @@ NOTES = {
 }
 
 MULTIPART = {
+    'api.backups.restore': [('file','file',''),('preview','text','true')],
     'api.practice_media.upload': [('file','file','')],
     'api.management_center.content_upload': [('file','file','')],
     'api.management.site_appearance': [('background_image','file','')],
@@ -188,7 +196,7 @@ def reference_data():
         group = 'Learning & content'
         if '/manage/' in path:
             group = 'Administration'
-            role = 'Admin' if key in ('api.management_data.overview','api.monitoring.logs','api.management.site_appearance','api.api_reference.reference') else 'Admin / Staff'
+            role = 'Admin' if key in ('api.management_data.overview','api.monitoring.logs','api.management.site_appearance','api.api_reference.reference','api.admin_backups.emergency') else 'Admin / Staff'
         elif key.startswith('api.themes.') or '/me/' in path or '/site/' in path: group = 'Appearance & media'
         elif public: group = 'Session & health'
         elif key == 'api.monitoring.report': group, role = 'Server monitoring', 'Monitor key'

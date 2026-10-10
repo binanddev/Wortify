@@ -132,6 +132,7 @@ export function exerciseToText(e) {
     ? e.presentation.style
     : fallback;
   const lines = [`EXERCISE: ${e.title}`, `TYPE: ${mode}`, `STYLE: ${style}`];
+  if (mode === "cloze_drag_drop" && e.presentation.bank_scope) lines.push(`BANK_SCOPE: ${e.presentation.bank_scope || "exercise"}`);
   if (e.ignore_case === false) lines.push("CASE_SENSITIVE: yes");
   if (e.ignore_punctuation === false) lines.push("KEEP_PUNCTUATION: yes");
   if (e.instruction) lines.push(`INSTRUCTIONS: ${e.instruction}`);
@@ -231,6 +232,7 @@ export function parsePracticeText(text) {
       "INSTRUCTIONS",
       "CONTEXT",
       "GROUPS",
+      "BANK_SCOPE",
       "CASE_SENSITIVE",
       "KEEP_PUNCTUATION",
     ].includes(key);
@@ -257,6 +259,10 @@ export function parsePracticeText(text) {
       case "CONTEXT":
         e.context = value;
         continuation = [e, "context"];
+        break;
+      case "BANK_SCOPE":
+        if (!["question", "exercise"].includes(value)) fail("BANK_SCOPE must be question or exercise.");
+        e.presentation.bank_scope = value;
         break;
       case "GROUPS":
         e.presentation.categories = list(value);

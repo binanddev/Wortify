@@ -1,10 +1,11 @@
+import { useChoiceOrder } from "./use-choice-order.js";
 import { ChoiceLab } from "./choice-lab.jsx";
 import { SentenceBuilder } from "./sentence-builder.jsx";
 export { SentenceBuilder } from "./sentence-builder.jsx";
 import { Icon } from "../../components/ui/ui.jsx";
 import { PracticeRichText } from "./practice-rich-text.jsx";
 import { MovableGap } from "./movable-gap.jsx";
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext, useMemo } from "react";
 import { ModalLayerContext, modalRoot } from "../../components/modal/modal.jsx";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 import { motion } from "framer-motion";
@@ -195,8 +196,8 @@ export function GapPassage({
   const [chips, setChips] = useState(() =>
     shuffled(pool.map((text, i) => ({ id: String(i), text }))),
   );
-  const options =
-    q.blank_options || q.blanks?.map((b) => b.options || []) || [];
+  const serializedOptions = JSON.stringify(q.blank_options || q.blanks?.map((b) => b.options || []) || []);
+  const options = useMemo(() => JSON.parse(serializedOptions).map(list => shuffled(list)), [q.id, q.prompt, serializedOptions]);
   const [activeBlank, setActiveBlank] = useState(null);
   useEffect(() => {
     setActiveBlank(null);
@@ -244,9 +245,9 @@ export function GapPassage({
               key={i}
             >
               {mode === "inline_selection" ? (
-                uiStyle === "pill_toggle" ? (
+                ["pill_toggle", "fall_away"].includes(uiStyle) ? (
                   <span
-                    className="inline-pills"
+                    className={`inline-pills ${uiStyle === "fall_away" ? "fall-away-choices" : ""}`}
                     role="group"
                     aria-label={`Gap ${n + 1}`}
                   >
@@ -256,7 +257,7 @@ export function GapPassage({
                         type="button"
                         disabled={disabled}
                         aria-pressed={answers[key] === option}
-                        className={answers[key] === option ? "selected" : ""}
+                        className={`${answers[key] === option ? "selected" : ""} ${uiStyle === "fall_away" && row?.correct === true ? answers[key] === option ? "revealed-word" : "fallen-word" : ""}`}
                         onClick={() => fill(key, option)}
                       >
                         {option}
@@ -586,7 +587,9 @@ export function TypeQuestion({
   const mode = modeOf(exercise),
     key = String(q.id),
     value = answers[key];
-  if (["dialogue_reply", "elimination", "evidence_judge"].includes(uiStyle))
+  const choiceOptions = useChoiceOrder(`${q.id}:${q.prompt}`, q.options, mode === "multiple_choice");
+  q = { ...q, options: choiceOptions };
+  if (q.kind !== "multi" && exercise.kind !== "multi" && ["dialogue_reply", "elimination", "evidence_judge"].includes(uiStyle))
     return <ChoiceLab key={q.id} q={q} value={value} onChange={v => onAnswer(key,v)} disabled={disabled} style={uiStyle} />;
   if (mode === "error_correction")
     return (

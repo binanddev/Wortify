@@ -2,7 +2,7 @@
 .default-background {
   @apply fixed inset-0 -z-10 pointer-events-none overflow-hidden hidden;
 }
-:root:not([data-interface="home"]):not([data-has-background="true"])
+:root:not([data-interface="home"]):not([data-interface="admin"]):not([data-has-background="true"])
   .default-background {
   @apply block;
 }

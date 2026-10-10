@@ -1,3 +1,5 @@
+from api import admin_backups
+from api import backups
 from api import api_reference, management_center, spaced_review, management_data, personal_appearance, monitoring, themes, backgrounds
 from django.urls import path,re_path
 from django.http import JsonResponse
@@ -19,12 +21,15 @@ urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_regis
  path('api/themes/<int:pk>/',themes.themes),
  path('api/themes/<int:pk>/delete/',themes.delete_theme),
  path('api/themes/<int:pk>/image/',themes.theme_image),
+ path('api/me/backup/',backups.export),
+ path('api/me/backup/restore/',backups.restore),
  path('api/me/appearance/',themes.manifest),
  path('api/me/backgrounds/',backgrounds.library),
  path('api/me/backgrounds/select/',backgrounds.select),
  path('api/me/backgrounds/<int:pk>/',backgrounds.remove),
  path('api/me/background/',personal_appearance.background),
  path('api/me/background/image/',personal_appearance.image),
+ path('api/manage/backups/',admin_backups.emergency),
  path('api/manage/summary/',management_center.summary),
  path('api/manage/api-docs/',api_reference.reference),
  path('api/manage/activity/',management_center.activity),

@@ -240,3 +240,22 @@
 .choice-lab-row:has(.choice-lab-eliminate[aria-pressed="true"]) .choice-lab-answer { @apply line-through; }
 :root:is([data-interface="rpg"],[data-interface="retro"]) .choice-lab-answer { @apply rounded-none; }
 @media(max-width:540px) { .choice-lab-row { @apply flex-wrap; } }
+
+/* Shared section links in back navigation and Windows sidebar. */
+:has(> .sidebar-tools-group > .practice-section-nav) { @apply flex flex-col; }
+.sidebar-tools-group:has(> .practice-section-nav) { @apply -order-1; }
+.practice-section-nav { @apply flex flex-wrap gap-2 mb-4; }
+.practice-section-nav a { @apply inline-flex items-center gap-2 p-2 text-inherit border-b-2 border-transparent no-underline; }
+.practice-section-nav a[aria-current="page"] { @apply border-current font-bold; }
+.practice-section-nav a:focus-visible { @apply outline-2 outline-current outline-offset-2; }
+.practice-pagination { @apply flex items-center justify-center gap-4 mt-6; }
+
+.fall-away-choices { @apply inline-flex items-baseline; }
+.fall-away-choices .revealed-word { @apply text-green-700! border-transparent! bg-transparent!; }
+.fall-away-choices .fallen-word { @apply pointer-events-none [animation:word-fall-away_.35s_ease-in_forwards]; }
+@keyframes word-fall-away {
+ to { opacity: 0; transform: translateY(12px); width: 0; padding: 0; margin: 0; border-width: 0; font-size: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .fall-away-choices .fallen-word { @apply hidden! [animation:none]; }
+}

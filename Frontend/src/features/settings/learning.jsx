@@ -1,3 +1,4 @@
+import BackupSettings from "./BackupSettings.jsx";
 import { INTERFACE_CHOICES } from "../../themes/registry.js";
 import { AMBIENT_TRACKS } from "../audio/ambient-recordings.js";
 import BackgroundLibrary from "../appearance/background-library.jsx";
@@ -63,6 +64,7 @@ function SettingsContent({
     ["background", "Backgrounds"],
     ["sound", "Audio"],
     ["study", "Learning"],
+    ["backup", "Backup & restore"],
     ...(superuser ? [["system", "System"]] : []),
   ];
   const sync = useLearningSync(userId, lang);
@@ -131,6 +133,7 @@ function SettingsContent({
         id={`settings-panel-${tab}`}
         aria-labelledby={`settings-tab-${tab}`}
       >
+        {tab === "backup" && <BackupSettings userId={userId} />}
         {tab === "background" && (
           <Glass>
             <h2>Backgrounds</h2>

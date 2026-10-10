@@ -109,7 +109,10 @@ def users(request):
     sorts={'username':'username','newest':'-date_joined','recent':'-last_login'}
     order=request.GET.get('sort','username')
     if order not in sorts: raise ValueError('Invalid order.')
-    qs=qs.order_by(sorts[order], 'pk')
+    from .grid import ordered
+    from django.db.models import Case, When, Value, IntegerField
+    qs=qs.annotate(role_order=Case(When(is_superuser=True,then=Value(2)),When(is_staff=True,then=Value(1)),default=Value(0),output_field=IntegerField()))
+    qs=ordered(qs,request.GET.get('ordering',''),{'id':'pk','username':'username','email':'email','role':'role_order','is_active':'is_active','date_joined':'date_joined','last_login':'last_login'},[sorts[order],'pk'])
     page=max(1,int(request.GET.get('page',1)));total=qs.count()
     return JsonResponse({'users':list(qs[(page-1)*50:page*50].values('id','username','email','is_active','is_staff','is_superuser','last_login','date_joined','first_name','last_name')),'total':total,'page':page,'can_add':True,'can_edit':True,'superuser':request.user.is_superuser})
 

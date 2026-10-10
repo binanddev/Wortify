@@ -1,3 +1,5 @@
+import PracticeArea from "../features/practice/PracticeArea.jsx";
+import { practiceArea } from "../features/practice/practice-area.js";
 import CrtOverlay from "../themes/rpg/CrtOverlay.jsx";
 import { useThemeBackground } from "../themes/shared/useThemeBackground.js";
 import QuestConsole from "../themes/rpg/QuestConsole.jsx";
@@ -192,17 +194,8 @@ export default function App() {
         <p>Preparing your workspace…</p>
       </div>
     );
-  if (parts[0] === "manage")
-    return (
-      <Workspace
-        user={user}
-        setUser={setUser}
-        lang="en"
-        parts={["en", "admin"]}
-        route={route}
-        appearance={appearance}
-      />
-    );
+  if (parts[0] === "manage" || (["en", "de"].includes(parts[0]) && parts[1] === "admin"))
+    return user.staff || user.superuser ? <Suspense fallback={<p>Opening administration…</p>}><Admin user={user} /></Suspense> : <Home {...{user,setUser}}><Status error="You do not have administrative access." /></Home>;
   if (!lang) return <Home {...{ user, setUser }} />;
   return (
     <Workspace
@@ -597,14 +590,12 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                     {[
                       ["flashcard", "cards", "Flashcard"],
                       ["practice", "book", "Practice Hub"],
-                      ["explore", "search", "Explore"],
-                      ["create", "edit", "Create"],
                     ].map(([id, icon, title]) => (
                       <Link
                         key={id}
-                        to={`/${lang}/${id}`}
-                        className={`nav-link ${section === id ? "active" : ""}`}
-                        aria-current={section === id ? "page" : undefined}
+                        to={`/${lang}/${id === "practice" ? "practice/all" : id}`}
+                        className={`nav-link ${(section === id || (id === "practice" && practiceArea(section))) ? "active" : ""}`}
+                        aria-current={(section === id || (id === "practice" && practiceArea(section))) ? "page" : undefined}
                       >
                         <Icon name={icon} />
                         {title}
@@ -620,9 +611,9 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                     ].map(([id, icon, title]) => (
                       <Link
                         key={id}
-                        to={`/${lang}/${id}`}
-                        className={`nav-link ${section === id ? "active" : ""}`}
-                        aria-current={section === id ? "page" : undefined}
+                        to={`/${lang}/${id === "practice" ? "practice/all" : id}`}
+                        className={`nav-link ${(section === id || (id === "practice" && practiceArea(section))) ? "active" : ""}`}
+                        aria-current={(section === id || (id === "practice" && practiceArea(section))) ? "page" : undefined}
                       >
                         <Icon name={icon} />
                         {title}
@@ -630,11 +621,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                     ))}
                   </nav>
                   <div className="sidebar-bottom">
-                    {(user.superuser || user.staff) && (
-                      <Link className="nav-link" to={`/${lang}/admin`}>
-                        <Icon name="settings" /> Administration
-                      </Link>
-                    )}
+
                     <Link
                       className={`nav-link ${section === "settings" ? "active" : ""}`}
                       to={`/${lang}/settings`}
@@ -878,5 +865,5 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
       </Page>
     );
 
-  return content;
+  return practiceArea(section) ? <PracticeArea lang={lang} section={section} focused={!!parts[2] && section !== "explore"}>{content}</PracticeArea> : content;
 }

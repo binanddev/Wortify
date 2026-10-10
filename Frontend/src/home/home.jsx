@@ -42,7 +42,7 @@ export default function Home({ user, setUser, children }) {
             </div>
             {(user?.staff || user?.superuser) && (
               <Link className="home-admin" to="/manage">
-                Administration
+                Open Admin center →
               </Link>
             )}
           </section>

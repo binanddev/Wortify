@@ -1,3 +1,6 @@
+import RowActions from "./RowActions.jsx";
+import DataGrid from "./DataGrid.jsx";
+import {sortQuery} from "./grid-state.js";
 import { useState } from "react";
 import { request, useResource, useAction } from "../../lib/core.js";
 import { Btn, Field, Select, Loading, Status } from "../../components/ui/ui.jsx";
@@ -305,8 +308,9 @@ export default function Content() {
     [notice, setNotice] = useState(""),
     [creating, setCreating] = useState(false),
     [mode, setMode] = useState("short_answer");
+  const [sort,setSort]=useState([{key:"updated_at",desc:true}]);
   const resource = useResource(
-    `/api/manage/content/?q=${encodeURIComponent(search)}&language=${language}&kind=${kind}&visibility=${visibility}&source=${source}&page=${page}`,
+    `/api/manage/content/?q=${encodeURIComponent(search)}&language=${language}&kind=${kind}&visibility=${visibility}&source=${source}&page=${page}&ordering=${sortQuery(sort)}`,
   );
   const filter = (setter) => (value) => {
     setter(value);
@@ -360,38 +364,6 @@ export default function Content() {
           value={query}
           onChange={setQuery}
         />
-        <Select
-          label="Language"
-          value={language}
-          onChange={filter(setLanguage)}
-        >
-          <option value="">All languages</option>
-          <option value="en">English</option>
-          <option value="de">German</option>
-        </Select>
-        <Select label="Content type" value={kind} onChange={filter(setKind)}>
-          <option value="">All types</option>
-          {Object.entries(kindNames).map(([k, v]) => (
-            <option value={k} key={k}>
-              {v}
-            </option>
-          ))}
-        </Select>
-        <Select
-          label="Status"
-          value={visibility}
-          onChange={filter(setVisibility)}
-        >
-          <option value="">All statuses</option>
-          <option value="private">Private / unpublished</option>
-          <option value="public">Public</option>
-        </Select>
-        <Select label="Source" value={source} onChange={filter(setSource)}>
-          <option value="">All sources</option>
-          <option value="system">Admin / Staff</option>
-          <option value="users">Users</option>
-          <option value="mine">Mine</option>
-        </Select>
         <Btn type="submit" primary>
           Search
         </Btn>
@@ -400,69 +372,19 @@ export default function Content() {
       <Loading label="Loading admin data…" resource={resource}>
         {(d) => (
           <>
-            <div className="grid gap-3">
-              {d.rows.map((n) => (
-                <article
-                  key={n.id}
-                  className="rounded-2xl border border-(--line) bg-(--surface) p-5"
-                >
-                  <div className="flex flex-wrap justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-xs text-(--muted)">
-                        {kindNames[n.kind]} · {n.language.toUpperCase()} ·{" "}
-                        {n.system ? "Admin / Staff" : "Users"}
-                      </p>
-                      <h3 className="my-1 break-words text-lg font-bold">
-                        {n.title}
-                      </h3>
-                      <p className="text-sm text-(--muted)">
-                        {n.owner.username} · {n.parent_title || "Root"} ·{" "}
-                        {dateText(n.updated_at)}
-                      </p>
-                    </div>
-                    <span className="h-fit rounded-full border border-(--line) px-3 py-1 text-xs">
-                      {n.visibility === "public" ? "Public" : "Private"}
-                    </span>
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Btn primary onClick={() => setEdit(n)}>
-                      Edit & preview
-                    </Btn>
-                    <Btn
-                      onClick={() => {
-                        setCascade(false);
-                        setOperation({ n, kind: "visibility" });
-                      }}
-                    >
-                      {n.visibility === "public"
-                        ? "Unpublish"
-                        : "Publish"}
-                    </Btn>
-                    <Btn onClick={() => setOperation({ n, kind: "delete" })}>
-                      Delete content
-                    </Btn>
-                  </div>
-                </article>
-              ))}
-              {!d.rows.length && (
-                <div className="py-12 text-center">
-                  <p>No matching content.</p>
-                  <Btn
-                    onClick={() => {
-                      setQuery("");
-                      setSearch("");
-                      setKind("");
-                      setLanguage("");
-                      setVisibility("");
-                      setSource("");
-                      setPage(1);
-                    }}
-                  >
-                    Clear filters
-                  </Btn>
-                </div>
-              )}
-            </div>
+            <DataGrid id="content" label="Content" rows={d.rows} sort={sort} onSort={next=>{setSort(next);setPage(1);}} columns={[
+             {key:'title',label:'Title',required:true},
+             {key:'owner',label:'Owner',render:n=>n.owner.username,filtered:!!source,filter:<Select label="Source" value={source} onChange={filter(setSource)}><option value="">All sources</option><option value="system">Admin / Staff</option><option value="users">Users</option><option value="mine">Mine</option></Select>},
+             {key:'kind',label:'Type',render:n=>kindNames[n.kind],filtered:!!kind,filter:<Select label="Type" value={kind} onChange={filter(setKind)}><option value="">All types</option>{Object.entries(kindNames).map(([key,name])=><option key={key} value={key}>{name}</option>)}</Select>},
+             {key:'language',label:'Language',filtered:!!language,filter:<Select label="Language" value={language} onChange={filter(setLanguage)}><option value="">All languages</option><option value="en">English</option><option value="de">German</option></Select>},
+             {key:'visibility',label:'Visibility',filtered:!!visibility,filter:<Select label="Visibility" value={visibility} onChange={filter(setVisibility)}><option value="">Any visibility</option><option value="public">Public</option><option value="private">Private</option></Select>},
+             {key:'updated_at',label:'Updated',numeric:true,render:n=>dateText(n.updated_at)},
+             {key:'actions',label:'Actions',required:true,sortable:false,render:n=><RowActions label={`Actions for ${n.title}`} items={[
+ {key:'edit',label:'Edit & preview',run:()=>setEdit(n)},
+ {key:'visibility',label:n.visibility==='public'?'Unpublish':'Publish',run:()=>{setCascade(false);setOperation({n,kind:'visibility'});}},
+ {key:'delete',label:'Delete content',danger:true,run:()=>setOperation({n,kind:'delete'})}
+ ]}/>}
+            ]}/>
             <Pagination page={page} total={d.total} onChange={setPage} />
           </>
         )}

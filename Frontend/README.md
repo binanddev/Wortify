@@ -137,3 +137,32 @@ All interface labels, accessible names, validation messages and API documentatio
 Each Windows app has its own left sidebar. `DesktopWindow` owns the stable `SidebarTools` portal target inside that sidebar; focus changes must not move or remount tools. `renderNavigation` renders the app-specific tree inside the same route context. The title-bar menu button toggles that sidebar. The old separate Tools app is removed.
 
 Desktop shortcuts use colored artwork and pointer capture for dragging. Movement suppresses launching; Enter opens the app, Alt + arrow keys move the icon. Positions are saved locally with `wortify:windows-shortcut:<app>`, and clamped to the viewport. These preferences do not modify lesson data or other themes.
+
+Practice Hub groups My practice (`/:lang/practice`), Discover (`/:lang/explore`) and Create (`/:lang/create`). Existing URLs remain valid. PracticeArea owns navigation only; feature components retain their API and permissions. Windows maps all three routes to the practice window. Deep learning/authoring routes show a compact back link. Dialogue and elimination styles accept one answer; legacy multi-answer rendering remains available.
+
+Practice Hub section links now live in the shared SidebarTools portal (back navigation, or the Windows window sidebar). My practice opens `/practice/all`; the catalog displays 15 folders per page and resets pagination when searching. Dialogue and Elimination hide the unsupported multiple-answer option.
+
+Multiple-choice options are shuffled only in the question renderer, with stable ordering while answering. Authoring/import/export retain stored order and accepted answer text. Inline gap choices are also shuffled per question. True/False/Not given retains semantic order. Elimination is an optional, ungraded crossing-out aid; the selected answer is graded normally.
+
+Drag-fill exercises share the union of all question word banks, distractors, and gap choices on every sentence. Repeated words keep the maximum required multiplicity across questions. Each sentence starts with the full bank; previously completed sentences do not consume it. Authoring preserves imported WORDS and automatically includes gap answers.
+
+Authors can select Word bank scope: Separate choices for each question or Shared choices for the whole exercise. Legacy exercises default to shared. Text import/export uses BANK_SCOPE: question/exercise before QUESTION. Inline multiple choice offers Choose and reveal (STYLE: fall_away): incorrect alternatives disappear after successful checking. Example: QUESTION: She {{1}} a teacher. and BLANK: is => is | are | am.
+
+Settings > Backup & restore uses the authenticated account backup API. It flushes both language sync queues before export, previews ZIP record counts before restoration, and restores content as private copies. See `../Backend/BACKUPS.md` for the versioned archive contract and limits.
+
+Administration uses an independent `/manage` console opened from Home. Legacy `/en/admin` and `/de/admin` links still open the same console. Learning navigation and Windows desktop no longer advertise an admin app. Superusers can export all, filtered, or selected accounts. See Backend/BACKUPS.md for archive details.
+
+Admin data grids: Users, Content and Activity use sticky headers/identity columns, per-grid column visibility, and server-side multi-column ordering (Shift-click adds a sort key). Light/Dark and Comfortable/Cozy/Compact are independent admin display preferences. Role/status inline editors save through existing authorized account endpoints, with explicit Save/Cancel.
+
+
+### Admin presentation isolation
+The admin workspace uses `data-interface="admin"` and its own Light/Dark palette in
+`src/design-system/admin.css`. Learning background selectors explicitly exclude
+Admin; its canvas is a solid color. Appearance changes are restored when leaving
+Admin and do not update a learner's saved theme.
+Tables default to Compact (existing density preferences are retained). HeroUI
+Dropdown/Popover provides portalled actions, filters and column controls without
+changing row height. Identity and Actions columns remain fixed during horizontal
+scrolling. Destructive actions retain the existing confirmation and API checks.
+Offline checks after `npm run build`: `node scripts/verify-admin-grid.mjs` and
+`node scripts/verify-admin-menu.mjs`; neither starts a web server.

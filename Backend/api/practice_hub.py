@@ -30,6 +30,10 @@ def validate_payload(kind,payload):
         if not isinstance(payload.get('presentation',{}),dict):raise ValueError('presentation must be a JSON object.')
         mode=payload.get('presentation',{}).get('interaction','short_answer')
         if mode not in MODES:raise ValueError('Invalid exercise type.')
+        if mode == 'multiple_choice' and payload.get('kind') == 'multi' and payload.get('presentation', {}).get('style') in ('dialogue_reply','elimination'):
+            raise ValueError('This exercise style supports one correct answer. Choose Single answer.')
+        if payload.get('presentation', {}).get('bank_scope', 'exercise') not in ('question', 'exercise'):
+            raise ValueError('Word bank scope must be question or exercise.')
         question_kind=MODES[mode]
         if mode=='multiple_choice' and payload.get('kind')=='multi':question_kind='multi'
         payload['kind']=question_kind
@@ -151,6 +155,17 @@ def organize(request):
     owned={n.pk:n for n in PracticeNode.objects.select_for_update().filter(owner=request.user,language=request.language)}
     if any(i not in owned for i in ids):raise ValueError('Only the owner can organize this content.')
     action=data.get('action','move')
+    if action=='delete':
+        descendants=set(ids)
+        frontier=set(ids)
+        while frontier:
+            children=list(PracticeNode.objects.filter(parent_id__in=frontier).values_list('pk','owner_id','language'))
+            if any(owner!=request.user.pk or language!=request.language for _,owner,language in children):
+                raise ValueError('Cannot delete a folder containing content outside your workspace.')
+            frontier={pk for pk,_,_ in children}-descendants
+            descendants.update(frontier)
+        PracticeNode.objects.filter(pk__in=ids,owner=request.user,language=request.language).delete()
+        return JsonResponse({'ok':True,'deleted':len(descendants)})
     if action=='restore':
         placements=data.get('placements')
         if not isinstance(placements,list) or len(placements)!=len(ids) or any(not isinstance(p,dict) or p.get('id')!=pk for p,pk in zip(placements,ids)):
