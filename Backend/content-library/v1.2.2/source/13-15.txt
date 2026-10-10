@@ -1,0 +1,168 @@
+@topic|everyday_grammar|Ngữ pháp qua việc thường ngày|trang.dinh.en|Trang Đinh|sophie.koch.de|Sophie Koch
+@unit|Buổi sáng và thói quen
+get up before sunrise|vor Sonnenaufgang aufstehen|dậy trước khi mặt trời mọc
+open the bedroom curtains|die Schlafzimmervorhänge öffnen|mở rèm phòng ngủ
+clean the bathroom sink|das Waschbecken im Bad reinigen|lau bồn rửa trong phòng tắm
+prepare a packed lunch|ein Lunchpaket vorbereiten|chuẩn bị bữa trưa mang theo
+check today's appointments|die heutigen Termine prüfen|kiểm tra lịch hẹn hôm nay
+choose clothes for the weather|Kleidung passend zum Wetter wählen|chọn quần áo phù hợp thời tiết
+feed the cat|die Katze füttern|cho mèo ăn
+lock the front door|die Haustür abschließen|khóa cửa chính
+catch the early bus|den frühen Bus erreichen|kịp chuyến xe buýt sớm
+arrive at work on time|pünktlich bei der Arbeit ankommen|đến chỗ làm đúng giờ
+@unit|Nhiệm vụ nhỏ trong ngày
+post a letter|einen Brief verschicken|gửi một lá thư
+collect a parcel from a locker|ein Paket aus einer Packstation abholen|nhận kiện hàng từ tủ giao hàng
+buy a notebook|ein Notizbuch kaufen|mua một cuốn sổ
+refill a water bottle|eine Wasserflasche auffüllen|đổ đầy lại chai nước
+check the bus timetable|den Busfahrplan prüfen|xem thời gian biểu xe buýt
+charge a travel card|eine Fahrkarte aufladen|nạp tiền vào thẻ đi lại
+drop off the recycling|Wertstoffe zur Sammelstelle bringen|mang đồ tái chế đến điểm thu gom
+pick up a repaired watch|eine reparierte Uhr abholen|nhận chiếc đồng hồ đã sửa
+make a brief phone call|ein kurzes Telefonat führen|gọi điện ngắn
+leave a clear voicemail|eine klare Sprachnachricht hinterlassen|để lại lời nhắn thoại rõ ràng
+@unit|Thay đổi kế hoạch
+move an appointment to Friday|einen Termin auf Freitag verschieben|dời cuộc hẹn sang thứ Sáu
+choose a different route|eine andere Route wählen|chọn tuyến đường khác
+leave earlier than planned|früher als geplant losfahren|khởi hành sớm hơn dự định
+wait for the next train|auf den nächsten Zug warten|đợi chuyến tàu tiếp theo
+notify a friend about a delay|einen Freund über eine Verspätung informieren|báo bạn về việc đến muộn
+find an alternative meeting place|einen anderen Treffpunkt finden|tìm nơi gặp thay thế
+shorten a planned visit|einen geplanten Besuch verkürzen|rút ngắn chuyến thăm đã định
+extend a library loan|eine Bibliotheksausleihe verlängern|gia hạn mượn sách thư viện
+rearrange the afternoon schedule|den Nachmittagsplan ändern|sắp xếp lại lịch buổi chiều
+confirm the revised plan|den geänderten Plan bestätigen|xác nhận kế hoạch đã sửa
+@unit|Chuẩn bị cho ngày mai
+iron a shirt|ein Hemd bügeln|là một chiếc áo sơ mi
+pack a work bag|eine Arbeitstasche packen|soạn túi đi làm
+prepare breakfast ingredients|die Frühstückszutaten vorbereiten|chuẩn bị nguyên liệu bữa sáng
+set an alarm clock|einen Wecker stellen|đặt đồng hồ báo thức
+check the next day's forecast|die Vorhersage für den nächsten Tag prüfen|xem dự báo ngày hôm sau
+write a short priority list|eine kurze Prioritätenliste schreiben|viết danh sách ưu tiên ngắn
+put the keys near the door|die Schlüssel neben die Tür legen|đặt chìa khóa cạnh cửa
+download a travel ticket|eine Fahrkarte herunterladen|tải vé đi lại
+prepare documents for an appointment|Unterlagen für einen Termin vorbereiten|chuẩn bị giấy tờ cho cuộc hẹn
+clear the desk before bed|den Schreibtisch vor dem Schlafen aufräumen|dọn bàn làm việc trước khi ngủ
+@unit|Làm việc độc lập
+follow a written checklist|einer schriftlichen Checkliste folgen|làm theo danh sách kiểm tra bằng văn bản
+finish one task at a time|jeweils eine Aufgabe abschließen|hoàn thành từng việc một
+estimate the time needed|die benötigte Zeit abschätzen|ước lượng thời gian cần thiết
+ask for help early|frühzeitig um Hilfe bitten|xin giúp đỡ sớm
+check the result carefully|das Ergebnis sorgfältig prüfen|kiểm tra kết quả cẩn thận
+correct a small error|einen kleinen Fehler korrigieren|sửa một lỗi nhỏ
+keep the workspace tidy|den Arbeitsplatz ordentlich halten|giữ chỗ làm gọn gàng
+store tools safely|Werkzeuge sicher aufbewahren|cất dụng cụ an toàn
+record a completed task|eine erledigte Aufgabe dokumentieren|ghi lại công việc đã hoàn thành
+prepare for the next activity|die nächste Aktivität vorbereiten|chuẩn bị cho hoạt động tiếp theo
+@topic|discussion_grammar|Ngữ pháp trong thảo luận và quyết định|duc.phan.en|Đức Phan|finn.richter.de|Finn Richter
+@unit|Phân tích vấn đề
+identify the real problem|das eigentliche Problem erkennen|xác định vấn đề thực sự
+separate facts from opinions|Fakten von Meinungen trennen|phân biệt sự thật và ý kiến
+gather relevant information|relevante Informationen sammeln|thu thập thông tin liên quan
+compare reliable sources|zuverlässige Quellen vergleichen|so sánh nguồn đáng tin cậy
+question an assumption|eine Annahme hinterfragen|xem xét lại một giả định
+define a clear objective|ein klares Ziel definieren|xác định mục tiêu rõ ràng
+recognize a limitation|eine Einschränkung erkennen|nhận ra một hạn chế
+examine a possible cause|eine mögliche Ursache untersuchen|xem xét nguyên nhân có thể có
+check whether evidence is sufficient|die Beweislage prüfen|kiểm tra xem bằng chứng có đủ không
+describe the issue neutrally|den Sachverhalt neutral beschreiben|mô tả vấn đề trung lập
+@unit|So sánh phương án
+list the available options|die verfügbaren Möglichkeiten auflisten|liệt kê các phương án hiện có
+weigh the advantages and disadvantages|die Vor- und Nachteile abwägen|cân nhắc ưu và nhược điểm
+estimate the overall cost|die Gesamtkosten schätzen|ước lượng tổng chi phí
+consider the long-term effect|die langfristige Wirkung berücksichtigen|xem xét tác động dài hạn
+compare two realistic solutions|zwei realistische Lösungen vergleichen|so sánh hai giải pháp thực tế
+identify a potential risk|ein mögliches Risiko erkennen|nhận diện rủi ro tiềm ẩn
+check the available resources|die verfügbaren Ressourcen prüfen|kiểm tra nguồn lực sẵn có
+explain a trade-off|einen Zielkonflikt erklären|giải thích sự đánh đổi giữa các mục tiêu
+choose a practical alternative|eine praktikable Alternative wählen|chọn phương án thay thế khả thi
+justify a recommendation|eine Empfehlung begründen|nêu lý do cho đề xuất
+@unit|Đồng thuận và thương lượng
+state a position clearly|einen Standpunkt klar formulieren|trình bày quan điểm rõ ràng
+acknowledge a valid objection|einen berechtigten Einwand anerkennen|ghi nhận ý kiến phản đối có cơ sở
+ask for a specific example|um ein konkretes Beispiel bitten|xin một ví dụ cụ thể
+suggest a minor adjustment|eine kleine Anpassung vorschlagen|đề xuất điều chỉnh nhỏ
+explain the shared benefit|den gemeinsamen Nutzen erklären|giải thích lợi ích chung
+negotiate a workable deadline|eine machbare Frist aushandeln|thương lượng thời hạn khả thi
+clarify each person's responsibility|die Verantwortung jeder Person klären|làm rõ trách nhiệm mỗi người
+record the agreed conditions|die vereinbarten Bedingungen festhalten|ghi lại điều kiện đã thống nhất
+confirm mutual understanding|das gegenseitige Verständnis bestätigen|xác nhận sự hiểu nhau
+leave room for revision|Spielraum für Änderungen lassen|chừa khả năng điều chỉnh
+@unit|Báo cáo và phản hồi
+describe an unexpected outcome|ein unerwartetes Ergebnis beschreiben|mô tả kết quả ngoài dự kiến
+explain a change in priorities|eine Änderung der Prioritäten erklären|giải thích thay đổi ưu tiên
+report progress accurately|den Fortschritt genau berichten|báo cáo tiến độ chính xác
+highlight a remaining question|eine offene Frage hervorheben|nêu bật câu hỏi còn bỏ ngỏ
+acknowledge uncertainty|Unsicherheit eingestehen|thừa nhận điều chưa chắc chắn
+support a claim with evidence|eine Behauptung mit Belegen stützen|dùng bằng chứng hỗ trợ nhận định
+respond to constructive criticism|auf konstruktive Kritik reagieren|phản hồi góp ý mang tính xây dựng
+suggest a measurable improvement|eine messbare Verbesserung vorschlagen|đề xuất cải thiện có thể đo lường
+revise an earlier conclusion|eine frühere Schlussfolgerung revidieren|điều chỉnh kết luận trước
+summarize lessons learned|gewonnene Erkenntnisse zusammenfassen|tóm tắt bài học rút ra
+@unit|Thực hiện quyết định
+turn an idea into a plan|eine Idee in einen Plan umsetzen|chuyển ý tưởng thành kế hoạch
+set a clear milestone|einen klaren Meilenstein setzen|đặt mốc tiến độ rõ ràng
+allocate a limited budget|ein begrenztes Budget verteilen|phân bổ ngân sách có hạn
+test a small-scale solution|eine Lösung im kleinen Maßstab testen|thử giải pháp ở quy mô nhỏ
+monitor an important indicator|einen wichtigen Indikator beobachten|theo dõi chỉ số quan trọng
+adapt to new information|neue Informationen berücksichtigen|điều chỉnh theo thông tin mới
+communicate a revised decision|eine geänderte Entscheidung mitteilen|thông báo quyết định đã điều chỉnh
+review the implementation|die Umsetzung überprüfen|rà soát việc thực hiện
+recognize a successful contribution|einen erfolgreichen Beitrag anerkennen|ghi nhận đóng góp hiệu quả
+plan the next review|die nächste Überprüfung planen|lên kế hoạch rà soát tiếp theo
+@topic|expressions|Cụm từ và cách diễn đạt thiết thực|ngoc.lam.en|Ngọc Lâm|anna.vogt.de|Anna Vogt
+@unit|Động từ và cụm từ chỉ nỗ lực
+make an effort|eine Anstrengung unternehmen|nỗ lực
+take responsibility|Verantwortung übernehmen|nhận trách nhiệm
+pay attention to detail|auf Details achten|chú ý chi tiết
+make steady progress|stetige Fortschritte machen|tiến bộ đều đặn
+meet a realistic target|ein realistisches Ziel erreichen|đạt mục tiêu thực tế
+overcome an obstacle|ein Hindernis überwinden|vượt qua trở ngại
+gain practical experience|praktische Erfahrung sammeln|tích lũy kinh nghiệm thực tế
+put a useful idea into practice|eine nützliche Idee in die Praxis umsetzen|đưa ý tưởng hữu ích vào thực tế
+maintain a good habit|eine gute Gewohnheit beibehalten|duy trì thói quen tốt
+learn from a setback|aus einem Rückschlag lernen|học từ bước lùi
+@unit|Cụm từ quản lý thời gian
+make the most of a free afternoon|einen freien Nachmittag sinnvoll nutzen|tận dụng buổi chiều rảnh
+save time on routine tasks|bei Routineaufgaben Zeit sparen|tiết kiệm thời gian làm việc thường lệ
+set aside time for reading|Zeit zum Lesen einplanen|dành riêng thời gian đọc sách
+keep track of appointments|Termine im Blick behalten|theo dõi các cuộc hẹn
+avoid a last-minute rush|Hektik in letzter Minute vermeiden|tránh vội vàng vào phút cuối
+catch up on missed work|versäumte Arbeit nachholen|làm bù phần việc đã bỏ lỡ
+finish ahead of schedule|vor dem Zeitplan fertig werden|hoàn thành trước kế hoạch
+meet a tight deadline|eine knappe Frist einhalten|đáp ứng thời hạn gấp
+balance competing priorities|konkurrierende Prioritäten ausgleichen|cân bằng các ưu tiên cạnh tranh
+leave enough time for travel|genug Zeit für die Fahrt einplanen|dành đủ thời gian di chuyển
+@unit|Cụm từ giao tiếp lịch sự
+make a reasonable request|eine angemessene Bitte äußern|đưa ra yêu cầu hợp lý
+express sincere thanks|aufrichtigen Dank ausdrücken|bày tỏ lời cảm ơn chân thành
+offer a sincere apology|eine aufrichtige Entschuldigung aussprechen|đưa ra lời xin lỗi chân thành
+give a clear explanation|eine klare Erklärung geben|giải thích rõ ràng
+raise an important point|einen wichtigen Punkt ansprechen|nêu một điểm quan trọng
+reach a shared understanding|ein gemeinsames Verständnis erreichen|đạt được sự hiểu biết chung
+keep an open mind|offen für neue Ideen bleiben|giữ tinh thần cởi mở
+put a concern into words|ein Anliegen in Worte fassen|diễn đạt mối bận tâm thành lời
+show appreciation for help|Wertschätzung für Hilfe zeigen|thể hiện sự trân trọng giúp đỡ
+make a positive impression|einen positiven Eindruck machen|tạo ấn tượng tích cực
+@unit|Cụm từ học hỏi và thay đổi
+take a fresh approach|einen neuen Ansatz wählen|chọn cách tiếp cận mới
+develop a useful skill|eine nützliche Fähigkeit entwickeln|phát triển kỹ năng hữu ích
+build on previous knowledge|auf Vorwissen aufbauen|phát triển từ kiến thức đã có
+broaden a perspective|einen Blickwinkel erweitern|mở rộng góc nhìn
+gain a deeper understanding|ein tieferes Verständnis gewinnen|hiểu sâu hơn
+challenge an old habit|eine alte Gewohnheit hinterfragen|xem xét lại thói quen cũ
+make a gradual change|eine schrittweise Veränderung vornehmen|thay đổi từng bước
+find a better balance|ein besseres Gleichgewicht finden|tìm sự cân bằng tốt hơn
+turn feedback into action|Feedback in Handlungen umsetzen|chuyển phản hồi thành hành động
+recognize an opportunity to learn|eine Lernchance erkennen|nhận ra cơ hội học hỏi
+@unit|Cụm từ hợp tác và tin cậy
+build a strong working relationship|eine starke Arbeitsbeziehung aufbauen|xây dựng quan hệ làm việc vững chắc
+earn another person's trust|das Vertrauen einer anderen Person gewinnen|giành được lòng tin của người khác
+keep a commitment|eine Zusage einhalten|giữ cam kết
+share a common goal|ein gemeinsames Ziel verfolgen|cùng theo đuổi mục tiêu chung
+play an active role|eine aktive Rolle spielen|đóng vai trò tích cực
+make a useful contribution|einen nützlichen Beitrag leisten|đóng góp hữu ích
+support a joint effort|eine gemeinsame Anstrengung unterstützen|hỗ trợ nỗ lực chung
+give credit where it is due|verdiente Anerkennung geben|ghi nhận công lao xứng đáng
+resolve a difference of opinion|eine Meinungsverschiedenheit klären|giải quyết bất đồng ý kiến
+celebrate a shared achievement|einen gemeinsamen Erfolg feiern|ăn mừng thành tựu chung

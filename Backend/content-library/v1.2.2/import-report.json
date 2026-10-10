@@ -1,0 +1,269 @@
+{
+  "batch": "wortify-starter-20261010-v1",
+  "environment": "development",
+  "database_engine": "sqlite",
+  "backup": "E:\\code\\bigmywweb\\.development-backups\\before-starter-library-20261010T124235003084Z.sqlite3",
+  "accounts": [
+    {
+      "username": "linh.nguyen.en",
+      "name": "Linh Nguyễn",
+      "language": "en",
+      "topic": "Làm quen và giao tiếp xã hội",
+      "exercises": 100,
+      "root_id": 815
+    },
+    {
+      "username": "lara.hoffmann.de",
+      "name": "Lara Hoffmann",
+      "language": "de",
+      "topic": "Làm quen và giao tiếp xã hội",
+      "exercises": 100,
+      "root_id": 926
+    },
+    {
+      "username": "mai.tran.en",
+      "name": "Mai Trần",
+      "language": "en",
+      "topic": "Gia đình và các mối quan hệ",
+      "exercises": 100,
+      "root_id": 1037
+    },
+    {
+      "username": "jonas.weber.de",
+      "name": "Jonas Weber",
+      "language": "de",
+      "topic": "Gia đình và các mối quan hệ",
+      "exercises": 100,
+      "root_id": 1148
+    },
+    {
+      "username": "bao.le.en",
+      "name": "Bảo Lê",
+      "language": "en",
+      "topic": "Nhà ở và đời sống hằng ngày",
+      "exercises": 100,
+      "root_id": 1259
+    },
+    {
+      "username": "mila.schneider.de",
+      "name": "Mila Schneider",
+      "language": "de",
+      "topic": "Nhà ở và đời sống hằng ngày",
+      "exercises": 100,
+      "root_id": 1370
+    },
+    {
+      "username": "thao.pham.en",
+      "name": "Thảo Phạm",
+      "language": "en",
+      "topic": "Ăn uống và nấu ăn",
+      "exercises": 100,
+      "root_id": 1481
+    },
+    {
+      "username": "felix.wagner.de",
+      "name": "Felix Wagner",
+      "language": "de",
+      "topic": "Ăn uống và nấu ăn",
+      "exercises": 100,
+      "root_id": 1592
+    },
+    {
+      "username": "nam.hoang.en",
+      "name": "Nam Hoàng",
+      "language": "en",
+      "topic": "Mua sắm và dịch vụ",
+      "exercises": 100,
+      "root_id": 1703
+    },
+    {
+      "username": "lea.becker.de",
+      "name": "Lea Becker",
+      "language": "de",
+      "topic": "Mua sắm và dịch vụ",
+      "exercises": 100,
+      "root_id": 1814
+    },
+    {
+      "username": "ha.vu.en",
+      "name": "Hà Vũ",
+      "language": "en",
+      "topic": "Du lịch và đi lại",
+      "exercises": 100,
+      "root_id": 1925
+    },
+    {
+      "username": "paul.fischer.de",
+      "name": "Paul Fischer",
+      "language": "de",
+      "topic": "Du lịch và đi lại",
+      "exercises": 100,
+      "root_id": 2036
+    },
+    {
+      "username": "huy.dang.en",
+      "name": "Huy Đặng",
+      "language": "en",
+      "topic": "Công việc và nghề nghiệp",
+      "exercises": 100,
+      "root_id": 2147
+    },
+    {
+      "username": "emma.hartmann.de",
+      "name": "Emma Hartmann",
+      "language": "de",
+      "topic": "Công việc và nghề nghiệp",
+      "exercises": 100,
+      "root_id": 2258
+    },
+    {
+      "username": "an.bui.en",
+      "name": "An Bùi",
+      "language": "en",
+      "topic": "Học tập và kỹ năng học ngoại ngữ",
+      "exercises": 100,
+      "root_id": 2369
+    },
+    {
+      "username": "noah.keller.de",
+      "name": "Noah Keller",
+      "language": "de",
+      "topic": "Học tập và kỹ năng học ngoại ngữ",
+      "exercises": 100,
+      "root_id": 2480
+    },
+    {
+      "username": "yen.do.en",
+      "name": "Yến Đỗ",
+      "language": "en",
+      "topic": "Sức khỏe và lối sống",
+      "exercises": 100,
+      "root_id": 2591
+    },
+    {
+      "username": "mia.braun.de",
+      "name": "Mia Braun",
+      "language": "de",
+      "topic": "Sức khỏe và lối sống",
+      "exercises": 100,
+      "root_id": 2702
+    },
+    {
+      "username": "khanh.vo.en",
+      "name": "Khánh Võ",
+      "language": "en",
+      "topic": "Sở thích và giải trí",
+      "exercises": 100,
+      "root_id": 2813
+    },
+    {
+      "username": "luis.bergmann.de",
+      "name": "Luis Bergmann",
+      "language": "de",
+      "topic": "Sở thích và giải trí",
+      "exercises": 100,
+      "root_id": 2924
+    },
+    {
+      "username": "quang.ngo.en",
+      "name": "Quang Ngô",
+      "language": "en",
+      "topic": "Công nghệ và giao tiếp trực tuyến",
+      "exercises": 100,
+      "root_id": 3035
+    },
+    {
+      "username": "lena.wolf.de",
+      "name": "Lena Wolf",
+      "language": "de",
+      "topic": "Công nghệ và giao tiếp trực tuyến",
+      "exercises": 100,
+      "root_id": 3146
+    },
+    {
+      "username": "phuong.ly.en",
+      "name": "Phương Lý",
+      "language": "en",
+      "topic": "Văn hóa và cộng đồng",
+      "exercises": 100,
+      "root_id": 3257
+    },
+    {
+      "username": "ben.neumann.de",
+      "name": "Ben Neumann",
+      "language": "de",
+      "topic": "Văn hóa và cộng đồng",
+      "exercises": 100,
+      "root_id": 3368
+    },
+    {
+      "username": "trang.dinh.en",
+      "name": "Trang Đinh",
+      "language": "en",
+      "topic": "Ngữ pháp qua việc thường ngày",
+      "exercises": 100,
+      "root_id": 3479
+    },
+    {
+      "username": "sophie.koch.de",
+      "name": "Sophie Koch",
+      "language": "de",
+      "topic": "Ngữ pháp qua việc thường ngày",
+      "exercises": 100,
+      "root_id": 3590
+    },
+    {
+      "username": "duc.phan.en",
+      "name": "Đức Phan",
+      "language": "en",
+      "topic": "Ngữ pháp trong thảo luận và quyết định",
+      "exercises": 100,
+      "root_id": 3701
+    },
+    {
+      "username": "finn.richter.de",
+      "name": "Finn Richter",
+      "language": "de",
+      "topic": "Ngữ pháp trong thảo luận và quyết định",
+      "exercises": 100,
+      "root_id": 3812
+    },
+    {
+      "username": "ngoc.lam.en",
+      "name": "Ngọc Lâm",
+      "language": "en",
+      "topic": "Cụm từ và cách diễn đạt thiết thực",
+      "exercises": 100,
+      "root_id": 3923
+    },
+    {
+      "username": "anna.vogt.de",
+      "name": "Anna Vogt",
+      "language": "de",
+      "topic": "Cụm từ và cách diễn đạt thiết thực",
+      "exercises": 100,
+      "root_id": 4034
+    }
+  ],
+  "exercises": 3000,
+  "questions": 30000,
+  "bilingual_source_expressions": 750,
+  "source_expressions_per_language": 750,
+  "distinct_learning_objectives_per_unit": 20,
+  "theory_pages": 150,
+  "created_nodes_this_run": 3330,
+  "levels": {
+    "A2": 1120,
+    "B1": 1680,
+    "B2": 200
+  },
+  "modes": {
+    "matching": 150,
+    "short_answer": 150,
+    "cloze_drag_drop": 300,
+    "sentence_building": 2250,
+    "error_correction": 150
+  },
+  "pedagogy": "Spiral practice: 10 expressions per unit, reused across 20 distinct recognition, recall and grammar objectives; not 30,000 unrelated source sentences.",
+  "verified_at": "2026-10-10T12:43:56.850776+00:00"
+}

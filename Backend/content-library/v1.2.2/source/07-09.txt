@@ -1,0 +1,168 @@
+@topic|work|Công việc và nghề nghiệp|huy.dang.en|Huy Đặng|emma.hartmann.de|Emma Hartmann
+@unit|Tìm việc
+update a CV|einen Lebenslauf aktualisieren|cập nhật hồ sơ xin việc
+write a cover letter|ein Anschreiben verfassen|viết thư ứng tuyển
+read a job description|eine Stellenbeschreibung lesen|đọc mô tả công việc
+prepare for an interview|ein Vorstellungsgespräch vorbereiten|chuẩn bị cho buổi phỏng vấn
+explain a career change|einen Berufswechsel erklären|giải thích việc chuyển nghề
+describe a previous project|ein früheres Projekt beschreiben|mô tả dự án trước đây
+provide a work sample|eine Arbeitsprobe vorlegen|cung cấp sản phẩm công việc mẫu
+ask about working hours|nach den Arbeitszeiten fragen|hỏi về giờ làm việc
+negotiate a starting date|einen Eintrittstermin vereinbaren|thỏa thuận ngày bắt đầu làm
+follow up on an application|wegen einer Bewerbung nachfragen|hỏi lại về hồ sơ ứng tuyển
+@unit|Ngày đầu tại công ty
+meet the new team|das neue Team kennenlernen|làm quen nhóm mới
+set up a workstation|einen Arbeitsplatz einrichten|chuẩn bị chỗ làm việc
+read the staff handbook|das Mitarbeiterhandbuch lesen|đọc sổ tay nhân viên
+request access to a shared folder|Zugriff auf einen gemeinsamen Ordner beantragen|xin quyền truy cập thư mục chung
+learn the safety procedures|die Sicherheitsabläufe lernen|tìm hiểu quy trình an toàn
+find the meeting room|den Besprechungsraum finden|tìm phòng họp
+introduce a new employee|einen neuen Mitarbeiter vorstellen|giới thiệu nhân viên mới
+check the training schedule|den Schulungsplan prüfen|xem lịch đào tạo
+ask a supervisor for guidance|einen Vorgesetzten um Anleitung bitten|xin hướng dẫn từ cấp trên
+record emergency contacts|Notfallkontakte notieren|ghi thông tin liên hệ khẩn cấp
+@unit|Họp và phối hợp
+prepare a meeting agenda|eine Tagesordnung vorbereiten|chuẩn bị chương trình họp
+send a calendar invitation|eine Kalendereinladung senden|gửi lời mời trên lịch
+present a project update|einen Projektfortschritt vorstellen|trình bày tiến độ dự án
+clarify a requirement|eine Anforderung klären|làm rõ yêu cầu
+take meeting minutes|ein Sitzungsprotokoll führen|ghi biên bản họp
+assign a task fairly|eine Aufgabe fair verteilen|phân công nhiệm vụ công bằng
+agree on a deadline|eine Frist vereinbaren|thống nhất hạn hoàn thành
+raise a practical concern|ein praktisches Bedenken ansprechen|nêu một băn khoăn thực tế
+summarize the decisions|die Entscheidungen zusammenfassen|tóm tắt các quyết định
+share the action items|die nächsten Aufgaben teilen|chia sẻ các việc cần làm tiếp theo
+@unit|Giao tiếp với khách hàng
+answer a customer enquiry|eine Kundenanfrage beantworten|trả lời yêu cầu thông tin của khách hàng
+explain a service clearly|eine Dienstleistung verständlich erklären|giải thích dịch vụ dễ hiểu
+confirm an order|eine Bestellung bestätigen|xác nhận đơn hàng
+prepare a quotation|ein Angebot erstellen|lập báo giá
+send an invoice|eine Rechnung schicken|gửi hóa đơn
+check the order status|den Bestellstatus prüfen|kiểm tra tình trạng đơn hàng
+handle a complaint politely|eine Beschwerde höflich bearbeiten|xử lý khiếu nại lịch sự
+offer an alternative solution|eine alternative Lösung anbieten|đề xuất giải pháp khác
+follow up after delivery|nach der Lieferung nachfragen|hỏi thăm sau giao hàng
+protect customer information|Kundendaten schützen|bảo vệ thông tin khách hàng
+@unit|Phát triển nghề nghiệp
+request useful feedback|um hilfreiches Feedback bitten|xin phản hồi hữu ích
+learn a new work skill|eine neue berufliche Fähigkeit lernen|học kỹ năng nghề nghiệp mới
+document a successful process|einen erfolgreichen Ablauf dokumentieren|ghi lại quy trình hiệu quả
+mentor a junior colleague|einen jüngeren Kollegen betreuen|hướng dẫn đồng nghiệp ít kinh nghiệm
+set a realistic career goal|ein realistisches Berufsziel setzen|đặt mục tiêu nghề nghiệp thực tế
+attend a professional workshop|einen beruflichen Workshop besuchen|tham dự hội thảo chuyên môn
+review a completed project|ein abgeschlossenes Projekt auswerten|đánh giá dự án đã hoàn thành
+manage a heavy workload|eine hohe Arbeitsbelastung bewältigen|xử lý khối lượng công việc lớn
+request time off|Urlaub beantragen|xin nghỉ phép
+maintain a healthy work-life balance|eine gesunde Work-Life-Balance bewahren|duy trì cân bằng công việc và cuộc sống
+@topic|study|Học tập và kỹ năng học ngoại ngữ|an.bui.en|An Bùi|noah.keller.de|Noah Keller
+@unit|Tổ chức việc học
+set a weekly learning goal|ein wöchentliches Lernziel setzen|đặt mục tiêu học tập hằng tuần
+create a study timetable|einen Lernplan erstellen|lập thời gian biểu học tập
+choose a quiet study space|einen ruhigen Lernort wählen|chọn nơi học yên tĩnh
+divide a large assignment|eine große Aufgabe aufteilen|chia nhỏ một bài tập lớn
+review yesterday's notes|die Notizen von gestern wiederholen|ôn ghi chép hôm qua
+prepare the required materials|die benötigten Materialien vorbereiten|chuẩn bị tài liệu cần thiết
+track learning progress|den Lernfortschritt verfolgen|theo dõi tiến bộ học tập
+take a short study break|eine kurze Lernpause machen|nghỉ ngắn giữa buổi học
+remove a distraction|eine Ablenkung beseitigen|loại bỏ yếu tố gây xao nhãng
+finish a task before the deadline|eine Aufgabe vor der Frist abschließen|hoàn thành nhiệm vụ trước hạn
+@unit|Trong lớp học
+ask the teacher a question|der Lehrkraft eine Frage stellen|hỏi giáo viên một câu
+check the task instructions|die Aufgabenstellung prüfen|kiểm tra yêu cầu bài tập
+work with a partner|mit einem Partner arbeiten|làm việc với một bạn cùng cặp
+join a group discussion|an einer Gruppendiskussion teilnehmen|tham gia thảo luận nhóm
+explain an answer|eine Antwort erklären|giải thích một đáp án
+correct a misunderstanding|ein Missverständnis korrigieren|sửa một hiểu lầm
+borrow a textbook|ein Lehrbuch ausleihen|mượn sách giáo khoa
+submit an assignment|eine Aufgabe abgeben|nộp bài tập
+ask for extra practice|um zusätzliche Übungen bitten|xin bài luyện thêm
+give a short presentation|eine kurze Präsentation halten|trình bày ngắn
+@unit|Học từ vựng
+look up an unfamiliar expression|einen unbekannten Ausdruck nachschlagen|tra một cách diễn đạt chưa biết
+record a useful phrase|eine nützliche Wendung notieren|ghi lại một cụm từ hữu ích
+learn a noun with its article|ein Nomen mit seinem Artikel lernen|học danh từ cùng mạo từ
+check the plural form|die Pluralform prüfen|kiểm tra dạng số nhiều
+write an example sentence|einen Beispielsatz schreiben|viết một câu ví dụ
+compare two similar words|zwei ähnliche Wörter vergleichen|so sánh hai từ tương tự
+review words at spaced intervals|Wörter in zeitlichen Abständen wiederholen|ôn từ cách quãng
+identify a common collocation|eine häufige Wortverbindung erkennen|nhận ra tổ hợp từ thường dùng
+use a new word in context|ein neues Wort im Kontext verwenden|dùng từ mới trong ngữ cảnh
+build a personal word list|eine eigene Wortliste erstellen|tạo danh sách từ cá nhân
+@unit|Đọc và viết
+skim a short article|einen kurzen Artikel überfliegen|đọc lướt bài viết ngắn
+identify the main idea|die Hauptaussage erkennen|xác định ý chính
+find a supporting detail|ein unterstützendes Detail finden|tìm chi tiết bổ trợ
+infer meaning from context|die Bedeutung aus dem Kontext erschließen|đoán nghĩa từ ngữ cảnh
+outline a paragraph|einen Absatz planen|lập dàn ý cho đoạn văn
+connect two ideas|zwei Gedanken verbinden|liên kết hai ý
+replace a vague expression|einen ungenauen Ausdruck ersetzen|thay cách diễn đạt mơ hồ
+check punctuation|die Zeichensetzung prüfen|kiểm tra dấu câu
+revise a first draft|einen ersten Entwurf überarbeiten|sửa bản nháp đầu tiên
+cite a source accurately|eine Quelle korrekt angeben|trích dẫn nguồn chính xác
+@unit|Nghe và nói
+listen for key information|auf Schlüsselinformationen achten|chú ý thông tin quan trọng khi nghe
+repeat a useful sentence aloud|einen nützlichen Satz laut wiederholen|đọc to lại một câu hữu ích
+record a short spoken message|eine kurze Sprachnachricht aufnehmen|thu một tin nhắn thoại ngắn
+practise a difficult sound|einen schwierigen Laut üben|luyện một âm khó
+notice the stressed syllable|die betonte Silbe erkennen|nhận ra âm tiết được nhấn
+compare two pronunciations|zwei Aussprachen vergleichen|so sánh hai cách phát âm
+ask a speaker to repeat|einen Sprecher um Wiederholung bitten|nhờ người nói nhắc lại
+describe an object without naming it|einen Gegenstand ohne seinen Namen beschreiben|mô tả đồ vật mà không gọi tên
+retell a short story|eine kurze Geschichte nacherzählen|kể lại một câu chuyện ngắn
+speak for one minute without notes|eine Minute ohne Notizen sprechen|nói một phút không dùng ghi chú
+@topic|wellbeing|Sức khỏe và lối sống|yen.do.en|Yến Đỗ|mia.braun.de|Mia Braun
+@unit|Đặt lịch chăm sóc sức khỏe
+book a medical appointment|einen Arzttermin vereinbaren|đặt lịch khám
+describe a symptom clearly|ein Symptom genau beschreiben|mô tả rõ triệu chứng
+bring an insurance card|eine Versicherungskarte mitbringen|mang thẻ bảo hiểm
+complete a registration form|ein Anmeldeformular ausfüllen|điền phiếu đăng ký
+ask about the waiting time|nach der Wartezeit fragen|hỏi thời gian chờ
+list current medications|aktuelle Medikamente auflisten|liệt kê thuốc đang dùng
+mention a known allergy|eine bekannte Allergie angeben|nêu tình trạng dị ứng đã biết
+ask for a written instruction|um eine schriftliche Anweisung bitten|xin hướng dẫn bằng văn bản
+arrange a follow-up visit|einen Folgetermin vereinbaren|đặt lịch tái khám
+cancel an appointment in advance|einen Termin rechtzeitig absagen|hủy lịch hẹn trước
+@unit|Trao đổi tại quầy thuốc
+show a prescription|ein Rezept vorzeigen|xuất trình đơn thuốc
+ask the pharmacist a question|dem Apotheker eine Frage stellen|hỏi dược sĩ một câu
+read the package leaflet|die Packungsbeilage lesen|đọc tờ hướng dẫn trong hộp
+check the storage instructions|die Lagerungshinweise prüfen|kiểm tra hướng dẫn bảo quản
+ask about possible side effects|nach möglichen Nebenwirkungen fragen|hỏi về tác dụng phụ có thể có
+check the name on the label|den Namen auf dem Etikett prüfen|kiểm tra tên trên nhãn
+request a clearer explanation|um eine verständlichere Erklärung bitten|xin giải thích dễ hiểu hơn
+keep medicine away from children|Medikamente von Kindern fernhalten|để thuốc xa trẻ em
+ask about proper disposal|nach der richtigen Entsorgung fragen|hỏi cách thải bỏ phù hợp
+confirm the prescribed dose|die verschriebene Dosis bestätigen|xác nhận liều được kê
+@unit|Nếp sống chủ động
+plan a regular bedtime|eine regelmäßige Schlafenszeit planen|lên giờ ngủ đều đặn
+prepare a balanced lunch|ein ausgewogenes Mittagessen vorbereiten|chuẩn bị bữa trưa cân bằng
+take a walk during a break|in einer Pause spazieren gehen|đi dạo trong giờ nghỉ
+carry water on a long walk|Wasser auf eine lange Wanderung mitnehmen|mang nước khi đi bộ đường dài
+make time for rest|Zeit für Erholung einplanen|dành thời gian nghỉ ngơi
+reduce late-night screen time|die Bildschirmzeit spätabends reduzieren|giảm thời gian dùng màn hình đêm muộn
+choose a comfortable desk chair|einen bequemen Schreibtischstuhl wählen|chọn ghế làm việc thoải mái
+schedule a routine check-up|eine Routineuntersuchung vereinbaren|đặt lịch kiểm tra sức khỏe định kỳ
+notice a change in energy|eine Veränderung des Energieniveaus bemerken|nhận thấy thay đổi về mức năng lượng
+discuss a health concern|ein gesundheitliches Anliegen besprechen|trao đổi một băn khoăn về sức khỏe
+@unit|Tinh thần và nghỉ ngơi
+recognize a sign of stress|ein Anzeichen von Stress erkennen|nhận ra dấu hiệu căng thẳng
+ask a trusted person for support|eine vertraute Person um Unterstützung bitten|nhờ người tin cậy hỗ trợ
+set a reasonable boundary|eine angemessene Grenze setzen|đặt giới hạn hợp lý
+plan a relaxing evening|einen entspannten Abend planen|lên kế hoạch cho buổi tối thư giãn
+write down a worry|eine Sorge aufschreiben|viết ra một điều lo lắng
+take a break from notifications|eine Pause von Benachrichtigungen machen|tạm nghỉ nhận thông báo
+talk about a difficult day|über einen schwierigen Tag sprechen|nói về một ngày khó khăn
+spend time outdoors|Zeit im Freien verbringen|dành thời gian ngoài trời
+seek professional support|professionelle Unterstützung suchen|tìm hỗ trợ chuyên môn
+make a manageable daily plan|einen machbaren Tagesplan erstellen|lập kế hoạch ngày vừa sức
+@unit|Chăm sóc khi đi xa
+locate a nearby clinic|eine nahe gelegene Praxis finden|tìm phòng khám gần đó
+save an emergency contact|einen Notfallkontakt speichern|lưu liên hệ khẩn cấp
+explain a dietary requirement|eine Ernährungsanforderung erklären|giải thích yêu cầu về chế độ ăn
+pack essential personal supplies|wichtige persönliche Dinge einpacken|mang vật dụng cá nhân thiết yếu
+request assistance at a station|am Bahnhof um Hilfe bitten|xin hỗ trợ tại nhà ga
+find an accessible entrance|einen barrierefreien Eingang finden|tìm lối vào thuận tiện cho người khuyết tật
+ask for a seat|um einen Sitzplatz bitten|xin chỗ ngồi
+describe the location precisely|den Standort genau beschreiben|mô tả chính xác vị trí
+contact the travel insurer|die Reiseversicherung kontaktieren|liên hệ đơn vị bảo hiểm du lịch
+keep important documents together|wichtige Dokumente zusammen aufbewahren|giữ giấy tờ quan trọng cùng một chỗ

@@ -51,7 +51,7 @@ export function PracticeGuide({ lang }) {
     </pre>
   );
   return (
-    <Page><FormattingHelp/>
+    <Page>
       <SidebarTools navOnly>
         <div className="flex flex-wrap gap-2">
           <Link
@@ -76,13 +76,22 @@ export function PracticeGuide({ lang }) {
         </div>
       </SidebarTools>
       <div className="mx-auto grid w-full max-w-5xl gap-6 text-(--ink)">
-        <Heading title="Exercise authoring guide" />
+        <Heading title="Exercise authoring guide · v1.2.2" />
+        <FormattingHelp/>
+        <section className={panel}>
+          <h2>Choose how learners answer</h2>
+          <p>Use BANK_SCOPE: question for a separate word bank per question, or BANK_SCOPE: exercise for a shared bank across the exercise. Repeat words when more than one gap needs them.</p>
+          <p>For inline choices, STYLE: fall_away keeps the correct word and removes incorrect choices after a correct answer. Dialogue replies and Eliminate and decide support one correct answer.</p>
+          <p>Add COMMENT: before the first QUESTION for a shared note. Add EXPLANATION: after each question or matching pair. Notes appear after a correct answer or an answer reveal; matching reveals each completed pair separately.</p>
+          <p>Settings → Learning lets learners adjust exercise text size and weight. Use lesson markup for line breaks, tables and image placement; keep answers and word banks plain.</p>
+          <p>Theory supports Markdown + lesson markup, uploaded images and a preview. Keep uploaded images attached when embedding their URLs. HTML theory remains a separate sandboxed format.</p>
+        </section>
         <div className="grid gap-4 md:grid-cols-3">
           {[
             [
               "01",
               "Choose a template",
-              "7 exercise types, 11 styles. Choose a template to get started.",
+              String(EXERCISE_TYPES.length) + " exercise types. Each template lists its supported styles.",
             ],
             [
               "02",

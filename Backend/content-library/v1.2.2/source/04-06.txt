@@ -1,0 +1,168 @@
+@topic|food|Ăn uống và nấu ăn|thao.pham.en|Thảo Phạm|felix.wagner.de|Felix Wagner
+@unit|Mua thực phẩm
+choose ripe tomatoes|reife Tomaten auswählen|chọn cà chua chín
+weigh the vegetables|das Gemüse wiegen|cân rau củ
+check the expiry date|das Haltbarkeitsdatum prüfen|kiểm tra hạn sử dụng
+compare the unit prices|die Grundpreise vergleichen|so sánh giá trên một đơn vị
+buy seasonal fruit|saisonales Obst kaufen|mua trái cây theo mùa
+ask for a paper bag|um eine Papiertüte bitten|xin một túi giấy
+find the dairy section|die Milchabteilung finden|tìm quầy sản phẩm từ sữa
+choose a smaller portion|eine kleinere Portion wählen|chọn khẩu phần nhỏ hơn
+read the ingredient list|die Zutatenliste lesen|đọc danh sách thành phần
+avoid unnecessary packaging|unnötige Verpackungen vermeiden|tránh bao bì không cần thiết
+@unit|Chuẩn bị bữa ăn
+peel the potatoes|die Kartoffeln schälen|gọt vỏ khoai tây
+slice the onions|die Zwiebeln in Scheiben schneiden|thái hành tây thành lát
+rinse the rice|den Reis abspülen|vo gạo
+boil some water|etwas Wasser kochen|đun một ít nước
+preheat the oven|den Backofen vorheizen|làm nóng lò trước
+measure the flour|das Mehl abmessen|đong bột mì
+stir the soup|die Suppe umrühren|khuấy súp
+season the sauce|die Soße würzen|nêm nước xốt
+set the kitchen timer|den Küchentimer stellen|đặt đồng hồ hẹn giờ trong bếp
+let the bread cool|das Brot abkühlen lassen|để bánh mì nguội
+@unit|Gọi món ở nhà hàng
+book a table for two|einen Tisch für zwei Personen reservieren|đặt bàn cho hai người
+ask for the menu|um die Speisekarte bitten|xin thực đơn
+order a vegetarian dish|ein vegetarisches Gericht bestellen|gọi món chay
+mention a food allergy|eine Lebensmittelallergie erwähnen|nêu tình trạng dị ứng thực phẩm
+ask about the ingredients|nach den Zutaten fragen|hỏi về thành phần món ăn
+request a glass of water|um ein Glas Wasser bitten|xin một cốc nước
+order the dressing separately|das Dressing separat bestellen|gọi nước xốt trộn riêng
+ask for the bill|um die Rechnung bitten|xin hóa đơn
+split the bill|die Rechnung teilen|chia tiền hóa đơn
+compliment the chef|dem Koch ein Kompliment machen|khen người đầu bếp
+@unit|Bảo quản và tiết kiệm
+store leftovers in the fridge|Essensreste im Kühlschrank aufbewahren|cất thức ăn thừa trong tủ lạnh
+freeze a portion of soup|eine Portion Suppe einfrieren|đông lạnh một phần súp
+label a food container|einen Lebensmittelbehälter beschriften|ghi nhãn hộp đựng thức ăn
+plan meals for the week|Mahlzeiten für die Woche planen|lên thực đơn trong tuần
+use vegetables before they spoil|Gemüse vor dem Verderben verwenden|dùng rau trước khi bị hỏng
+keep raw meat separate|rohes Fleisch getrennt aufbewahren|bảo quản thịt sống riêng
+wash a reusable bottle|eine Mehrwegflasche reinigen|rửa chai tái sử dụng
+make a shopping list|eine Einkaufsliste schreiben|viết danh sách mua đồ
+reduce food waste|Lebensmittelverschwendung reduzieren|giảm lãng phí thực phẩm
+share extra food|übriges Essen teilen|chia sẻ thức ăn còn dư
+@unit|Tiếp khách tại nhà
+prepare a simple starter|eine einfache Vorspeise zubereiten|chuẩn bị món khai vị đơn giản
+set the table|den Tisch decken|dọn bàn ăn
+offer a non-alcoholic drink|ein alkoholfreies Getränk anbieten|mời đồ uống không cồn
+serve the main course|das Hauptgericht servieren|phục vụ món chính
+cut the cake into slices|den Kuchen in Stücke schneiden|cắt bánh thành từng miếng
+pass the salt|das Salz reichen|đưa lọ muối
+explain a family recipe|ein Familienrezept erklären|giải thích công thức món ăn gia đình
+prepare an extra serving|eine zusätzliche Portion zubereiten|chuẩn bị thêm một suất ăn
+clear the table|den Tisch abräumen|dọn bàn sau bữa ăn
+pack some food for a guest|etwas Essen für einen Gast einpacken|gói một ít thức ăn cho khách
+@topic|shopping|Mua sắm và dịch vụ|nam.hoang.en|Nam Hoàng|lea.becker.de|Lea Becker
+@unit|Chọn hàng phù hợp
+compare two products|zwei Produkte vergleichen|so sánh hai sản phẩm
+check the product dimensions|die Produktmaße prüfen|kiểm tra kích thước sản phẩm
+try on a jacket|eine Jacke anprobieren|thử một chiếc áo khoác
+ask for a different size|nach einer anderen Größe fragen|hỏi cỡ khác
+choose a suitable colour|eine passende Farbe auswählen|chọn màu phù hợp
+test a display model|ein Ausstellungsmodell testen|thử sản phẩm trưng bày
+read customer reviews|Kundenbewertungen lesen|đọc đánh giá của khách hàng
+check the warranty|die Garantie prüfen|kiểm tra bảo hành
+look for a replacement part|ein Ersatzteil suchen|tìm linh kiện thay thế
+avoid an impulse purchase|einen Spontankauf vermeiden|tránh mua hàng bốc đồng
+@unit|Thanh toán
+pay by card|mit Karte bezahlen|thanh toán bằng thẻ
+ask for a receipt|um einen Kassenbon bitten|xin hóa đơn mua hàng
+check the total amount|den Gesamtbetrag prüfen|kiểm tra tổng số tiền
+use a discount code|einen Rabattcode verwenden|dùng mã giảm giá
+count the change|das Wechselgeld zählen|đếm tiền thừa
+confirm the delivery fee|die Liefergebühr bestätigen|xác nhận phí giao hàng
+choose a payment method|eine Zahlungsart auswählen|chọn phương thức thanh toán
+keep proof of purchase|den Kaufbeleg aufbewahren|giữ chứng từ mua hàng
+check a bank statement|einen Kontoauszug prüfen|kiểm tra sao kê ngân hàng
+set a spending limit|ein Ausgabenlimit festlegen|đặt giới hạn chi tiêu
+@unit|Đổi trả sản phẩm
+return a faulty item|einen defekten Artikel zurückgeben|trả lại hàng bị lỗi
+explain the problem clearly|das Problem deutlich erklären|giải thích rõ vấn đề
+request a refund|eine Rückerstattung beantragen|yêu cầu hoàn tiền
+exchange a damaged product|ein beschädigtes Produkt umtauschen|đổi sản phẩm bị hư hỏng
+show the original receipt|den Originalbeleg vorzeigen|xuất trình hóa đơn gốc
+check the return deadline|die Rückgabefrist prüfen|kiểm tra hạn trả hàng
+keep the original packaging|die Originalverpackung behalten|giữ bao bì gốc
+print a return label|ein Rücksendeetikett ausdrucken|in nhãn gửi trả
+track a returned parcel|eine Rücksendung verfolgen|theo dõi kiện hàng gửi trả
+contact customer service|den Kundendienst kontaktieren|liên hệ dịch vụ khách hàng
+@unit|Đặt dịch vụ
+book a haircut|einen Friseurtermin buchen|đặt lịch cắt tóc
+describe the desired service|die gewünschte Leistung beschreiben|mô tả dịch vụ mong muốn
+ask for a price estimate|um einen Kostenvoranschlag bitten|xin báo giá dự kiến
+confirm the service date|den Servicetermin bestätigen|xác nhận ngày thực hiện dịch vụ
+cancel a reservation|eine Reservierung stornieren|hủy đặt chỗ
+reschedule a delivery|eine Lieferung verschieben|đổi lịch giao hàng
+provide a delivery address|eine Lieferadresse angeben|cung cấp địa chỉ giao hàng
+request written confirmation|um eine schriftliche Bestätigung bitten|yêu cầu xác nhận bằng văn bản
+check the cancellation terms|die Stornierungsbedingungen prüfen|kiểm tra điều kiện hủy
+collect a repaired item|einen reparierten Gegenstand abholen|nhận lại đồ đã sửa
+@unit|Mua sắm có kế hoạch
+compare subscription plans|Abonnements vergleichen|so sánh các gói thuê bao
+cancel an unused subscription|ein ungenutztes Abonnement kündigen|hủy thuê bao không dùng
+save for a larger purchase|für eine größere Anschaffung sparen|tiết kiệm cho món đồ lớn
+review monthly expenses|die monatlichen Ausgaben überprüfen|rà soát chi tiêu hằng tháng
+choose a durable product|ein langlebiges Produkt wählen|chọn sản phẩm bền
+buy a second-hand bicycle|ein gebrauchtes Fahrrad kaufen|mua xe đạp đã qua sử dụng
+repair a torn bag|eine zerrissene Tasche reparieren|sửa chiếc túi bị rách
+borrow a rarely used tool|ein selten benutztes Werkzeug ausleihen|mượn dụng cụ ít dùng
+check the terms before signing|die Bedingungen vor der Unterschrift prüfen|kiểm tra điều khoản trước khi ký
+keep an emergency budget|ein Notfallbudget einplanen|dành ngân sách dự phòng
+@topic|travel|Du lịch và đi lại|ha.vu.en|Hà Vũ|paul.fischer.de|Paul Fischer
+@unit|Chuẩn bị chuyến đi
+check passport validity|die Gültigkeit des Reisepasses prüfen|kiểm tra hiệu lực hộ chiếu
+book a direct flight|einen Direktflug buchen|đặt chuyến bay thẳng
+compare train fares|Zugpreise vergleichen|so sánh giá vé tàu
+pack a travel adapter|einen Reiseadapter einpacken|mang theo bộ chuyển đổi ổ cắm
+download an offline map|eine Offlinekarte herunterladen|tải bản đồ ngoại tuyến
+check the luggage allowance|die Gepäckgrenze prüfen|kiểm tra hạn mức hành lý
+save a booking confirmation|eine Buchungsbestätigung speichern|lưu xác nhận đặt chỗ
+arrange airport transport|den Flughafentransfer organisieren|sắp xếp phương tiện đến sân bay
+check the weather forecast|die Wettervorhersage prüfen|xem dự báo thời tiết
+prepare a flexible itinerary|einen flexiblen Reiseplan vorbereiten|chuẩn bị lịch trình linh hoạt
+@unit|Sân bay và nhà ga
+find the departure board|die Abfahrtstafel finden|tìm bảng thông tin khởi hành
+print a boarding pass|eine Bordkarte ausdrucken|in thẻ lên máy bay
+check in a suitcase|einen Koffer aufgeben|ký gửi một chiếc va li
+follow the security instructions|die Sicherheitsanweisungen befolgen|làm theo hướng dẫn an ninh
+locate the correct platform|den richtigen Bahnsteig finden|tìm đúng sân ga
+ask about a delay|nach einer Verspätung fragen|hỏi về việc chậm chuyến
+change a train ticket|eine Fahrkarte umbuchen|đổi vé tàu
+reserve a window seat|einen Fensterplatz reservieren|đặt chỗ ngồi cạnh cửa sổ
+report missing luggage|fehlendes Gepäck melden|báo hành lý thất lạc
+make a connecting flight|einen Anschlussflug erreichen|kịp chuyến bay nối chuyến
+@unit|Khách sạn
+confirm a hotel booking|eine Hotelbuchung bestätigen|xác nhận đặt phòng khách sạn
+ask about breakfast times|nach den Frühstückszeiten fragen|hỏi giờ ăn sáng
+request a quiet room|um ein ruhiges Zimmer bitten|xin phòng yên tĩnh
+check the room number|die Zimmernummer prüfen|kiểm tra số phòng
+report a broken shower|eine defekte Dusche melden|báo vòi sen hỏng
+ask for an extra towel|um ein zusätzliches Handtuch bitten|xin thêm khăn tắm
+leave luggage at reception|Gepäck an der Rezeption lassen|gửi hành lý ở quầy lễ tân
+request a late checkout|um einen späten Check-out bitten|xin trả phòng muộn
+settle the hotel bill|die Hotelrechnung begleichen|thanh toán hóa đơn khách sạn
+return the room key|den Zimmerschlüssel zurückgeben|trả chìa khóa phòng
+@unit|Tìm đường trong thành phố
+ask for directions|nach dem Weg fragen|hỏi đường
+cross at the traffic lights|an der Ampel die Straße überqueren|sang đường tại đèn giao thông
+take the next turning|die nächste Abzweigung nehmen|rẽ ở lối tiếp theo
+find the nearest bus stop|die nächste Bushaltestelle finden|tìm trạm xe buýt gần nhất
+buy a day ticket|eine Tageskarte kaufen|mua vé ngày
+validate a ticket|eine Fahrkarte entwerten|xác thực vé
+change to another bus|in einen anderen Bus umsteigen|chuyển sang xe buýt khác
+get off at the museum|am Museum aussteigen|xuống xe ở bảo tàng
+walk along the river|am Fluss entlanggehen|đi bộ dọc bờ sông
+recognize a local landmark|ein örtliches Wahrzeichen erkennen|nhận ra một địa danh đặc trưng
+@unit|Du lịch có trách nhiệm
+respect local customs|örtliche Bräuche respektieren|tôn trọng phong tục địa phương
+carry a reusable water bottle|eine wiederverwendbare Wasserflasche mitnehmen|mang chai nước tái sử dụng
+stay on marked paths|auf markierten Wegen bleiben|đi trên đường đã đánh dấu
+ask before photographing people|vor Personenfotos um Erlaubnis bitten|xin phép trước khi chụp người khác
+support a local business|ein lokales Unternehmen unterstützen|ủng hộ cơ sở kinh doanh địa phương
+avoid disturbing wildlife|Störungen von Wildtieren vermeiden|tránh làm phiền động vật hoang dã
+check museum opening hours|die Öffnungszeiten des Museums prüfen|xem giờ mở cửa bảo tàng
+book a guided walking tour|eine geführte Stadtwanderung buchen|đặt tour đi bộ có hướng dẫn
+learn a local greeting|einen örtlichen Gruß lernen|học lời chào của địa phương
+leave a campsite clean|einen Campingplatz sauber hinterlassen|để lại khu cắm trại sạch sẽ

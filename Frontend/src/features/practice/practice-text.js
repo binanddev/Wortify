@@ -68,7 +68,11 @@ error_correction: click_edit (edit incorrect text), cross_out (remove extra word
 matching: tap_match (match cards). Each QUESTION is one card; ANSWER is its unique partner.
 sentence_building: tap_build (arrange tokens). WORDS defines the correct token order.
 categorization: drag_sort (sort cards). Each QUESTION is one card; ANSWER is exactly one GROUPS value.
-inline_selection: pill_toggle (toggle choices), inline_select (select a choice).
+inline_selection: pill_toggle (toggle choices), inline_select (select a choice), fall_away (wrong choices disappear after a correct answer).
+BANK_SCOPE: question or exercise for cloze_drag_drop; exercise uses a shared word bank (default).
+multiple_choice: dialogue_reply or elimination; these styles require a single correct answer.
+  OPTIONS: choices separated by |. ANSWER must match one choice.
+true_false_not_given: evidence_judge. Use CONTEXT for the passage and ANSWER: TRUE, FALSE or NOT_GIVEN.
   Every BLANK needs at least two options, including every accepted answer.
 short_answer: partial_input (complete a required PREFIX), sentence_rewrite (write the whole answer).
   ANSWER always contains the entire sentence, including PREFIX when provided.
@@ -80,7 +84,7 @@ Download the current .txt before editing if you want a backup. Editing questions
 Learners answer one question at a time, retry incorrect answers and save progress rather than scores.
 Preview does not change learning progress. Workspace pins include the highest accessible parent folder.
 
-ALL 7 TYPES AND 11 STYLES: complete importable samples follow. Lines beginning with # are documentation.`;
+ALL SUPPORTED TYPES AND STYLES: complete importable samples follow. Lines beginning with # are documentation.`;
 
 export function completePracticeGuide() {
   return (

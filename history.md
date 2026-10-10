@@ -5,6 +5,17 @@
 
 ---
 
+### [v1.2.2] - 2026-10-10 | Authoring Guide & Launch Library
+
+- Updated Create > Guide for current interaction styles, word-bank scope, lesson markup and feedback authoring.
+- Published 30 managed content-author accounts: 15 English and 15 German.
+- Each author has 100 exercises with 10 distinct questions per exercise, grouped into five practical topic units.
+- Added 150 supporting vocabulary/theory pages.
+- The curriculum reuses 750 bilingual expressions across recognition, recall and grammar objectives; it does not represent 30,000 independently authored source sentences.
+- Saved account/content exports and a database backup; removed the one-off starter generator from the application source.
+
+---
+
 ### [v1.2.1] - 2026-10-10 | Exercise Typography & Explanations
 
 - Added Settings > Learning controls for exercise text size (16–36px) and weight (400–700), with preview and reset.

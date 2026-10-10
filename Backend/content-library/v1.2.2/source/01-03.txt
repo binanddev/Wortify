@@ -1,0 +1,169 @@
+# English | Deutsch (infinitive at end) | Tiếng Việt
+@topic|introductions|Làm quen và giao tiếp xã hội|linh.nguyen.en|Linh Nguyễn|lara.hoffmann.de|Lara Hoffmann
+@unit|Lần đầu gặp mặt
+introduce a colleague|einen Kollegen vorstellen|giới thiệu một đồng nghiệp
+spell a surname|einen Nachnamen buchstabieren|đánh vần một họ
+pronounce a name correctly|einen Namen richtig aussprechen|phát âm đúng một tên
+start a conversation|ein Gespräch beginnen|bắt đầu một cuộc trò chuyện
+ask a polite question|eine höfliche Frage stellen|đặt một câu hỏi lịch sự
+exchange contact details|Kontaktdaten austauschen|trao đổi thông tin liên lạc
+remember a new name|einen neuen Namen behalten|nhớ một tên mới
+welcome a visitor|einen Besucher begrüßen|chào đón một khách đến thăm
+explain a nickname|einen Spitznamen erklären|giải thích một biệt danh
+find a common interest|ein gemeinsames Interesse finden|tìm một sở thích chung
+@unit|Giữ cuộc trò chuyện tự nhiên
+listen without interrupting|ohne Unterbrechung zuhören|lắng nghe mà không ngắt lời
+speak a little more slowly|etwas langsamer sprechen|nói chậm hơn một chút
+repeat the last sentence|den letzten Satz wiederholen|nhắc lại câu cuối
+explain an unfamiliar word|ein unbekanntes Wort erklären|giải thích một từ chưa biết
+ask for an example|um ein Beispiel bitten|xin một ví dụ
+change the subject politely|höflich das Thema wechseln|đổi chủ đề một cách lịch sự
+share a personal experience|eine persönliche Erfahrung teilen|chia sẻ một trải nghiệm cá nhân
+express a different opinion|eine andere Meinung äußern|bày tỏ một ý kiến khác
+thank someone for their time|jemandem für seine Zeit danken|cảm ơn ai đó đã dành thời gian
+end a conversation politely|ein Gespräch höflich beenden|kết thúc cuộc trò chuyện lịch sự
+@unit|Hẹn gặp và kết nối
+suggest a meeting place|einen Treffpunkt vorschlagen|đề xuất một nơi gặp mặt
+confirm an appointment|einen Termin bestätigen|xác nhận một cuộc hẹn
+send a short invitation|eine kurze Einladung verschicken|gửi một lời mời ngắn
+accept an invitation|eine Einladung annehmen|nhận lời mời
+decline an invitation politely|eine Einladung höflich ablehnen|từ chối lời mời lịch sự
+arrive at the agreed time|zur vereinbarten Zeit ankommen|đến vào giờ đã thống nhất
+bring a small gift|ein kleines Geschenk mitbringen|mang theo một món quà nhỏ
+introduce two friends|zwei Freunde miteinander bekannt machen|giới thiệu hai người bạn với nhau
+send a thank-you message|eine Dankesnachricht schicken|gửi một tin nhắn cảm ơn
+stay in touch|in Kontakt bleiben|giữ liên lạc
+@unit|Hiểu và tôn trọng người khác
+respect a personal boundary|eine persönliche Grenze respektieren|tôn trọng một giới hạn cá nhân
+ask before taking a photo|vor einem Foto um Erlaubnis bitten|xin phép trước khi chụp ảnh
+avoid a sensitive topic|ein sensibles Thema vermeiden|tránh một chủ đề nhạy cảm
+offer help without pressure|ohne Druck Hilfe anbieten|đề nghị giúp đỡ mà không gây áp lực
+recognize a misunderstanding|ein Missverständnis erkennen|nhận ra một sự hiểu lầm
+apologize for a mistake|um Entschuldigung für einen Fehler bitten|xin lỗi về một sai sót
+accept an apology|eine Entschuldigung annehmen|chấp nhận lời xin lỗi
+explain a cultural custom|einen kulturellen Brauch erklären|giải thích một phong tục văn hóa
+use a respectful form of address|eine respektvolle Anrede verwenden|sử dụng cách xưng hô tôn trọng
+make a newcomer feel welcome|einem Neuankömmling ein gutes Gefühl geben|khiến người mới đến cảm thấy được chào đón
+@unit|Giao tiếp trong nhóm
+introduce the next speaker|den nächsten Redner vorstellen|giới thiệu người phát biểu tiếp theo
+invite a quiet person to speak|eine stille Person zum Sprechen einladen|mời một người ít nói phát biểu
+summarize the main point|den Hauptpunkt zusammenfassen|tóm tắt ý chính
+check the meaning of a comment|die Bedeutung einer Bemerkung klären|làm rõ ý nghĩa của một nhận xét
+respond to a compliment|auf ein Kompliment reagieren|đáp lại một lời khen
+give constructive feedback|konstruktive Rückmeldung geben|đưa ra phản hồi mang tính xây dựng
+acknowledge another perspective|eine andere Perspektive anerkennen|ghi nhận một góc nhìn khác
+ask everyone for an opinion|alle nach ihrer Meinung fragen|hỏi ý kiến mọi người
+keep the discussion friendly|die Diskussion freundlich gestalten|giữ cuộc thảo luận thân thiện
+agree on the next step|den nächsten Schritt vereinbaren|thống nhất bước tiếp theo
+@topic|relationships|Gia đình và các mối quan hệ|mai.tran.en|Mai Trần|jonas.weber.de|Jonas Weber
+@unit|Chăm sóc gia đình
+call a grandparent|einen Großelternteil anrufen|gọi điện cho ông hoặc bà
+prepare a family meal|ein Familienessen vorbereiten|chuẩn bị bữa ăn gia đình
+help a child with homework|einem Kind bei den Hausaufgaben helfen|giúp một em nhỏ làm bài tập
+read a bedtime story|eine Gutenachtgeschichte vorlesen|đọc truyện trước giờ ngủ
+visit a relative|einen Verwandten besuchen|thăm một người họ hàng
+organize a family reunion|ein Familientreffen organisieren|tổ chức buổi họp mặt gia đình
+share household tasks|die Hausarbeit aufteilen|chia sẻ việc nhà
+remember an important birthday|an einen wichtigen Geburtstag denken|nhớ một sinh nhật quan trọng
+look after a younger sibling|auf ein jüngeres Geschwisterkind aufpassen|trông em nhỏ
+prepare a guest room|ein Gästezimmer vorbereiten|chuẩn bị phòng cho khách
+@unit|Bạn bè giúp đỡ nhau
+lend a friend a book|einem Freund ein Buch leihen|cho một người bạn mượn sách
+return a borrowed umbrella|einen geliehenen Regenschirm zurückgeben|trả lại chiếc ô đã mượn
+help a friend move house|einem Freund beim Umzug helfen|giúp một người bạn chuyển nhà
+celebrate a friend's success|den Erfolg eines Freundes feiern|ăn mừng thành công của một người bạn
+listen to a friend's worries|den Sorgen eines Freundes zuhören|lắng nghe nỗi lo của một người bạn
+keep a promise|ein Versprechen halten|giữ lời hứa
+offer practical support|praktische Unterstützung anbieten|đề nghị hỗ trợ thiết thực
+send a birthday card|eine Geburtstagskarte schicken|gửi thiệp sinh nhật
+plan a surprise party|eine Überraschungsparty planen|lên kế hoạch tiệc bất ngờ
+make time for a friend|Zeit für einen Freund einplanen|dành thời gian cho một người bạn
+@unit|Sắp xếp sinh hoạt chung
+coordinate two schedules|zwei Zeitpläne aufeinander abstimmen|sắp xếp hai lịch trình cho khớp nhau
+pick up a child from school|ein Kind von der Schule abholen|đón một em nhỏ từ trường
+arrange childcare|Kinderbetreuung organisieren|sắp xếp việc trông trẻ
+discuss weekend plans|Wochenendpläne besprechen|thảo luận kế hoạch cuối tuần
+divide the shopping list|die Einkaufsliste aufteilen|chia danh sách mua sắm
+set a shared budget|ein gemeinsames Budget festlegen|đặt ngân sách chung
+reserve time for dinner|Zeit für das Abendessen reservieren|dành thời gian cho bữa tối
+update the family calendar|den Familienkalender aktualisieren|cập nhật lịch gia đình
+prepare for a school meeting|ein Schulgespräch vorbereiten|chuẩn bị cho cuộc trao đổi ở trường
+leave a note on the fridge|eine Notiz am Kühlschrank hinterlassen|để lại ghi chú trên tủ lạnh
+@unit|Giải quyết bất đồng
+describe a problem calmly|ein Problem ruhig beschreiben|mô tả vấn đề một cách bình tĩnh
+listen to both sides|beiden Seiten zuhören|lắng nghe cả hai phía
+avoid hurtful words|verletzende Worte vermeiden|tránh lời nói gây tổn thương
+explain a personal need|ein persönliches Bedürfnis erklären|giải thích một nhu cầu cá nhân
+suggest a fair compromise|einen fairen Kompromiss vorschlagen|đề xuất sự thỏa hiệp công bằng
+take a break from an argument|einen Streit unterbrechen|tạm dừng một cuộc tranh cãi
+admit a mistake|einen Fehler zugeben|thừa nhận một sai lầm
+respect a different choice|eine andere Entscheidung respektieren|tôn trọng một lựa chọn khác
+agree on a clear rule|eine klare Regel vereinbaren|thống nhất một quy tắc rõ ràng
+rebuild trust gradually|Vertrauen schrittweise wiederaufbauen|dần xây dựng lại lòng tin
+@unit|Kỷ niệm và truyền thống
+collect old family photos|alte Familienfotos sammeln|sưu tầm ảnh gia đình cũ
+record a family story|eine Familiengeschichte aufnehmen|ghi âm một câu chuyện gia đình
+cook a traditional dish|ein traditionelles Gericht kochen|nấu một món ăn truyền thống
+write a personal greeting|einen persönlichen Gruß schreiben|viết lời chúc mang dấu ấn riêng
+choose an anniversary gift|ein Geschenk zum Jahrestag auswählen|chọn quà cho ngày kỷ niệm
+decorate the room for a celebration|das Zimmer für eine Feier schmücken|trang trí phòng cho buổi lễ
+invite a distant relative|einen entfernten Verwandten einladen|mời một người họ hàng xa
+preserve an old recipe|ein altes Rezept aufbewahren|giữ lại một công thức nấu ăn cũ
+create a photo album|ein Fotoalbum erstellen|tạo một album ảnh
+start a new family tradition|eine neue Familientradition beginnen|bắt đầu một truyền thống gia đình mới
+@topic|home|Nhà ở và đời sống hằng ngày|bao.le.en|Bảo Lê|mila.schneider.de|Mila Schneider
+@unit|Tìm một nơi ở
+read a rental advertisement|eine Wohnungsanzeige lesen|đọc tin cho thuê nhà
+arrange a flat viewing|einen Besichtigungstermin vereinbaren|hẹn xem căn hộ
+check the monthly rent|die Monatsmiete prüfen|kiểm tra tiền thuê hằng tháng
+ask about additional costs|nach Nebenkosten fragen|hỏi về chi phí phụ
+compare two neighbourhoods|zwei Wohnviertel vergleichen|so sánh hai khu dân cư
+inspect the heating system|die Heizung überprüfen|kiểm tra hệ thống sưởi
+measure the living room|das Wohnzimmer ausmessen|đo phòng khách
+read the rental agreement|den Mietvertrag lesen|đọc hợp đồng thuê nhà
+ask for a written receipt|um eine schriftliche Quittung bitten|xin biên nhận bằng văn bản
+collect the keys|die Schlüssel abholen|nhận chìa khóa
+@unit|Chuyển nhà
+pack fragile dishes|zerbrechliches Geschirr einpacken|đóng gói bát đĩa dễ vỡ
+label the moving boxes|die Umzugskartons beschriften|ghi nhãn thùng chuyển nhà
+hire a moving van|einen Umzugswagen mieten|thuê xe chuyển nhà
+protect the wooden floor|den Holzboden schützen|bảo vệ sàn gỗ
+carry a box upstairs|einen Karton nach oben tragen|mang một thùng lên tầng trên
+assemble a bookshelf|ein Bücherregal zusammenbauen|lắp một kệ sách
+connect the washing machine|die Waschmaschine anschließen|kết nối máy giặt
+register a new address|eine neue Adresse anmelden|đăng ký địa chỉ mới
+notify the electricity provider|den Stromanbieter informieren|thông báo cho nhà cung cấp điện
+recycle empty boxes|leere Kartons recyceln|tái chế thùng giấy rỗng
+@unit|Giữ nhà cửa gọn gàng
+wash the dishes|das Geschirr spülen|rửa bát đĩa
+wipe the kitchen counter|die Küchenarbeitsplatte abwischen|lau mặt bàn bếp
+vacuum the carpet|den Teppich saugen|hút bụi thảm
+sort the laundry|die Wäsche sortieren|phân loại quần áo cần giặt
+hang up wet clothes|nasse Kleidung aufhängen|phơi quần áo ướt
+change the bed sheets|die Bettwäsche wechseln|thay ga giường
+empty the rubbish bin|den Mülleimer leeren|đổ thùng rác
+water the houseplants|die Zimmerpflanzen gießen|tưới cây trong nhà
+clean the bathroom mirror|den Badezimmerspiegel putzen|lau gương phòng tắm
+put away the groceries|die Einkäufe einräumen|cất đồ vừa mua
+@unit|Báo hỏng và sửa chữa
+report a leaking tap|einen tropfenden Wasserhahn melden|báo vòi nước bị rò
+replace a light bulb|eine Glühbirne auswechseln|thay một bóng đèn
+describe a broken lock|ein kaputtes Schloss beschreiben|mô tả ổ khóa bị hỏng
+contact the landlord|den Vermieter kontaktieren|liên hệ chủ nhà
+arrange a repair appointment|einen Reparaturtermin vereinbaren|hẹn lịch sửa chữa
+check the smoke alarm|den Rauchmelder prüfen|kiểm tra thiết bị báo khói
+turn off the water supply|die Wasserzufuhr abstellen|khóa nguồn cấp nước
+keep the repair receipt|die Reparaturrechnung aufbewahren|giữ hóa đơn sửa chữa
+clear a blocked drain|einen verstopften Abfluss reinigen|làm sạch đường thoát nước bị tắc
+test the doorbell|die Türklingel testen|thử chuông cửa
+@unit|Sống cùng hàng xóm
+introduce a new flatmate|einen neuen Mitbewohner vorstellen|giới thiệu bạn cùng nhà mới
+agree on quiet hours|Ruhezeiten vereinbaren|thống nhất giờ giữ yên tĩnh
+keep the shared hallway clear|den gemeinsamen Flur freihalten|giữ hành lang chung thông thoáng
+collect a neighbour's parcel|ein Paket für einen Nachbarn abholen|nhận hộ kiện hàng cho hàng xóm
+ask about recycling rules|nach den Mülltrennungsregeln fragen|hỏi quy định phân loại rác
+report a lost key|einen verlorenen Schlüssel melden|báo mất chìa khóa
+clean the shared kitchen|die Gemeinschaftsküche putzen|dọn bếp dùng chung
+reserve the laundry room|den Waschraum reservieren|đặt lịch sử dụng phòng giặt
+resolve a noise complaint|eine Lärmbeschwerde klären|giải quyết phản ánh về tiếng ồn
+organize a neighbourhood meal|ein Nachbarschaftsessen organisieren|tổ chức bữa ăn cùng hàng xóm

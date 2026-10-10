@@ -1,0 +1,168 @@
+@topic|leisure|Sở thích và giải trí|khanh.vo.en|Khánh Võ|luis.bergmann.de|Luis Bergmann
+@unit|Sách và điện ảnh
+borrow a novel from the library|einen Roman aus der Bibliothek ausleihen|mượn tiểu thuyết ở thư viện
+recommend a favourite book|ein Lieblingsbuch empfehlen|giới thiệu cuốn sách yêu thích
+describe a film without spoilers|einen Film ohne Spoiler beschreiben|mô tả phim mà không tiết lộ tình tiết
+reserve cinema tickets|Kinokarten reservieren|đặt vé xem phim
+read a film review|eine Filmkritik lesen|đọc bài đánh giá phim
+join a reading group|einer Lesegruppe beitreten|tham gia nhóm đọc sách
+discuss a fictional character|über eine Romanfigur diskutieren|thảo luận nhân vật hư cấu
+compare a book with its film adaptation|ein Buch mit seiner Verfilmung vergleichen|so sánh sách với phim chuyển thể
+return a library book on time|ein Bibliotheksbuch rechtzeitig zurückgeben|trả sách thư viện đúng hạn
+choose a film with subtitles|einen Film mit Untertiteln auswählen|chọn phim có phụ đề
+@unit|Âm nhạc và sáng tạo
+learn a simple melody|eine einfache Melodie lernen|học giai điệu đơn giản
+tune a guitar|eine Gitarre stimmen|lên dây đàn ghi ta
+practise a new rhythm|einen neuen Rhythmus üben|luyện nhịp điệu mới
+join a local choir|einem örtlichen Chor beitreten|tham gia hợp xướng địa phương
+paint a landscape|eine Landschaft malen|vẽ phong cảnh
+sketch a familiar object|einen vertrauten Gegenstand skizzieren|phác họa đồ vật quen thuộc
+mix two colours|zwei Farben mischen|pha hai màu
+visit an art exhibition|eine Kunstausstellung besuchen|tham quan triển lãm nghệ thuật
+make a handmade card|eine Karte selbst basteln|làm thiệp thủ công
+share a creative project|ein kreatives Projekt teilen|chia sẻ dự án sáng tạo
+@unit|Thể thao
+join a beginners' class|an einem Anfängerkurs teilnehmen|tham gia lớp dành cho người mới
+check the gym timetable|den Trainingsplan des Fitnessstudios prüfen|xem lịch phòng tập
+borrow a tennis racket|einen Tennisschläger ausleihen|mượn vợt tennis
+learn the rules of a game|die Spielregeln lernen|học luật trò chơi
+book a sports court|einen Sportplatz buchen|đặt sân thể thao
+cheer for a local team|eine lokale Mannschaft anfeuern|cổ vũ đội địa phương
+respect the referee's decision|die Entscheidung des Schiedsrichters respektieren|tôn trọng quyết định trọng tài
+adjust a bicycle seat|einen Fahrradsattel einstellen|điều chỉnh yên xe đạp
+choose suitable walking shoes|geeignete Wanderschuhe auswählen|chọn giày đi bộ phù hợp
+record a training session|eine Trainingseinheit dokumentieren|ghi lại buổi tập
+@unit|Thiên nhiên và cuối tuần
+plan a picnic|ein Picknick planen|lên kế hoạch dã ngoại
+choose a safe walking route|eine sichere Wanderroute wählen|chọn tuyến đi bộ an toàn
+identify a common bird|einen häufigen Vogel bestimmen|nhận diện loài chim phổ biến
+plant herbs on a balcony|Kräuter auf einem Balkon pflanzen|trồng rau thơm ngoài ban công
+take a landscape photograph|ein Landschaftsfoto machen|chụp ảnh phong cảnh
+check a trail map|eine Wanderkarte prüfen|xem bản đồ đường mòn
+pack a waterproof jacket|eine wasserdichte Jacke einpacken|mang áo khoác chống nước
+observe the stars|die Sterne beobachten|ngắm sao
+visit a botanical garden|einen botanischen Garten besuchen|tham quan vườn bách thảo
+collect litter after a picnic|nach einem Picknick Müll sammeln|nhặt rác sau buổi dã ngoại
+@unit|Hoạt động cùng bạn bè
+organize a board-game evening|einen Brettspielabend organisieren|tổ chức tối chơi trò chơi bàn cờ
+explain the scoring system|das Punktesystem erklären|giải thích cách tính điểm
+invite friends to a concert|Freunde zu einem Konzert einladen|mời bạn đi buổi hòa nhạc
+choose an activity for a rainy day|eine Aktivität für einen Regentag wählen|chọn hoạt động cho ngày mưa
+book an escape room|einen Escape-Room buchen|đặt phòng trò chơi giải đố
+prepare snacks for the group|Snacks für die Gruppe vorbereiten|chuẩn bị đồ ăn nhẹ cho nhóm
+teach someone a card game|jemandem ein Kartenspiel beibringen|dạy ai đó trò chơi bài
+plan a low-cost outing|einen günstigen Ausflug planen|lên kế hoạch đi chơi tiết kiệm
+share photos after an event|nach einer Veranstaltung Fotos teilen|chia sẻ ảnh sau sự kiện
+suggest a new hobby|ein neues Hobby vorschlagen|đề xuất sở thích mới
+@topic|technology|Công nghệ và giao tiếp trực tuyến|quang.ngo.en|Quang Ngô|lena.wolf.de|Lena Wolf
+@unit|Thiết bị hằng ngày
+charge a mobile phone|ein Handy aufladen|sạc điện thoại
+connect a wireless keyboard|eine kabellose Tastatur verbinden|kết nối bàn phím không dây
+adjust the screen brightness|die Bildschirmhelligkeit einstellen|chỉnh độ sáng màn hình
+restart a frozen computer|einen eingefrorenen Computer neu starten|khởi động lại máy tính bị treo
+install a software update|ein Softwareupdate installieren|cài bản cập nhật phần mềm
+check the battery level|den Akkustand prüfen|kiểm tra mức pin
+free up storage space|Speicherplatz freigeben|giải phóng dung lượng lưu trữ
+connect to a secure network|eine Verbindung zu einem sicheren Netzwerk herstellen|kết nối mạng an toàn
+pair Bluetooth headphones|Bluetooth-Kopfhörer koppeln|ghép nối tai nghe Bluetooth
+change the display language|die Anzeigesprache ändern|đổi ngôn ngữ hiển thị
+@unit|Tài khoản và dữ liệu
+create a strong password|ein starkes Passwort erstellen|tạo mật khẩu mạnh
+enable two-factor authentication|die Zwei-Faktor-Authentifizierung aktivieren|bật xác thực hai yếu tố
+check account activity|die Kontoaktivität prüfen|kiểm tra hoạt động tài khoản
+back up important files|wichtige Dateien sichern|sao lưu tệp quan trọng
+recover a deleted document|ein gelöschtes Dokument wiederherstellen|khôi phục tài liệu đã xóa
+review app permissions|App-Berechtigungen überprüfen|rà soát quyền ứng dụng
+sign out of a shared device|eine Sitzung auf einem gemeinsam genutzten Gerät beenden|đăng xuất trên thiết bị dùng chung
+recognize a suspicious link|einen verdächtigen Link erkennen|nhận ra đường dẫn đáng ngờ
+report a phishing message|eine Phishing-Nachricht melden|báo tin nhắn lừa đảo
+remove personal information from a screenshot|persönliche Daten aus einem Screenshot entfernen|xóa thông tin cá nhân khỏi ảnh chụp màn hình
+@unit|Email và tài liệu
+write a clear subject line|eine klare Betreffzeile schreiben|viết dòng tiêu đề rõ ràng
+attach a document|ein Dokument anhängen|đính kèm tài liệu
+check the recipient's address|die Empfängeradresse prüfen|kiểm tra địa chỉ người nhận
+reply to all participants|allen Teilnehmern antworten|trả lời tất cả người tham gia
+organize messages into folders|Nachrichten in Ordner sortieren|sắp xếp thư vào thư mục
+share a read-only link|einen schreibgeschützten Link teilen|chia sẻ liên kết chỉ cho phép đọc
+rename a file clearly|eine Datei eindeutig umbenennen|đổi tên tệp rõ ràng
+export a document as a PDF|ein Dokument als PDF exportieren|xuất tài liệu thành PDF
+compare two document versions|zwei Dokumentversionen vergleichen|so sánh hai phiên bản tài liệu
+restore an earlier version|eine frühere Version wiederherstellen|khôi phục phiên bản trước
+@unit|Họp trực tuyến
+test the microphone|das Mikrofon testen|thử micrô
+mute background noise|Hintergrundgeräusche stummschalten|tắt âm thanh nền
+share a presentation screen|einen Präsentationsbildschirm teilen|chia sẻ màn hình trình chiếu
+turn on live captions|Live-Untertitel einschalten|bật phụ đề trực tiếp
+send the meeting link|den Besprechungslink senden|gửi đường dẫn cuộc họp
+join a waiting room|einen Warteraum betreten|vào phòng chờ
+raise a virtual hand|eine virtuelle Hand heben|giơ tay trên phần mềm họp
+post a question in the chat|eine Frage im Chat stellen|đặt câu hỏi trong khung chat
+check the connection quality|die Verbindungsqualität prüfen|kiểm tra chất lượng kết nối
+leave the call politely|den Anruf höflich beenden|rời cuộc gọi lịch sự
+@unit|Ứng xử trên mạng
+verify a claim before sharing|eine Behauptung vor dem Teilen überprüfen|kiểm chứng thông tin trước khi chia sẻ
+credit the original creator|den ursprünglichen Urheber nennen|ghi công người sáng tạo gốc
+write a respectful comment|einen respektvollen Kommentar schreiben|viết bình luận tôn trọng
+report abusive content|beleidigende Inhalte melden|báo nội dung xúc phạm
+adjust privacy settings|die Datenschutzeinstellungen anpassen|điều chỉnh cài đặt riêng tư
+limit notification frequency|die Häufigkeit von Benachrichtigungen begrenzen|giới hạn tần suất thông báo
+ask permission before reposting|vor dem erneuten Veröffentlichen um Erlaubnis bitten|xin phép trước khi đăng lại
+correct an inaccurate post|einen ungenauen Beitrag korrigieren|sửa bài đăng thiếu chính xác
+unsubscribe from unwanted emails|unerwünschte Newsletter abbestellen|hủy nhận thư tin không mong muốn
+use accessible image descriptions|barrierefreie Bildbeschreibungen verwenden|dùng mô tả ảnh hỗ trợ tiếp cận
+@topic|community|Văn hóa và cộng đồng|phuong.ly.en|Phương Lý|ben.neumann.de|Ben Neumann
+@unit|Dịch vụ cộng đồng
+apply for a library card|einen Bibliotheksausweis beantragen|đăng ký thẻ thư viện
+find the local community centre|das örtliche Gemeindezentrum finden|tìm trung tâm cộng đồng địa phương
+read a public notice|eine öffentliche Bekanntmachung lesen|đọc thông báo công cộng
+ask about opening hours|nach den Öffnungszeiten fragen|hỏi giờ mở cửa
+complete an information request|eine Informationsanfrage ausfüllen|điền yêu cầu cung cấp thông tin
+book an appointment online|einen Termin online buchen|đặt lịch hẹn trực tuyến
+bring proof of address|einen Adressnachweis mitbringen|mang giấy xác nhận địa chỉ
+ask for language assistance|um Sprachhilfe bitten|xin hỗ trợ ngôn ngữ
+find a public toilet|eine öffentliche Toilette finden|tìm nhà vệ sinh công cộng
+check an application status|den Bearbeitungsstand eines Antrags prüfen|kiểm tra tiến độ xử lý hồ sơ
+@unit|Tình nguyện
+join a neighbourhood cleanup|an einer Aufräumaktion im Viertel teilnehmen|tham gia dọn vệ sinh khu phố
+sort donated clothes|gespendete Kleidung sortieren|phân loại quần áo quyên góp
+help at a community kitchen|in einer Gemeinschaftsküche helfen|giúp tại bếp cộng đồng
+deliver supplies to a collection point|Hilfsgüter zu einer Sammelstelle bringen|chuyển đồ hỗ trợ đến điểm tập kết
+register as a volunteer|eine Anmeldung als Freiwilliger einreichen|nộp đăng ký tình nguyện viên
+explain an event to visitors|Besuchern eine Veranstaltung erklären|giải thích sự kiện cho khách
+organize a donation drive|eine Spendenaktion organisieren|tổ chức đợt quyên góp
+check a volunteer schedule|einen Freiwilligenplan prüfen|xem lịch tình nguyện
+thank the event organizers|den Veranstaltern danken|cảm ơn người tổ chức sự kiện
+share a useful community resource|eine nützliche Gemeinschaftsressource teilen|chia sẻ nguồn hỗ trợ cộng đồng hữu ích
+@unit|Bảo vệ môi trường
+separate paper from plastic|Papier von Plastik trennen|tách giấy khỏi nhựa
+use a reusable shopping bag|eine wiederverwendbare Einkaufstasche benutzen|dùng túi mua sắm tái sử dụng
+repair an old chair|einen alten Stuhl reparieren|sửa chiếc ghế cũ
+save water while washing dishes|beim Spülen Wasser sparen|tiết kiệm nước khi rửa bát
+switch off unused lights|ungenutzte Lampen ausschalten|tắt đèn không dùng
+choose public transport|öffentliche Verkehrsmittel wählen|chọn phương tiện công cộng
+dispose of batteries properly|Batterien richtig entsorgen|thải bỏ pin đúng cách
+plant a native tree|einen heimischen Baum pflanzen|trồng cây bản địa
+reduce single-use packaging|Einwegverpackungen reduzieren|giảm bao bì dùng một lần
+share tools with neighbours|Werkzeuge mit Nachbarn teilen|chia sẻ dụng cụ với hàng xóm
+@unit|Văn hóa địa phương
+attend a local festival|ein örtliches Fest besuchen|tham dự lễ hội địa phương
+learn about a regional tradition|eine regionale Tradition kennenlernen|tìm hiểu truyền thống vùng miền
+visit a historical building|ein historisches Gebäude besichtigen|tham quan công trình lịch sử
+read an exhibition label|eine Ausstellungsbeschriftung lesen|đọc chú thích hiện vật triển lãm
+listen to a local storyteller|einem örtlichen Geschichtenerzähler zuhören|nghe người địa phương kể chuyện
+ask about a traditional costume|nach einer traditionellen Tracht fragen|hỏi về trang phục truyền thống
+try a regional speciality|eine regionale Spezialität probieren|thử đặc sản vùng miền
+respect a quiet space|einen Ruheraum respektieren|tôn trọng không gian yên tĩnh
+learn the meaning of a symbol|die Bedeutung eines Symbols lernen|tìm hiểu ý nghĩa biểu tượng
+support a cultural project|ein Kulturprojekt unterstützen|ủng hộ dự án văn hóa
+@unit|Cùng cải thiện khu phố
+report a damaged pavement|einen beschädigten Gehweg melden|báo vỉa hè hư hỏng
+suggest a safer crossing|einen sichereren Fußgängerüberweg vorschlagen|đề xuất chỗ sang đường an toàn hơn
+attend a residents' meeting|an einer Anwohnerversammlung teilnehmen|tham dự họp cư dân
+collect feedback from neighbours|Rückmeldungen von Nachbarn sammeln|thu thập ý kiến hàng xóm
+propose a community garden|einen Gemeinschaftsgarten vorschlagen|đề xuất vườn cộng đồng
+read a local development plan|einen örtlichen Entwicklungsplan lesen|đọc kế hoạch phát triển địa phương
+ask about accessible facilities|nach barrierefreien Einrichtungen fragen|hỏi về tiện ích hỗ trợ tiếp cận
+organize a street celebration|ein Straßenfest organisieren|tổ chức ngày hội đường phố
+welcome a new resident|einen neuen Bewohner begrüßen|chào đón cư dân mới
+publish a neighbourhood newsletter|einen Nachbarschaftsnewsletter veröffentlichen|phát hành bản tin khu phố
