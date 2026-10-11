@@ -15,7 +15,7 @@ export const WORD_GAMES = [
   [
     "memory",
     "Phrase pairs",
-    "Turn over cards and connect a phrase with its meaning.",
+    "Match visible phrases and meanings. Complete the board to unlock the next round.",
   ],
 ];
 const clean = (text) =>
@@ -117,4 +117,12 @@ export function memoryTiles(cards, random = Math.random) {
 }
 export function demoGameCards(lang) {
   return samples[lang === "de" ? "de" : "en"].map((card) => ({ ...card }));
+}
+
+export function pairBoards(cards, tileCount = 12) {
+  const size = tileCount === 20 ? 10 : 6;
+  const boards = [];
+  for (let i = 0; i < cards.length; i += size)
+    boards.push(cards.slice(i, i + size));
+  return boards;
 }

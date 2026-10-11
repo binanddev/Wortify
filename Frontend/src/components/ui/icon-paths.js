@@ -1,5 +1,8 @@
 // Wortify Rounded: a single original 24px grid with generous, consistent strokes.
 export const ICON_PATHS = {
+  context: "M3 4h18v13H9l-5 4v-4H3Z M7 8h10 M7 12h3 M13 12h4",
+  sentence: "M3 4h6v6H3Z M12 4h9v6h-9Z M3 14h9v6H3Z M15 14h6v6h-6Z",
+  pairs: "M3 4h7v16H3Z M14 4h7v16h-7Z M5 12l1.5 2 2-4 M16 12l1.5 2 2-4",
   cards:
     "M9 3h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z M3 7v12a3 3 0 0 0 3 3h10 M11 8h6 M11 12h4",
   book: "M12 6C9 3 5 3 2 4v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-3-1-7-1-10 2v15 M5 8h3 M16 8h3",

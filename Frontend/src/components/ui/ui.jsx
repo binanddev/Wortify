@@ -246,6 +246,7 @@ export function Select({ label, value, onChange, children, ...props }) {
 }
 export function Editor({
   title,
+  submitLabel = "Save changes",
   fields,
   initial = {},
   onSave,
@@ -307,7 +308,7 @@ export function Editor({
             form="editor-form"
             isLoading={action.pending}
           >
-            Save changes
+            {submitLabel}
           </Btn>
         </ModalFooter>
       </ModalContent>

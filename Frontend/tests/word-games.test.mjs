@@ -124,3 +124,16 @@ test("English and German demo collections support all games and form complete me
       );
   }
 });
+
+test("pair boards cover the deck once with 12 or 20 tiles and a shorter final board", async () => {
+  const {pairBoards} = await import("../src/features/flashcards/word-games.js");
+  const cards = Array.from({length:23}, (_,id)=>({id}));
+  for (const [size, lengths] of [[12,[6,6,6,5]],[20,[10,10,3]]]) {
+    const boards = pairBoards(cards,size);
+    assert.deepEqual(boards.map(b=>b.length),lengths);
+    assert.deepEqual(boards.flat(),cards);
+    assert.equal(new Set(boards.flat().map(c=>c.id)).size,23);
+    for (const board of boards) assert.equal(memoryTiles(board).length,board.length*2);
+  }
+  assert.deepEqual(pairBoards([],12),[]);
+});

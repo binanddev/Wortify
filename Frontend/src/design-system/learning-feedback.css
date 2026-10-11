@@ -173,3 +173,8 @@
 .session-controls > .end-session {
   @apply shrink-0;
 }
+
+/* Space between the review card and its controls, across themes. */
+.flashcard-review-controls {
+  @apply pt-6 pb-2;
+}

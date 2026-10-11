@@ -7,6 +7,10 @@
 
 ### [v1.2.5] - 2026-10-11 | Flashcard Word Playground
 
+- Refined the deck navigation group to Games.
+- Replaced hidden Phrase pairs cards with visible matching boards: 12 or 20 tiles, persistent green matches, brief red mismatches and automatic progression through the deck without repeating cards.
+- Added points and streaks to context/sentence games; sentence assembly checks automatically after the final token.
+
 - Added Context detective: recall a word or phrase in its saved example, with hints, corrective feedback and a full-sentence reveal.
 - Added Sentence workshop: rebuild saved examples with shuffled tokens, preserving repeated words.
 - Added Phrase pairs: a face-down memory game for multi-word expressions and their meanings, with example sentences after each match.

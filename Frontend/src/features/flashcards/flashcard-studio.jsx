@@ -488,12 +488,12 @@ function Studio({ lang, id, userId, sound, data }) {
             </button>
           ))}
         </div>
-        <h3 className="context-section-title">Learn in context</h3>
-        <div className="flash-mode-picker" aria-label="Context and phrase games">
+        <h3 className="context-section-title">Games</h3>
+        <div className="flash-mode-picker" aria-label="Flashcard games">
           {WORD_GAMES.map(([mode, label, description], index) => (
             <button key={mode} type="button" aria-pressed={game === mode} title={description}
-              onClick={() => { setGame(mode); setRunning(false); setSettingsOpen(false); }}>
-              <Icon name={["search", "exercise", "cards"][index]} />
+              onClick={() => { setGame(mode); setError(""); setRunning(false); setSettingsOpen(false); }}>
+              <Icon name={["context", "sentence", "pairs"][index]} />
               <span>{label}</span>
             </button>
           ))}
@@ -709,7 +709,7 @@ function Studio({ lang, id, userId, sound, data }) {
       )}
       <Status error={error} />
       {game ? (
-        <WordGames key={game} pack={{cards: pool, grading: options}} lang={lang} deck={id} sound={sound} embedded selectedMode={game} />
+        <WordGames key={game} pack={{cards: data.cards, grading: options}} lang={lang} deck={id} sound={sound} embedded selectedMode={game} />
       ) : options.mode === "review" ? (
         <SpacedReview lang={lang} id={id} userId={userId} />
       ) : options.mode === "flash" ? (
@@ -748,7 +748,7 @@ function Studio({ lang, id, userId, sound, data }) {
                 audio.tick();
               }}
             />
-            <div className="toolbar flashcard-actions">
+            <div className="toolbar flashcard-actions flashcard-review-controls">
               {flashSkipped ? (
                 <Btn
                   icon="arrow"

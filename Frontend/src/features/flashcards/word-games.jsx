@@ -17,43 +17,71 @@ import {
   checkGameAnswer,
   memoryTiles,
   demoGameCards,
+  pairBoards,
 } from "./word-games.js";
 
-export function WordGames({ pack, lang, deck, sound, embedded = false, selectedMode = null }) {
+export function WordGames({
+  pack,
+  lang,
+  deck,
+  sound,
+  embedded = false,
+  selectedMode = null,
+}) {
   const Container = embedded ? "section" : Page;
   const [demo, setDemo] = useState(false),
     [round, setRound] = useState(() => {
       if (!selectedMode) return null;
       const cards = eligibleCards(pack.cards, selectedMode);
       return cards.length >= (selectedMode === "memory" ? 2 : 1)
-        ? {mode: selectedMode, cards: mix(cards).slice(0, selectedMode === "memory" ? 6 : 10)}
+        ? {
+            mode: selectedMode,
+            cards:
+              selectedMode === "memory" ? mix(cards) : mix(cards).slice(0, 10),
+          }
         : null;
     }),
     [run, setRun] = useState(0);
-  const cards = demo ? demoGameCards(lang) : pack.cards;
+  const cards = !deck && demo ? demoGameCards(lang) : pack.cards;
   return (
     <Container>
-      {!embedded && <Link
-        to={
-          deck
-            ? "/" + lang + "/flashcard/deck/" + deck
-            : "/" + lang + "/flashcard"
-        }
-      >
-        ← Back to flashcards
-      </Link>}
+      {!embedded && (
+        <Link
+          to={
+            deck
+              ? "/" + lang + "/flashcard/deck/" + deck
+              : "/" + lang + "/flashcard"
+          }
+        >
+          ← Back to flashcards
+        </Link>
+      )}
       <Heading
-        title={selectedMode ? WORD_GAMES.find(g => g[0] === selectedMode)?.[1] : "Word playground"}
-        description="Learn words together, in sentences you can use."
+        title={
+          selectedMode
+            ? WORD_GAMES.find((g) => g[0] === selectedMode)?.[1]
+            : "Word playground"
+        }
+        description={
+          deck
+            ? "Learn with the words, phrases and examples in this deck."
+            : "Learn words together, in sentences you can use."
+        }
       />
       {round ? (
         <>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p>
-              {demo ? "Sample collection" : "Your flashcards"} ·{" "}
-              {WORD_GAMES.find((g) => g[0] === round.mode)[1]}
+              {deck
+                ? "This deck only"
+                : demo
+                  ? "Sample collection"
+                  : "Your flashcards"}{" "}
+              · {WORD_GAMES.find((g) => g[0] === round.mode)[1]}
             </p>
-            <Btn onClick={() => setRound(null)}>{selectedMode ? "Round setup / samples" : "Choose another game"}</Btn>
+            <Btn onClick={() => setRound(null)}>
+              {selectedMode ? "Round setup" : "Choose another game"}
+            </Btn>
           </div>
           {round.mode === "memory" ? (
             <MemoryRound
@@ -77,21 +105,35 @@ export function WordGames({ pack, lang, deck, sound, embedded = false, selectedM
         </>
       ) : (
         <>
-          <div className="flex flex-wrap items-center gap-3">
-            <Btn aria-pressed={!demo} onClick={() => setDemo(false)}>
-              My cards
-            </Btn>
-            <Btn aria-pressed={demo} onClick={() => setDemo(true)}>
-              Try sample collection
-            </Btn>
-          </div>
+          {!deck && (
+            <div className="flex flex-wrap items-center gap-3">
+              <Btn aria-pressed={!demo} onClick={() => setDemo(false)}>
+                My cards
+              </Btn>
+              <Btn aria-pressed={demo} onClick={() => setDemo(true)}>
+                Try sample collection
+              </Btn>
+            </div>
+          )}
           <p className="my-3">
-            {demo
+            {!deck && demo
               ? "Six original examples to try. Nothing is added to your deck."
-              : "Games use the cards in your selected scope. Add example sentences and multi-word phrases to unlock more rounds."}
+              : deck
+                ? "Only cards from this deck are used. Add example sentences or multi-word phrases to this deck to unlock more rounds."
+                : "Games use the cards in your selected scope. Add example sentences and multi-word phrases to unlock more rounds."}
           </p>
+          {deck && (
+            <Link
+              className="btn"
+              to={"/" + lang + "/flashcard/deck/" + deck + "/edit"}
+            >
+              Edit this deck · Add examples and phrases
+            </Link>
+          )}
           <div className="grid gap-4 md:grid-cols-3">
-            {WORD_GAMES.filter(([mode]) => !selectedMode || mode === selectedMode).map(([mode, title, description]) => {
+            {WORD_GAMES.filter(
+              ([mode]) => !selectedMode || mode === selectedMode,
+            ).map(([mode, title, description]) => {
               const eligible = eligibleCards(cards, mode),
                 minimum = mode === "memory" ? 2 : 1;
               return (
@@ -103,7 +145,7 @@ export function WordGames({ pack, lang, deck, sound, embedded = false, selectedM
                   <p>{description}</p>
                   <p>
                     {eligible.length} eligible cards · Up to{" "}
-                    {mode === "memory" ? 6 : 10} per round
+                    {mode === "memory" ? "6 or 10 pairs" : "10 cards"} per round
                   </p>
                   <p className="text-sm">
                     {mode === "context"
@@ -118,10 +160,10 @@ export function WordGames({ pack, lang, deck, sound, embedded = false, selectedM
                     onClick={() => {
                       setRound({
                         mode,
-                        cards: mix(eligible).slice(
-                          0,
-                          mode === "memory" ? 6 : 10,
-                        ),
+                        cards:
+                          mode === "memory"
+                            ? mix(eligible)
+                            : mix(eligible).slice(0, 10),
                       });
                       setRun((n) => n + 1);
                     }}
@@ -144,8 +186,12 @@ export function WordGames({ pack, lang, deck, sound, embedded = false, selectedM
 function SentenceRound({ cards, mode, grading, onDone, sound, lang }) {
   const [queue, setQueue] = useState(cards),
     [index, setIndex] = useState(0),
-    [done, setDone] = useState(0);
-  const next = (revealed) => {
+    [done, setDone] = useState(0),
+    [score, setScore] = useState(0),
+    [streak, setStreak] = useState(0);
+  const next = (revealed, assisted) => {
+    setStreak((n) => (revealed || assisted ? 0 : n + 1));
+    if (!revealed) setScore((n) => n + (assisted ? 5 : 10));
     if (revealed) setQueue((q) => [...q, q[index]]);
     else setDone((n) => n + 1);
     setIndex((n) => n + 1);
@@ -153,7 +199,9 @@ function SentenceRound({ cards, mode, grading, onDone, sound, lang }) {
   return index >= queue.length ? (
     <section className="rounded-2xl border border-(--line) bg-(--surface) p-6">
       <h2 className="text-2xl font-semibold">Round complete</h2>
-      <p>{done} sentences completed.</p>
+      <p>
+        {done} sentences completed · {score} points
+      </p>
       <Btn primary onClick={onDone}>
         Choose another game
       </Btn>
@@ -161,7 +209,7 @@ function SentenceRound({ cards, mode, grading, onDone, sound, lang }) {
   ) : (
     <div>
       <p className="my-3" role="status">
-        {done} / {cards.length} completed
+        {done} / {cards.length} completed · {score} points · Streak {streak}
         {queue.length > cards.length ? " · Review turns included" : ""}
       </p>
       <SentenceTurn
@@ -177,7 +225,8 @@ function SentenceTurn({ card, mode, grading, onNext, sound, lang }) {
   const [answer, setAnswer] = useState(""),
     [chosen, setChosen] = useState([]),
     [feedback, setFeedback] = useState(""),
-    [hint, setHint] = useState(false);
+    [hint, setHint] = useState(false),
+    [missed, setMissed] = useState(false);
   const [tiles] = useState(() => sentenceTiles(card)),
     audio = useSound(sound, lang);
   const gap = mode === "context" ? contextGap(card) : null;
@@ -188,9 +237,14 @@ function SentenceTurn({ card, mode, grading, onNext, sound, lang }) {
         ? answer
         : chosen.map((id) => tiles.find((t) => t.id === id).text).join(" ");
     const correct = checkGameAnswer(card, mode, value, grading);
+    if (!correct) setMissed(true);
     setFeedback(correct ? "correct" : "incorrect");
     audio.feedback(correct);
   };
+  useEffect(() => {
+    if (mode === "sentence" && chosen.length === tiles.length && !complete)
+      check();
+  }, [chosen]);
   return (
     <section className="grid gap-5 rounded-2xl border border-(--line) bg-(--surface) p-5 sm:p-7">
       <div>
@@ -260,8 +314,8 @@ function SentenceTurn({ card, mode, grading, onNext, sound, lang }) {
               ))
             ) : (
               <p>
-                Tap words below to build the sentence. Tap a placed word to
-                return it.
+                Tap words to build the sentence; the last word checks it. Tap a
+                placed word to return it.
               </p>
             )}
           </div>
@@ -281,17 +335,6 @@ function SentenceTurn({ card, mode, grading, onNext, sound, lang }) {
                 </Btn>
               ))}
           </div>
-          {!complete && (
-            <div className="flex justify-end">
-              <Btn
-                primary
-                isDisabled={chosen.length !== tiles.length}
-                onClick={check}
-              >
-                Check
-              </Btn>
-            </div>
-          )}
         </>
       )}
       {!complete && (
@@ -336,7 +379,10 @@ function SentenceTurn({ card, mode, grading, onNext, sound, lang }) {
             {card.usage && <p>{card.usage}</p>}
           </div>
           <div className="flex justify-end">
-            <Btn primary onClick={() => onNext(feedback === "revealed")}>
+            <Btn
+              primary
+              onClick={() => onNext(feedback === "revealed", hint || missed)}
+            >
               Next →
             </Btn>
           </div>
@@ -346,69 +392,153 @@ function SentenceTurn({ card, mode, grading, onNext, sound, lang }) {
   );
 }
 function MemoryRound({ cards, onDone, sound, lang }) {
+  const [tileCount, setTileCount] = useState(12),
+    [boardIndex, setBoardIndex] = useState(0);
+  const boards = pairBoards(cards, tileCount);
+  return (
+    <section className="grid gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p>Match a phrase with its meaning. All tiles stay visible.</p>
+        <label>
+          Board size{" "}
+          <select
+            value={tileCount}
+            onChange={(e) => {
+              setTileCount(Number(e.target.value));
+              setBoardIndex(0);
+            }}
+          >
+            <option value={12}>12 tiles · relaxed</option>
+            <option value={20}>20 tiles · compact</option>
+          </select>
+        </label>
+      </div>
+      <p className="text-sm">
+        Changing board size starts a new run. The last board may have fewer
+        tiles.
+      </p>
+      <PairBoard
+        key={tileCount + ":" + boardIndex}
+        cards={boards[boardIndex]}
+        compact={tileCount === 20}
+        roundNumber={boardIndex + 1}
+        totalRounds={boards.length}
+        sound={sound}
+        lang={lang}
+        onNext={
+          boardIndex + 1 < boards.length
+            ? () => setBoardIndex((i) => i + 1)
+            : null
+        }
+        onDone={onDone}
+      />
+    </section>
+  );
+}
+function PairBoard({
+  cards,
+  compact,
+  roundNumber,
+  totalRounds,
+  sound,
+  lang,
+  onNext,
+  onDone,
+}) {
   const [tiles] = useState(() => memoryTiles(cards)),
-    [open, setOpen] = useState([]),
-    [matched, setMatched] = useState([]),
+    [selected, setSelected] = useState(null);
+  const [matched, setMatched] = useState([]),
+    [wrong, setWrong] = useState([]),
     [turns, setTurns] = useState(0),
     [last, setLast] = useState(null);
   const active = useWindowActive(),
     audio = useSound(sound, lang);
+  const finished = matched.length === cards.length;
   useEffect(() => {
-    if (open.length !== 2 || !active) return;
-    const [a, b] = open.map((id) => tiles.find((t) => t.id === id));
-    if (a.pair === b.pair) {
-      setMatched((m) => (m.includes(a.pair) ? m : [...m, a.pair]));
-      setLast(a.card);
-      setOpen([]);
+    if (!wrong.length || !active) return;
+    const timer = setTimeout(() => setWrong([]), 700);
+    return () => clearTimeout(timer);
+  }, [wrong, active]);
+  useEffect(() => {
+    if (!finished || !onNext || !active) return;
+    const timer = setTimeout(onNext, 1800);
+    return () => clearTimeout(timer);
+  }, [finished, onNext, active]);
+  function choose(tile) {
+    if (wrong.length || matched.includes(tile.pair) || !active) return;
+    if (selected === tile.id) {
+      setSelected(null);
+      return;
+    }
+    if (selected === null) {
+      setSelected(tile.id);
+      return;
+    }
+    const first = tiles.find((t) => t.id === selected);
+    if (first.side === tile.side) {
+      setSelected(tile.id);
+      return;
+    }
+    setTurns((n) => n + 1);
+    setSelected(null);
+    if (first.pair === tile.pair) {
+      setMatched((m) => [...m, tile.pair]);
+      setLast(tile.card);
       audio.feedback(true);
     } else {
-      const timer = setTimeout(() => setOpen([]), 1000);
-      return () => clearTimeout(timer);
+      setWrong([first.id, tile.id]);
+      audio.feedback(false);
     }
-  }, [open, active, tiles]);
-  const finished = matched.length === cards.length;
+  }
   return (
-    <section className="grid gap-4 rounded-2xl border border-(--line) bg-(--surface) p-5">
+    <section className="grid gap-4 rounded-2xl border border-(--line) bg-(--surface) p-4">
       <p role="status">
-        {matched.length} / {cards.length} pairs · {turns} turns
-        {finished ? " · Round complete!" : ""}
+        Round {roundNumber} / {totalRounds} · {matched.length} / {cards.length}{" "}
+        pairs · {turns} attempts
+        {finished
+          ? onNext
+            ? " · Board complete! Next round…"
+            : " · All boards complete!"
+          : ""}
       </p>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {tiles.map((t, i) => {
+      <div
+        className={
+          compact
+            ? "grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-5"
+            : "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
+        }
+      >
+        {tiles.map((t) => {
           const found = matched.includes(t.pair),
-            visible = found || open.includes(t.id);
+            bad = wrong.includes(t.id);
           return (
             <button
               key={t.id}
               type="button"
-              disabled={found || open.includes(t.id) || open.length === 2}
-              aria-label={
-                visible ? t.side + ": " + t.text : "Turn over card " + (i + 1)
-              }
-              aria-pressed={visible}
+              disabled={found || wrong.length > 0 || finished}
+              aria-label={t.side + ": " + t.text + (found ? " · Matched" : "")}
+              aria-pressed={selected === t.id}
               className={
-                "min-h-28 rounded-xl border p-3 text-center " +
+                (compact ? "min-h-20 p-2 text-sm " : "min-h-24 p-3 ") +
+                "break-words rounded-xl border-2 text-center transition-colors " +
                 (found
                   ? "border-green-600 bg-green-100 text-green-950"
-                  : "border-(--line) bg-(--surface) text-(--ink)")
+                  : bad
+                    ? "border-red-600 bg-red-100 text-red-950"
+                    : selected === t.id
+                      ? "border-(--accent) bg-(--surface) text-(--ink)"
+                      : "border-(--line) bg-(--surface) text-(--ink)")
               }
-              onClick={() => {
-                setOpen((o) => [...o, t.id]);
-                if (open.length === 1) setTurns((n) => n + 1);
-              }}
+              onClick={() => choose(t)}
             >
-              <span className="block text-sm">{visible ? t.side : "?"}</span>
-              <strong>{visible ? t.text : "Card " + (i + 1)}</strong>
+              <span className="block text-xs">{t.side}</span>
+              <strong>{t.text}</strong>
               {found && <span className="block">✓</span>}
             </button>
           );
         })}
       </div>
-      {open.length === 2 &&
-        tiles.find((t) => t.id === open[0]).pair !==
-          tiles.find((t) => t.id === open[1]).pair && (
-          <p role="status">Different pair — remember their positions.</p>
-        )}
+      {wrong.length > 0 && <p role="status">Not a match. Try another pair.</p>}
       {last && (
         <div role="status">
           <strong>
@@ -418,10 +548,10 @@ function MemoryRound({ cards, onDone, sound, lang }) {
           <p>{last.example_vietnamese}</p>
         </div>
       )}
-      {finished && (
+      {finished && !onNext && (
         <div className="flex justify-end">
           <Btn primary onClick={onDone}>
-            Choose another game
+            Play again / Game setup
           </Btn>
         </div>
       )}

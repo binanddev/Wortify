@@ -1,3 +1,4 @@
+import { FlashcardAiHelp } from "./flashcard-ai-help.jsx";
 import { useWindowActive } from "../../lib/core.js";
 import {
   FolderTree,
@@ -487,7 +488,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
     [remove, setRemove] = useState(null),
     [importing, setImporting] = useState(false),
     [mode, setMode] = useState("flash"),
-    [view, setView] = useState("cards"),
+    [view, setView] = useState("terms"),
     [count, setCount] = useState("20"),
     [filter, setFilter] = useState("all"),
     [order, setOrder] = useState(data.cards),
@@ -567,39 +568,23 @@ function DeckContent({ lang, id, data, reload, sound }) {
         contentDescription
       />
       <SidebarTools>
-        <div className="flash-icon-row">
-          <Btn icon="upload" onClick={() => setImporting(true)}>
-            Import list
-          </Btn>
-          <Btn
-            icon="edit"
-            onClick={() => setEdit({ type: "deck", item: data.deck })}
-          >
-            Rename deck
-          </Btn>
-          <Btn
-            icon="cards"
-            aria-pressed={view === "cards"}
-            onClick={() => setView("cards")}
-          >
-            Study cards
-          </Btn>
-          <Btn
-            icon="list"
-            aria-pressed={view === "terms"}
-            onClick={() => setView("terms")}
-          >
-            Term list
-          </Btn>
-          <Btn icon="plus" onClick={() => setEdit({ type: "card" })}>
-            Add term
-          </Btn>
-          <Btn icon="play" onClick={() => setToolPanel("study")}>
-            Session setup
-          </Btn>
-          <Btn icon="more" onClick={() => setToolPanel("manage")}>
-            Export and manage
-          </Btn>
+        <div className="grid gap-3">
+          <h3 className="context-section-title">Create cards</h3>
+          <Btn primary onClick={() => setImporting(true)}>Import / Create with AI</Btn>
+          <Btn onClick={() => setEdit({ type: "card" })}>Add one card</Btn>
+          <h3 className="context-section-title">Browse this deck</h3>
+          <div className="grid grid-cols-2 gap-2">
+            <Btn aria-pressed={view === "terms"} onClick={() => setView("terms")}>Term list</Btn>
+            <Btn aria-pressed={view === "cards"} onClick={() => setView("cards")}>Card preview</Btn>
+          </div>
+          <Link className="btn" to={"/" + lang + "/flashcard/deck/" + id}>Study this deck →</Link>
+          <details>
+            <summary>Deck management</summary>
+            <div className="mt-3 grid gap-2">
+              <Btn onClick={() => setEdit({ type: "deck", item: data.deck })}>Edit deck details</Btn>
+              <Btn onClick={() => setToolPanel("manage")}>Export and manage</Btn>
+            </div>
+          </details>
         </div>
       </SidebarTools>
       <div className="my-4 flex flex-wrap items-center gap-3">
@@ -929,6 +914,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
       )}
       {importing && (
         <ImportCards
+          lang={lang}
           {...{ api, id, reload }}
           onClose={() => setImporting(false)}
         />
@@ -936,7 +922,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
     </Page>
   );
 }
-function ImportCards({ api, id, reload, onClose }) {
+function ImportCards({ api, id, reload, onClose, lang }) {
   const [preview, setPreview] = useState(null);
   return (
     <Editor
@@ -945,20 +931,9 @@ function ImportCards({ api, id, reload, onClose }) {
           ? `Confirm import ${preview.count} cards`
           : "Import terms"
       }
-      fields={
-        preview
-          ? []
-          : [
-              {
-                name: "text",
-                label: "One line per term, meaning and optional example sentence",
-                multiline: true,
-                isRequired: true,
-                minRows: 8,
-              },
-            ]
-      }
-      initial={{ separator: "," }}
+      fields={[]}
+      initial={{ separator: "|" }}
+      submitLabel={preview ? "Import cards" : "Preview cards"}
       onClose={onClose}
       onSave={async (v, s) => {
         if (preview) {
@@ -975,17 +950,23 @@ function ImportCards({ api, id, reload, onClose }) {
         preview ? (
           <div>
             {preview.preview.map((r, i) => (
-              <p key={i}>
-                {r.german_text} — {r.vietnamese_meaning}
-              </p>
+              <div key={i} className="mb-3">
+                <strong>{r.german_text} — {r.vietnamese_meaning}</strong>
+                {r.example_german && <p>{r.example_german}</p>}
+                {r.example_vietnamese && <p>{r.example_vietnamese}</p>}
+              </div>
             ))}
-            <Btn icon="edit" onClick={() => setPreview(null)}>
+            <Btn onClick={() => setPreview(null)}>
               Edit imported content
             </Btn>
           </div>
         ) : (
+          <div className="grid gap-4">
+          <FlashcardAiHelp lang={lang} separator={v.separator} />
+          <Field label="Paste cards from AI or your spreadsheet" multiline rows={8} isRequired value={v.text || ""} onChange={text => set({...v,text})}
+            description="One card per line. Follow the copied guide for examples, translations and phrases." />
           <Select
-            label="Separator"
+            label="Separator · match the copied guide"
             value={v.separator}
             onChange={(separator) => set({ ...v, separator })}
           >
@@ -1000,6 +981,8 @@ function ImportCards({ api, id, reload, onClose }) {
               </option>
             ))}
           </Select>
+          <p className="text-sm">Preview first. Nothing is added until you confirm the import.</p>
+          </div>
         )
       }
     </Editor>
