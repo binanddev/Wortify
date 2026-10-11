@@ -1,7 +1,7 @@
 # PRACTICE TEXT FORMAT — UTF-8 .txt
 # Start each exercise with EXERCISE: title (maximum 200 characters).
 # Use uppercase FIELD: value keywords. Content may be in any language.
-# TYPE: one of the seven type identifiers below. STYLE: a supported style of that type.
+# TYPE: one of the supported type identifiers below. STYLE: a supported style of that type.
 # Put all exercise fields before the first QUESTION.
 # INSTRUCTIONS: task instructions. CONTEXT: optional shared reading passage.
 # GROUPS: category names separated by | (categorization only; at least two unique groups).
@@ -14,7 +14,8 @@
 # Repeat a token in WORDS when multiple blanks need it. If omitted, the bank uses the first answer of each blank.
 # For sentence_building, WORDS must list every token in the correct answer order; duplicate words are allowed.
 # PREFIX: beginning of the answer for short_answer. Every accepted answer must include that prefix.
-# EXPLANATION: optional feedback after checking. EXAMPLE: yes/no after QUESTION marks a practice example.
+# COMMENT: exercise-wide note before the first QUESTION, shown after a correct answer or reveal.
+# EXPLANATION: optional explanation for any question or matching pair after answering correctly or revealing. EXAMPLE: yes/no after QUESTION marks a practice example.
 # Blank lines and # comment lines are ignored. Use > at the start of a continuation line after QUESTION,
 # INSTRUCTIONS, CONTEXT or EXPLANATION. Other fields must stay on one line.
 # Do not put | or => inside an individual item. Repeat EXERCISE to import multiple exercises.
@@ -27,6 +28,20 @@
 # Every exercise must belong to a folder. Loose exercises are not allowed. English and German spaces are independent.
 # The whole batch is saved only after validation. Errors include line numbers.
 #
+# TEXT FORMATTING
+# LaTeX-style lesson markup is available: line breaks, emphasis, aligned blocks, lists, tables and images.
+# Open the Formatting guide in Create for supported commands and copyable examples. This is not a full TeX compiler.
+# Use **bold text**, *italic text*, and [color=blue]colored text[/color].
+# Available colors: red, rose, pink, magenta, purple, violet, indigo, blue, sky, cyan,
+# teal, emerald, green, lime, yellow, amber, orange, coral, slate, gray.
+# Formatting is supported in INSTRUCTIONS, CONTEXT, EXPLANATION and display QUESTION text.
+# Keep QUESTION plain for error_correction: its words are editable answer data.
+# Keep ANSWER, BLANK, WORDS, PREFIX, GROUPS and titles plain (no formatting markers).
+# Formatting may wrap blanks such as {{1}}; interactive blanks also work inside tables and alignment blocks.
+# Example: QUESTION: Choose the **correct verb**: She {{1}} [color=teal]every day[/color].
+# Example: EXPLANATION: Use *-s* with [color=blue]he, she, it[/color].
+# You can combine color with bold or italic; do not nest colors. HTML is not supported.
+#
 # TYPES AND STYLES
 # cloze_drag_drop: drag_drop (move word tiles), tap_fill (tap words to fill blanks).
 # error_correction: click_edit (edit incorrect text), cross_out (remove extra words).
@@ -34,8 +49,12 @@
 # matching: tap_match (match cards). Each QUESTION is one card; ANSWER is its unique partner.
 # sentence_building: tap_build (arrange tokens). WORDS defines the correct token order.
 # categorization: drag_sort (sort cards). Each QUESTION is one card; ANSWER is exactly one GROUPS value.
-# inline_selection: pill_toggle (toggle choices), inline_select (select a choice).
+# inline_selection: pill_toggle (toggle choices), inline_select (select a choice), fall_away (wrong choices disappear after a correct answer).
 #   Every BLANK needs at least two options, including every accepted answer.
+# BANK_SCOPE: question or exercise for cloze_drag_drop; exercise uses a shared word bank (default).
+# multiple_choice: dialogue_reply or elimination; these styles require a single correct answer.
+#   OPTIONS: choices separated by |. ANSWER must match one choice.
+# true_false_not_given: evidence_judge. Use CONTEXT for the passage and ANSWER: TRUE, FALSE or NOT_GIVEN.
 # short_answer: partial_input (complete a required PREFIX), sentence_rewrite (write the whole answer).
 #   ANSWER always contains the entire sentence, including PREFIX when provided.
 #
@@ -46,67 +65,95 @@
 # Learners answer one question at a time, retry incorrect answers and save progress rather than scores.
 # Preview does not change learning progress. Workspace pins include the highest accessible parent folder.
 #
-# ALL 7 TYPES AND 11 STYLES: complete importable samples follow. Lines beginning with # are documentation.
+# ALL SUPPORTED TYPES AND STYLES: complete importable samples follow. Lines beginning with # are documentation.
+
+# multiple_choice / dialogue_reply
+EXERCISE: Choose a response
+TYPE: multiple_choice
+STYLE: dialogue_reply
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: What would you like?
+OPTIONS: Tea, please. | Yesterday. | At home.
+ANSWER: Tea, please.
+
+# multiple_choice / elimination
+EXERCISE: Choose a response
+TYPE: multiple_choice
+STYLE: elimination
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: What would you like?
+OPTIONS: Tea, please. | Yesterday. | At home.
+ANSWER: Tea, please.
+
+# true_false_not_given / evidence_judge
+EXERCISE: Read and judge
+TYPE: true_false_not_given
+STYLE: evidence_judge
+INSTRUCTIONS: Complete the sentences below.
+CONTEXT: Mia lives in Berlin.
+QUESTION: Mia lives in Berlin.
+OPTIONS: TRUE | FALSE | NOT_GIVEN
+ANSWER: TRUE
 
 # cloze_drag_drop / drag_drop
-EXERCISE: Điền vào chỗ trống
+EXERCISE: Fill in the gap
 TYPE: cloze_drag_drop
 STYLE: drag_drop
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
 QUESTION: I {{1}} coffee in the {{2}}.
 BLANK: drink => drink | eat
 BLANK: morning => morning | evening
 WORDS: morning | drink | eat
 
 # cloze_drag_drop / tap_fill
-EXERCISE: Điền vào chỗ trống
+EXERCISE: Fill in the gap
 TYPE: cloze_drag_drop
 STYLE: tap_fill
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
 QUESTION: I {{1}} coffee in the {{2}}.
 BLANK: drink => drink | eat
 BLANK: morning => morning | evening
 WORDS: morning | drink | eat
 
 # error_correction / click_edit
-EXERCISE: Tìm và sửa lỗi sai
+EXERCISE: Find and correct mistakes
 TYPE: error_correction
 STYLE: click_edit
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
 QUESTION: He do not like sports.
 ANSWER: He does not like sports.
 
 # error_correction / cross_out
-EXERCISE: Tìm và sửa lỗi sai
+EXERCISE: Find and correct mistakes
 TYPE: error_correction
 STYLE: cross_out
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
 QUESTION: They discussed about the project yesterday.
 ANSWER: They discussed the project yesterday.
 
 # matching / tap_match
-EXERCISE: Nối đáp án
+EXERCISE: Match answers
 TYPE: matching
 STYLE: tap_match
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
 QUESTION: cat
 ANSWER: mèo
 QUESTION: dog
 ANSWER: chó
 
 # sentence_building / tap_build
-EXERCISE: Sắp xếp câu
+EXERCISE: Arrange sentence
 TYPE: sentence_building
 STYLE: tap_build
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
-QUESTION: Sắp xếp thành câu đúng.
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: Arrange the words into a correct sentence.
 WORDS: She | is | reading | a book.
 
 # categorization / drag_sort
-EXERCISE: Phân loại
+EXERCISE: Categorize
 TYPE: categorization
 STYLE: drag_sort
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
 GROUPS: Fruit | Animals
 QUESTION: apple
 ANSWER: Fruit
@@ -114,35 +161,43 @@ QUESTION: cat
 ANSWER: Animals
 
 # inline_selection / pill_toggle
-EXERCISE: Trắc nghiệm trong câu
+EXERCISE: Inline multiple choice
 TYPE: inline_selection
 STYLE: pill_toggle
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
 QUESTION: She {{1}} a doctor.
 BLANK: is => is | are
 
 # inline_selection / inline_select
-EXERCISE: Trắc nghiệm trong câu
+EXERCISE: Inline multiple choice
 TYPE: inline_selection
 STYLE: inline_select
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: She {{1}} a doctor.
+BLANK: is => is | are
+
+# inline_selection / fall_away
+EXERCISE: Inline multiple choice
+TYPE: inline_selection
+STYLE: fall_away
+INSTRUCTIONS: Complete the sentences below.
 QUESTION: She {{1}} a doctor.
 BLANK: is => is | are
 
 # short_answer / partial_input
-EXERCISE: Viết lại câu
+EXERCISE: Rewrite sentence
 TYPE: short_answer
 STYLE: partial_input
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
 QUESTION: Rewrite: He began learning English two years ago.
 PREFIX: He has
 ANSWER: He has learned English for two years. | He has been learning English for two years.
 
 # short_answer / sentence_rewrite
-EXERCISE: Viết lại câu
+EXERCISE: Rewrite sentence
 TYPE: short_answer
 STYLE: sentence_rewrite
-INSTRUCTIONS: Hoàn thành các câu bên dưới.
+INSTRUCTIONS: Complete the sentences below.
 QUESTION: Rewrite: He began learning English two years ago.
 PREFIX: He has
 ANSWER: He has learned English for two years. | He has been learning English for two years.

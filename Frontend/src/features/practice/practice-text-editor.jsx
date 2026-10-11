@@ -1,3 +1,4 @@
+import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
 import {FormattingHelp} from "./formatting-help.jsx";
 import { remapQuestionMedia } from "./exercise-media-utils.js";
 import { MediaEditor } from "./exercise-media.jsx";
@@ -33,7 +34,7 @@ export function PracticeTextEditor({
     ...node,
     payload: { ...node.payload, attachments: media[keyFor(node, index)] || [] },
   });
-  const [toolsOpen, setToolsOpen] = useState(!exercise);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [mode, setMode] = useState("cloze_drag_drop");
   const [style, setStyle] = useState("drag_drop");
   const [text, setText] = useState(() =>
@@ -216,7 +217,7 @@ export function PracticeTextEditor({
             </label>
             {files.length > 0 && <p>{files.join(" · ")}</p>}
             <details>
-              <summary>Templates for 7 exercise types</summary>
+              <summary>Templates for {EXERCISE_TYPES.length} exercise types</summary>
               <Select
                 label="Sample exercise type"
                 value={mode}
@@ -272,11 +273,12 @@ export function PracticeTextEditor({
         </PracticeModal>
       )}
       <h1>{exercise ? exercise.title : "Exercise content"}</h1>
+      <AiAuthoringHelp lang={lang} />
       <FormattingHelp/>
       {mediaNotice && <p role="status">{mediaNotice}</p>}
       <Field
         label="Text draft"
-        description="File content appears here. Review, save and download templates using the sidebar."
+        description="Paste the exercise text from your AI chat here, or import a .txt file. Use Check and preview before saving."
         multiline
         rows={24}
         value={text}

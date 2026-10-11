@@ -69,11 +69,11 @@ matching: tap_match (match cards). Each QUESTION is one card; ANSWER is its uniq
 sentence_building: tap_build (arrange tokens). WORDS defines the correct token order.
 categorization: drag_sort (sort cards). Each QUESTION is one card; ANSWER is exactly one GROUPS value.
 inline_selection: pill_toggle (toggle choices), inline_select (select a choice), fall_away (wrong choices disappear after a correct answer).
+  Every BLANK needs at least two options, including every accepted answer.
 BANK_SCOPE: question or exercise for cloze_drag_drop; exercise uses a shared word bank (default).
 multiple_choice: dialogue_reply or elimination; these styles require a single correct answer.
   OPTIONS: choices separated by |. ANSWER must match one choice.
 true_false_not_given: evidence_judge. Use CONTEXT for the passage and ANSWER: TRUE, FALSE or NOT_GIVEN.
-  Every BLANK needs at least two options, including every accepted answer.
 short_answer: partial_input (complete a required PREFIX), sentence_rewrite (write the whole answer).
   ANSWER always contains the entire sentence, including PREFIX when provided.
 

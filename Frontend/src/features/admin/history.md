@@ -5,6 +5,17 @@
 
 ---
 
+### [v1.2.4] - 2026-10-11 | AI-first Lesson Authoring
+
+- Added a visible Copy all instructions for AI action in Create, the text editor and the authoring guide.
+- The copy bundle includes all current exercise rules/templates, formatting examples, explanations and separate theory instructions; optional topic/level preferences travel with it.
+- Added a text download and selectable fallback when clipboard access is unavailable.
+- Kept detailed documentation behind an expandable section, with a direct route to paste and preview AI output.
+- New exercise drafts open directly for pasting; file import and templates remain available without an automatic modal.
+- Corrected the template count and clarified where inline-choice blank rules apply.
+
+---
+
 ### [v1.2.3] - 2026-10-10 | Discover Performance & Grammar Library
 
 - Reuse normalized Discover search snapshots and resolve typo alternatives once per search term, rather than per word in every lesson.

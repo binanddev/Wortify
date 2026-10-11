@@ -1,13 +1,6 @@
 import {PracticeRichText} from "./practice-rich-text.jsx";
-export const FORMAT_EXAMPLES = [
- ["Dialogue / new line", "Q: {{1}} wartest du? \\newline A: Auf den Bus nach Berlin."],
- ["Emphasis", "\\textbf{Important} · \\textit{example} · \\underline{key word} · \\textcolor{blue}{hint}"],
- ["Alignment", "\\begin{flushleft}Left aligned text and {{1}}\\end{flushleft}"],
- ["Table", "\\begin{tabular}{lc} \\textbf{Pronoun} & \\textbf{Verb} \\\\ ich & bin \\\\ du & bist \\end{tabular}"],
- ["Image", "\\includegraphics[width=320px,align=right,alt=Learning illustration]{https://example.com/image.jpg}"],
- ["List", "\\begin{enumerate}\\item Read the sentence.\\item Choose the correct word.\\end{enumerate}"],
- ["Heading / note", "\\section{Word order}\\begin{quote}The verb comes second.\\end{quote}"],
-];
+import { FORMAT_EXAMPLES } from "./formatting-examples.js";
+export { FORMAT_EXAMPLES } from "./formatting-examples.js";
 export function FormattingHelp() {
  return <details className="lesson-format-help"><summary>Formatting guide · line breaks, tables and images</summary>
  <p><a href="/samples/formatted-practice.txt" download>Download sample exercises</a> · <a href="/samples/formatted-theory.txt" download>Download sample theory</a></p>

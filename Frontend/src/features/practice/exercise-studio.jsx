@@ -1,3 +1,4 @@
+import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
 import {FormattingHelp} from "./formatting-help.jsx";
 import { MediaEditor, ExerciseMediaDialog } from "./exercise-media.jsx";
 import { PracticeModal } from "./practice-workspace.jsx";
@@ -279,9 +280,10 @@ export function ExerciseStudio({
                 )}
               </div>
             </header>
+            {!current && <AiAuthoringHelp lang={lang} />}
             <Field
               aria-label="Search"
-              placeholder={current ? "Search trong folde…" : "Search folde…"}
+              placeholder={current ? "Search this folder…" : "Search folders…"}
               value={query}
               onChange={setQuery}
               startContent={<Icon name="search" />}

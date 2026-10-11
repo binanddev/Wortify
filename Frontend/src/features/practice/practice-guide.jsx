@@ -1,3 +1,4 @@
+import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
 import {FormattingHelp} from "./formatting-help.jsx";
 import { useState } from "react";
 import { PracticeModal } from "./practice-workspace.jsx";
@@ -76,7 +77,14 @@ export function PracticeGuide({ lang }) {
         </div>
       </SidebarTools>
       <div className="mx-auto grid w-full max-w-5xl gap-6 text-(--ink)">
-        <Heading title="Exercise authoring guide · v1.2.2" />
+        <Heading title="Create a lesson · v1.2.4" />
+        <AiAuthoringHelp lang={lang} guide />
+        <div className="flex flex-wrap gap-3">
+          <Link className="btn" to={"/" + lang + "/create/new"}>Paste AI output and preview</Link>
+        </div>
+        <details className="grid gap-4">
+          <summary className="cursor-pointer text-xl font-semibold">Detailed guide · templates, formatting and publishing</summary>
+          <div className="mt-4 grid gap-6">
         <FormattingHelp/>
         <section className={panel}>
           <h2>Choose how learners answer</h2>
@@ -222,6 +230,8 @@ export function PracticeGuide({ lang }) {
             Images and MP3 files are optional, up to 200 MB per exercise. Attach them to the entire exercise or individual questions in Media; attachments are not included in .txt files.
           </p>
         </section>
+          </div>
+        </details>
         <p role="status" className="text-sm">
           {notice}
         </p>
