@@ -1,3 +1,4 @@
+import { WordGames } from "./word-games.jsx";
 import { useWindowActive } from "../../lib/core.js";
 import { SkipButton } from "../learning/skip-controls.jsx";
 import { SKIPPED_ANSWER } from "../learning/skip-learning.js";
@@ -523,14 +524,14 @@ function summarizeLocal(questions, answers) {
     rows,
   };
 }
-export function ExtraStudy({ lang, params, sound }) {
+export function ExtraStudy({ lang, params, sound, userId }) {
   const query = new URLSearchParams();
   if (params.get("deck")) query.set("deck", params.get("deck"));
   query.set("filter", params.get("filter") || "all");
   const resource = useResource(endpoint(lang, `study-pack/?${query}`));
   return (
     <Loading resource={resource}>
-      {(pack) => <LocalPractice {...{ pack, lang, params, sound, userId }} />}
+      {(pack) => params.get("mode") === "games" ? <WordGames {...{ pack, lang, sound }} deck={params.get("deck")} /> : <LocalPractice {...{ pack, lang, params, sound, userId }} />}
     </Loading>
   );
 }

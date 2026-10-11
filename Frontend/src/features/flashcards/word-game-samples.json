@@ -1,0 +1,90 @@
+{
+  "en": [
+    {
+      "id": "demo-en-0",
+      "german_text": "take a break",
+      "vietnamese_meaning": "nghỉ giải lao",
+      "example_german": "Let's take a break after this exercise.",
+      "example_vietnamese": "Hãy nghỉ giải lao sau bài tập này."
+    },
+    {
+      "id": "demo-en-1",
+      "german_text": "make a decision",
+      "vietnamese_meaning": "đưa ra quyết định",
+      "example_german": "We need to make a decision before Friday.",
+      "example_vietnamese": "Chúng ta cần quyết định trước thứ Sáu."
+    },
+    {
+      "id": "demo-en-2",
+      "german_text": "look forward to",
+      "vietnamese_meaning": "mong chờ",
+      "example_german": "I look forward to seeing you again.",
+      "example_vietnamese": "Tôi mong được gặp lại bạn."
+    },
+    {
+      "id": "demo-en-3",
+      "german_text": "on time",
+      "vietnamese_meaning": "đúng giờ",
+      "example_german": "The train arrived on time this morning.",
+      "example_vietnamese": "Sáng nay tàu đến đúng giờ."
+    },
+    {
+      "id": "demo-en-4",
+      "german_text": "give me a hand",
+      "vietnamese_meaning": "giúp tôi một tay",
+      "example_german": "Could you give me a hand with this box?",
+      "example_vietnamese": "Bạn giúp tôi với chiếc hộp này được không?"
+    },
+    {
+      "id": "demo-en-5",
+      "german_text": "keep in touch",
+      "vietnamese_meaning": "giữ liên lạc",
+      "example_german": "Let's keep in touch after the course.",
+      "example_vietnamese": "Hãy giữ liên lạc sau khóa học."
+    }
+  ],
+  "de": [
+    {
+      "id": "demo-de-0",
+      "german_text": "eine Pause",
+      "vietnamese_meaning": "nghỉ giải lao",
+      "example_german": "Nach der Arbeit mache ich eine Pause.",
+      "example_vietnamese": "Sau giờ làm tôi nghỉ giải lao."
+    },
+    {
+      "id": "demo-de-1",
+      "german_text": "Bescheid sagen",
+      "vietnamese_meaning": "báo cho biết",
+      "example_german": "Kannst du mir bitte rechtzeitig Bescheid sagen?",
+      "example_vietnamese": "Bạn có thể báo cho tôi kịp thời không?"
+    },
+    {
+      "id": "demo-de-2",
+      "german_text": "auf den Bus warten",
+      "vietnamese_meaning": "đợi xe buýt",
+      "example_german": "Wir müssen hier auf den Bus warten.",
+      "example_vietnamese": "Chúng tôi phải đợi xe buýt ở đây."
+    },
+    {
+      "id": "demo-de-3",
+      "german_text": "Zeit nehmen",
+      "vietnamese_meaning": "dành thời gian",
+      "example_german": "Wir sollten uns mehr Zeit nehmen.",
+      "example_vietnamese": "Chúng ta nên dành thêm thời gian."
+    },
+    {
+      "id": "demo-de-4",
+      "german_text": "zu Fuß",
+      "vietnamese_meaning": "đi bộ",
+      "example_german": "Heute gehe ich zu Fuß zur Schule.",
+      "example_vietnamese": "Hôm nay tôi đi bộ đến trường."
+    },
+    {
+      "id": "demo-de-5",
+      "german_text": "Lust auf",
+      "vietnamese_meaning": "hứng thú với / muốn",
+      "example_german": "Hast du Lust auf einen Kaffee?",
+      "example_vietnamese": "Bạn có muốn uống cà phê không?"
+    }
+  ]
+}

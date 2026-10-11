@@ -543,7 +543,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
   const start = () =>
     action.run(async (signal) => {
       if (
-        ["spell", "write", "quiz", "speak", "order", "match"].includes(mode)
+        ["spell", "write", "quiz", "speak", "order", "match", "games"].includes(mode)
       ) {
         navigate(
           `/${lang}/flashcard/study?deck=${id}&mode=${mode}&filter=${filter}`,
@@ -602,6 +602,9 @@ function DeckContent({ lang, id, data, reload, sound }) {
           </Btn>
         </div>
       </SidebarTools>
+      <div className="my-4 flex flex-wrap items-center gap-3">
+        <Link className="btn" to={"/" + lang + "/flashcard/study?deck=" + id + "&mode=games"}>Word playground · Learn in context</Link>
+      </div>
       <div className="study-layout">
         {view === "cards" && (
           <div>
@@ -707,6 +710,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                   ["order", "Arrange sentence"],
                   ["match", "Matching"],
                   ["speak", "Speaking practice"],
+                  ["games", "Word playground · Context and phrase games"],
                 ].map(([v, t]) => (
                   <option key={v} value={v}>
                     {t}

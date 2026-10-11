@@ -5,6 +5,20 @@
 
 ---
 
+### [v1.2.5] - 2026-10-11 | Flashcard Word Playground
+
+- Added Context detective: recall a word or phrase in its saved example, with hints, corrective feedback and a full-sentence reveal.
+- Added Sentence workshop: rebuild saved examples with shuffled tokens, preserving repeated words.
+- Added Phrase pairs: a face-down memory game for multi-word expressions and their meanings, with example sentences after each match.
+- Added six original English and six German sample cards for instant play without changing personal decks.
+- Games show eligible card counts and explain missing data. Context gaps only use forms actually present in the saved example; no inferred conjugations or generated sentences.
+- Revealed sentence questions return later in the same round. Practice rounds do not change spaced-review schedules.
+- Added deck-level entry and session menu entry; retained the selected card scope and existing theme components.
+- Fixed the extra-study user ID prop so existing practice modes receive the current account identity.
+- Ideas informed by British Council TeachingEnglish resources on lexical chunks and matching activities; all sample sentences are original.
+
+---
+
 ### [v1.2.4] - 2026-10-11 | AI-first Lesson Authoring
 
 - Added a visible Copy all instructions for AI action in Create, the text editor and the authoring guide.

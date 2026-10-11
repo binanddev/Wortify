@@ -1,0 +1,126 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {
+  contextGap,
+  eligibleCards,
+  sentenceTiles,
+  checkGameAnswer,
+  memoryTiles,
+  demoGameCards,
+  WORD_GAMES,
+} from "../src/features/flashcards/word-games.js";
+test("context extraction respects word boundaries, Unicode and saved inflected forms", () => {
+  assert.equal(
+    contextGap({ german_text: "art", example_german: "We start now." }),
+    null,
+  );
+  assert.equal(
+    contextGap({ german_text: "gehen", example_german: "Er geht heute." }),
+    null,
+  );
+  assert.equal(
+    contextGap({
+      german_text: "gehen",
+      accepted_answers: ["geht"],
+      example_german: "Er geht heute.",
+    }).answer,
+    "geht",
+  );
+  assert.equal(
+    contextGap({
+      german_text: "der Bahnhof",
+      example_german: "Wir treffen uns am Bahnhof.",
+    }).answer,
+    "Bahnhof",
+  );
+  assert.equal(
+    contextGap({ german_text: "Äpfel", example_german: "Ich esse Äpfel." })
+      .answer,
+    "Äpfel",
+  );
+  assert.equal(
+    contextGap({ german_text: "a+b", example_german: "Use a+b here." }).answer,
+    "a+b",
+  );
+});
+test("missing data and ambiguous memory pairs are excluded", () => {
+  const cards = [
+    {
+      id: 1,
+      german_text: "on time",
+      vietnamese_meaning: "đúng giờ",
+      example_german: "We arrived on time.",
+    },
+    { id: 2, german_text: "punctually", vietnamese_meaning: "đúng giờ" },
+    { id: 3, german_text: "in time", vietnamese_meaning: "đúng giờ" },
+    { id: 4, german_text: "keep in touch", vietnamese_meaning: "giữ liên lạc" },
+  ];
+  assert.deepEqual(
+    eligibleCards(cards, "memory").map((c) => c.id),
+    [1, 4],
+  );
+  assert.deepEqual(
+    eligibleCards(cards, "context").map((c) => c.id),
+    [1],
+  );
+  assert.deepEqual(
+    eligibleCards(cards, "sentence").map((c) => c.id),
+    [1],
+  );
+  assert.deepEqual(eligibleCards([], "memory"), []);
+});
+test("sentence tiles keep repeated tokens distinct and do not modify source cards", () => {
+  const c = { example_german: "We know that that works." };
+  const tiles = sentenceTiles(c, () => 0);
+  assert.equal(tiles.length, 5);
+  assert.equal(new Set(tiles.map((t) => t.id)).size, 5);
+  const answer = [...tiles]
+    .sort((a, b) => Number(a.id) - Number(b.id))
+    .map((t) => t.text)
+    .join(" ");
+  assert.equal(answer, c.example_german);
+  assert.equal(checkGameAnswer(c, "sentence", answer), true);
+  assert.equal(
+    checkGameAnswer(c, "sentence", "that We works. know that"),
+    false,
+  );
+});
+test("context answers use the sentence form and respect grading preferences", () => {
+  const card = {
+    german_text: "gehen",
+    accepted_answers: ["geht"],
+    example_german: "Er geht heute.",
+  };
+  assert.equal(checkGameAnswer(card, "context", "geht"), true);
+  assert.equal(checkGameAnswer(card, "context", "gehen"), false);
+  assert.equal(
+    checkGameAnswer(card, "context", "GEHT", { ignore_case: false }),
+    false,
+  );
+});
+test("English and German demo collections support all games and form complete memory pairs", () => {
+  for (const lang of ["en", "de"]) {
+    const cards = demoGameCards(lang);
+    for (const [mode] of WORD_GAMES)
+      assert.equal(eligibleCards(cards, mode).length, 6);
+    for (const card of cards) {
+      const gap = contextGap(card);
+      assert.equal(gap.before + gap.answer + gap.after, card.example_german);
+      assert.equal(checkGameAnswer(card, "context", gap.answer), true);
+      assert.equal(
+        checkGameAnswer(card, "sentence", card.example_german),
+        true,
+      );
+    }
+    const tiles = memoryTiles(cards, () => 0);
+    assert.equal(new Set(tiles.map((t) => t.id)).size, 12);
+    for (let i = 0; i < 6; i++)
+      assert.deepEqual(
+        tiles
+          .filter((t) => t.pair === i)
+          .map((t) => t.side)
+          .sort(),
+        ["Meaning", "Phrase"],
+      );
+  }
+});

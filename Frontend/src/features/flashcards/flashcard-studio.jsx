@@ -1,3 +1,5 @@
+import { WordGames } from "./word-games.jsx";
+import { WORD_GAMES } from "./word-games.js";
 import { useWindowActive } from "../../lib/core.js";
 import { SkipButton, AnswerReveal } from "../learning/skip-controls.jsx";
 import { cardSolution } from "../learning/skip-learning.js";
@@ -63,6 +65,7 @@ export default function FlashcardStudio({ lang, id, userId, sound }) {
   );
 }
 function Studio({ lang, id, userId, sound, data }) {
+  const [game, setGame] = useState(null);
  const windowActive = useWindowActive();
   const sync = useLearningSync(userId, lang);
   const waiting = pendingLearning(userId, lang).filter(
@@ -180,7 +183,7 @@ function Studio({ lang, id, userId, sound, data }) {
     );
   }, [active?.id, options.direction]);
   useEffect(() => {
-    if (options.mode === "flash" && options.autoSpeak && active) {
+    if (!game && options.mode === "flash" && options.autoSpeak && active) {
       speak(
         flipped ? active.vietnamese_meaning : active.german_text,
         flipped ? options.backVoice : options.frontVoice,
@@ -188,6 +191,7 @@ function Studio({ lang, id, userId, sound, data }) {
     }
     return () => window.speechSynthesis?.cancel();
   }, [
+    game,
     active?.id,
     flipped,
     options.autoSpeak,
@@ -214,7 +218,7 @@ function Studio({ lang, id, userId, sound, data }) {
   }, [elapsed, options.minutes, running, options.mode, feedback?.skipped]);
   useEffect(() => {
     const listener = (e) => {
-      if (!windowActive) return;
+      if (!windowActive || game) return;
       if (
         e.target.closest("input,textarea,select,button,a") ||
         options.mode !== "flash" ||
@@ -231,7 +235,7 @@ function Studio({ lang, id, userId, sound, data }) {
     };
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
-  }, [windowActive, index, order.length, options.mode, settingsOpen, resetLearning]);
+  }, [game, windowActive, index, order.length, options.mode, settingsOpen, resetLearning]);
   const speak = (text, voice) => {
     if (!window.speechSynthesis) {
       setError("This browser does not support speech synthesis.");
@@ -476,15 +480,25 @@ function Studio({ lang, id, userId, sound, data }) {
           ].map(([mode, icon, label]) => (
             <button
               key={mode}
-              aria-pressed={options.mode === mode}
-              onClick={() => patch({ mode })}
+              aria-pressed={!game && options.mode === mode}
+              onClick={() => { setGame(null); patch({ mode }); }}
             >
               <Icon name={icon} />
               <span>{label}</span>
             </button>
           ))}
         </div>
-        {options.mode !== "review" && (
+        <h3 className="context-section-title">Learn in context</h3>
+        <div className="flash-mode-picker" aria-label="Context and phrase games">
+          {WORD_GAMES.map(([mode, label, description], index) => (
+            <button key={mode} type="button" aria-pressed={game === mode} title={description}
+              onClick={() => { setGame(mode); setRunning(false); setSettingsOpen(false); }}>
+              <Icon name={["search", "exercise", "cards"][index]} />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+        {!game && options.mode !== "review" && (
           <div className="flash-icon-row">
             <Btn
               icon="star"
@@ -694,7 +708,9 @@ function Studio({ lang, id, userId, sound, data }) {
         </PracticeModal>
       )}
       <Status error={error} />
-      {options.mode === "review" ? (
+      {game ? (
+        <WordGames key={game} pack={{cards: pool, grading: options}} lang={lang} deck={id} sound={sound} embedded selectedMode={game} />
+      ) : options.mode === "review" ? (
         <SpacedReview lang={lang} id={id} userId={userId} />
       ) : options.mode === "flash" ? (
         flashEnded ? (
