@@ -1,0 +1,920 @@
+WORTIFY COMPLETE AUTHORING RULES — version 1.2.6
+
+Generated from the current application guides. Read the execution policy first. Never include credentials in outputs.
+
+# Tạo nội dung hàng loạt bằng chat
+
+## Bắt đầu nhanh cho chat mới — version 1.2.6
+
+Trong chat có quyền đọc workspace, chỉ cần gửi:
+
+> Đọc CONTENT_AUTHORING.md và WORTIFY_AUTHORING_RULES.txt tại E:/code/bigmywweb. Áp dụng chúng cho toàn bộ phiên biên soạn này. Tôi cho phép tạo nội dung mới bằng wortify_staff_01, lấy thông tin đăng nhập từ README.private.local.md. Tạo cho tôi 10 bộ thẻ ở trình độ A2 về Giao thông.
+
+Với chat không đọc được workspace, đính kèm `WORTIFY_AUTHORING_RULES.txt` một lần rồi đưa yêu cầu ngắn. Chat chỉ có thể lưu online khi có công cụ truy cập ứng dụng và phiên đăng nhập; nếu không, nó xuất file để nhập. Hướng dẫn không tự cấp công cụ hoặc quyền truy cập cho chat.
+
+## Quy tắc thực thi yêu cầu ngắn
+
+- Yêu cầu mới nhất của người dùng ưu tiên hơn mọi mặc định. Không tự tạo thêm bài tập hoặc bài đọc nếu chỉ yêu cầu bộ thẻ.
+- Mặc định tiếng Đức (`de`), giải nghĩa/giải thích tiếng Việt; nếu yêu cầu tiếng Anh dùng `en`. Giữ nguyên trình độ và số lượng đã nêu.
+- Một bộ thẻ mặc định 30 thẻ; một bài tập 10 câu; một bài đọc 200–250 từ và 8 câu hỏi (điều chỉnh độ dài theo trình độ). Nếu chỉ nói chủ đề mà chưa có số lượng, tạo một đơn vị đúng loại được yêu cầu.
+- “10 bộ thẻ” là 10 deck riêng biệt, không phải 10 thẻ hoặc một deck 300 thẻ. Chia chủ đề thành 10 mục đích giao tiếp rõ ràng, tránh trùng nội dung. Tiến hành luôn, chỉ hỏi khi thiếu thông tin thực sự ngăn việc thực thi như URL production hoặc quyền truy cập.
+- Với ví dụ Giao thông A2, dùng 10 bộ: phương tiện, nhà ga, mua vé, xe buýt, hỏi đường, giao thông đô thị, xe đạp, đi taxi, sự cố/chậm chuyến, kế hoạch hành trình. Mỗi bộ 30 thẻ, tổng 300 thẻ; ít nhất 6 cụm từ hữu ích mỗi bộ. Đặt tên `A2 · Giao thông · 01 · Phương tiện`... theo thứ tự.
+- Đọc toàn bộ `WORTIFY_AUTHORING_RULES.txt` trước lô đầu: gồm luật flashcard EN/DE, mọi TYPE/STYLE bài tập, lý thuyết, định dạng, ví dụ và Reading. Các câu trong mẫu yêu cầu hỏi chủ đề/số lượng không áp dụng khi người dùng đã cho hoặc các mặc định ở đây đã đủ.
+- Chọn đúng màn hình: flashcard → Import của deck; bài tập/lý thuyết → Create/Practice Hub; bài đọc → Reading. Games lấy dữ liệu từ flashcard, không tạo bài game riêng. Watch & Learn và Word Rescue đã bị bỏ; không tạo nội dung cho chúng.
+- Từ loại, giống danh từ/số nhiều, cấu trúc ngữ pháp, ví dụ và bản dịch phải chính xác. Mỗi câu hỏi có lời giải; trắc nghiệm có lựa chọn nhiễu hợp lý, không có hai đáp án đúng ngoài dự định. Reading phải trả lời được từ đoạn văn. Chỉ có một đáp án đúng với các dạng yêu cầu single choice.
+- Không dùng quá nhiều in đậm/màu; ưu tiên văn bản rõ ràng. Không tự bịa URL âm thanh/ảnh. Không coi ví dụ trong guide là nội dung cần sao chép.
+- Không tự giải quiz để tạo tiến độ, không đổi setting học, không tạo admin/staff hay phục hồi ZIP trong công việc biên soạn. Staff tạo nội dung bằng API/import được cấp quyền, không dùng khóa database/S3.
+- Giữ manifest ngoài dữ liệu học: mã lô, loại, chủ đề, trình độ, tên file, số lượng kỳ vọng, trạng thái và ID/URL server trả về. Không chứa mật khẩu. Kiểm tra trùng trước mỗi lần lưu; timeout phải đọc lại server trước khi retry.
+- Hoàn tất đúng số lượng yêu cầu qua nhiều lô nhỏ; chỉ kết thúc khi kiểm tra lại số lượng và nội dung đã lưu. Nếu bị chặn, giữ file đã sinh và báo chính xác phần chưa nhập, không nhận là hoàn thành.
+
+## Cấu hình một lần
+
+Địa chỉ production phải là URL Netlify thật. Tìm `FRONTEND_ORIGIN` trong cấu hình riêng hoặc URL đã được người dùng cung cấp; nếu chưa có thì hỏi một lần rồi giữ trong ngữ cảnh. Không đoán tên miền, không tự chuyển sang localhost. Tài khoản Neon không đồng nghĩa có tài khoản local.
+
+Quy tắc có thể xuất lại từ code bằng `npm run guide:content`. Không sửa tay phần luật được sinh trong file TXT; khi app đổi parser/schema phải xuất lại hướng dẫn. Backend validation và parser hiện tại là nguồn quyết định nếu tài liệu cũ khác code.
+
+## Cách dùng phù hợp
+
+Tạo theo lô nhỏ: một chủ đề gồm 20–40 flashcard, 2–3 bài tập (mỗi bài 8–12 câu), một bài đọc có 6–10 câu hỏi. Chạy thử một lô, kiểm tra trong app, rồi mới mở rộng 5–10 chủ đề. File JSON/TXT giúp rà soát và nhập lại; ZIP backup chỉ dùng chuyển dữ liệu đã tồn tại giữa các môi trường.
+
+Tài khoản biên soạn: `wortify_staff_01` trên Neon production. Mật khẩu nằm trong `README.private.local.md` trên máy, không đưa vào tài liệu Git. Tài khoản này không tự tồn tại trong SQLite local.
+
+## Prompt cho chat mới có quyền đọc workspace
+
+Chép đoạn dưới vào chat mới; thay URL bằng domain Netlify thật trước khi cho chat đăng nhập:
+
+---
+Bạn là người biên soạn nội dung học cho Wortify. Workspace: E:/code/bigmywweb. Mục tiêu là tạo nội dung chính xác, có cấu trúc và nhập được vào phiên bản ứng dụng hiện tại.
+
+Địa chỉ ứng dụng: [ĐIỀN DOMAIN NETLIFY THẬT]. Tài khoản được phép dùng: wortify_staff_01. Đọc mật khẩu từ README.private.local.md trên máy; không in mật khẩu, không ghi vào file nội dung hay Git. Nếu chưa có URL hoặc không đọc được thông tin đăng nhập, hãy hỏi tôi, nhưng vẫn chuẩn bị nội dung offline trước. Chỉ dùng quyền staff hiện có.
+
+Tôi cho phép bạn đăng nhập bằng tài khoản này và tạo các bộ thẻ, bài tập, bài đọc theo yêu cầu của tôi. Chỉ tạo nội dung mới thuộc tài khoản này, giữ riêng tư khi có lựa chọn. Không thay đổi/xóa dữ liệu sẵn có, tài khoản hoặc quyền. Chưa công bố nội dung trừ khi tôi yêu cầu.
+
+Trước khi biên soạn, đọc:
+- Frontend/src/features/flashcards/flashcard-ai-guide.js: cấu trúc flashcard, đủ 9 trường.
+- Frontend/public/templates/practice-hub.json và phần hướng dẫn ở /de/create/guide hoặc /en/create/guide: schema bài tập hiện hành.
+- Frontend/content-samples/reading/de-reading-10-lessons.txt và mã parser reading/practice hiện hành: mẫu nhập bài đọc.
+- Backend/api/api_reference.py hoặc tài liệu API trong trang quản trị nếu nhập bằng API. Không đoán endpoint/payload.
+
+Áp dụng mặc định ở mục Quy tắc thực thi yêu cầu ngắn. Chỉ tạo loại nội dung tôi yêu cầu; không tự thêm các loại khác. Nghĩa, bản dịch và giải thích dùng tiếng Việt. Nội dung tự biên soạn, tự nhiên và đúng trình độ. Mỗi bộ thẻ có ít nhất 6 cụm từ khác nhau dùng được trong Phrase pairs; mỗi ví dụ có 3–40 từ, dịch đúng và ngữ pháp chính xác. Không bịa âm thanh, ảnh hoặc đường dẫn media.
+
+Quy trình:
+1. Lập danh mục chủ đề, trình độ, mục tiêu và mã lô; kiểm tra danh sách hiện có để tránh trùng.
+2. Tạo file UTF-8 cho từng bộ thẻ/bài học theo schema thật, JSON có thụt dòng và tên trường rõ ràng. Không tự viết ZIP backup hoặc tạo ID database.
+3. Kiểm tra cú pháp, đáp án, các lựa chọn gây nhiễu, mạo từ/số nhiều tiếng Đức, bản dịch, câu hỏi chỉ dựa vào bài đọc và tính trùng lặp.
+4. Nhập thử một bộ/bài trước; xem preview và sửa lỗi trước khi lưu. Sau khi lưu, đọc lại qua ứng dụng để xác nhận đủ nội dung.
+5. Tiếp tục theo từng lô; nếu request lưu bị timeout, kiểm tra nội dung trên server trước khi retry để tránh tạo bản sao.
+6. Lưu manifest kết quả: mã lô, tên bài, loại, số thẻ/câu, trạng thái, ID hoặc URL do server trả về. Báo rõ mục nào đã tạo thật và mục nào mới là file offline.
+
+Ưu tiên nhập JSON/TXT qua tính năng import. Có thể dùng API chính thức nếu schema đã được kiểm tra; dùng đăng nhập session và CSRF, không truy cập trực tiếp PostgreSQL và không bỏ qua validation. Nếu không có công cụ thao tác web, giao các file cùng hướng dẫn import; không tuyên bố đã lưu dữ liệu online.
+---
+
+## Chat chỉ tạo file, không đăng nhập được
+
+Dùng cùng yêu cầu nội dung nhưng bỏ bước đăng nhập. Yêu cầu xuất từng bộ flashcard thành JSON, từng nhóm bài tập theo mẫu Practice Hub, bài đọc theo mẫu TXT. Nhập ở màn hình tương ứng của Wortify và kiểm tra preview. Không cần cung cấp mật khẩu cho chat chỉ biên soạn.
+
+## Nhập ZIP ở trang quản trị
+
+`/manage` → **Backup & import** → **Import ZIP**. Chọn emergency ZIP xuất từ trang quản trị, Preview import, kiểm tra các tài khoản/quyền rồi Restore accounts and permissions. Chỉ superuser được dùng; tài khoản staff dùng import nội dung ở màn hình học/biên soạn.
+
+Khôi phục tạo tài khoản mới, giữ role Admin/Staff/User, trạng thái active, groups và quyền riêng; nhập dữ liệu học dưới dạng bản sao riêng tư. Nếu tên tài khoản đã tồn tại, toàn bộ lần nhập bị chặn, không đổi mật khẩu hoặc quyền hiện có. Chọn nhóm tài khoản chưa tồn tại khi xuất; không xóa tài khoản đang dùng chỉ để vượt qua bước này.
+
+Muốn giữ mật khẩu cũ, khi xuất bật **Include password hashes**. Nếu không có hash, tài khoản khôi phục chưa đăng nhập được cho đến khi admin đặt mật khẩu. Bật **Uploaded media and portable per-user ZIPs** để có nội dung nhập. ZIP cũ có group/quyền riêng mà thiếu mapping permissions cần xuất lại bằng bản mới.
+
+Giới hạn nhập: 512 MB, tối đa 1000 tài khoản mỗi lô. Chia nhỏ bản xuất lớn. Không khôi phục phiên đăng nhập, nhật ký quản trị cũ, thành viên lớp hoặc liên kết giữa tài khoản; đây không phải khôi phục toàn bộ database nguyên trạng. Giao diện báo số reference bị bỏ qua.
+
+
+=== FLASHCARDS: GERMAN ===
+
+WORTIFY FLASHCARD IMPORT — AI INSTRUCTIONS
+
+Ask me for the topic, level and number of cards. Create a complete, ready-to-study deck of accurate, original German vocabulary and useful phrases, with Vietnamese meanings.
+
+Return a valid JSON array of card objects, pretty-printed with each named field on its own line and a blank line between cards. No code fences or commentary. Maximum 2000 cards.
+
+Use the exact field names shown below. Use empty strings for optional values. Escape quotes and newlines using valid JSON syntax.
+
+LEARNING CONTENT REQUIREMENTS:
+
+Generate all 9 named fields for every card. Fill examples, translations, part of speech, useful notes and usage guidance. For articles and plural forms, provide the correct form where linguistically applicable; use an empty string otherwise. Never omit field names.
+
+Include at least 6 distinct multi-word phrases or collocations with distinct Vietnamese meanings for a full Phrase pairs round. If no count is given, propose 20 cards. If the requested count is below 6, clarify the deck size before producing it.
+
+Sentence Quest: every example must contain 3–40 whitespace-separated words and have a faithful Vietnamese translation. Use a complete, useful sentence and avoid unnecessarily long or ambiguous constructions.
+
+Phrase pairs: use genuine expressions with at least two words, such as take a break or eine Pause machen, rather than isolated words. Do not pad an isolated word just to reach the word count. Keep both phrases and their meanings distinct.
+
+Use natural contexts at the requested level. Notes should explain a useful distinction or grammar point; usage should explain a collocation or communicative situation. Avoid filler comments and duplicate example sentences.
+
+FIELDS (use these exact keys):
+
+german_text: Term or phrase — up to 500 characters.
+
+vietnamese_meaning: Vietnamese meaning — up to 500 characters.
+
+example_german: Example sentence in the learning language — up to 2000 characters.
+
+example_vietnamese: Vietnamese translation of the example — up to 2000 characters.
+
+part_of_speech: Part of speech — up to 50 characters.
+
+notes: Notes — up to 2000 characters.
+
+usage: Usage / collocation guidance — up to 2000 characters.
+
+article: Article — up to 10 characters (German nouns; otherwise blank).
+
+plural_form: Plural form — up to 100 characters.
+
+For context games, include a natural example containing the exact term or phrase whenever grammatically appropriate. Never force an unnatural infinitive into a sentence. Sentence Quest uses the full example; phrase pairs needs multi-word terms and distinct meanings.
+
+Examples and translations must match. Prefer useful phrases and collocations, avoid duplicate cards, explain usage only when helpful. Do not invent uncertain articles or plurals: leave them blank.
+
+Do not add IDs, accepted_answers, accepted_examples or extra columns; these are not part of this import format.
+
+EXAMPLE OBJECTS (place these objects inside one JSON array, separated by commas):
+
+{
+  "german_text": "eine Pause",
+  "vietnamese_meaning": "nghỉ giải lao",
+  "example_german": "Nach der Arbeit mache ich eine Pause.",
+  "example_vietnamese": "Sau giờ làm tôi nghỉ giải lao.",
+  "part_of_speech": "verb phrase",
+  "notes": "Use this expression with a modal verb and an infinitive.",
+  "usage": "A useful expression for everyday conversation.",
+  "article": "",
+  "plural_form": ""
+}
+
+{
+  "german_text": "Bescheid sagen",
+  "vietnamese_meaning": "báo cho biết",
+  "example_german": "Kannst du mir bitte rechtzeitig Bescheid sagen?",
+  "example_vietnamese": "Bạn có thể báo cho tôi kịp thời không?",
+  "part_of_speech": "verb phrase",
+  "notes": "Use this expression with a modal verb and an infinitive.",
+  "usage": "A useful expression for everyday conversation.",
+  "article": "",
+  "plural_form": ""
+}
+
+{
+  "german_text": "Bahnhof",
+  "vietnamese_meaning": "nhà ga",
+  "example_german": "Der Bahnhof ist in der Nähe.",
+  "example_vietnamese": "Nhà ga ở gần đây.",
+  "part_of_speech": "noun",
+  "notes": "Masculine noun; plural with an umlaut.",
+  "usage": "am Bahnhof = at the station",
+  "article": "der",
+  "plural_form": "Bahnhöfe"
+}
+
+FINAL CHECK BEFORE OUTPUT: exactly 9 named string fields per object; valid JSON; unique phrases and meanings; at least 6 phrase cards; each example has 3–40 words and contains its target expression; accurate translations; correct grammar, article and plural. Do not include this checklist in the output.
+
+Review grammar and translations before returning. I will paste your output into Wortify, preview and confirm the import.
+
+=== FLASHCARDS: ENGLISH ===
+
+WORTIFY FLASHCARD IMPORT — AI INSTRUCTIONS
+
+Ask me for the topic, level and number of cards. Create a complete, ready-to-study deck of accurate, original English vocabulary and useful phrases, with Vietnamese meanings.
+
+Return a valid JSON array of card objects, pretty-printed with each named field on its own line and a blank line between cards. No code fences or commentary. Maximum 2000 cards.
+
+Use the exact field names shown below. Use empty strings for optional values. Escape quotes and newlines using valid JSON syntax.
+
+LEARNING CONTENT REQUIREMENTS:
+
+Generate all 9 named fields for every card. Fill examples, translations, part of speech, useful notes and usage guidance. For articles and plural forms, provide the correct form where linguistically applicable; use an empty string otherwise. Never omit field names.
+
+Include at least 6 distinct multi-word phrases or collocations with distinct Vietnamese meanings for a full Phrase pairs round. If no count is given, propose 20 cards. If the requested count is below 6, clarify the deck size before producing it.
+
+Sentence Quest: every example must contain 3–40 whitespace-separated words and have a faithful Vietnamese translation. Use a complete, useful sentence and avoid unnecessarily long or ambiguous constructions.
+
+Phrase pairs: use genuine expressions with at least two words, such as take a break or eine Pause machen, rather than isolated words. Do not pad an isolated word just to reach the word count. Keep both phrases and their meanings distinct.
+
+Use natural contexts at the requested level. Notes should explain a useful distinction or grammar point; usage should explain a collocation or communicative situation. Avoid filler comments and duplicate example sentences.
+
+FIELDS (use these exact keys):
+
+german_text: Term or phrase — up to 500 characters.
+
+vietnamese_meaning: Vietnamese meaning — up to 500 characters.
+
+example_german: Example sentence in the learning language — up to 2000 characters.
+
+example_vietnamese: Vietnamese translation of the example — up to 2000 characters.
+
+part_of_speech: Part of speech — up to 50 characters.
+
+notes: Notes — up to 2000 characters.
+
+usage: Usage / collocation guidance — up to 2000 characters.
+
+article: Article — up to 10 characters (German nouns; otherwise blank).
+
+plural_form: Plural form — up to 100 characters.
+
+For context games, include a natural example containing the exact term or phrase whenever grammatically appropriate. Never force an unnatural infinitive into a sentence. Sentence Quest uses the full example; phrase pairs needs multi-word terms and distinct meanings.
+
+Examples and translations must match. Prefer useful phrases and collocations, avoid duplicate cards, explain usage only when helpful. Do not invent uncertain articles or plurals: leave them blank.
+
+Do not add IDs, accepted_answers, accepted_examples or extra columns; these are not part of this import format.
+
+EXAMPLE OBJECTS (place these objects inside one JSON array, separated by commas):
+
+{
+  "german_text": "take a break",
+  "vietnamese_meaning": "nghỉ giải lao",
+  "example_german": "Let's take a break after this exercise.",
+  "example_vietnamese": "Hãy nghỉ giải lao sau bài tập này.",
+  "part_of_speech": "verb phrase",
+  "notes": "Learn the full expression as a unit.",
+  "usage": "Use this phrase in everyday conversation.",
+  "article": "",
+  "plural_form": ""
+}
+
+{
+  "german_text": "make a decision",
+  "vietnamese_meaning": "đưa ra quyết định",
+  "example_german": "We need to make a decision before Friday.",
+  "example_vietnamese": "Chúng ta cần quyết định trước thứ Sáu.",
+  "part_of_speech": "verb phrase",
+  "notes": "Learn the full expression as a unit.",
+  "usage": "Use this phrase in everyday conversation.",
+  "article": "",
+  "plural_form": ""
+}
+
+{
+  "german_text": "station",
+  "vietnamese_meaning": "nhà ga",
+  "example_german": "The station is near my house.",
+  "example_vietnamese": "Nhà ga ở gần nhà tôi.",
+  "part_of_speech": "noun",
+  "notes": "Countable noun.",
+  "usage": "Used for train and bus travel.",
+  "article": "",
+  "plural_form": "stations"
+}
+
+FINAL CHECK BEFORE OUTPUT: exactly 9 named string fields per object; valid JSON; unique phrases and meanings; at least 6 phrase cards; each example has 3–40 words and contains its target expression; accurate translations; correct grammar, article and plural. Do not include this checklist in the output.
+
+Review grammar and translations before returning. I will paste your output into Wortify, preview and confirm the import.
+
+=== PRACTICE, THEORY, ALL TYPES/STYLES AND FORMATTING ===
+
+WORTIFY · AI AUTHORING INSTRUCTIONS · v1.2.4
+
+Create original, accurate language-learning exercises using the exact Wortify text format below.
+
+Learning language: German.
+
+MY REQUEST:
+Apply the user request and the execution defaults above. Do not ask again for details already specified. Use English learning content when en is requested; explanations default to Vietnamese.
+
+Return only importable exercise text, without Markdown code fences, a preamble or a closing message. Do not copy the documentation or sample exercises into the result.
+
+Use natural contexts, varied questions and plausible distractors. Avoid ambiguous questions. Verify every answer. Include EXPLANATION for each question and COMMENT only when a shared note is useful.
+
+Choose only supported TYPE and STYLE values. Keep fields and syntax in English. Follow the requested language for learning content and explanations.
+
+For sentence_building, WORDS must be in correct sentence order: the app shuffles them. For other choices, vary the position of the correct answer.
+
+For cloze_drag_drop, explicitly choose BANK_SCOPE: question for local choices or BANK_SCOPE: exercise for shared choices. Include enough copies of repeated tokens.
+
+Never invent uploaded media URLs. Use an existing URL supplied by me or omit the image. Attach media separately in Wortify.
+
+Before returning, check all numbered blanks, option membership, required fields, unique matching partners and import limits. Do not claim the result has been tested in Wortify.
+
+If I request THEORY instead: return a separate Markdown document with the supported lesson markup. Do not wrap theory in EXERCISE fields or mix it into an exercise import. I will paste it into Create > Theory.
+
+
+COMPLETE EXERCISE RULES AND ALL TEMPLATES
+
+
+# PRACTICE TEXT FORMAT — UTF-8 .txt
+# Start each exercise with EXERCISE: title (maximum 200 characters).
+# Use uppercase FIELD: value keywords. Content may be in any language.
+# TYPE: one of the supported type identifiers below. STYLE: a supported style of that type.
+# Put all exercise fields before the first QUESTION.
+# INSTRUCTIONS: task instructions. CONTEXT: optional shared reading passage.
+# GROUPS: category names separated by | (categorization only; at least two unique groups).
+# CASE_SENSITIVE: yes/no. KEEP_PUNCTUATION: yes/no. Both default to no.
+# QUESTION: starts a question. Each exercise needs 1–100 questions, including at least one non-example.
+# ANSWER: accepted answer; separate equivalent answers with |.
+# BLANK: answer 1 | equivalent answer => option 1 | option 2.
+# Use {{1}}, {{2}}, etc. once each in the question, and one BLANK line per numbered blank, in order.
+# WORDS: tokens separated by |. For cloze_drag_drop these form the word bank; each token can be used once.
+# Repeat a token in WORDS when multiple blanks need it. If omitted, the bank uses the first answer of each blank.
+# For sentence_building, WORDS must list every token in the correct answer order; duplicate words are allowed.
+# PREFIX: beginning of the answer for short_answer. Every accepted answer must include that prefix.
+# COMMENT: exercise-wide note before the first QUESTION, shown after a correct answer or reveal.
+# EXPLANATION: optional explanation for any question or matching pair after answering correctly or revealing. EXAMPLE: yes/no after QUESTION marks a practice example.
+# Blank lines and # comment lines are ignored. Use > at the start of a continuation line after QUESTION,
+# INSTRUCTIONS, CONTEXT or EXPLANATION. Other fields must stay on one line.
+# Do not put | or => inside an individual item. Repeat EXERCISE to import multiple exercises.
+# Each field occurs once per exercise/question except BLANK, which repeats for each blank.
+# Limits per import: 100 exercises, 100 questions per exercise, 2 MB total UTF-8 text.
+# Save as .txt, open Create, choose or create a root folder, import files, validate, preview, then save.
+# Optional attachments: add MP3, PNG, JPG, WebP or GIF in Create after validating the text.
+# Up to 200 files, 200 MB total per exercise. Assign files to the whole exercise or individual questions in the Media dialog. Attachments are stored separately and are not embedded in .txt exports.
+# Use preview to try each exercise before saving; preview does not save progress.
+# Every exercise must belong to a folder. Loose exercises are not allowed. English and German spaces are independent.
+# The whole batch is saved only after validation. Errors include line numbers.
+#
+# TEXT FORMATTING
+# LaTeX-style lesson markup is available: line breaks, emphasis, aligned blocks, lists, tables and images.
+# Open the Formatting guide in Create for supported commands and copyable examples. This is not a full TeX compiler.
+# Use **bold text**, *italic text*, and [color=blue]colored text[/color].
+# Available colors: red, rose, pink, magenta, purple, violet, indigo, blue, sky, cyan,
+# teal, emerald, green, lime, yellow, amber, orange, coral, slate, gray.
+# Formatting is supported in INSTRUCTIONS, CONTEXT, EXPLANATION and display QUESTION text.
+# Keep QUESTION plain for error_correction: its words are editable answer data.
+# Keep ANSWER, BLANK, WORDS, PREFIX, GROUPS and titles plain (no formatting markers).
+# Formatting may wrap blanks such as {{1}}; interactive blanks also work inside tables and alignment blocks.
+# Example: QUESTION: Choose the **correct verb**: She {{1}} [color=teal]every day[/color].
+# Example: EXPLANATION: Use *-s* with [color=blue]he, she, it[/color].
+# You can combine color with bold or italic; do not nest colors. HTML is supported only in reading CONTEXT with CONTEXT_FORMAT: html.
+#
+# TYPES AND STYLES
+# cloze_drag_drop: drag_drop (move word tiles), tap_fill (tap words to fill blanks).
+# error_correction: click_edit (edit incorrect text), cross_out (remove extra words).
+#   ANSWER is the entire corrected sentence. For cross_out, only remove words; do not add or reorder them.
+# matching: tap_match (match cards). Each QUESTION is one card; ANSWER is its unique partner.
+# sentence_building: tap_build (arrange tokens). WORDS defines the correct token order.
+# categorization: drag_sort (sort cards). Each QUESTION is one card; ANSWER is exactly one GROUPS value.
+# inline_selection: pill_toggle (toggle choices), inline_select (select a choice), fall_away (wrong choices disappear after a correct answer).
+#   Every BLANK needs at least two options, including every accepted answer.
+# BANK_SCOPE: question or exercise for cloze_drag_drop; exercise uses a shared word bank (default).
+# multiple_choice: dialogue_reply or elimination; these styles require a single correct answer.
+#   OPTIONS: choices separated by |. ANSWER must match one choice.
+# true_false_not_given: evidence_judge. Use CONTEXT for the passage and ANSWER: TRUE, FALSE or NOT_GIVEN.
+# short_answer: partial_input (complete a required PREFIX), sentence_rewrite (write the whole answer).
+#   ANSWER always contains the entire sentence, including PREFIX when provided.
+#
+# WORKSPACE AND EDITING
+# Only owners can edit, rename, move or delete their content. Use the folder cards and content tools on the Create main screen for these actions.
+# Drag items into folders, or use the move/group tools to organize a selection.
+# Download the current .txt before editing if you want a backup. Editing questions starts a new progress revision.
+# Learners answer one question at a time, retry incorrect answers and save progress rather than scores.
+# Preview does not change learning progress. Workspace pins include the highest accessible parent folder.
+#
+# ALL SUPPORTED TYPES AND STYLES: complete importable samples follow. Lines beginning with # are documentation.
+
+# multiple_choice / dialogue_reply
+EXERCISE: Choose a response
+TYPE: multiple_choice
+STYLE: dialogue_reply
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: What would you like?
+OPTIONS: Tea, please. | Yesterday. | At home.
+ANSWER: Tea, please.
+
+# multiple_choice / elimination
+EXERCISE: Choose a response
+TYPE: multiple_choice
+STYLE: elimination
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: What would you like?
+OPTIONS: Tea, please. | Yesterday. | At home.
+ANSWER: Tea, please.
+
+# true_false_not_given / evidence_judge
+EXERCISE: Read and judge
+TYPE: true_false_not_given
+STYLE: evidence_judge
+INSTRUCTIONS: Complete the sentences below.
+CONTEXT: Mia lives in Berlin.
+QUESTION: Mia lives in Berlin.
+OPTIONS: TRUE | FALSE | NOT_GIVEN
+ANSWER: TRUE
+
+# cloze_drag_drop / drag_drop
+EXERCISE: Fill in the gap
+TYPE: cloze_drag_drop
+STYLE: drag_drop
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: I {{1}} coffee in the {{2}}.
+BLANK: drink => drink | eat
+BLANK: morning => morning | evening
+WORDS: morning | drink | eat
+
+# cloze_drag_drop / tap_fill
+EXERCISE: Fill in the gap
+TYPE: cloze_drag_drop
+STYLE: tap_fill
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: I {{1}} coffee in the {{2}}.
+BLANK: drink => drink | eat
+BLANK: morning => morning | evening
+WORDS: morning | drink | eat
+
+# error_correction / click_edit
+EXERCISE: Find and correct mistakes
+TYPE: error_correction
+STYLE: click_edit
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: He do not like sports.
+ANSWER: He does not like sports.
+
+# error_correction / cross_out
+EXERCISE: Find and correct mistakes
+TYPE: error_correction
+STYLE: cross_out
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: They discussed about the project yesterday.
+ANSWER: They discussed the project yesterday.
+
+# matching / tap_match
+EXERCISE: Match answers
+TYPE: matching
+STYLE: tap_match
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: cat
+ANSWER: mèo
+QUESTION: dog
+ANSWER: chó
+
+# sentence_building / tap_build
+EXERCISE: Arrange sentence
+TYPE: sentence_building
+STYLE: tap_build
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: Arrange the words into a correct sentence.
+WORDS: She | is | reading | a book.
+
+# categorization / drag_sort
+EXERCISE: Categorize
+TYPE: categorization
+STYLE: drag_sort
+INSTRUCTIONS: Complete the sentences below.
+GROUPS: Fruit | Animals
+QUESTION: apple
+ANSWER: Fruit
+QUESTION: cat
+ANSWER: Animals
+
+# inline_selection / pill_toggle
+EXERCISE: Inline multiple choice
+TYPE: inline_selection
+STYLE: pill_toggle
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: She {{1}} a doctor.
+BLANK: is => is | are
+
+# inline_selection / inline_select
+EXERCISE: Inline multiple choice
+TYPE: inline_selection
+STYLE: inline_select
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: She {{1}} a doctor.
+BLANK: is => is | are
+
+# inline_selection / fall_away
+EXERCISE: Inline multiple choice
+TYPE: inline_selection
+STYLE: fall_away
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: She {{1}} a doctor.
+BLANK: is => is | are
+
+# short_answer / partial_input
+EXERCISE: Rewrite sentence
+TYPE: short_answer
+STYLE: partial_input
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: Rewrite: He began learning English two years ago.
+PREFIX: He has
+ANSWER: He has learned English for two years. | He has been learning English for two years.
+
+# short_answer / sentence_rewrite
+EXERCISE: Rewrite sentence
+TYPE: short_answer
+STYLE: sentence_rewrite
+INSTRUCTIONS: Complete the sentences below.
+QUESTION: Rewrite: He began learning English two years ago.
+PREFIX: He has
+ANSWER: He has learned English for two years. | He has been learning English for two years.
+
+
+
+LESSON FORMATTING REFERENCE
+
+
+This is a supported LaTeX-style subset, not a TeX compiler. No custom HTML, CSS, scripts or TeX packages.
+
+In exercise text, prefix continuation lines with >. Keep answers, choices, word banks and editable correction text plain.
+
+Alignment: flushleft, center, flushright. Tables: l/c/r columns. Images: HTTPS or uploaded URLs; width 1–1200px or 1–100%, optional height, align=left/center/right, fit=contain/cover. Omit height to preserve proportions. Attachments are not embedded in text exports.
+
+Dialogue / new line:
+Q: {{1}} wartest du? \newline A: Auf den Bus nach Berlin.
+
+Emphasis:
+\textbf{Important} · \textit{example} · \underline{key word} · \textcolor{blue}{hint}
+
+Alignment:
+\begin{flushleft}Left aligned text and {{1}}\end{flushleft}
+
+Table:
+\begin{tabular}{lc} \textbf{Pronoun} & \textbf{Verb} \\ ich & bin \\ du & bist \end{tabular}
+
+Image:
+\includegraphics[width=320px,align=right,alt=Learning illustration]{https://example.com/image.jpg}
+
+List:
+\begin{enumerate}\item Read the sentence.\item Choose the correct word.\end{enumerate}
+
+Heading / note:
+\section{Word order}\begin{quote}The verb comes second.\end{quote}
+
+
+WORKFLOW
+Copy these instructions into your AI chat, add your request, then paste the result into Wortify's Text draft. Check and preview, fix reported errors, and save into a folder. Upload media separately. Review language accuracy before publishing.
+
+=== READING ===
+
+READING IMPORT
+Start each lesson with EXERCISE: title, TYPE: reading, STYLE: split_reading. Put metadata before questions. Continue multiline fields with >. Separate lessons with EXERCISE.
+1–100 lessons, 1–100 questions per lesson, maximum 2 MB UTF-8 per import. Each question needs 2–12 unique options. ANSWER uses exact option text, never letters/indexes. Do not put | inside options.
+READING LESSONS
+TYPE: reading. STYLE: split_reading (legacy identifier; displayed vertically: passage above questions).
+CONTEXT_FORMAT: html or markdown (default markdown). CONTEXT: the complete passage, up to 100,000 characters.
+Use > continuation lines for multiline HTML or lesson markup. Questions belong to this passage.
+HTML is allowed only in CONTEXT. QUESTION, OPTIONS, ANSWER and EXPLANATION must contain text, never HTML. Only single-answer and multiple-answer multiple choice are supported. Each question displays its selection instruction.
+For each QUESTION use OPTIONS: option 1 | option 2 | option 3 and ANSWER: exact option text.
+For single-answer questions, provide exactly four options (displayed as A, B, C, D). Multiple-answer questions may have 2–12 options.
+For multiple correct answers: ANSWER: option 1 | option 3. Learners must select the exact set before pressing Check.
+EXPLANATION: cite the relevant passage sentence and explain the answer.
+Supported HTML: h1-h4, p, div, span, strong, em, b, i, u, br, blockquote, ul, ol, li, table, thead, tbody, tr, th, td, figure, figcaption, img.
+Images: <img src="https://example.org/image.jpg" alt="Description" style="width:60%;height:240px;object-fit:cover;float:right;margin:12px">.
+Use text-align:left/center/right on a container to align images. Width/height accept px or %, max 1200px / 100%. Float: left/right/none; margin: 0–48px; font-size: 12–36px; color: hex only.
+Scripts, forms, embedded frames, event handlers, classes, external stylesheets and arbitrary CSS are not executed. The passage uses the active theme.
+Upload images with the existing Media tool and keep them attached; use their provided URL as img src. External images must be HTTPS.
+
+
+
+EXERCISE: Practice exercise
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Complete the sentences below.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>A greener school</h2>
+> <p>Every Friday, Mia and Tom cycle to school. Their school garden grows carrots and tomatoes. On Monday, the students water the plants.</p>
+QUESTION: When do Mia and Tom cycle to school?
+OPTIONS: Friday | Monday | Sunday | Tuesday
+ANSWER: Friday
+EXPLANATION: The first sentence says every Friday.
+QUESTION: Which vegetables grow in the garden? Choose all that apply.
+OPTIONS: Carrots | Tomatoes | Potatoes
+ANSWER: Carrots | Tomatoes
+EXPLANATION: The garden grows carrots and tomatoes.
+
+
+=== PRACTICE HUB JSON SCHEMA EXAMPLE ===
+
+{
+  "nodes": [
+    {
+      "kind": "folder",
+      "title": "Practice Hub · Mười dạng nội dung",
+      "children": [
+        {
+          "kind": "exercise",
+          "title": "Điền chỗ trống",
+          "payload": {
+            "title": "Điền chỗ trống",
+            "kind": "cloze",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "cloze_drag_drop",
+              "type": "cloze",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "She {{1}} learning.",
+                "accepted_answers": [],
+                "options": [],
+                "blanks": [
+                  {
+                    "answers": [
+                      "is"
+                    ],
+                    "options": [
+                      "is",
+                      "are"
+                    ]
+                  }
+                ],
+                "presentation": {
+                  "word_bank": [
+                    "is",
+                    "are"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Tìm lỗi trong câu",
+          "payload": {
+            "title": "Tìm lỗi trong câu",
+            "kind": "multi",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "inline_error_identification",
+              "type": "multi",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "{{a}} {{b}} {{c}}",
+                "accepted_answers": [
+                  "b"
+                ],
+                "options": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "blanks": [],
+                "presentation": {
+                  "tokens": [
+                    {
+                      "id": "a",
+                      "text": "She"
+                    },
+                    {
+                      "id": "b",
+                      "text": "go"
+                    },
+                    {
+                      "id": "c",
+                      "text": "home."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Viết câu ngắn",
+          "payload": {
+            "title": "Viết câu ngắn",
+            "kind": "text",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "short_answer",
+              "type": "text",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Translate: xin chào",
+                "accepted_answers": [
+                  "hello"
+                ],
+                "options": [],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Sắp xếp câu",
+          "payload": {
+            "title": "Sắp xếp câu",
+            "kind": "order",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "sentence_building",
+              "type": "order",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Build the sentence.",
+                "accepted_answers": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "options": [],
+                "blanks": [],
+                "presentation": {
+                  "tokens": [
+                    {
+                      "id": "a",
+                      "text": "She"
+                    },
+                    {
+                      "id": "b",
+                      "text": "goes"
+                    },
+                    {
+                      "id": "c",
+                      "text": "home."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Trắc nghiệm",
+          "payload": {
+            "title": "Trắc nghiệm",
+            "kind": "choice",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "multiple_choice",
+              "type": "choice",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Choose a greeting.",
+                "accepted_answers": [
+                  "hello"
+                ],
+                "options": [
+                  "hello",
+                  "book",
+                  "red",
+                  "run"
+                ],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Phân loại",
+          "payload": {
+            "title": "Phân loại",
+            "kind": "choice",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "categorization",
+              "type": "choice",
+              "categories": [
+                "Greetings",
+                "Objects"
+              ]
+            },
+            "questions": [
+              {
+                "prompt": "hello",
+                "accepted_answers": [
+                  "Greetings"
+                ],
+                "options": [
+                  "Greetings",
+                  "Objects"
+                ],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Nghe – chép",
+          "payload": {
+            "title": "Nghe – chép",
+            "kind": "text",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "audio_dictation",
+              "type": "text",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Type the sound you hear in English.",
+                "accepted_answers": [
+                  "beep"
+                ],
+                "options": [],
+                "blanks": [],
+                "presentation": {
+                  "audio": "/audio/tone.wav"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Nối cặp",
+          "payload": {
+            "title": "Nối cặp",
+            "kind": "matching",
+            "instruction": "",
+            "context": "",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "matching",
+              "type": "matching",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "xin chào",
+                "accepted_answers": [
+                  "hello"
+                ],
+                "options": [
+                  "hello"
+                ],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "exercise",
+          "title": "Đúng / Sai / Không có",
+          "payload": {
+            "title": "Đúng / Sai / Không có",
+            "kind": "choice",
+            "instruction": "",
+            "context": "Anna reads a book every day.",
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "presentation": {
+              "interaction": "true_false_not_given",
+              "type": "choice",
+              "categories": []
+            },
+            "questions": [
+              {
+                "prompt": "Anna reads daily.",
+                "accepted_answers": [
+                  "TRUE"
+                ],
+                "options": [
+                  "TRUE",
+                  "FALSE",
+                  "NOT_GIVEN"
+                ],
+                "blanks": [],
+                "presentation": {}
+              }
+            ]
+          }
+        },
+        {
+          "kind": "theory",
+          "title": "Lý thuyết mẫu",
+          "payload": {
+            "format": "markdown",
+            "content": "# Chào hỏi\n\n**Hello** nghĩa là xin chào."
+          }
+        }
+      ]
+    }
+  ]
+}
+
+=== VERIFICATION ===
+
+Validate each generated batch using the current application parser/preview and backend. Check answer correctness separately. Save only after validation. Confirm counts by reading saved content. Report offline files separately from saved content. Do not paste this guide into the app import box.

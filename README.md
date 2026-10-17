@@ -77,3 +77,7 @@ Bucket `wortify-media` đã được tạo. Bước tiếp theo là lấy endpoi
 ## Tạo nội dung bằng chat và nhập ZIP
 
 Xem [CONTENT_AUTHORING.md](CONTENT_AUTHORING.md) để lấy prompt cho chat mới, quy trình tạo hàng loạt và hướng dẫn nhập ZIP tài khoản tại Manage → Backup & import.
+
+## Version 1.2.6 — hướng dẫn cho chat mới
+
+Đọc [CONTENT_AUTHORING.md](CONTENT_AUTHORING.md) để bắt đầu chỉ bằng một câu yêu cầu. Với chat ngoài workspace, đính kèm [WORTIFY_AUTHORING_RULES.txt](WORTIFY_AUTHORING_RULES.txt): file đầy đủ luật, định dạng và mẫu cho flashcard, bài tập, lý thuyết và Reading. Xuất lại từ code bằng `npm run guide:content`.

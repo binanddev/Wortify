@@ -1,3 +1,18 @@
+# Change Log
+
+### [v1.2.6] - 2026-10-17 | Deployment, backup restore and content authoring
+
+- Prepared Render backend, Netlify frontend, Neon PostgreSQL and private S3 media; kept SQLite/media local and consolidated startup scripts.
+- Added manual deployment instructions, environment-variable references and private account documentation excluded from Git.
+- Added Manage → Backup & import: preview and restore new accounts, roles, supported permission mappings, available password hashes and private learning data. Existing usernames are never overwritten; missing hashes require password reset.
+- Import limits and exclusions are explicit: class memberships, old audit logs and cross-account links are not restored.
+- Added a complete, regeneratable authoring guide covering flashcards in German/English, every supported exercise type/style, theory, formatting, Reading, quality checks and batch import workflows.
+- Short requests have defaults: 10 A2 transport decks means 10 separate themed decks with 30 cards each, without requiring repeated clarification. Online creation still requires the real app URL and authenticated tool access.
+- Included the Reading workspace, flashcard/navigation simplification, JSON/Quizlet import improvements and request/study optimizations documented below.
+- Validation: 12 backup/export/restore tests, 124 frontend tests and frontend production build passed for the preceding implementation; release documentation is synchronized into Admin History.
+
+---
+
 ## 2026-10-13 — Feature cleanup and backup compatibility
 
 - Removed Watch & Learn, its APIs, video lessons and directly linked decks.
@@ -31,7 +46,6 @@
 - Synchronized subtitles, sentence replay/loop, dictionary links and per-video vocabulary decks.
 - Original sentences and video timestamps saved with words. Video lessons included in backups.
 
-# Change Log
 
 > **Initial Note:** 
 > Prior to this release milestone (`v1.0.0`), the system underwent multiple upgrades and feature refinements, operating stably in production. All preceding unrecorded versions are consolidated, making this the baseline release.

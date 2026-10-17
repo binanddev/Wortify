@@ -6,7 +6,8 @@
     "dev": "npm --prefix Frontend run dev",
     "build": "npm --prefix Frontend run build",
     "preview": "npm --prefix Frontend run preview",
-    "setup:frontend": "npm --prefix Frontend ci"
+    "setup:frontend": "npm --prefix Frontend ci",
+    "guide:content": "node tools/export_authoring_guide.mjs"
   },
   "name": "wortify",
   "engines": {
