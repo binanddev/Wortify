@@ -64,6 +64,9 @@ EXAMPLES = {
 }
 
 NOTES = {
+    'api.reading.library': 'Private account/language Reading workspace, independent of Practice Hub. GET lists lessons. POST lessons:[{title,payload}] atomically creates 1-100 readings; payload uses presentation.interaction=reading, context, context_format in presentation, and choice/multi questions inferred from accepted_answers.',
+    'api.reading.detail': 'GET a reading, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading.',
+
 
     'api.admin_backups.emergency': 'SUPERUSER ONLY. POST scope=all, filtered or selected. selected requires ids; filtered accepts q (username/email), role=user/staff/superuser and status=active/inactive. preview=true returns matching account count. To download binary ZIP, remove preview and send confirm=EXPORT. Options: include_media=true (portable per-user ZIPs), include_audit=true, include_credentials=false (opt-in password hashes). Original account identities, roles and content relations are included. No sessions or server secrets. Exports are audited. Maximum 2 GB total and 512 MB per portable user archive; split larger exports. Use Postman Send and Download. Emergency archives require operator-led recovery; they cannot be uploaded to personal restore.',
     'api.backups.export': 'Authenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges.',

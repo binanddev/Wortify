@@ -1,3 +1,4 @@
+import { ReadingWorkspace, Explore, ExerciseStudio, PracticeGuide, FlashcardStudio, PracticeHub, Admin } from "./workspace-pages.js";
 import PracticeArea from "../features/practice/PracticeArea.jsx";
 import { practiceArea } from "../features/practice/practice-area.js";
 import CrtOverlay from "../themes/rpg/CrtOverlay.jsx";
@@ -19,23 +20,17 @@ import {
   navWidth as widthForScale,
 } from "../components/navigation/navigation-settings.js";
 import { ambientTrack } from "../features/audio/ambient-recordings.js";
-import { Explore } from "../features/explore/explore.jsx";
-import { ExerciseStudio } from "../features/practice/exercise-studio.jsx";
 import { legacyPracticeDestination } from "../features/practice/practice-navigation.js";
-import { PracticeGuide } from "../features/practice/practice-guide.jsx";
 import {
   useLearningSync,
   pendingLearning,
   flushLearning,
 } from "../features/learning/learning-sync.js";
-import FlashcardStudio from "../features/flashcards/flashcard-studio.jsx";
 import Soundscape from "../features/audio/Soundscape.jsx";
-import { PracticeHub } from "../features/practice/practice-hub.jsx";
 import { useEffect, useLayoutEffect, useState, lazy, Suspense } from "react";
 const WindowsTaskbar = lazy(
   () => import("../themes/windows-xp/WindowsDesktop.jsx"),
 );
-const Admin = lazy(() => import("../features/admin/Admin.jsx"));
 import {
   request,
   useAction,
@@ -592,6 +587,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                     {[
                       ["flashcard", "cards", "Flashcard"],
                       ["practice", "book", "Practice Hub"],
+                      ["reading", "book", "Reading"],
                     ].map(([id, icon, title]) => (
                       <Link
                         key={id}
@@ -756,6 +752,7 @@ function getContextItems(lang, section, parts) {
       {
         flashcard: parts[2] === "deck" ? "Decks" : "Flashcard",
         practice: "Practice Hub",
+        reading: "Reading",
         explore: "Explore",
         create: "Create",
         settings: "Settings",
@@ -803,7 +800,8 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
       ) : (
         <Library lang={lang} interfaceName={prefs.interface} />
       );
-  } else if (legacyDestination)
+  } else if (section === "reading") content = <ReadingWorkspace key={`${lang}:${route}`} lang={lang} route={route} userId={user.id} sound={prefs.sound} />;
+  else if (legacyDestination)
     content = (
       <Page>
         <Status>Opening Create…</Status>
@@ -867,5 +865,5 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
       </Page>
     );
 
-  return practiceArea(section) ? <PracticeArea lang={lang} section={section} focused={!!parts[2] && section !== "explore"}>{content}</PracticeArea> : content;
+  return <Suspense fallback={<Status>Loading workspace…</Status>}>{practiceArea(section) ? <PracticeArea lang={lang} section={section} focused={!!parts[2] && section !== "explore"}>{content}</PracticeArea> : content}</Suspense>;
 }

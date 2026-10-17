@@ -3,9 +3,11 @@
 from pathlib import Path
 import os
 from .environment import load_environment
+from .deployment import postgres_database, media_storage
+from urllib.parse import urlsplit
 
 load_environment()
-ENVIRONMENT = os.environ.get("DJANGO_ENV", "development")
+ENVIRONMENT = os.environ.get("DJANGO_ENV", "production" if os.environ.get('RENDER') else "development")
 if ENVIRONMENT not in ("development", "staging", "production"):
     raise RuntimeError("DJANGO_ENV must be development, staging or production")
 
@@ -38,6 +40,15 @@ if not DEBUG and len(SECRET_KEY) < 50:
     raise RuntimeError('Use a random DJANGO_SECRET_KEY of at least 50 characters')
 
 ALLOWED_HOSTS = [host.strip() for host in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if host.strip()]
+if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
+    ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
+FRONTEND_ORIGIN = os.environ.get('FRONTEND_ORIGIN', '').rstrip('/')
+if FRONTEND_ORIGIN:
+    frontend_url = urlsplit(FRONTEND_ORIGIN)
+    if frontend_url.scheme not in ('http', 'https') or not frontend_url.hostname or frontend_url.path or frontend_url.query or frontend_url.fragment or frontend_url.username:
+        raise RuntimeError('FRONTEND_ORIGIN must be the frontend origin without a path.')
+    ALLOWED_HOSTS.append(frontend_url.hostname)
+
 
 
 # Application definition
@@ -88,8 +99,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DB_ENGINE = os.environ.get('DJANGO_DATABASE_ENGINE', 'sqlite')
-if DB_ENGINE == 'postgresql':
+DATABASE_URL = os.environ.get('DATABASE_URL', '').strip()
+DB_ENGINE = 'postgresql' if DATABASE_URL else os.environ.get('DJANGO_DATABASE_ENGINE', 'sqlite')
+if os.environ.get('RENDER') and not DATABASE_URL:
+    raise RuntimeError('Set DATABASE_URL on Render; local SQLite is for development only.')
+if DATABASE_URL:
+    DATABASES = {'default': postgres_database(DATABASE_URL)}
+elif DB_ENGINE == 'postgresql':
     DATABASES = {'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ['DJANGO_DB_NAME'], 'USER': os.environ['DJANGO_DB_USER'],
@@ -172,6 +188,8 @@ INSTALLED_APPS += ['content', 'practice', 'api', 'users', 'learning']
 STATICFILES_DIRS = []
 CHANNEL_LAYERS = {'default': {'BACKEND': 'channels.layers.InMemoryChannelLayer'}}
 CSRF_TRUSTED_ORIGINS = [s.strip() for s in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if s.strip()]
+if FRONTEND_ORIGIN:
+    CSRF_TRUSTED_ORIGINS.append(FRONTEND_ORIGIN)
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
@@ -189,7 +207,7 @@ COMMUNITY_ENABLED = os.environ.get('COMMUNITY_ENABLED', '1') == '1'
 CSRF_FAILURE_VIEW = "api.errors.csrf_failure"
 SUPERUSER_SETUP_KEY = os.environ.get('SUPERUSER_SETUP_KEY', '')
 
-if os.environ.get("DJANGO_TRUST_PROXY") == "1":
+if os.environ.get("DJANGO_TRUST_PROXY") == "1" or os.environ.get("RENDER"):
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
@@ -209,3 +227,11 @@ LOGGING = {
 
 # Server-to-server monitoring. Never expose this key through VITE_* or browser JS.
 BACKEND_MONITOR_SECRET = os.environ.get('BACKEND_MONITOR_SECRET', 'local-monitor-development-only' if DEBUG else '')
+
+# Static build assets remain on Render; user uploads use Neon Object Storage.
+STORAGES = {
+    'default': media_storage(os.environ),
+    'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage' if DEBUG else 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+}
+if not DEBUG:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')

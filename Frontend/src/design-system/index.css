@@ -17,6 +17,8 @@
 @import "../vendor/terminal-scoped.css";
 @import "./tokens.css";
 @import "./profile.css";
+@import "./reading-workspace.css";
+@import "./word-arcade.css";
 @import "./foundation.css";
 @import "./shell.css";
 @import "./learning.css";
@@ -76,3 +78,4 @@
 @import "./admin.css";
 
 @import "./lesson-markup.css";
+@import "./guide-navigation.css";

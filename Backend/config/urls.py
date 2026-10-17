@@ -1,3 +1,4 @@
+from api import reading
 from api import admin_backups
 from api import backups
 from api import api_reference, management_center, spaced_review, management_data, personal_appearance, monitoring, themes, backgrounds
@@ -44,6 +45,7 @@ urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_regis
  path('api/manage/appearance/',management.site_appearance),path('api/site/appearance/',management.public_appearance),path('api/site/appearance/image/',management.site_appearance_image)]
 def route(pattern,view):urlpatterns.append(path('api/<str:language>/'+pattern,namespace(view)))
 for pattern,view in [
+ ('reading/',reading.library),('reading/<int:pk>/',reading.detail),
  ('profile/',community.profile),('classes/',community.classes),('classes/<int:pk>/',community.classroom),('classes/<int:pk>/assignments/',community.classroom_assignments),
  ('practice-hub/nodes/<int:pk>/copy/',practice_copy.copy_collection),
  ('decks/<int:pk>/review/',spaced_review.review_queue),

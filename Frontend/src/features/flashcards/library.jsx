@@ -482,6 +482,8 @@ export function Deck({ lang, id, sound }) {
   );
 }
 function DeckContent({ lang, id, data, reload, sound }) {
+  const [selected, setSelected] = useState([]);
+
  const windowActive = useWindowActive();
   const navigate = useNavigate();
   const [edit, setEdit] = useState(null),
@@ -501,7 +503,9 @@ function DeckContent({ lang, id, data, reload, sound }) {
   const action = useAction(),
     audio = useSound(sound, lang);
   const api = (p, m, d, s) => request(endpoint(lang, p), m, d, s);
+  const visibleCards = data.cards.filter(c => `${c.german_text} ${c.vietnamese_meaning}`.toLowerCase().includes(query.toLowerCase()));
   const card = order[index];
+  useEffect(() => { setOrder(data.cards); setSelected(ids => ids.filter(id => data.cards.some(c => c.id === id))); }, [data.cards]);
   const flip = (v) => {
     setFlipped(v);
     audio.tick();
@@ -560,7 +564,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
       navigate(`/${lang}/flashcard/session/${s.token}`);
     });
   return (
-    <Page>
+    <Page className="flashcard-workspace">
       <Heading
         eyebrow={`${data.deck.level} · ${data.cards.length} TERM`}
         title={data.deck.title}
@@ -570,25 +574,25 @@ function DeckContent({ lang, id, data, reload, sound }) {
       <SidebarTools>
         <div className="grid gap-3">
           <h3 className="context-section-title">Create cards</h3>
-          <Btn primary onClick={() => setImporting(true)}>Import / Create with AI</Btn>
-          <Btn onClick={() => setEdit({ type: "card" })}>Add one card</Btn>
-          <h3 className="context-section-title">Browse this deck</h3>
+          <Btn primary onClick={() => setImporting(true)}>Import</Btn>
+          <Btn onClick={() => setEdit({ type: "card" })}>Add card</Btn>
+          <h3 className="context-section-title">View</h3>
           <div className="grid grid-cols-2 gap-2">
-            <Btn aria-pressed={view === "terms"} onClick={() => setView("terms")}>Term list</Btn>
-            <Btn aria-pressed={view === "cards"} onClick={() => setView("cards")}>Card preview</Btn>
+            <Btn aria-pressed={view === "terms"} onClick={() => setView("terms")}>Terms</Btn>
+            <Btn aria-pressed={view === "cards"} onClick={() => setView("cards")}>Preview</Btn>
           </div>
-          <Link className="btn" to={"/" + lang + "/flashcard/deck/" + id}>Study this deck →</Link>
+          <Link className="btn" to={"/" + lang + "/flashcard/deck/" + id}>Study →</Link>
           <details>
-            <summary>Deck management</summary>
+            <summary>More</summary>
             <div className="mt-3 grid gap-2">
-              <Btn onClick={() => setEdit({ type: "deck", item: data.deck })}>Edit deck details</Btn>
+              <Btn onClick={() => setEdit({ type: "deck", item: data.deck })}>Deck details</Btn>
               <Btn onClick={() => setToolPanel("manage")}>Export and manage</Btn>
             </div>
           </details>
         </div>
       </SidebarTools>
       <div className="my-4 flex flex-wrap items-center gap-3">
-        <Link className="btn" to={"/" + lang + "/flashcard/study?deck=" + id + "&mode=games"}>Word playground · Learn in context</Link>
+        <Link className="btn" to={"/" + lang + "/flashcard/study?deck=" + id + "&mode=games"}>Games</Link>
       </div>
       <div className="study-layout">
         {view === "cards" && (
@@ -752,17 +756,21 @@ function DeckContent({ lang, id, data, reload, sound }) {
           <SidebarTools>
             <Field label="Search this deck" value={query} onChange={setQuery} />
           </SidebarTools>
+          <div className="toolbar" role="group" aria-label="Select cards">
+            <label><input type="checkbox" aria-label="Select all visible cards" checked={visibleCards.length > 0 && visibleCards.every(c => selected.includes(c.id))} onChange={e => setSelected(ids => e.target.checked ? [...new Set([...ids, ...visibleCards.map(c => c.id)])] : ids.filter(id => !visibleCards.some(c => c.id === id)))} /> Select all</label>
+            <span>{selected.length} selected</span>
+            {selected.length > 0 && <>
+              <Btn onClick={() => setSelected([])}>Clear</Btn>
+              <a className="btn" download="flashcards.json" href={"data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data.cards.filter(c => selected.includes(c.id)).map(c => Object.fromEntries(["german_text", "vietnamese_meaning", "example_german", "example_vietnamese", "part_of_speech", "notes", "usage", "article", "plural_form"].map(k => [k, c[k] || ""]))), null, 2))}>Export</a>
+              <Btn icon="trash" onClick={() => setRemove({ type: "selected", ids: [...selected] })}>Delete selected</Btn>
+            </>}
+          </div>
           <div className="term-list">
-            {data.cards
-              .filter((c) =>
-                `${c.german_text} ${c.vietnamese_meaning}`
-                  .toLowerCase()
-                  .includes(query.toLowerCase()),
-              )
+            {visibleCards
               .map((c) => (
                 <Glass className="term-row" key={c.id}>
                   <div>
-                    <strong>{c.german_text}</strong>
+                    <label className="card-select"><input type="checkbox" aria-label={`Select ${c.german_text}`} checked={selected.includes(c.id)} onChange={e => setSelected(ids => e.target.checked ? [...ids, c.id] : ids.filter(id => id !== c.id))} /><strong>{c.german_text}</strong></label>
                     <p>{c.example_german}</p>
                   </div>
                   <div>
@@ -895,10 +903,20 @@ function DeckContent({ lang, id, data, reload, sound }) {
       )}
       {remove && (
         <Confirm
-          title={remove.type === "deck" ? "Delete deck?" : "Delete this term?"}
+          title={remove.type === "selected" ? `Delete ${remove.ids.length} cards?` : remove.type === "deck" ? "Delete deck?" : "Delete this term?"}
           description="Content and related progress will be deleted. This cannot be undone."
           onClose={() => setRemove(null)}
           onConfirm={async (s) => {
+            if (remove.type === "selected") {
+              try {
+                for (const cardId of remove.ids) {
+                  await api(`decks/${id}/cards/${cardId}/`, "DELETE", undefined, s);
+                  setSelected(ids => ids.filter(value => value !== cardId));
+                  setRemove(current => current && ({ ...current, ids: current.ids.filter(value => value !== cardId) }));
+                }
+              } finally { reload(); }
+              return;
+            }
             await api(
               remove.type === "deck"
                 ? `decks/${id}/`
@@ -963,10 +981,10 @@ function ImportCards({ api, id, reload, onClose, lang }) {
         ) : (
           <div className="grid gap-4">
           <FlashcardAiHelp lang={lang} separator={v.separator} />
-          <Field label="Paste cards from AI or your spreadsheet" multiline rows={8} isRequired value={v.text || ""} onChange={text => set({...v,text})}
-            description="One card per line. Follow the copied guide for examples, translations and phrases." />
+          <Field label="Paste cards from AI, Quizlet or your spreadsheet" multiline rows={8} isRequired value={v.text || ""} onChange={text => set({...v,text})}
+            description="Paste the JSON from AI, or rows from Quizlet / a spreadsheet." />
           <Select
-            label="Separator · match the copied guide"
+            label="Separator (spreadsheet rows only)"
             value={v.separator}
             onChange={(separator) => set({ ...v, separator })}
           >

@@ -1,6 +1,7 @@
 export const desktopApps = [
   ["flashcard", "Flashcard", "cards"],
   ["practice", "Practice Hub", "book"],
+  ["reading", "Reading", "book"],
   ["profile", "Learning journey", "user"],
   ["classes", "Classes & sharing", "users"],
   ["settings", "Settings", "settings"],

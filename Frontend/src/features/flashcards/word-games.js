@@ -3,14 +3,9 @@ import { mix } from "./flashcard-engine.js";
 import { normalize } from "../learning/local-learning.js";
 export const WORD_GAMES = [
   [
-    "context",
-    "Context detective",
-    "Recall a word or phrase inside its saved example sentence.",
-  ],
-  [
     "sentence",
-    "Sentence workshop",
-    "Rebuild an example sentence, one word at a time.",
+    "Sentence Quest",
+    "Collect word islands to build a bridge before the clock runs out.",
   ],
   [
     "memory",
@@ -22,36 +17,6 @@ const clean = (text) =>
   String(text || "")
     .normalize("NFC")
     .trim();
-export function contextGap(card) {
-  const sentence = clean(card.example_german),
-    term = clean(card.german_text);
-  const variants = [
-    ...new Set([
-      term,
-      ...(card.accepted_answers || []).map(clean),
-      term.replace(/^(der|die|das)\s+/i, ""),
-    ]),
-  ]
-    .filter(Boolean)
-    .sort((a, b) => b.length - a.length);
-  for (const variant of variants) {
-    const escaped = variant
-      .replace(/[.*+?^{}$()|[\]\\]/g, "\\$&")
-      .replace(/\s+/g, "\\s+");
-    const match = new RegExp(
-      "(?<![\\p{L}\\p{N}])" + escaped + "(?![\\p{L}\\p{N}])",
-      "iu",
-    ).exec(sentence);
-    if (match)
-      return {
-        before: sentence.slice(0, match.index),
-        answer: match[0],
-        after: sentence.slice(match.index + match[0].length),
-        sentence,
-      };
-  }
-  return null;
-}
 export function eligibleCards(cards, mode) {
   const seen = new Set(),
     meanings = new Set();
@@ -62,9 +27,7 @@ export function eligibleCards(cards, mode) {
     if (!term || !meaning) return false;
     const words = sentence.split(/\s+/);
     const valid =
-      mode === "context"
-        ? Boolean(contextGap(card))
-        : mode === "sentence"
+      mode === "sentence"
           ? words.length >= 3 && words.length <= 40
           : mode === "memory"
             ? term.split(/\s+/).length >= 2
@@ -88,7 +51,7 @@ export function sentenceTiles(card, random = Math.random) {
 }
 export function checkGameAnswer(card, mode, answer, grading = {}) {
   const expected =
-    mode === "context" ? contextGap(card)?.answer : card.example_german;
+    card.example_german;
   return (
     Boolean(expected) &&
     normalize(answer, grading, true) === normalize(expected, grading, true)

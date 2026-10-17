@@ -579,7 +579,7 @@ export function TypeQuestion({
   const mode = modeOf(exercise),
     key = String(q.id),
     value = answers[key];
-  const choiceOptions = useChoiceOrder(`${q.id}:${q.prompt}`, q.options, mode === "multiple_choice");
+  const choiceOptions = useChoiceOrder(`${q.id}:${q.prompt}`, q.options, ["multiple_choice", "reading"].includes(mode));
   q = { ...q, options: choiceOptions };
   if (q.kind !== "multi" && exercise.kind !== "multi" && ["dialogue_reply", "elimination", "evidence_judge"].includes(uiStyle))
     return <ChoiceLab key={q.id} q={q} value={value} onChange={v => onAnswer(key,v)} disabled={disabled} style={uiStyle} />;

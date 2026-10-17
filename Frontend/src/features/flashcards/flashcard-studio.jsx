@@ -68,39 +68,42 @@ function Studio({ lang, id, userId, sound, data }) {
   const [game, setGame] = useState(null);
  const windowActive = useWindowActive();
   const sync = useLearningSync(userId, lang);
-  const waiting = pendingLearning(userId, lang).filter(
-    (e) =>
-      Number(e.payload.deck) === Number(id) &&
-      !(data.learning?.applied || []).includes(e.token),
-  );
-  const initialStars = new Set(data.learning?.stars || []);
-  waiting
-    .filter((e) => e.kind === "star")
-    .forEach((e) =>
-      e.payload.value
-        ? initialStars.add(e.payload.card)
-        : initialStars.delete(e.payload.card),
+  const [{ initialStars, initialProgress, initialOptions }] = useState(() => {
+    const waiting = pendingLearning(userId, lang).filter(
+      (e) =>
+        Number(e.payload.deck) === Number(id) &&
+        !(data.learning?.applied || []).includes(e.token),
     );
-  const initialProgress = { ...data.learning?.progress };
-  waiting.forEach((e) => {
-    if (e.kind === "reset") {
-      Object.keys(initialProgress).forEach(
-        (key) => delete initialProgress[key],
+    const initialStars = new Set(data.learning?.stars || []);
+    waiting
+      .filter((e) => e.kind === "star")
+      .forEach((e) =>
+        e.payload.value
+          ? initialStars.add(e.payload.card)
+          : initialStars.delete(e.payload.card),
       );
-    } else if (e.kind === "review") {
-      initialProgress[e.payload.card] = advanceProgress(
-        initialProgress[e.payload.card],
-        e.payload.correct,
-        e.payload.type,
-        0,
-        e.payload.goal,
-      );
-    }
+    const initialProgress = { ...data.learning?.progress };
+    waiting.forEach((e) => {
+      if (e.kind === "reset") {
+        Object.keys(initialProgress).forEach(
+          (key) => delete initialProgress[key],
+        );
+      } else if (e.kind === "review") {
+        initialProgress[e.payload.card] = advanceProgress(
+          initialProgress[e.payload.card],
+          e.payload.correct,
+          e.payload.type,
+          0,
+          e.payload.goal,
+        );
+      }
+    });
+    const initialOptions =
+      waiting.filter((e) => e.kind === "options").at(-1)?.payload.options ||
+      data.learning?.options ||
+      {};
+    return { initialStars, initialProgress, initialOptions };
   });
-  const initialOptions =
-    waiting.filter((e) => e.kind === "options").at(-1)?.payload.options ||
-    data.learning?.options ||
-    {};
   const key = `wortify:cards:${userId}:${lang}:${id}`;
   const [options, setOptions] = useState(() => ({
     ...defaults,
@@ -245,8 +248,10 @@ function Studio({ lang, id, userId, sound, data }) {
     const u = new SpeechSynthesisUtterance(text);
     u.lang = voice;
     u.rate = 0.9;
-    u.onerror = () =>
-      setError("This browser has no voice for the selected language.");
+    u.onerror = (event) => {
+      if (!["canceled", "interrupted"].includes(event.error)) setError("Could not play pronunciation. Check the voice selected in settings.");
+    };
+    window.speechSynthesis.resume();
     window.speechSynthesis.speak(u);
   };
   const step = (delta) => {
@@ -377,7 +382,7 @@ function Studio({ lang, id, userId, sound, data }) {
     audio.feedback(correct);
     if (correct && options.speakAfterCorrect) {
       try {
-        audio.speak(question.card.german_text);
+        speak(question.card.german_text, options.frontVoice);
       } catch (e) {
         setError(e.message);
       }
@@ -467,7 +472,7 @@ function Studio({ lang, id, userId, sound, data }) {
     mastered: pool.filter((c) => progress[c.id]?.stage === "mastered").length,
   };
   return (
-    <Page>
+    <Page className="flashcard-workspace">
       <Heading title={data.deck.title} />
       <SidebarTools>
         <Status error={sync.error} />
@@ -493,7 +498,7 @@ function Studio({ lang, id, userId, sound, data }) {
           {WORD_GAMES.map(([mode, label, description], index) => (
             <button key={mode} type="button" aria-pressed={game === mode} title={description}
               onClick={() => { setGame(mode); setError(""); setRunning(false); setSettingsOpen(false); }}>
-              <Icon name={["context", "sentence", "pairs"][index]} />
+              <Icon name={["sentence", "pairs"][index]} />
               <span>{label}</span>
             </button>
           ))}

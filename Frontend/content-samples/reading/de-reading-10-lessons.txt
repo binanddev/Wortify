@@ -1,0 +1,319 @@
+EXERCISE: A2 · Ein Samstag ohne Auto
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Ein Samstag ohne Auto</h2><p>Lea wohnt am Stadtrand und fährt normalerweise mit dem Auto einkaufen. Diesen Samstag bleibt das Auto jedoch in der Werkstatt. Sie fährt deshalb mit dem Bus zum Wochenmarkt. Die Fahrt dauert zwanzig Minuten. An der Haltestelle trifft sie ihren Nachbarn Paul, der jeden Samstag zum Markt fährt.</p><p>Lea kauft Äpfel, Brot und Käse. Sie möchte auch Tomaten kaufen, aber am Gemüsestand sind keine mehr da. Paul zeigt ihr einen kleinen Laden neben dem Markt. Dort findet sie Tomaten aus der Region. Auf dem Rückweg tragen die beiden ihre Taschen gemeinsam. Lea bezahlt für die Busfahrt weniger als sonst für das Parken. Nächste Woche möchte sie wieder den Bus nehmen, auch wenn ihr Auto dann fertig ist.</p>
+
+QUESTION: Warum nimmt Lea diesmal den Bus?
+OPTIONS: Ihr Auto wird repariert. | Sie hat ihr Auto verkauft. | Der Markt verbietet Autos.
+ANSWER: Ihr Auto wird repariert.
+EXPLANATION: Das Auto bleibt in der Werkstatt. Sie hat es nicht verkauft.
+
+QUESTION: Welche Waren kauft Lea direkt auf dem Markt? Wähle alle richtigen Antworten.
+OPTIONS: Äpfel | Brot | Käse | Tomaten
+ANSWER: Äpfel | Brot | Käse
+EXPLANATION: Äpfel, Brot und Käse kauft sie auf dem Markt; Tomaten erst im Laden daneben.
+
+QUESTION: Wo findet Lea schließlich Tomaten?
+OPTIONS: In einem Laden neben dem Markt. | An der Bushaltestelle. | In Pauls Garten.
+ANSWER: In einem Laden neben dem Markt.
+EXPLANATION: Paul zeigt ihr einen kleinen Laden neben dem Markt.
+
+QUESTION: Was ist für Lea günstiger?
+OPTIONS: Die Busfahrt. | Das Parken. | Beides kostet gleich viel.
+ANSWER: Die Busfahrt.
+EXPLANATION: Sie bezahlt für den Bus weniger als sonst für das Parken.
+
+QUESTION: Was plant Lea für die nächste Woche?
+OPTIONS: Wieder mit dem Bus fahren. | Nur online einkaufen. | Paul ihr Auto leihen.
+ANSWER: Wieder mit dem Bus fahren.
+EXPLANATION: Sie möchte wieder den Bus nehmen, obwohl ihr Auto dann fertig sein wird.
+
+EXERCISE: A2 · Eine Nachricht aus der Wohngemeinschaft
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Nachricht an die WG</h2><blockquote><p>Hallo zusammen! Am Donnerstag kommt zwischen 9 und 11 Uhr ein Techniker, weil unser Kühlschrank nicht richtig kühlt. Ich muss um 8 Uhr zur Arbeit. Kann jemand die Tür öffnen? Bitte kauft bis dahin keine Milch und keinen Joghurt. Brot und Nudeln können wir natürlich weiter einkaufen.</p><p>Das Essen aus dem Kühlschrank können wir heute Abend zu Frau Berger im zweiten Stock bringen. Sie hat Platz in ihrem Kühlschrank. Die Reparatur bezahlt unsere Vermieterin. Falls der Techniker zu spät kommt, ruft bitte zuerst mich an und nicht die Vermieterin. Meine Nummer steht an der Küchentür. Danke! Samira</p></blockquote><p>Jonas antwortet: „Ich habe am Donnerstag erst um 12 Uhr Unterricht. Ich bleibe zu Hause und öffne die Tür. Das Essen bringe ich heute um 19 Uhr nach oben.“</p>
+
+QUESTION: Warum kommt ein Techniker?
+OPTIONS: Der Kühlschrank kühlt schlecht. | Die Küchentür ist kaputt. | Der Herd wird zu heiß.
+ANSWER: Der Kühlschrank kühlt schlecht.
+EXPLANATION: Samira schreibt, dass der Kühlschrank nicht richtig kühlt.
+
+QUESTION: Was sollen die Bewohner vorerst nicht kaufen? Wähle alle richtigen Antworten.
+OPTIONS: Milch | Joghurt | Brot | Nudeln
+ANSWER: Milch | Joghurt
+EXPLANATION: Milch und Joghurt sollen sie nicht kaufen; Brot und Nudeln sind weiterhin möglich.
+
+QUESTION: Wer bezahlt die Reparatur?
+OPTIONS: Die Vermieterin. | Jonas. | Frau Berger.
+ANSWER: Die Vermieterin.
+EXPLANATION: Im Text steht ausdrücklich: Die Reparatur bezahlt unsere Vermieterin.
+
+QUESTION: Warum kann Jonas dem Techniker öffnen?
+OPTIONS: Sein Unterricht beginnt erst um 12 Uhr. | Er arbeitet jeden Donnerstag zu Hause. | Er hat die ganze Woche frei.
+ANSWER: Sein Unterricht beginnt erst um 12 Uhr.
+EXPLANATION: Sein Unterricht beginnt nach dem angekündigten Besuchszeitraum.
+
+QUESTION: Welche Aufgaben übernimmt Jonas? Wähle alle richtigen Antworten.
+OPTIONS: Die Tür öffnen. | Das Essen zu Frau Berger bringen. | Die Reparatur bezahlen. | Den Kühlschrank selbst reparieren.
+ANSWER: Die Tür öffnen. | Das Essen zu Frau Berger bringen.
+EXPLANATION: Jonas bietet an, zu Hause zu bleiben und das Essen um 19 Uhr nach oben zu bringen.
+
+EXERCISE: A2 · Neue Regeln in der Bibliothek
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Mehr Platz zum Lernen</h2><p>Ab dem 1. November öffnet die Stadtbibliothek dienstags und donnerstags bis 20 Uhr. An den anderen Werktagen schließt sie weiterhin um 18 Uhr. Sonntags bleibt sie geschlossen.</p><p>Im ersten Stock gibt es jetzt einen Raum für Gruppen. Wer dort arbeiten möchte, muss online einen Tisch reservieren. Die Reservierung ist kostenlos und gilt höchstens zwei Stunden. Im Lesesaal im Erdgeschoss ist keine Reservierung nötig. Dort müssen jedoch alle leise sein; Telefonate sind nicht erlaubt.</p><p>Getränke in verschließbaren Flaschen dürfen in beide Bereiche mitgenommen werden. Essen ist nur im Café erlaubt. Für die Ausleihe von Büchern braucht man einen Bibliotheksausweis. Wer nur vor Ort liest oder lernt, braucht keinen. Schülerinnen und Schüler unter 18 Jahren bekommen den Ausweis kostenlos.</p>
+
+QUESTION: An welchen Tagen ist bis 20 Uhr geöffnet? Wähle alle richtigen Antworten.
+OPTIONS: Dienstag | Donnerstag | Montag | Sonntag
+ANSWER: Dienstag | Donnerstag
+EXPLANATION: Nur dienstags und donnerstags gelten die längeren Öffnungszeiten.
+
+QUESTION: Wie lange darf eine Gruppenreservierung höchstens dauern?
+OPTIONS: Zwei Stunden. | Drei Stunden. | Einen ganzen Tag.
+ANSWER: Zwei Stunden.
+EXPLANATION: Die kostenlose Reservierung gilt höchstens zwei Stunden.
+
+QUESTION: Wo darf man ohne Reservierung lernen?
+OPTIONS: Im Lesesaal im Erdgeschoss. | Nur im Gruppenraum. | Nirgendwo.
+ANSWER: Im Lesesaal im Erdgeschoss.
+EXPLANATION: Für den Lesesaal ist keine Reservierung nötig.
+
+QUESTION: Was ist in beiden Lernbereichen erlaubt?
+OPTIONS: Getränke in verschließbaren Flaschen. | Telefonieren. | Essen.
+ANSWER: Getränke in verschließbaren Flaschen.
+EXPLANATION: Flaschen sind erlaubt; Essen ist auf das Café beschränkt und Telefonate im Lesesaal sind verboten.
+
+QUESTION: Wer braucht laut Text einen Ausweis?
+OPTIONS: Jemand, der ein Buch ausleihen möchte. | Jeder, der den Lesesaal betritt. | Nur Personen unter 18 Jahren.
+ANSWER: Jemand, der ein Buch ausleihen möchte.
+EXPLANATION: Für die Ausleihe ist der Ausweis nötig, für das Lesen vor Ort nicht.
+
+EXERCISE: A2 · Welcher Kurs passt?
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Samstagskurse im Nachbarschaftshaus</h2><p>Nora möchte am Samstag etwas Neues ausprobieren. Sie arbeitet bis 12 Uhr und kann frühestens um 13 Uhr im Nachbarschaftshaus sein. Sie möchte höchstens 20 Euro ausgeben und keinen Sport machen.</p><table><thead><tr><th>Kurs</th><th>Zeit</th><th>Preis</th><th>Mitbringen</th></tr></thead><tbody><tr><td>Fotografieren mit dem Handy</td><td>13–15 Uhr</td><td>15 Euro</td><td>Handy</td></tr><tr><td>Brot backen</td><td>10–13 Uhr</td><td>18 Euro</td><td>Schürze</td></tr><tr><td>Yoga für Anfänger</td><td>14–15 Uhr</td><td>10 Euro</td><td>Matte</td></tr><tr><td>Keramik bemalen</td><td>14–17 Uhr</td><td>25 Euro</td><td>Nichts</td></tr></tbody></table><p>Alle Kurse müssen bis Donnerstag gebucht werden. Beim Fotokurs geht die Gruppe auch nach draußen. Bei Regen übt sie im Haus. Material ist im Preis enthalten, persönliche Geräte und Kleidung jedoch nicht.</p>
+
+QUESTION: Welcher Kurs erfüllt alle Wünsche von Nora?
+OPTIONS: Fotografieren mit dem Handy. | Brot backen. | Yoga für Anfänger. | Keramik bemalen.
+ANSWER: Fotografieren mit dem Handy.
+EXPLANATION: Der Fotokurs beginnt um 13 Uhr, kostet 15 Euro und ist kein Sportkurs.
+
+QUESTION: Welche Kurse kosten höchstens 20 Euro? Wähle alle richtigen Antworten.
+OPTIONS: Fotografieren mit dem Handy | Brot backen | Yoga für Anfänger | Keramik bemalen
+ANSWER: Fotografieren mit dem Handy | Brot backen | Yoga für Anfänger
+EXPLANATION: Die ersten drei kosten 15, 18 und 10 Euro; Keramik kostet 25 Euro.
+
+QUESTION: Was muss Nora zum passenden Kurs mitbringen?
+OPTIONS: Ihr Handy. | Eine Kamera und einen Laptop. | Eine Schürze.
+ANSWER: Ihr Handy.
+EXPLANATION: In der Tabelle steht beim Fotokurs: Handy.
+
+QUESTION: Was passiert beim Fotokurs, wenn es regnet?
+OPTIONS: Die Gruppe übt im Haus. | Der Kurs fällt aus. | Alle bekommen ihr Geld zurück.
+ANSWER: Die Gruppe übt im Haus.
+EXPLANATION: Der Text nennt ausdrücklich das Üben im Haus als Alternative.
+
+QUESTION: Bis wann muss man einen Kurs buchen?
+OPTIONS: Bis Donnerstag. | Bis Samstagmittag. | Bis Freitagabend.
+ANSWER: Bis Donnerstag.
+EXPLANATION: Alle Kurse müssen bis Donnerstag gebucht werden.
+
+EXERCISE: A2 · Ein Paket für Herrn Klein
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Ein Paket für Herrn Klein</h2><p>Als Mira am Dienstag nach Hause kommt, liegt eine Karte im Briefkasten. Ihr Paket ist bei Herrn Klein in der Wohnung gegenüber. Auf der Karte steht nicht, wann er zu Hause ist. Mira klingelt um 17 Uhr, aber niemand öffnet.</p><p>Später trifft sie Herrn Klein im Treppenhaus. Er erklärt, dass er bis 19 Uhr gearbeitet hat. Mira bedankt sich und nimmt das Paket mit. Darin sind Wanderschuhe für ihre Reise am Freitag. Leider sind sie zu klein. Im Onlineshop liest sie: Eine Rücksendung ist innerhalb von 30 Tagen kostenlos; einen direkten Umtausch gibt es nicht.</p><p>Mira bestellt keine neuen Schuhe im Internet, weil sie vor Freitag vielleicht nicht ankommen. Am Mittwoch möchte sie in einem Sportgeschäft verschiedene Größen anprobieren. Das Paket will sie danach zur Post bringen.</p>
+
+QUESTION: Wo wurde Miras Paket abgegeben?
+OPTIONS: Bei ihrem Nachbarn gegenüber. | Im Sportgeschäft. | Bei der Post.
+ANSWER: Bei ihrem Nachbarn gegenüber.
+EXPLANATION: Die Karte nennt Herrn Klein in der Wohnung gegenüber.
+
+QUESTION: Warum öffnet Herr Klein um 17 Uhr nicht?
+OPTIONS: Er arbeitet noch. | Er ist auf einer Reise. | Seine Klingel ist kaputt.
+ANSWER: Er arbeitet noch.
+EXPLANATION: Später erklärt er, dass er bis 19 Uhr gearbeitet hat.
+
+QUESTION: Welche Aussagen über die Schuhe stimmen? Wähle alle richtigen Antworten.
+OPTIONS: Sie sind zu klein. | Mira braucht sie für eine Reise. | Sie sind beschädigt. | Sie wurden im Sportgeschäft gekauft.
+ANSWER: Sie sind zu klein. | Mira braucht sie für eine Reise.
+EXPLANATION: Die Wanderschuhe sind für die Reise am Freitag bestimmt, passen aber nicht.
+
+QUESTION: Welche Möglichkeit bietet der Onlineshop?
+OPTIONS: Eine kostenlose Rücksendung innerhalb von 30 Tagen. | Einen direkten Umtausch beim Nachbarn. | Nur eine kostenpflichtige Rücksendung.
+ANSWER: Eine kostenlose Rücksendung innerhalb von 30 Tagen.
+EXPLANATION: Der Shop bietet kostenlose Rücksendung, aber keinen direkten Umtausch.
+
+QUESTION: Warum will Mira nun im Geschäft kaufen?
+OPTIONS: Sie kann die Größen prüfen und muss nicht auf eine Lieferung warten. | Der Onlineshop verkauft keine Wanderschuhe mehr. | Herr Klein empfiehlt ihr eine bestimmte Marke.
+ANSWER: Sie kann die Größen prüfen und muss nicht auf eine Lieferung warten.
+EXPLANATION: Sie möchte Größen anprobieren; eine neue Onlinebestellung könnte zu spät kommen.
+
+EXERCISE: B1 · Reparieren statt wegwerfen
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Der zweite Versuch</h2><p>Einmal im Monat öffnet im Jugendzentrum ein Repair-Café. Freiwillige helfen dabei, defekte Alltagsgegenstände zu untersuchen. Die Besucher sollen mitarbeiten, damit sie beim nächsten kleinen Problem selbst etwas ausprobieren können. Ersatzteile bezahlen sie selbst; die Hilfe ist kostenlos.</p><p>David bringt eine Lampe mit, die seit Wochen nicht mehr funktioniert. Er glaubt, dass er eine neue kaufen muss. Gemeinsam mit einer Helferin entdeckt er jedoch ein beschädigtes Kabel. Die Helferin übernimmt die Arbeit an der Elektrik. David lernt, woran man äußere Schäden erkennt und wann man ein Gerät nicht mehr benutzen sollte.</p><p>Nicht alles lässt sich retten. Für einen alten Mixer gibt es kein passendes Ersatzteil mehr. Trotzdem ist die Besitzerin zufrieden: Jetzt weiß sie, warum er nicht repariert werden kann. Das Team verspricht keine erfolgreiche Reparatur und nimmt keine Geräte zur späteren Bearbeitung an. Wer kommt, bleibt während des Termins dabei.</p>
+
+QUESTION: Was ist neben der Reparatur ein Ziel des Cafés?
+OPTIONS: Besucher sollen etwas lernen. | Besucher sollen neue Geräte kaufen. | Alle Geräte sollen kostenlos ersetzt werden.
+ANSWER: Besucher sollen etwas lernen.
+EXPLANATION: Die Besucher arbeiten mit, damit sie bei kleinen Problemen selbst etwas ausprobieren können.
+
+QUESTION: Welche Kosten können entstehen?
+OPTIONS: Kosten für Ersatzteile. | Ein verpflichtender Stundenlohn. | Eine Eintrittsgebühr für alle.
+ANSWER: Kosten für Ersatzteile.
+EXPLANATION: Die Hilfe ist kostenlos, Ersatzteile bezahlen die Besucher selbst.
+
+QUESTION: Was trifft auf Davids Besuch zu? Wähle alle richtigen Antworten.
+OPTIONS: Ein beschädigtes Kabel wird entdeckt. | Eine Helferin übernimmt die elektrische Arbeit. | David kauft sofort eine neue Lampe. | David repariert die Elektrik allein.
+ANSWER: Ein beschädigtes Kabel wird entdeckt. | Eine Helferin übernimmt die elektrische Arbeit.
+EXPLANATION: David untersucht die Lampe gemeinsam mit der Helferin; die elektrische Arbeit übernimmt sie.
+
+QUESTION: Warum kann der Mixer nicht repariert werden?
+OPTIONS: Ein passendes Ersatzteil fehlt. | Die Besitzerin hat keine Zeit. | Das Team repariert grundsätzlich keine Mixer.
+ANSWER: Ein passendes Ersatzteil fehlt.
+EXPLANATION: Für dieses alte Gerät gibt es kein passendes Ersatzteil mehr.
+
+QUESTION: Welche Erwartungen wären falsch? Wähle alle richtigen Antworten.
+OPTIONS: Jede Reparatur gelingt garantiert. | Man kann sein Gerät abgeben und später abholen. | Man muss während des Termins bleiben. | Ersatzteile können Geld kosten.
+ANSWER: Jede Reparatur gelingt garantiert. | Man kann sein Gerät abgeben und später abholen.
+EXPLANATION: Das Team gibt keine Erfolgsgarantie und nimmt keine Geräte für eine spätere Bearbeitung an.
+
+EXERCISE: B1 · Zwei Tage im Büro
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Eine neue Vereinbarung</h2><p>Seit September testet ein kleines Planungsbüro ein neues Arbeitsmodell. Alle Beschäftigten sind dienstags und mittwochs im Büro. An den übrigen Tagen dürfen sie zu Hause arbeiten. Kundentermine können diese Regel allerdings verändern. Die gemeinsame Mittagspause am Dienstag ist freiwillig.</p><p>Für Amira hat das Modell klare Vorteile. An ruhigen Tagen kann sie zu Hause konzentriert zeichnen und spart ihren langen Arbeitsweg. Ihr Kollege Ben arbeitet dagegen lieber im Büro, weil seine Wohnung klein ist. Er darf auch montags, donnerstags und freitags dorthin kommen.</p><p>Nach sechs Wochen zeigt sich ein Problem: Manche Absprachen bleiben in privaten Nachrichten verborgen. Das Team beschließt deshalb, wichtige Entscheidungen in einem gemeinsamen Dokument festzuhalten. Mehr Videokonferenzen soll es zunächst nicht geben. Ende November wird das Modell gemeinsam ausgewertet. Ob es dauerhaft bleibt, ist noch offen; entscheidend sind sowohl die Arbeitsergebnisse als auch die Erfahrungen der Beschäftigten.</p>
+
+QUESTION: An welchen Tagen sind grundsätzlich alle im Büro? Wähle alle richtigen Antworten.
+OPTIONS: Dienstag | Mittwoch | Montag | Freitag
+ANSWER: Dienstag | Mittwoch
+EXPLANATION: Dienstag und Mittwoch sind die gemeinsamen Bürotage, vorbehaltlich Kundenterminen.
+
+QUESTION: Warum arbeitet Ben lieber im Büro?
+OPTIONS: Seine Wohnung ist klein. | Er darf zu Hause nicht arbeiten. | Er hat keinen Computer.
+ANSWER: Seine Wohnung ist klein.
+EXPLANATION: Ben bevorzugt das Büro wegen seiner kleinen Wohnung; ein Verbot wird nicht genannt.
+
+QUESTION: Welches Problem wird nach sechs Wochen festgestellt?
+OPTIONS: Wichtige Absprachen sind nicht für alle sichtbar. | Es gibt zu viele gemeinsame Mittagspausen. | Alle möchten nur noch zu Hause arbeiten.
+ANSWER: Wichtige Absprachen sind nicht für alle sichtbar.
+EXPLANATION: Absprachen bleiben in privaten Nachrichten verborgen.
+
+QUESTION: Wie reagiert das Team darauf?
+OPTIONS: Es dokumentiert wichtige Entscheidungen gemeinsam. | Es führt sofort tägliche Videokonferenzen ein. | Es beendet das Modell sofort.
+ANSWER: Es dokumentiert wichtige Entscheidungen gemeinsam.
+EXPLANATION: Ein gemeinsames Dokument soll die Informationen zugänglich machen; mehr Konferenzen sind zunächst nicht geplant.
+
+QUESTION: Was steht über die Zukunft des Modells fest?
+OPTIONS: Es wird Ende November anhand mehrerer Kriterien bewertet. | Es bleibt auf jeden Fall bestehen. | Nur die Meinung der Kunden zählt.
+ANSWER: Es wird Ende November anhand mehrerer Kriterien bewertet.
+EXPLANATION: Ergebnisse und Erfahrungen fließen in die Auswertung ein; die dauerhafte Fortsetzung ist offen.
+
+EXERCISE: B1 · Wasser für den Gemeinschaftsgarten
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Ein Garten organisiert sich</h2><p>Im Gemeinschaftsgarten teilen sich zwölf Haushalte die Arbeit. Bisher goss jeder sein eigenes Beet. Während einer trockenen Woche waren jedoch mehrere Familien verreist. Einige Pflanzen vertrockneten, während andere Beete zweimal am Tag Wasser bekamen.</p><p>Bei einem Treffen schlägt Luis einen gemeinsamen Gießplan vor. Jeden Abend übernimmt ein Haushalt alle Beete. Wer verhindert ist, tauscht seinen Termin selbst und trägt den Wechsel in die Liste ein. Fatma unterstützt den Plan, möchte aber nicht jeden Abend automatisch gießen lassen. Nach Regen soll die zuständige Person zuerst prüfen, ob die Erde noch feucht ist.</p><p>Die Gruppe übernimmt beide Vorschläge. Zusätzlich stellt sie zwei Regentonnen auf. Deren Wasser soll zuerst verwendet werden; erst wenn es aufgebraucht ist, kommt Leitungswasser zum Einsatz. Nach einem Monat vergleicht die Gruppe den Wasserverbrauch mit dem vorherigen Monat. Luis warnt jedoch davor, jede Veränderung allein dem Plan zuzuschreiben: Unterschiedliches Wetter kann den Vergleich beeinflussen.</p>
+
+QUESTION: Was war das ursprüngliche Problem?
+OPTIONS: Die Beete wurden ungleichmäßig versorgt. | Alle Pflanzen bekamen grundsätzlich zu wenig Sonne. | Niemand durfte die Beete anderer Haushalte betreten.
+ANSWER: Die Beete wurden ungleichmäßig versorgt.
+EXPLANATION: Einige Beete vertrockneten, andere wurden zweimal täglich gegossen.
+
+QUESTION: Welche Regeln gelten im neuen Plan? Wähle alle richtigen Antworten.
+OPTIONS: Ein Haushalt ist abends für alle Beete zuständig. | Terminwechsel werden in die Liste eingetragen. | Jeder gießt ausschließlich sein eigenes Beet. | Verhinderte Personen organisieren ihren Tausch selbst.
+ANSWER: Ein Haushalt ist abends für alle Beete zuständig. | Terminwechsel werden in die Liste eingetragen. | Verhinderte Personen organisieren ihren Tausch selbst.
+EXPLANATION: Der gemeinsame Plan verteilt Verantwortung; Tauschen und Eintragen übernimmt die verhinderte Person.
+
+QUESTION: Was ergänzt Fatma?
+OPTIONS: Vor dem Gießen nach Regen die Bodenfeuchtigkeit prüfen. | Nach Regen immer doppelt gießen. | Die Regentonnen abschaffen.
+ANSWER: Vor dem Gießen nach Regen die Bodenfeuchtigkeit prüfen.
+EXPLANATION: Sie möchte unnötiges Gießen vermeiden, wenn die Erde noch feucht ist.
+
+QUESTION: Welches Wasser soll zuerst benutzt werden?
+OPTIONS: Das Wasser aus den Regentonnen. | Leitungswasser. | Gekauftes Mineralwasser.
+ANSWER: Das Wasser aus den Regentonnen.
+EXPLANATION: Leitungswasser wird erst genutzt, wenn das gesammelte Regenwasser aufgebraucht ist.
+
+QUESTION: Warum ist der Monatsvergleich nur eingeschränkt aussagekräftig?
+OPTIONS: Auch das Wetter beeinflusst den Verbrauch. | Die Gruppe zählt keine Haushalte. | Der Plan wird erst in einem Jahr eingeführt.
+ANSWER: Auch das Wetter beeinflusst den Verbrauch.
+EXPLANATION: Luis nennt unterschiedliches Wetter als weiteren Einfluss neben dem neuen Plan.
+
+EXERCISE: B1 · Eine Unterkunft mit Bedingungen
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Vor der Buchung</h2><p>Elena plant mit ihrem Bruder ein Wochenende am See. Auf der Website eines Gästehauses liest sie: „Zimmer ab 65 Euro, Frühstück inklusive.“ Da sie mit dem Zug anreisen, fragt sie per E-Mail nach der Verbindung vom Bahnhof und nach einer späten Ankunft.</p><blockquote><p>Vielen Dank für Ihre Anfrage. Der Preis von 65 Euro gilt für ein Einzelzimmer unter der Woche. Das gewünschte Doppelzimmer kostet am Wochenende 95 Euro pro Nacht, einschließlich Frühstück. Vom Bahnhof fährt bis 19 Uhr stündlich ein Bus. Danach benötigen Sie ein Taxi. Eine Ankunft nach 21 Uhr ist möglich, wenn Sie vorher Bescheid geben; wir hinterlegen den Schlüssel in einem Schlüsselkasten.</p><p>Bis sieben Tage vor der Anreise können Sie kostenlos stornieren. Danach berechnen wir die erste Nacht. Fahrräder können Sie kostenlos unterstellen, der Verleih ist jedoch kostenpflichtig.</p></blockquote><p>Elena rechnet nach: Zwei Nächte kosten zusammen 190 Euro, das Taxi kommt zusätzlich dazu. Sie will nun einen früheren Zug prüfen, bevor sie bucht.</p>
+
+QUESTION: Warum gilt der beworbene Preis nicht für Elena und ihren Bruder?
+OPTIONS: Sie brauchen ein Doppelzimmer am Wochenende. | Sie möchten ohne Frühstück buchen. | Sie reisen mit dem Zug an.
+ANSWER: Sie brauchen ein Doppelzimmer am Wochenende.
+EXPLANATION: 65 Euro gelten für ein Einzelzimmer unter der Woche; ihr gewünschtes Zimmer kostet 95 Euro.
+
+QUESTION: Was ist im Zimmerpreis enthalten?
+OPTIONS: Frühstück. | Taxifahrt. | Fahrradverleih.
+ANSWER: Frühstück.
+EXPLANATION: Das Frühstück ist inklusive, Taxi und Fahrradverleih sind es nicht.
+
+QUESTION: Was ist für eine Ankunft nach 21 Uhr nötig?
+OPTIONS: Das Gästehaus vorher informieren. | Zwei Nächte extra bezahlen. | Den Schlüssel am Bahnhof abholen.
+ANSWER: Das Gästehaus vorher informieren.
+EXPLANATION: Nach vorheriger Mitteilung wird der Schlüssel im Schlüsselkasten hinterlegt.
+
+QUESTION: Welche Leistungen sind unter den genannten Bedingungen kostenlos? Wähle alle richtigen Antworten.
+OPTIONS: Fahrräder unterstellen. | Bis sieben Tage vor Anreise stornieren. | Fahrräder ausleihen. | Nach 19 Uhr ein Taxi nehmen.
+ANSWER: Fahrräder unterstellen. | Bis sieben Tage vor Anreise stornieren.
+EXPLANATION: Abstellen und rechtzeitige Stornierung sind kostenlos; Verleih und Taxi nicht.
+
+QUESTION: Warum prüft Elena einen früheren Zug?
+OPTIONS: Sie könnte den Bus nutzen und Taxikosten vermeiden. | Das Gästehaus verbietet eine späte Ankunft. | Ein früher Zug senkt den Zimmerpreis.
+ANSWER: Sie könnte den Bus nutzen und Taxikosten vermeiden.
+EXPLANATION: Der Bus fährt nur bis 19 Uhr; die Taxikosten kämen zum Zimmerpreis hinzu.
+
+EXERCISE: B1 · Weniger Handy, mehr Aufmerksamkeit?
+TYPE: reading
+STYLE: split_reading
+INSTRUCTIONS: Lies den Text. Beantworte die Fragen. Bei mehreren richtigen Antworten wähle alle passenden Optionen.
+CONTEXT_FORMAT: html
+CONTEXT: <h2>Ein Versuch beim Abendessen</h2><p>Vier Freunde treffen sich jeden Mittwoch zum Abendessen. Oft liegen ihre Handys neben den Tellern. Wenn eine Nachricht erscheint, schaut jemand kurz darauf, und das Gespräch gerät ins Stocken. Kim schlägt vor, die Geräte für einen Monat während des Essens in einer Schublade zu lassen.</p><p>Beim ersten Treffen ist Omar unruhig. Sein Vater ist krank, und er möchte erreichbar bleiben. Die Gruppe vereinbart eine Ausnahme: Omar legt sein Handy mit eingeschaltetem Ton auf ein Regal und schaut nur bei einem Anruf nach. Nachrichten liest er nach dem Essen.</p><p>Nach vier Wochen berichten drei Freunde, dass sie die Gespräche aufmerksamer erleben. Omar findet die Regel hilfreich, solange Ausnahmen möglich sind. Niemand hat gemessen, wie oft die Gespräche unterbrochen wurden. Deshalb wollen sie aus ihrem Versuch keine allgemeine Aussage über alle Menschen ableiten. Für ihre eigene Runde behalten sie die Regel aber bei. Es geht ihnen nicht darum, Handys grundsätzlich schlecht zu finden, sondern um eine gemeinsame Entscheidung für diese eine Stunde.</p>
+
+QUESTION: Was löst den Versuch aus?
+OPTIONS: Nachrichten unterbrechen die Gespräche. | Das Restaurant verbietet Handys. | Die Freunde wollen neue Handys kaufen.
+ANSWER: Nachrichten unterbrechen die Gespräche.
+EXPLANATION: Blicke auf eingehende Nachrichten bringen das Gespräch ins Stocken.
+
+QUESTION: Warum erhält Omar eine Ausnahme?
+OPTIONS: Er möchte wegen seines kranken Vaters erreichbar sein. | Er muss beim Essen arbeiten. | Er organisiert den nächsten Urlaub.
+ANSWER: Er möchte wegen seines kranken Vaters erreichbar sein.
+EXPLANATION: Sein Vater ist krank; die Gruppe berücksichtigt seine Sorge.
+
+QUESTION: Was gehört zu Omars Ausnahme? Wähle alle richtigen Antworten.
+OPTIONS: Das Handy liegt mit Ton auf einem Regal. | Er reagiert auf Anrufe. | Er liest alle Nachrichten sofort. | Nachrichten liest er erst nach dem Essen.
+ANSWER: Das Handy liegt mit Ton auf einem Regal. | Er reagiert auf Anrufe. | Nachrichten liest er erst nach dem Essen.
+EXPLANATION: Anrufe bleiben hörbar; Nachrichten verschiebt er auf die Zeit nach dem Essen.
+
+QUESTION: Warum beweist der Versuch keine allgemeine Verbesserung für alle Menschen?
+OPTIONS: Er beschreibt nur die Erfahrungen dieser Runde ohne Messung der Unterbrechungen. | Keiner der Freunde hat eine Meinung dazu. | Der Versuch hat nur einen Abend gedauert.
+ANSWER: Er beschreibt nur die Erfahrungen dieser Runde ohne Messung der Unterbrechungen.
+EXPLANATION: Die Freunde haben subjektive Erfahrungen gesammelt, aber keine Unterbrechungen gezählt und keine allgemeine Untersuchung durchgeführt.
+
+QUESTION: Welche Aussage trifft die Haltung der Gruppe am besten?
+OPTIONS: Eine begrenzte gemeinsame Regel kann mit sinnvollen Ausnahmen helfen. | Handys sollten überall verboten werden. | Nur vollständig unerreichbare Menschen können gut zuhören.
+ANSWER: Eine begrenzte gemeinsame Regel kann mit sinnvollen Ausnahmen helfen.
+EXPLANATION: Die Gruppe behält eine Regel für ihre gemeinsame Stunde bei und erlaubt begründete Ausnahmen.

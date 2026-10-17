@@ -1,3 +1,19 @@
+export const READING_TEXT_RULES = `READING LESSONS
+TYPE: reading. STYLE: split_reading (legacy identifier; displayed vertically: passage above questions).
+CONTEXT_FORMAT: html or markdown (default markdown). CONTEXT: the complete passage, up to 100,000 characters.
+Use > continuation lines for multiline HTML or lesson markup. Questions belong to this passage.
+HTML is allowed only in CONTEXT. QUESTION, OPTIONS, ANSWER and EXPLANATION must contain text, never HTML. Only single-answer and multiple-answer multiple choice are supported. Each question displays its selection instruction.
+For each QUESTION use OPTIONS: option 1 | option 2 | option 3 and ANSWER: exact option text.
+For single-answer questions, provide exactly four options (displayed as A, B, C, D). Multiple-answer questions may have 2–12 options.
+For multiple correct answers: ANSWER: option 1 | option 3. Learners must select the exact set before pressing Check.
+EXPLANATION: cite the relevant passage sentence and explain the answer.
+Supported HTML: h1-h4, p, div, span, strong, em, b, i, u, br, blockquote, ul, ol, li, table, thead, tbody, tr, th, td, figure, figcaption, img.
+Images: <img src="https://example.org/image.jpg" alt="Description" style="width:60%;height:240px;object-fit:cover;float:right;margin:12px">.
+Use text-align:left/center/right on a container to align images. Width/height accept px or %, max 1200px / 100%. Float: left/right/none; margin: 0–48px; font-size: 12–36px; color: hex only.
+Scripts, forms, embedded frames, event handlers, classes, external stylesheets and arbitrary CSS are not executed. The passage uses the active theme.
+Upload images with the existing Media tool and keep them attached; use their provided URL as img src. External images must be HTTPS.
+
+`;
 import { canFillGapBank } from "./gap-tokens.js";
 import { EXERCISE_TYPES, exerciseStylesOf } from "./exercise-types.js";
 
@@ -59,7 +75,7 @@ Keep ANSWER, BLANK, WORDS, PREFIX, GROUPS and titles plain (no formatting marker
 Formatting may wrap blanks such as {{1}}; interactive blanks also work inside tables and alignment blocks.
 Example: QUESTION: Choose the **correct verb**: She {{1}} [color=teal]every day[/color].
 Example: EXPLANATION: Use *-s* with [color=blue]he, she, it[/color].
-You can combine color with bold or italic; do not nest colors. HTML is not supported.
+You can combine color with bold or italic; do not nest colors. HTML is supported only in reading CONTEXT with CONTEXT_FORMAT: html.
 
 TYPES AND STYLES
 cloze_drag_drop: drag_drop (move word tiles), tap_fill (tap words to fill blanks).
@@ -101,6 +117,8 @@ export function completePracticeGuide() {
 }
 
 const samples = {
+  reading: 'CONTEXT_FORMAT: html\nCONTEXT: <h2>A greener school</h2>\n> <p>Every Friday, Mia and Tom cycle to school. Their school garden grows carrots and tomatoes. On Monday, the students water the plants.</p>\nQUESTION: When do Mia and Tom cycle to school?\nOPTIONS: Friday | Monday | Sunday | Tuesday\nANSWER: Friday\nEXPLANATION: The first sentence says every Friday.\nQUESTION: Which vegetables grow in the garden? Choose all that apply.\nOPTIONS: Carrots | Tomatoes | Potatoes\nANSWER: Carrots | Tomatoes\nEXPLANATION: The garden grows carrots and tomatoes.',
+
   multiple_choice: "QUESTION: What would you like?\nOPTIONS: Tea, please. | Yesterday. | At home.\nANSWER: Tea, please.",
   true_false_not_given: "CONTEXT: Mia lives in Berlin.\nQUESTION: Mia lives in Berlin.\nOPTIONS: TRUE | FALSE | NOT_GIVEN\nANSWER: TRUE",
   cloze_drag_drop:
@@ -128,7 +146,7 @@ export function textTemplate(
 }
 export function exerciseToText(e) {
   const mode = e.presentation?.interaction;
-  if (!EXERCISE_TYPES.some((t) => t[0] === mode)) return "";
+  if (mode !== "reading" && !EXERCISE_TYPES.some((t) => t[0] === mode)) return "";
   const fallback =
     mode === "short_answer" && !e.questions.every((q) => q.presentation?.prefix)
       ? "sentence_rewrite"
@@ -143,13 +161,14 @@ export function exerciseToText(e) {
   if (e.ignore_case === false) lines.push("CASE_SENSITIVE: yes");
   if (e.ignore_punctuation === false) lines.push("KEEP_PUNCTUATION: yes");
   if (e.instruction) lines.push(`INSTRUCTIONS: ${e.instruction}`);
+  if (mode === "reading") lines.push(`CONTEXT_FORMAT: ${e.presentation.context_format || "markdown"}`);
   if (e.context) lines.push(`CONTEXT: ${e.context}`);
   if (e.presentation.categories?.length)
     lines.push(`GROUPS: ${e.presentation.categories.join(" | ")}`);
   if (e.presentation?.comment) lines.push("COMMENT: "+e.presentation.comment);
   for (const q of e.questions || []) {
     lines.push("", `QUESTION: ${q.prompt}`);
-    if (["multiple_choice","true_false_not_given"].includes(mode)) lines.push(`OPTIONS: ${q.options.join(" | ")}`);
+    if (["multiple_choice","true_false_not_given","reading"].includes(mode)) lines.push(`OPTIONS: ${q.options.join(" | ")}`);
     if (q.example) lines.push("EXAMPLE: yes");
     if (mode === "sentence_building")
       lines.push(
@@ -239,6 +258,7 @@ export function parsePracticeText(text) {
       "STYLE",
       "INSTRUCTIONS",
       "CONTEXT",
+      "CONTEXT_FORMAT",
       "GROUPS",
       "BANK_SCOPE",
       "COMMENT",
@@ -264,6 +284,10 @@ export function parsePracticeText(text) {
       case "INSTRUCTIONS":
         e.instruction = value;
         continuation = [e, "instruction"];
+        break;
+      case "CONTEXT_FORMAT":
+        if (!["html", "markdown"].includes(value)) fail("CONTEXT_FORMAT must be html or markdown.");
+        e.presentation.context_format = value;
         break;
       case "CONTEXT":
         e.context = value;
@@ -325,10 +349,11 @@ export function parsePracticeText(text) {
   for (const node of nodes) {
     e = node.payload;
     const mode = e.presentation.interaction;
-    const type = EXERCISE_TYPES.find((t) => t[0] === mode);
+    const type = mode === "reading" ? ["reading", "Reading comprehension", "10", "choice"] : EXERCISE_TYPES.find((t) => t[0] === mode);
     if (e.title.length > 200) fail("Exercise titles can contain up to 200 characters.");
     if (!type) fail(`Exercise ${e.title}: Invalid TYPE.`);
     e.kind = type[3];
+    if (mode === "reading" && (!e.context?.trim() || e.context.length > 100000)) fail("Reading requires a CONTEXT passage of up to 100,000 characters.");
     e.check_mode = "auto_check";
     if (
       e.presentation.style &&
@@ -348,7 +373,9 @@ export function parsePracticeText(text) {
       delete q._line;
       q.id = String(i + 1);
       q.position = i + 1;
-      q.kind = e.kind;
+      if (mode === "reading" && [q.prompt, ...q.options, ...q.accepted_answers, q.presentation?.explanation || ""].some(v => /<\/?[a-z][^>]*>/i.test(v))) fail("HTML belongs only in CONTEXT. Use text for reading questions, options, answers and explanations.");
+      q.kind = mode === "reading" && q.accepted_answers.length > 1 ? "multi" : e.kind;
+      if (mode === "reading" && (q.options.length < 2 || q.options.length > 12 || new Set(q.options).size !== q.options.length || !q.accepted_answers.length || new Set(q.accepted_answers).size !== q.accepted_answers.length || q.accepted_answers.some(a => !q.options.includes(a)))) fail("Reading questions need 2–12 distinct OPTIONS and one or more unique ANSWER choices from them.");
       if (mode === "sentence_building") {
         if (!q.presentation.word_bank?.length)
           fail("WORDS must be in the correct order.");

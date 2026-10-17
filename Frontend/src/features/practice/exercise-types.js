@@ -10,6 +10,7 @@ export const EXERCISE_TYPES = [
   ["short_answer", "Rewrite sentence", "07", "text"],
 ];
 export const EXERCISE_STYLES = {
+  reading: [["split_reading", "Read & answer", "Read the passage alongside its questions. Choose one or more answers."]],
   multiple_choice: [["dialogue_reply", "Dialogue replies", "Read the situation and choose your reply."], ["elimination", "Eliminate and decide", "Cross out distractors, then choose the best answer."]],
   true_false_not_given: [["evidence_judge", "Evidence desk", "Read the passage and decide what it actually says."]],
   cloze_drag_drop: [
@@ -90,7 +91,7 @@ export function newQuestion(mode) {
   };
 }
 export function newExercise(mode) {
-  const item = EXERCISE_TYPES.find((t) => t[0] === mode);
+  const item = mode === "reading" ? ["reading", "Reading comprehension", "10", "choice"] : EXERCISE_TYPES.find((t) => t[0] === mode);
   return {
     title: item[1],
     kind: item[3],

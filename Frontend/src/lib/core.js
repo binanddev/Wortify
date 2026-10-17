@@ -1,77 +1,9 @@
 import { createContext, useContext, useCallback, useEffect, useRef, useState } from "react";
+import { request, invalidateContentCache } from "./request.js";
 export const WindowContext = createContext(null);
 export function useNavigate() { return useContext(WindowContext)?.navigate || navigate; }
 export function useWindowActive() { return useContext(WindowContext)?.active ?? true; }
-const contentCache = new Map();
-export function primeContentCache(path, data) {
-  contentCache.set(path, { at: Date.now(), data: structuredClone(data) });
-}
-export function clearContentCache() {
-  contentCache.clear();
-}
-export async function request(path, method = "GET", data, signal) {
-  const cacheable =
-    method === "GET" &&
-    /\/api\/(en|de)\/(practice-hub|decks|sessions|study-pack)\//.test(path);
-  if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
-  const cached = contentCache.get(path);
-  if (cacheable && cached && Date.now() - cached.at < 600000)
-    return structuredClone(cached.data);
-  const headers = {};
-  if (data !== undefined && !(data instanceof FormData))
-    headers["Content-Type"] = "application/json";
-  if (method !== "GET")
-    headers["X-CSRFToken"] = decodeURIComponent(
-      document.cookie
-        .split("; ")
-        .find((c) => c.startsWith("csrftoken="))
-        ?.slice(10) || "",
-    );
-  const res = await fetch(path, {
-    method,
-    credentials: "same-origin",
-    headers,
-    body:
-      data === undefined
-        ? undefined
-        : data instanceof FormData
-          ? data
-          : JSON.stringify(data),
-    signal,
-  });
-  let malformed = false;
-  const json = await res.json().catch((error) => {
-    if (error.name === "AbortError" || signal?.aborted)
-      throw new DOMException("Aborted", "AbortError");
-    malformed = true;
-    return {
-      error:
-        res.status === 403
-          ? "Your security session has changed. Reload the page and try again."
-          : "The server returned an invalid response.",
-    };
-  });
-  if (!res.ok || malformed) {
-    if (res.status === 401) window.dispatchEvent(new Event("session-expired"));
-    throw new Error(json.error || "Unable to complete the request. Please try again.");
-  }
-  if (method !== "GET" && !path.endsWith("/learning/sync/"))
-    contentCache.clear();
-  if (path.endsWith("/learning/sync/"))
-    for (const key of contentCache.keys())
-      if (/\/decks\/\d+\/$/.test(key) || key.includes("/practice-hub/")) contentCache.delete(key);
-  if (cacheable) {
-    if (contentCache.size >= 30)
-      contentCache.delete(contentCache.keys().next().value);
-    contentCache.set(path, { at: Date.now(), data: structuredClone(json) });
-  }
-  if (method === "POST" && /\/sessions\/$/.test(path) && json.token)
-    contentCache.set(`${path}${json.token}/`, {
-      at: Date.now(),
-      data: structuredClone(json),
-    });
-  return json;
-}
+export { request, primeContentCache, clearContentCache } from "./request.js";
 export const endpoint = (lang, path) => {
   if (!["en", "de"].includes(lang)) throw new Error("Invalid workspace");
   return `/api/${lang}/${path}`;
@@ -91,17 +23,18 @@ export function useResource(path, keepDataOnReload = false) {
         if (!c.signal.aborted) set({ path, data, error: "", loading: false });
       })
       .catch((e) => {
-        if (e.name !== "AbortError")
-          set({ data: null, error: e.message, loading: false });
+        if (!c.signal.aborted && e.name !== "AbortError")
+          set({ path, data: null, error: e.message, loading: false });
       });
     return () => c.abort();
   }, [path, version, keepDataOnReload]);
+  const reload = useCallback(() => {
+    invalidateContentCache(path);
+    bump((v) => v + 1);
+  }, [path]);
   return {
-    ...state,
-    reload: () => {
-      contentCache.delete(path);
-      bump((v) => v + 1);
-    },
+    ...(state.path === path ? state : { data: null, error: "", loading: true }),
+    reload,
   };
 }
 export function useAction() {

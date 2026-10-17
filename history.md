@@ -1,3 +1,36 @@
+## 2026-10-13 — Feature cleanup and backup compatibility
+
+- Removed Watch & Learn, its APIs, video lessons and directly linked decks.
+- Removed Word Rescue; Sentence Quest and Phrase pairs remain.
+- Quizlet two-column Tab imports are recognized automatically; examples remain optional.
+- Legacy ZIP imports skip retired video data; user and admin backups tested.
+
+## Reading — independent learning workspace
+
+- Reading is a top-level app beside Practice Hub, with its own private library, authoring, editing and deletion.
+- Import/paste reading lessons and mixed single/multiple-answer questions from UTF-8 text; copy AI instructions, preview and upload images within Reading.
+- Two-pane passage/question view on desktop; Passage/Questions tabs on small screens.
+- Safe HTML or lesson markup supports image sizing/alignment, captions and tables. Manual checking, explanations, revision-aware progress and backups are supported.
+
+## Games — Word Rescue & Sentence Quest
+
+- Replaced the two exercise-style games with staged treasure expeditions: letter rescue and word-island bridge building.
+- Energy, optional challenge clocks, combo rewards, hints, pause/resume and missed-stage replay. Timers stop in hidden tabs and inactive Windows app windows.
+- Phrase pairs remains available. All games use the selected deck and do not alter spaced repetition.
+
+## v3 — Watch & Learn
+
+- Grouped video navigation: library, lesson vocabulary, subtitles and playback controls. Add/import forms open in dialogs; transcript follows playback without scrolling the entire page.
+
+- Vietnamese meaning suggestions via free MyMemory lookup, editable before saving; graceful fallback for provider limits.
+
+- In-app dictionary modal with selectable Wiktionary definitions, editable meanings and additional context notes.
+- Clear paste-subtitles and file-import workflow.
+
+- Personal YouTube video lessons with free best-effort transcript retrieval and SRT/WebVTT import.
+- Synchronized subtitles, sentence replay/loop, dictionary links and per-video vocabulary decks.
+- Original sentences and video timestamps saved with words. Video lessons included in backups.
+
 # Change Log
 
 > **Initial Note:** 

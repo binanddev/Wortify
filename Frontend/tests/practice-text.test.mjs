@@ -51,7 +51,7 @@ test("batch imports accept BOM, CRLF, comments and duplicate sentence words keep
     "\uFEFF# comment\r\n" +
       EXERCISE_TYPES.map(([m]) => textTemplate(m)).join("\r\n"),
   );
-  assert.equal(result.nodes.length, 9);
+  assert.equal(result.nodes.length, EXERCISE_TYPES.length);
   const e = parsePracticeText(
     textTemplate("sentence_building").replace(
       "She | is | reading | a book.",

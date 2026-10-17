@@ -56,3 +56,13 @@ class PracticeProgress(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['user', 'node'], name='unique_practice_progress')]
+
+
+class ReadingLesson(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    language = models.CharField(max_length=2, choices=[('en','English'),('de','German')])
+    title = models.CharField(max_length=200)
+    payload = models.JSONField(default=dict)
+    completed = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

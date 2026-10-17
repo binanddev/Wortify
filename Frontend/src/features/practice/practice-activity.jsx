@@ -1,3 +1,4 @@
+import { ReadingLayout } from "./reading-layout.jsx";
 import {visibleExerciseComments} from "./exercise-comments.js";
 import { sharedGapQuestions } from "./gap-bank.js";
 import { PracticeRichText } from "./practice-rich-text.jsx";
@@ -20,7 +21,10 @@ import {
   isWholeExercise,
 } from "./practice-session.js";
 
-export function PracticeActivity({
+export function PracticeActivity(props) {
+  return modeOf(props.data.exercise) === "reading" ? <ReadingLayout exercise={props.data.exercise} onProgress={props.onProgress} progress={props.data.progress} preview={props.preview}><PracticeActivityBody {...props}/></ReadingLayout> : <PracticeActivityBody {...props}/>;
+}
+function PracticeActivityBody({
   data,
   id,
   userId,
@@ -208,7 +212,7 @@ export function PracticeActivity({
       data-ui-style={style}
     >
       <ExerciseMedia
-        items={(e.attachments || []).filter((item) => !item.question)}
+        items={mode === "reading" ? [] : (e.attachments || []).filter((item) => !item.question)}
       />
       {question && (
         <ExerciseMedia
@@ -291,7 +295,7 @@ export function PracticeActivity({
                 <PracticeRichText>{e.instruction}</PracticeRichText>
               </p>
             )}
-          {e.context && (
+          {e.context && mode !== "reading" && (
             <aside className="reading-document">
               <PracticeRichText>{e.context}</PracticeRichText>
             </aside>
@@ -312,6 +316,7 @@ export function PracticeActivity({
                   <PracticeRichText>{question.prompt}</PracticeRichText>
                 </p>
               )}
+            {mode === "reading" && <p className="reading-answer-hint">{question.kind === "multi" ? "Select all correct answers." : "Select one answer."}</p>}
             {mode === "matching" ? (
               <MatchPairs {...props} />
             ) : mode === "categorization" ? (

@@ -9,6 +9,7 @@ from types import SimpleNamespace
 from practice.schema import MODES, validate_presentation, validate_question
 from .common import endpoint, body
 from copy import deepcopy
+import re
 
 def visible(request):
     access=Q(owner=request.user)|Q(visibility='public')
@@ -34,6 +35,12 @@ def validate_payload(kind,payload):
             raise ValueError('This exercise style supports one correct answer. Choose Single answer.')
         if payload.get('presentation', {}).get('bank_scope', 'exercise') not in ('question', 'exercise'):
             raise ValueError('Word bank scope must be question or exercise.')
+        if mode == 'reading':
+            passage = payload.get('context', '')
+            if not isinstance(passage, str) or not passage.strip() or len(passage) > 100000:
+                raise ValueError('Reading requires a passage of up to 100,000 characters.')
+            if payload['presentation'].get('context_format', 'markdown') not in ('html', 'markdown'):
+                raise ValueError('Reading format must be html or markdown.')
         question_kind=MODES[mode]
         if mode=='multiple_choice' and payload.get('kind')=='multi':question_kind='multi'
         payload['kind']=question_kind
@@ -49,8 +56,17 @@ def validate_payload(kind,payload):
             if not isinstance(q.prompt,str) or not q.prompt.strip():raise ValueError('Questions require content.')
             if not isinstance(q.blanks,list):raise ValueError('blanks must be an array.')
             if isinstance(q.presentation,dict):q.presentation.pop('manual',None)
+            if mode == 'reading':
+                if not isinstance(q.options, list) or not all(isinstance(o, str) and o.strip() for o in q.options) or not 2 <= len(q.options) <= 12 or len(set(q.options)) != len(q.options):
+                    raise ValueError('Reading questions require 2–12 distinct options.')
+                if not isinstance(q.accepted_answers, list) or not all(isinstance(a, str) for a in q.accepted_answers) or not q.accepted_answers or len(set(q.accepted_answers)) != len(q.accepted_answers) or any(a not in q.options for a in q.accepted_answers):
+                    raise ValueError('Choose one or more distinct answers from the options.')
+                fields = [q.prompt, *q.options, *q.accepted_answers, str(q.presentation.get('explanation', '')) if isinstance(q.presentation, dict) else '']
+                if any(re.search(r'</?[a-z][^>]*>', value, re.I) for value in fields):
+                    raise ValueError('HTML belongs only in the reading passage. Use text for questions, options, answers and explanations.')
+                q.kind = 'multi' if len(q.accepted_answers) > 1 else 'choice'
             validate_question(q);validate_presentation(q,mode)
-            cleaned.append({'id':str(i),'position':i,'kind':question_kind,'prompt':q.prompt,'accepted_answers':q.accepted_answers,'options':q.options,'blanks':q.blanks,'presentation':q.presentation,'example':q.example,'blank_count':len(q.blanks),'blank_options':[b.get('options',[]) for b in q.blanks]})
+            cleaned.append({'id':str(i),'position':i,'kind':q.kind,'prompt':q.prompt,'accepted_answers':q.accepted_answers,'options':q.options,'blanks':q.blanks,'presentation':q.presentation,'example':q.example,'blank_count':len(q.blanks),'blank_options':[b.get('options',[]) for b in q.blanks]})
         payload['questions']=cleaned
     return payload
 
@@ -74,6 +90,8 @@ def save_node(request,data,node=None):
     if depth+height>10:raise ValueError('Up to 10 folder levels, including moved descendants.')
     previous_payload=deepcopy(node.payload) if node else None
     payload=validate_payload(kind,data.get('payload',node.payload if node else {}))
+    if kind == 'exercise' and payload.get('presentation', {}).get('interaction') == 'reading':
+        raise ValueError('Create reading lessons in the Reading workspace.')
     tags=data.get('tags',payload.get('tags',[]))
     if not isinstance(tags,list) or len(tags)>12 or any(not isinstance(t,str) or not 1<=len(t.strip())<=40 for t in tags):raise ValueError('Up to 12 tags, each 1–40 characters.')
     if kind=='folder' and parent is None:

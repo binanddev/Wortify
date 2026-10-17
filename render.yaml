@@ -1,0 +1,37 @@
+# Render: New > Blueprint > select this repository. No local data is uploaded.
+services:
+  - type: web
+    name: wortify-api
+    runtime: python
+    plan: free
+    region: singapore
+    rootDir: Backend
+    buildCommand: pip install -r requirements-production.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate --noinput && gunicorn --config gunicorn.conf.py config.wsgi:application
+    healthCheckPath: /api/health/
+    autoDeployTrigger: commit
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DJANGO_ENV
+        value: production
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: MEDIA_STORAGE
+        value: s3
+      - key: AWS_STORAGE_BUCKET_NAME
+        value: wortify-media
+      - key: AWS_REGION
+        value: ap-southeast-1
+      - key: AWS_ENDPOINT_URL_S3
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false

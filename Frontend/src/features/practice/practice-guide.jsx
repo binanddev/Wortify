@@ -52,11 +52,11 @@ export function PracticeGuide({ lang }) {
     </pre>
   );
   return (
-    <Page>
+    <Page className="lesson-guide-page">
       <SidebarTools navOnly>
-        <div className="flex flex-wrap gap-2">
+        <div className="guide-actions">
           <Link
-            className="btn"
+            className="btn guide-icon-link"
             to={`/${lang}/create`}
             title="My Exercise Library"
             aria-label="My Exercise Library"
@@ -64,7 +64,7 @@ export function PracticeGuide({ lang }) {
             <Icon name="home" />
           </Link>
           <Link
-            className="btn"
+            className="btn guide-icon-link"
             to={`/${lang}/create/new`}
             title="Create exercise"
             aria-label="Create exercise"
@@ -77,13 +77,13 @@ export function PracticeGuide({ lang }) {
         </div>
       </SidebarTools>
       <div className="mx-auto grid w-full max-w-5xl gap-6 text-(--ink)">
-        <Heading title="Create a lesson · v1.2.4" />
+        <Heading title="Create a lesson" />
         <AiAuthoringHelp lang={lang} guide />
         <div className="flex flex-wrap gap-3">
-          <Link className="btn" to={"/" + lang + "/create/new"}>Paste AI output and preview</Link>
+          <Link className="btn guide-draft-link" to={"/" + lang + "/create/new"}><Icon name="plus" />New draft</Link>
         </div>
         <details className="grid gap-4">
-          <summary className="cursor-pointer text-xl font-semibold">Detailed guide · templates, formatting and publishing</summary>
+          <summary className="cursor-pointer text-xl font-semibold">Reference</summary>
           <div className="mt-4 grid gap-6">
         <FormattingHelp/>
         <section className={panel}>

@@ -49,7 +49,7 @@ Mẫu `Frontend/public/templates/practice-hub.json`: gốc `{ "nodes": [...] }`,
 
 ## Database và kiểm thử
 
-Bốn baseline0001 cho cards/content/practice/users; users0002 thêm preferences. Database cũ đã backup tại `.development-backups/`. Không yêu cầu tương thích dữ liệu thử cũ. Chỉ thay schema mới tạo migration.
+Bốn baseline0001 cho cards/content/practice/users; users0002 thêm preferences. Các file database thử cũ đã được dọn; giữ `Backend/db.sqlite3` làm dữ liệu local. Không yêu cầu tương thích dữ liệu thử cũ. Chỉ thay schema mới tạo migration.
 
 `seed_development_demo` DEBUG-only: demo(superuser), learner(user), staff(staff), mật khẩu ban đầu WortifyDemo2026!; demo sở hữu hai bộ12thẻ EN/DE và hai cây đủ mười dạng. Seed chạy lại không nhân bản.
 
@@ -58,7 +58,7 @@ Kiểm tra: npm test, npm run build, manage.py test, manage.py makemigrations --
 
 ## Deployment và appearance (2026-09-29)
 
-- README là hướng dẫn triển khai hiện hành: development, staging và production; Compose riêng trong Backend/deploy và Frontend/deploy, nối qua private network/VPN. Django API/admin chạy Gunicorn, PostgreSQL; React chạy Nginx, proxy cùng origin. Private media có volume riêng, không public static.
+- DEPLOY.md là hướng dẫn triển khai hiện hành: Render chạy Django/Gunicorn, Neon PostgreSQL và S3 media; Netlify chạy React, proxy cùng origin. render.yaml và netlify.toml ở gốc là cấu hình chính. start.ps1 là launcher local duy nhất, luôn dùng SQLite và media local.
 - Backend tự nạp `.env` tại gốc repo; `WORTIFY_ENV_FILE` chọn file khác (path tương đối từ Backend); môi trường tiến trình luôn ưu tiên. Production dependencies nằm trong Backend/requirements-production.txt và constraints tương ứng. Không đưa secret/database/backup vào image hoặc Git.
 - Ảnh nền cá nhân được áp dụng qua shorthand `background` ở surfaces.css: `--page-bg` chứa cả màu cuối nên không được ghép vào thuộc tính background-image. App lấy snapshot theo phiên đăng nhập, lưu Blob vào IndexedDB và thu hồi object URL khi đổi tài khoản; upload không tải lại nền.
 - Soundscape dùng nốt hữu hạn, envelope về 0 và stop/disconnect; không dùng oscillator trầm chạy liên tục. Âm nền tạm im khi media/TTS phát hoặc tab ẩn. Thay volume không tạo lại AudioContext.

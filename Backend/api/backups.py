@@ -24,7 +24,7 @@ TABLES = [u.Theme, u.Profile, c.StudySettings, c.Folder, c.Deck, c.Card,
           p.PracticeMedia, p.PracticeNode, u.Classroom, u.ClassroomAssignment,
           c.StudyProgress, c.DeckLearningState, p.PracticeProgress,
           c.StudyAttempt, p.PracticeAttempt, c.StudySession, c.LearningEvent,
-          c.ImportBatch, c.MatchRound]
+          c.ImportBatch, c.MatchRound, p.ReadingLesson]
 REGISTRY = {m._meta.label_lower: m for m in TABLES}
 
 
@@ -38,7 +38,7 @@ def owned_rows(user):
         p.PracticeProgress.objects.filter(user=user), c.StudyAttempt.objects.filter(user=user),
         p.PracticeAttempt.objects.filter(user=user), c.StudySession.objects.filter(user=user),
         c.LearningEvent.objects.filter(user=user), c.ImportBatch.objects.filter(deck__owner=user),
-        c.MatchRound.objects.filter(deck__owner=user)]
+        c.MatchRound.objects.filter(deck__owner=user), p.ReadingLesson.objects.filter(owner=user)]
 
 
 def export_archive(user, workspace=None):
@@ -115,6 +115,11 @@ def read_archive(upload):
             if hashlib.sha256(raw).hexdigest() != digest: raise ValueError('Backup checksum does not match.')
             if name.startswith('data/'):
                 label = name[5:-5]
+                if label == 'cards.videolesson':
+                    legacy = json.loads(raw)
+                    if not isinstance(legacy, list) or any(not isinstance(r, dict) or r.get('model') != 'cards.videolesson' or not isinstance(r.get('fields'), dict) for r in legacy): raise ValueError('Invalid retired data section.')
+                    records.extend(legacy)
+                    continue
                 if label not in REGISTRY or not name.endswith('.json'): raise ValueError('Unsupported data section.')
                 rows = json.loads(raw)
                 if not isinstance(rows,list): raise ValueError('Invalid data section.')
@@ -124,6 +129,8 @@ def read_archive(upload):
                     allowed = {f.name for f in REGISTRY[label]._meta.get_fields() if not f.auto_created}
                     if set(row['fields']) - allowed: raise ValueError('Unknown backup fields.')
                 records.extend(rows)
+        retired_decks = {str(r.get('fields', {}).get('deck')) for r in records if r.get('model') == 'cards.videolesson'}
+        records = [r for r in records if r.get('model') != 'cards.videolesson' and not (r.get('model') == 'cards.deck' and str(r.get('pk')) in retired_decks) and str(r.get('fields', {}).get('deck', '')) not in retired_decks]
         identities = [(r['model'], str(r['pk'])) for r in records]
         if len(records) > 100000 or len(set(identities)) != len(identities): raise ValueError('Too many or duplicate records.')
         return archive, records

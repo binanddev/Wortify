@@ -1,7 +1,7 @@
+import ArcadeGames from "./arcade-games.jsx";
 import { useEffect, useState } from "react";
 import {
   Btn,
-  Field,
   Heading,
   Link,
   Page,
@@ -11,7 +11,6 @@ import { useWindowActive } from "../../lib/core.js";
 import { mix } from "./flashcard-engine.js";
 import {
   WORD_GAMES,
-  contextGap,
   eligibleCards,
   sentenceTiles,
   checkGameAnswer,
@@ -44,7 +43,7 @@ export function WordGames({
     [run, setRun] = useState(0);
   const cards = !deck && demo ? demoGameCards(lang) : pack.cards;
   return (
-    <Container>
+    <Container className="flashcard-workspace">
       {!embedded && (
         <Link
           to={
@@ -92,7 +91,7 @@ export function WordGames({
               lang={lang}
             />
           ) : (
-            <SentenceRound
+            <ArcadeGames
               key={run}
               cards={round.cards}
               mode={round.mode}
@@ -148,9 +147,7 @@ export function WordGames({
                     {mode === "memory" ? "6 or 10 pairs" : "10 cards"} per round
                   </p>
                   <p className="text-sm">
-                    {mode === "context"
-                      ? "Needs an example containing the saved term or an accepted form."
-                      : mode === "sentence"
+                    {mode === "sentence"
                         ? "Needs an example sentence of 3–40 words."
                         : "Needs at least two distinct phrases and meanings. Use terms with two or more words."}
                   </p>
@@ -181,214 +178,6 @@ export function WordGames({
         </>
       )}
     </Container>
-  );
-}
-function SentenceRound({ cards, mode, grading, onDone, sound, lang }) {
-  const [queue, setQueue] = useState(cards),
-    [index, setIndex] = useState(0),
-    [done, setDone] = useState(0),
-    [score, setScore] = useState(0),
-    [streak, setStreak] = useState(0);
-  const next = (revealed, assisted) => {
-    setStreak((n) => (revealed || assisted ? 0 : n + 1));
-    if (!revealed) setScore((n) => n + (assisted ? 5 : 10));
-    if (revealed) setQueue((q) => [...q, q[index]]);
-    else setDone((n) => n + 1);
-    setIndex((n) => n + 1);
-  };
-  return index >= queue.length ? (
-    <section className="rounded-2xl border border-(--line) bg-(--surface) p-6">
-      <h2 className="text-2xl font-semibold">Round complete</h2>
-      <p>
-        {done} sentences completed · {score} points
-      </p>
-      <Btn primary onClick={onDone}>
-        Choose another game
-      </Btn>
-    </section>
-  ) : (
-    <div>
-      <p className="my-3" role="status">
-        {done} / {cards.length} completed · {score} points · Streak {streak}
-        {queue.length > cards.length ? " · Review turns included" : ""}
-      </p>
-      <SentenceTurn
-        key={index}
-        card={queue[index]}
-        {...{ mode, grading, sound, lang }}
-        onNext={next}
-      />
-    </div>
-  );
-}
-function SentenceTurn({ card, mode, grading, onNext, sound, lang }) {
-  const [answer, setAnswer] = useState(""),
-    [chosen, setChosen] = useState([]),
-    [feedback, setFeedback] = useState(""),
-    [hint, setHint] = useState(false),
-    [missed, setMissed] = useState(false);
-  const [tiles] = useState(() => sentenceTiles(card)),
-    audio = useSound(sound, lang);
-  const gap = mode === "context" ? contextGap(card) : null;
-  const complete = feedback === "correct" || feedback === "revealed";
-  const check = () => {
-    const value =
-      mode === "context"
-        ? answer
-        : chosen.map((id) => tiles.find((t) => t.id === id).text).join(" ");
-    const correct = checkGameAnswer(card, mode, value, grading);
-    if (!correct) setMissed(true);
-    setFeedback(correct ? "correct" : "incorrect");
-    audio.feedback(correct);
-  };
-  useEffect(() => {
-    if (mode === "sentence" && chosen.length === tiles.length && !complete)
-      check();
-  }, [chosen]);
-  return (
-    <section className="grid gap-5 rounded-2xl border border-(--line) bg-(--surface) p-5 sm:p-7">
-      <div>
-        <p className="text-sm">
-          {mode === "context"
-            ? "Use the saved word or phrase for this meaning:"
-            : "Rebuild the saved example sentence:"}
-        </p>
-        <h2 className="text-xl font-semibold">
-          {mode === "context"
-            ? card.vietnamese_meaning
-            : card.example_vietnamese || card.vietnamese_meaning}
-        </h2>
-      </div>
-      {mode === "context" ? (
-        <>
-          <p className="text-2xl leading-relaxed">
-            {gap.before}
-            <span className="border-b-2 border-(--accent) px-2">
-              {complete ? gap.answer : "____"}
-            </span>
-            {gap.after}
-          </p>
-          {!complete && (
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (answer.trim()) check();
-              }}
-            >
-              <Field
-                label="Missing word or phrase"
-                value={answer}
-                onChange={(v) => {
-                  setAnswer(v);
-                  setFeedback("");
-                }}
-                autoComplete="off"
-              />
-              <div className="mt-3 flex justify-end">
-                <Btn type="submit" primary isDisabled={!answer.trim()}>
-                  Check
-                </Btn>
-              </div>
-            </form>
-          )}
-        </>
-      ) : (
-        <>
-          <div
-            className="flex min-h-20 flex-wrap items-center gap-2"
-            aria-label="Your sentence"
-          >
-            {chosen.length ? (
-              chosen.map((id) => (
-                <Btn
-                  key={id}
-                  isDisabled={complete}
-                  title="Return word to bank"
-                  onClick={() => {
-                    setChosen((c) => c.filter((x) => x !== id));
-                    setFeedback("");
-                  }}
-                >
-                  {tiles.find((t) => t.id === id).text}
-                </Btn>
-              ))
-            ) : (
-              <p>
-                Tap words to build the sentence; the last word checks it. Tap a
-                placed word to return it.
-              </p>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2" aria-label="Word bank">
-            {tiles
-              .filter((t) => !chosen.includes(t.id))
-              .map((t) => (
-                <Btn
-                  key={t.id}
-                  isDisabled={complete}
-                  onClick={() => {
-                    setChosen((c) => [...c, t.id]);
-                    setFeedback("");
-                  }}
-                >
-                  {t.text}
-                </Btn>
-              ))}
-          </div>
-        </>
-      )}
-      {!complete && (
-        <div className="flex flex-wrap gap-3">
-          <Btn onClick={() => setHint(true)}>Hint</Btn>
-          <Btn onClick={() => setFeedback("revealed")}>
-            Show answer &amp; revisit
-          </Btn>
-        </div>
-      )}
-      {hint && !complete && (
-        <p role="status">
-          {mode === "context"
-            ? "Starts with: " +
-              Array.from(gap.answer)[0] +
-              " · " +
-              gap.answer.split(/\s+/).length +
-              " word(s)"
-            : "Starts with: " +
-              card.example_german.split(/\s+/).slice(0, 2).join(" ")}
-        </p>
-      )}
-      {feedback === "incorrect" && (
-        <p className="feedback feedback-incorrect" role="alert">
-          Not quite. Try again
-          {mode === "sentence" ? " — rebuild the saved example sentence" : ""}.
-        </p>
-      )}
-      {complete && (
-        <>
-          <div className="feedback feedback-correct" role="status">
-            <strong>
-              {feedback === "correct"
-                ? "Correct!"
-                : "Saved example · You will try this again"}
-            </strong>
-            <p>{card.example_german}</p>
-            <p>{card.example_vietnamese}</p>
-            <p>
-              {card.german_text} — {card.vietnamese_meaning}
-            </p>
-            {card.usage && <p>{card.usage}</p>}
-          </div>
-          <div className="flex justify-end">
-            <Btn
-              primary
-              onClick={() => onNext(feedback === "revealed", hint || missed)}
-            >
-              Next →
-            </Btn>
-          </div>
-        </>
-      )}
-    </section>
   );
 }
 function MemoryRound({ cards, onDone, sound, lang }) {

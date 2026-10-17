@@ -33,6 +33,11 @@ def main():
     sys.path.insert(0, str(ROOT/'Backend'))
     from config.environment import load_environment
     load_environment()
+    # Direct invocation is also a local-only entry point.
+    os.environ.update(DJANGO_ENV='development', DJANGO_DEBUG='1', DATABASE_URL='',
+                      DJANGO_DATABASE_ENGINE='sqlite', DJANGO_DB_PATH=str(ROOT/'Backend/db.sqlite3'),
+                      MEDIA_STORAGE='local', DJANGO_MEDIA_ROOT=str(ROOT/'Backend/private_media'))
+    os.environ.pop('RENDER', None)
     state=check()
     if '--check' in sys.argv:return state
     if state==1:return 1

@@ -90,13 +90,13 @@ export function Glass({ children, className = "", ...props }) {
     </Card>
   );
 }
-export function Page({ children }) {
+export function Page({ children, className = "" }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.28 }}
-      className="page"
+      className={`page ${className}`}
     >
       {children}
     </motion.div>
@@ -352,10 +352,11 @@ export function Confirm({
 }
 export function useSound(enabled, language) {
   const audio = useRef(null);
+  const speech = useRef(null);
   useEffect(
     () => () => {
       audio.current?.close();
-      window.speechSynthesis?.cancel();
+      if (speech.current && window.speechSynthesis?.speaking) window.speechSynthesis.cancel();
     },
     [],
   );
@@ -437,6 +438,9 @@ export function useSound(enabled, language) {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = language === "de" ? "de-DE" : "en-US";
       u.rate = 0.85;
+      speech.current = u;
+      u.onend = u.onerror = () => { if (speech.current === u) speech.current = null; };
+      window.speechSynthesis.resume();
       window.speechSynthesis.speak(u);
     },
   };

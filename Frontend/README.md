@@ -64,13 +64,13 @@ npm ci
 npm run dev
 ```
 
-Mở http://127.0.0.1:5173. Backend mặc định http://127.0.0.1:8000; đổi `DJANGO_DEV_ORIGIN` trong `.env` nếu backend chạy ở địa chỉ khác rồi khởi động lại Vite. `.\start.ps1` hoặc `bash start.sh` cũng cài dependency còn thiếu và chạy frontend. `npm test`, `npm run build`, `npm run preview` đều chạy ngay trong repo này. Preview dùng cổng 4173 và cùng cấu hình proxy.
+Mở http://127.0.0.1:5173. Backend mặc định http://127.0.0.1:8000; đổi `DJANGO_DEV_ORIGIN` trong `.env` nếu backend chạy ở địa chỉ khác rồi khởi động lại Vite. `start.ps1` ở gốc workspace chạy cả backend/frontend. `npm test`, `npm run build`, `npm run preview` đều chạy ngay trong repo này. Preview dùng cổng 4173 và cùng cấu hình proxy.
 
-Trình duyệt luôn gọi `/api/` trên origin của frontend. Vite khi local và Nginx/Netlify khi triển khai chuyển tiếp request tới backend; session cookie, CSRF và các URL media tiếp tục cùng origin. Không cần chia sẻ filesystem, database hay secret Django với frontend. Nếu backend từ xa kiểm tra Host/CSRF, cấu hình backend cho origin frontend tương ứng.
+Trình duyệt luôn gọi `/api/` trên origin của frontend. Vite khi local và Netlify khi triển khai chuyển tiếp request tới backend; session cookie, CSRF và các URL media tiếp tục cùng origin. Không cần chia sẻ filesystem, database hay secret Django với frontend. Nếu backend từ xa kiểm tra Host/CSRF, cấu hình backend cho origin frontend tương ứng.
 
-## Triển khai không Docker
+## Triển khai Netlify
 
-Xem [deploy/README.md](deploy/README.md) cho quy trình triển khai trực tiếp, cấu hình mẫu và cập nhật release.
+Xem [DEPLOY.md](../DEPLOY.md). `netlify.toml` ở gốc workspace đặt thư mục build; chỉ cần cấu hình `BACKEND_ORIGIN` trên Netlify.
 
 ## Tách repo
 
@@ -199,3 +199,58 @@ Authors may set COMMENT before the first QUESTION for a shared exercise note,
 and EXPLANATION after any QUESTION, including each matching pair. Both round-trip
 through text import/export and support lesson markup. Explanations stay hidden
 until a correct answer or reveal; matching reveals each solved pair separately.
+
+
+### Flashcard arcade games
+
+Games include Sentence Quest and Phrase pairs. Sentence Quest uses saved examples of 3–40 words and has optional clocks, hints and energy. Phrase pairs matches phrases and meanings. Neither game modifies SRS progress. Watch & Learn and Word Rescue have been removed. Migration cards.0006 deletes video lessons and their directly linked decks; unrelated decks remain. Legacy backups skip retired video data.
+
+Game components: `features/flashcards/arcade-games.jsx`; pure rules: `arcade-engine.js`; scoped visuals: `design-system/word-arcade.css`. Inspired by word-tile games such as https://wordwall.net/about/template/anagram; implementation and content use Wortify's own deck data.
+
+
+### Reading workspace
+
+Reading is independent of Practice Hub: `/en/reading` and `/de/reading`, with `/create`, `/:id` and `/:id/edit` routes. Navigation and the Windows desktop include Reading. Storage uses `practice.ReadingLesson`, never Practice Hub folders/nodes. Private ownership and language checks apply to every endpoint. New backend migration is required.
+
+Create accepts pasted/imported UTF-8 `.txt`; use Copy AI instructions or Insert sample. The shared parser recognizes TYPE: reading but it is not listed in Practice Hub's exercise selector. Fields: CONTEXT_FORMAT: html/markdown, CONTEXT: passage, QUESTION, OPTIONS separated by |, ANSWER as one or multiple exact option texts, EXPLANATION. Multiline continuation starts with >. Mixed choice types are inferred per question. Save validates the entire batch before creating anything. Existing media upload/ownership checks are reused; image URLs are inserted into the passage and attachments are retained in the payload.
+
+`features/reading/ReadingWorkspace.jsx` owns library/authoring; `practice/reading-layout.jsx` owns the two-pane view and safe HTML allowlist. HTML is converted into React elements, never injected directly. Scripts/forms/frames, event attributes and arbitrary CSS are dropped. Image dimensions/float/alignment are bounded and scoped to the passage. Backend endpoints: `/api/{lang}/reading/` and `/api/{lang}/reading/{id}/`. Progress requires the current revision; editing resets completion. Reading lessons, progress and media are included in user backup archives.
+
+
+### Data loading and workspace boundaries
+
+`src/lib/request.js` owns HTTP, CSRF, the bounded content cache and shared in-flight GETs. Each caller can cancel independently. Cache invalidation increments a generation so earlier responses cannot repopulate stale data. Mutations invalidate before and after completion; learning sync invalidates deck lists, details, study packs, sessions and practice data. Keep user-specific data out of module-level caches outside this boundary.
+
+`src/lib/core.js` owns React resource/action hooks and keeps the existing transport exports for compatibility. `useResource` hides data from the previous path during navigation and exposes a stable reload callback. `src/app/workspace-pages.js` declares lazy workspace entry points; `WorkspaceContent` provides their loading boundary. Avoid statically importing these pages into the application shell.
+
+Run `npm test` and `npm run build` after changing data loading. The request-cache tests cover concurrent readers, independent cancellation, mutation races, account-cache resets and session reuse. Backend `cards.test_queue_performance` asserts query counts and preserves queue filtering and daily learning limits. Do not update style baselines for unrelated logic changes.
+
+## Deploy frontend trên Netlify — từng bước
+
+1. Push repo lên Git và triển khai backend Render theo [README backend](../Backend/README.md).
+2. Netlify → Add new project → Import an existing project → chọn nhà cung cấp Git và repo.
+3. Chọn nhánh production giống nhánh Render. Dùng cấu hình `netlify.toml` ở **gốc repo**.
+4. Base directory: `Frontend`; build command: `npm run build:netlify`; publish directory: `dist` (tính từ base). Node version: `22`, đã khai báo trong cấu hình.
+5. Trước khi deploy, thêm biến môi trường có phạm vi Builds, áp dụng cho Production:
+
+```dotenv
+BACKEND_ORIGIN=https://<tên-service-render-thật>.onrender.com
+```
+
+Ví dụ định dạng: `https://wortify-api.onrender.com`; chỉ dùng nếu đó đúng là URL service của bạn. Không thêm `/api`, query hoặc thông tin đăng nhập. Không thêm `VITE_` trước tên biến. Không đưa `DATABASE_URL`, `DJANGO_SECRET_KEY` hay AWS keys lên frontend.
+
+6. Deploy site. Nếu build báo thiếu `BACKEND_ORIGIN`, thêm biến và Retry deploy. Build tạo các rule proxy `/api/*` trước fallback React; giữ nguyên `netlify.toml` và script build trong repo.
+7. Lấy URL Netlify thực tế, ví dụ `https://<site>.netlify.app`; vào Render Environment đặt `FRONTEND_ORIGIN` bằng URL đó rồi redeploy Render.
+8. Mở trang Netlify, đăng nhập, tải lại URL sâu như `/de/flashcard` để kiểm tra SPA routing; kiểm tra tạo/lưu bài và upload/phát media.
+
+Sau lần thiết lập đầu, push vào nhánh đã liên kết sẽ tự deploy. Đổi `BACKEND_ORIGIN` cần build/deploy lại Netlify. Nếu đổi domain Netlify, cập nhật `FRONTEND_ORIGIN` trên Render. Deploy Preview không tự được tin cậy như production; hướng dẫn này dùng domain production ổn định.
+
+### Local vẫn dùng môi trường local
+
+Chạy `start.ps1` ở gốc repo. Vite proxy về `http://127.0.0.1:8000`; không cần `BACKEND_ORIGIN` để chạy local. Tài khoản Neon không tự tồn tại trong SQLite local.
+
+### Tài khoản
+
+Danh sách 5 superuser và 5 staff cùng mật khẩu nằm trong [README riêng trên máy](../README.private.local.md). File này cố ý không có trên Git/Netlify. Chỉ đăng nhập bằng các tài khoản đó khi frontend đang nối backend dùng Neon production.
+
+Nguồn: [Netlify monorepo](https://docs.netlify.com/build/configure-builds/monorepos/).

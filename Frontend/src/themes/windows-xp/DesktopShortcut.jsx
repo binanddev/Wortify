@@ -4,6 +4,7 @@ import { Icon } from "../../components/ui/ui.jsx";
 const icons = {
   flashcard: "cards",
   practice: "book",
+  reading: "book",
   explore: "search",
   create: "edit",
   profile: "user",

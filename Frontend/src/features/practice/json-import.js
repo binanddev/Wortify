@@ -11,10 +11,11 @@ export function jsonTemplate(scope, mode = "short_answer") {
     q.blanks = [{ answers: ["is"], options: ["is", "are"] }];
     q.presentation.word_bank = ["is", "are"];
   }
-  if (mode === "multiple_choice") {
+  if (["multiple_choice", "reading"].includes(mode)) {
     q.prompt = "Choose a greeting.";
     q.options = ["hello", "book", "red", "run"];
   }
+  if (mode === "reading") e.context = "Anna says hello to her friends every morning.";
   if (mode === "matching") {
     q.prompt = "xin chào";
     q.options = ["hello"];

@@ -37,7 +37,7 @@ export function activeQuestions(mode, questions, index) {
 
 export function needsManualCheck(mode, style) {
   return (
-    mode === "short_answer" &&
+    mode === "reading" || mode === "short_answer" &&
     ["sentence_rewrite", "partial_input"].includes(style)
   );
 }

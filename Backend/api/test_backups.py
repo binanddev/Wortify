@@ -140,3 +140,18 @@ class BackupTests(TestCase):
             archive.writestr('data/auth.user.json',content)
             archive.writestr('manifest.json',json.dumps({'format':'wortify-backup','version':1,'files':{'data/auth.user.json':hashlib.sha256(content).hexdigest()}}))
         with self.assertRaises(ValueError):read_archive(SimpleUploadedFile('x.zip',data.getvalue()))
+
+    def test_legacy_video_section_is_removed_without_blocking_other_data(self):
+        data = self.archive()
+        with zipfile.ZipFile(io.BytesIO(data)) as old:
+            files = {name:old.read(name) for name in old.namelist() if name != 'manifest.json'}
+            manifest = json.loads(old.read('manifest.json'))
+        files['data/cards.videolesson.json'] = json.dumps([{'model':'cards.videolesson','pk':1,'fields':{'deck':self.deck.pk}}]).encode()
+        manifest['files'] = {name:hashlib.sha256(raw).hexdigest() for name,raw in files.items()}
+        result = io.BytesIO()
+        with zipfile.ZipFile(result, 'w') as archive:
+            for name, raw in files.items(): archive.writestr(name,raw)
+            archive.writestr('manifest.json', json.dumps(manifest))
+        self.restore(result.getvalue())
+        self.assertFalse(Deck.objects.filter(owner=self.target).exists())
+        self.assertTrue(PracticeNode.objects.filter(owner=self.target).exists())

@@ -1,0 +1,13 @@
+/* Keep guide actions aligned both in the page and in sidebar portals. */
+.guide-actions { @apply flex flex-wrap items-center gap-2; }
+.guide-actions .btn, .context-panel .guide-actions .btn { @apply inline-flex items-center justify-center w-11 min-w-11 h-11 min-h-11 p-0 shrink-0; }
+.lesson-guide-page .heading { @apply mb-2; }
+.lesson-guide-page .heading h1 { @apply font-sans text-[clamp(24px,3vw,32px)] font-semibold leading-tight; }
+.authoring-guide-help { @apply gap-3; }
+.authoring-guide-help h2 { @apply font-sans text-lg font-semibold; }
+.authoring-guide-help p, .authoring-guide-help summary { @apply text-sm leading-relaxed; }
+.authoring-guide-help details { @apply my-0; }
+.lesson-guide-page .guide-draft-link { @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm; }
+/* Fixed icon column prevents theme padding and text wrapping from shifting icons. */
+:root body .sidebar .nav-link { @apply flex items-center justify-start gap-3 text-left; }
+:root body .sidebar .nav-link > svg.app-icon { @apply box-border block w-7 h-7 min-w-7 shrink-0 p-0 m-0 self-center; }

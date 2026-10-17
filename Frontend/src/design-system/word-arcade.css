@@ -1,0 +1,35 @@
+.word-arcade { @apply my-5 rounded-2xl border border-(--line) bg-(--surface) p-4 sm:p-6 space-y-5 overflow-hidden; }
+.arcade-lobby { @apply text-center py-10; }
+.arcade-lobby h2 { @apply text-2xl font-bold; }
+.arcade-lobby > p { @apply max-w-2xl mx-auto leading-relaxed; }
+.arcade-emblem { @apply flex justify-center text-5xl text-(--accent); }
+.arcade-hud { @apply flex flex-wrap justify-between items-center gap-3 text-sm font-semibold tabular-nums; }
+.arcade-lobby .arcade-hud { @apply justify-center gap-6; }
+.arcade-clock { @apply w-full h-2 accent-(--accent); }
+.arcade-landscape { @apply relative h-36 overflow-hidden rounded-xl bg-sky-100 text-slate-900 border border-sky-200; }
+.arcade-cloud { @apply absolute top-2 left-[15%] text-4xl text-white; }
+.arcade-cloud.second { @apply left-[65%] top-5 text-5xl; }
+.arcade-journey { @apply absolute inset-x-5 bottom-8 h-12; }
+.arcade-traveler { @apply absolute bottom-0 text-4xl font-bold text-indigo-800 transition-all duration-500 motion-reduce:transition-none; }
+.arcade-treasure { @apply absolute right-0 bottom-0 text-4xl text-amber-700; }
+.arcade-bridge { @apply absolute bottom-4 inset-x-5 grid grid-cols-12 gap-1 h-4; }
+.arcade-bridge i { @apply border-b-2 border-dashed border-sky-400; }
+.arcade-bridge i.built { @apply bg-amber-700 border-solid border-amber-950 rounded-sm; }
+.arcade-won .arcade-landscape { @apply bg-emerald-100 border-emerald-400; }
+.arcade-clue { @apply text-xl font-semibold text-center; }
+.arcade-sentence { @apply text-xl leading-loose text-center min-h-16; }
+.arcade-letter { @apply inline-block min-w-4 mx-0.5 font-mono; }
+.arcade-keyboard { @apply flex flex-wrap justify-center gap-2 max-w-2xl mx-auto; }
+.arcade-keyboard button { @apply min-w-11 min-h-11 rounded-xl border border-(--line) bg-(--surface) font-bold shadow-sm hover:-translate-y-0.5 focus-visible:outline-2; }
+.arcade-keyboard button.found { @apply bg-emerald-100 text-emerald-950 border-emerald-600; }
+.arcade-keyboard button.missed { @apply opacity-40 line-through; }
+.arcade-word-islands { @apply flex flex-wrap justify-center gap-3; }
+.arcade-word-islands button { @apply rounded-xl border-2 border-(--line) px-4 py-3 shadow-md bg-(--surface) hover:-translate-y-1 focus-visible:outline-2 transition-transform motion-reduce:transition-none; }
+.arcade-word-islands button.collected { @apply opacity-30 shadow-none; }
+.arcade-word-islands button.wrong { @apply bg-red-100 text-red-950 border-red-600; }
+.arcade-next { @apply inline-block px-4 border-b-2 border-dashed border-current; }
+.arcade-actions { @apply flex flex-wrap justify-end gap-3; }
+.arcade-notice { @apply text-center text-sm min-h-6; }
+.arcade-result { @apply border-t border-(--line) pt-4 space-y-3; }
+.arcade-result h2 { @apply text-xl font-bold; }
+.arcade-pause { @apply text-center py-10 space-y-4; }

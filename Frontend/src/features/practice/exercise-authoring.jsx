@@ -31,7 +31,7 @@ export function prepareExercise(exercise) {
   e.presentation = { ...e.presentation, interaction: mode, type: e.kind };
   e.questions = e.questions.map((q) => ({
     ...q,
-    kind: e.kind,
+    kind: mode === "reading" && q.accepted_answers.filter(v => v.trim()).length > 1 ? "multi" : e.kind,
     presentation: { ...q.presentation },
     accepted_answers: q.accepted_answers.filter((v) => v.trim()),
     options: q.options.map((v) => v.trim()),
@@ -161,13 +161,14 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
           </Btn>
         </div>
       )}
-      {mode === "true_false_not_given" && (
+      {["true_false_not_given", "reading"].includes(mode) && (
         <AutoTextarea
           label="Reading"
           value={e.context || ""}
           onChange={(context) => onChange({ context })}
         />
       )}
+      {mode === "reading" && <Select label="Passage format" value={e.presentation.context_format || "markdown"} onChange={context_format => onChange({presentation:{...e.presentation,context_format}})}><option value="markdown">Lesson markup</option><option value="html">Safe HTML</option></Select>}
       {["short_answer", "audio_dictation"].includes(mode) && (
         <label className="author-switch">
           <input
@@ -330,7 +331,7 @@ function QuestionForm({
           </div>
         </>
       )}
-      {mode === "multiple_choice" ? (
+      {["multiple_choice", "reading"].includes(mode) ? (
         <div className="options-editor">
           <h4>Answer choices</h4>
           <p>Select the letter beside the correct answer. Choices are shuffled during practice; correctness is saved by answer text.</p>
@@ -349,7 +350,7 @@ function QuestionForm({
                   if (option)
                     onChange({
                       accepted_answers:
-                        kind === "multi"
+                        (kind === "multi" || mode === "reading")
                           ? q.accepted_answers.includes(option)
                             ? q.accepted_answers.filter((a) => a !== option)
                             : [...q.accepted_answers, option]

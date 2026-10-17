@@ -67,13 +67,14 @@ def queue(user, settings, deck_id=None, filter_name='all', learn=False, language
         cards = cards.filter(deck__language=language)
     if deck_id:
         cards = cards.filter(deck_id=deck_id)
-    progress = {p.card_id: p for p in StudyProgress.objects.filter(user=user)}
+    # Unfiltered browsing does not need progress or the daily review budget.
+    if not learn and filter_name not in ('review', 'new', 'due', 'weak', 'wrong'):
+        return list(cards)
+    if not learn and filter_name == 'wrong':
+        ids = StudyAttempt.objects.filter(user=user, mode='quiz', is_correct=False).values_list('card_id', flat=True)
+        return list(cards.filter(pk__in=ids))
+    progress = {p.card_id: p for p in StudyProgress.objects.filter(user=user, card__in=cards).only('card_id', 'due_at', 'state')}
     now = timezone.now()
-    today = timezone.localdate()
-    # Count cards whose first valid review took place today, including subsequent reviews.
-    from django.db.models import Min
-    used = StudyAttempt.objects.filter(user=user, completed_at__isnull=False, **({'card__deck__language': language} if language else {})).values('card_id').annotate(first=Min('completed_at')).filter(first__date=today).count()
-    new_budget = max(0, settings.new_cards_per_day - used)
     due, old, new = [], [], []
     for card in cards:
         p = progress.get(card.pk)
@@ -85,6 +86,11 @@ def queue(user, settings, deck_id=None, filter_name='all', learn=False, language
             old.append(card)
     due.sort(key=lambda c: progress[c.pk].due_at)
     if learn:
+        today = timezone.localdate()
+        # Count cards whose first valid review took place today, including subsequent reviews.
+        from django.db.models import Min
+        used = StudyAttempt.objects.filter(user=user, completed_at__isnull=False, **({'card__deck__language': language} if language else {})).values('card_id').annotate(first=Min('completed_at')).filter(first__date=today).count()
+        new_budget = max(0, settings.new_cards_per_day - used)
         return due + new[:new_budget]
     if filter_name == 'review':
         return [c for c in cards if c.pk in progress and (progress[c.pk].state == 'weak' or progress[c.pk].due_at <= now)]
@@ -94,7 +100,4 @@ def queue(user, settings, deck_id=None, filter_name='all', learn=False, language
         return due
     if filter_name == 'weak':
         return [c for c in cards if c.pk in progress and progress[c.pk].state == 'weak']
-    if filter_name == 'wrong':
-        ids = StudyAttempt.objects.filter(user=user, mode='quiz', is_correct=False).values_list('card_id', flat=True)
-        return list(cards.filter(pk__in=ids))
     return list(cards)

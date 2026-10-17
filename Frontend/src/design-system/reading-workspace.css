@@ -1,0 +1,59 @@
+.reading-workspace { @apply grid grid-cols-1 gap-5 min-w-0; }
+.reading-pane, .reading-questions { @apply min-w-0; }
+.reading-pane > header, .reading-questions > header { @apply mb-4 border-b border-(--line) pb-2; }
+.reading-pane > header h2, .reading-questions > header h2 { @apply text-base font-semibold; }
+.reading-passage { @apply leading-relaxed text-lg break-words flow-root; }
+.reading-passage p, .reading-passage figure, .reading-passage blockquote { @apply my-4; }
+.reading-passage h1, .reading-passage h2 { @apply text-2xl font-semibold my-4; }
+.reading-passage h3, .reading-passage h4 { @apply text-xl font-semibold my-3; }
+.reading-passage img { @apply max-w-full h-auto inline-block; }
+.reading-passage table { @apply w-full border-collapse my-4; }
+.reading-passage td, .reading-passage th { @apply border border-(--line) p-2; }
+.reading-passage ul { @apply list-disc pl-6; }
+.reading-passage ol { @apply list-decimal pl-6; }
+.reading-passage figcaption { @apply text-sm mt-2; }
+.reading-answer-hint { @apply text-sm mb-3; }
+.reading-pane { @apply overflow-hidden [contain:inline-size]; }
+.reading-passage { @apply overflow-x-auto; }
+.reading-passage * { @apply max-w-full box-border; }
+.reading-passage img { @apply max-w-[calc(100%-96px)]; }
+.reading-passage table { @apply table-fixed [overflow-wrap:anywhere]; }
+.reading-questions { @apply border-t border-(--line) pt-6 mt-3; }
+.reading-workspace .work-paper { @apply px-3 sm:px-5; }
+.reading-workspace .work-prompt { @apply text-left text-xl; }
+
+.reading-author { @apply flex flex-col gap-5; }
+.reading-author label { @apply flex flex-col gap-2; }
+.reading-author textarea, .reading-author input { @apply w-full border border-(--line) rounded-lg p-3; }
+.reading-author textarea { @apply font-mono text-sm leading-relaxed; }
+
+.reading-navigation { @apply flex flex-col gap-5; }
+.reading-nav-links { @apply flex flex-col gap-2; }
+.reading-nav-links > a { @apply flex items-center gap-3 px-2 py-2 text-sm; }
+.reading-nav-links > a[aria-current="page"] { @apply font-bold underline underline-offset-4; }
+.reading-nav-tools { @apply flex flex-wrap items-center gap-2; }
+.reading-nav-tools .btn { @apply shrink-0; }
+.reading-nav-tools .btn[aria-pressed="true"] { @apply outline outline-1 outline-current outline-offset-2; }
+.reading-author .reading-source-editor { @apply min-h-[60vh] resize-y; }
+
+.reading-question-toolbar { @apply flex flex-wrap items-center justify-between gap-3; }
+.reading-question-list { @apply flex flex-col gap-6; }
+.reading-question-card { @apply min-w-0 border-0 border-b border-(--line) pb-6; }
+.reading-question-card legend { @apply text-lg font-semibold mb-3; }
+.reading-options { @apply grid grid-cols-1 sm:grid-cols-2 gap-3; }
+.reading-option { @apply flex items-center gap-3 border border-(--line) rounded-lg px-4 py-3 cursor-pointer; }
+.reading-option input { @apply accent-green-600 shrink-0; }
+.reading-option input:focus-visible { @apply outline outline-2 outline-green-600 outline-offset-2; }
+.reading-option-letter { @apply text-sm font-bold; }
+.reading-option[data-result="correct"] { @apply border-green-600 outline outline-2 outline-green-600; }
+.reading-option[data-result="incorrect"] { @apply border-red-600 outline outline-2 outline-red-600; }
+.reading-question-feedback { @apply mt-4 text-sm leading-relaxed; }
+.reading-check-all { @apply flex justify-end items-center gap-4; }
+
+:root[data-interface="notebook"] .reading-option { @apply rounded-none border-0 bg-transparent; }
+:root[data-interface="retro"] .reading-option { @apply rounded-none border-2 shadow-[3px_3px_0_currentColor]; }
+:root[data-interface="rpg"] .reading-option { @apply rounded-none border-dashed font-mono; }
+:root[data-interface="glass"] .reading-option { @apply bg-black/30 text-white border-white/20; }
+:root[data-interface="studio"] .reading-option { @apply rounded-xl bg-(--surface); }
+
+.reading-library { @apply grid gap-4 md:grid-cols-2; }
