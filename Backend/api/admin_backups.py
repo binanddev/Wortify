@@ -1,10 +1,10 @@
-"""Superuser-only emergency exports. No restore endpoint or credential changes."""
+"""Superuser-only exports and portable content imports. Credentials are never restored."""
 import json
 import hashlib
 import tempfile
 import zipfile
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.contrib.admin.models import LogEntry
 from django.core import serializers
 from django.db.models import Q
@@ -65,6 +65,7 @@ def emergency(request):
                 for row in identities:row['fields']['password']='!backup-password-reset-required'
             write('accounts.json',json.dumps(identities,ensure_ascii=False).encode())
             write('groups.json',serializers.serialize('json',Group.objects.all()).encode())
+            write('permissions.json',json.dumps(list(Permission.objects.values('id','codename','content_type__app_label','content_type__model'))).encode())
             memberships=list(Classroom.objects.filter(Q(owner__in=users)|Q(members__in=users)).distinct().values('id','owner_id','title','language','invite'))
             for row in memberships:row['members']=list(Classroom.objects.get(pk=row['id']).members.values_list('pk',flat=True))
             write('class-memberships.json',json.dumps(memberships,default=str).encode())
@@ -78,7 +79,7 @@ def emergency(request):
             if data.get('include_audit',True):
                 logs=LogEntry.objects.filter(Q(user__in=users)|Q(content_type__app_label='auth',content_type__model='user',object_id__in=[str(x['pk']) for x in identities]))
                 write('audit.json',serializers.serialize('json',logs).encode())
-            write('README.txt',b'Wortify emergency export v1. ADMINISTRATOR DATA: keep encrypted and private. accounts.json retains account identity, roles and permissions; password hashes are optional (omitted hashes require password reset). No sessions, reset tokens, deployment secrets or API keys are included. users/<id>/portable.zip can be imported using Settings > Backup & restore; this creates private copies and does not restore account privileges. database-records.json retains original IDs/relations for operator-led recovery: never load directly into a live database. Restore to an isolated database of the same schema, map cross-account foreign keys and verify before cutover. Media is inside portable ZIPs; metadata-only exports omit media. Class membership and audit files are reference records and may reference accounts outside a filtered selection. This archive is not a whole-server/database snapshot; deployment configuration and global site assets must be backed up separately.')
+            write('README.txt',b'Wortify emergency export v1. ADMINISTRATOR DATA: keep encrypted and private. accounts.json retains account identity, roles and permissions; password hashes are optional (omitted hashes require password reset). No sessions, reset tokens, deployment secrets or API keys are included. users/<id>/portable.zip can be imported using Settings > Backup & restore; this creates private copies and does not restore account privileges. Manage > Backup & import can restore new accounts, roles and portable data, without overwriting existing usernames. Missing password hashes require admin password reset. Imported content is private; cross-account links and class memberships are not restored. database-records.json retains original IDs/relations for operator-led recovery: never load directly into a live database. Restore to an isolated database of the same schema, map cross-account foreign keys and verify before cutover. Media is inside portable ZIPs; metadata-only exports omit media. Class membership and audit files are reference records and may reference accounts outside a filtered selection. This archive is not a whole-server/database snapshot; deployment configuration and global site assets must be backed up separately.')
             archive.writestr('manifest.json',json.dumps({'format':'wortify-admin-emergency','version':1,'created_at':timezone.now().isoformat(),'accounts':count,'options':{key:data.get(key,default) for key,default in [('include_credentials',False),('include_audit',True),('include_media',True)]},'files':manifest}))
         audit(request,request.user,f'Emergency backup exported: {count} accounts; scope={data.get("scope")}; credentials={data.get("include_credentials",False)}; media={data.get("include_media",True)}')
         output.seek(0)

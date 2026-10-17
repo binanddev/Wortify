@@ -99,7 +99,7 @@ export default function Admin({ user }) {
     ["history", "Change log"],
     ...(user.superuser
       ? [
-          ["backups", "Emergency backups"],
+          ["backups", "Backup & import"],
           ["system", "System"],
           ["api", "API documentation"],
           ["appearance", "Site appearance"],

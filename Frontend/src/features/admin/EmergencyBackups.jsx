@@ -1,3 +1,4 @@
+import BackupImport from './BackupImport.jsx';
 import {useState,useEffect} from 'react';
 import {request,useResource} from '../../lib/core.js';
 import {Btn,Field,Select,Loading,Status} from '../../components/ui/ui.jsx';
@@ -11,6 +12,8 @@ export default function EmergencyBackups(){
  const options={scope,ids,q,role,status,include_media:media,include_audit:audit,include_credentials:credentials};
  const run=async(fn)=>{setBusy(true);setError('');try{await fn();}catch(e){setError(e.message);}finally{setBusy(false);}};
  return <section>
+  <BackupImport />
+  <h2>Export ZIP</h2>
   <p className="mb-4">Export account identities, roles, learning records and content from both languages. This is sensitive administrator data.</p>
   <fieldset disabled={busy} className="admin-backup-options">
    <Select label="Export scope" value={scope} onChange={setScope}><option value="selected">Selected accounts ({ids.length})</option><option value="filtered">All matching filters</option><option value="all">All accounts</option></Select>

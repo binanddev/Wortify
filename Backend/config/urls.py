@@ -1,5 +1,5 @@
 from api import reading
-from api import admin_backups
+from api import admin_backups, admin_restore
 from api import backups
 from api import api_reference, management_center, spaced_review, management_data, personal_appearance, monitoring, themes, backgrounds
 from django.urls import path,re_path
@@ -30,7 +30,7 @@ urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_regis
  path('api/me/backgrounds/<int:pk>/',backgrounds.remove),
  path('api/me/background/',personal_appearance.background),
  path('api/me/background/image/',personal_appearance.image),
- path('api/manage/backups/',admin_backups.emergency),
+ path('api/manage/backups/import/',admin_restore.restore),path('api/manage/backups/',admin_backups.emergency),
  path('api/manage/summary/',management_center.summary),
  path('api/manage/api-docs/',api_reference.reference),
  path('api/manage/activity/',management_center.activity),

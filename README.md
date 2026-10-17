@@ -73,3 +73,7 @@ Hướng dẫn mã nguồn: [Backend](Backend/README.md), [Frontend](Frontend/RE
 Bucket `wortify-media` đã được tạo. Bước tiếp theo là lấy endpoint/credentials S3 và điền vào Render; PostgreSQL và Object Storage dùng hai kiểu kết nối khác nhau. Không cần tạo lại bucket.
 
 Đã tạo và kiểm tra đăng nhập 10 tài khoản trên Neon production: `wortify_admin_01` đến `wortify_admin_05` (superuser), `wortify_staff_01` đến `wortify_staff_05` (staff). Xem trạng thái tạo và mật khẩu trong README riêng. SQLite local giữ dữ liệu test độc lập; push code không copy database local lên Neon.
+
+## Tạo nội dung bằng chat và nhập ZIP
+
+Xem [CONTENT_AUTHORING.md](CONTENT_AUTHORING.md) để lấy prompt cho chat mới, quy trình tạo hàng loạt và hướng dẫn nhập ZIP tài khoản tại Manage → Backup & import.
