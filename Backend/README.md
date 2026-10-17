@@ -39,13 +39,42 @@ Xem [DEPLOY.md](../DEPLOY.md). Cấu hình chính: `render.yaml` ở gốc works
 Dùng cùng repo với frontend. Cấu hình `../render.yaml` đã chuẩn bị sẵn.
 
 1. Push code và migrations lên Git; không push `.env`, database local, private media hoặc README riêng.
-2. Render → New → Blueprint → kết nối repo → chọn nhánh muốn tự deploy (thường `main`). Blueprint path: `render.yaml` ở gốc.
+2. Render → New → Blueprint → kết nối repo → chọn nhánh `minhtien` đang chứa cấu hình deploy. Blueprint path: `render.yaml` ở gốc.
 3. Kiểm tra service `wortify-api`, runtime Python, region Singapore, plan Free, root directory `Backend`.
 4. Build command: `pip install -r requirements-production.txt && python manage.py collectstatic --noinput`.
 5. Start command: `python manage.py migrate --noinput && gunicorn --config gunicorn.conf.py config.wsgi:application`.
 6. Health check path: `/api/health/`. Auto deploy: On Commit.
 7. Điền biến bên dưới, chọn Deploy. Khi log báo server đã chạy, ghi lại URL HTTPS Render để dùng cho Netlify.
 8. Khi có URL Netlify thật, sửa `FRONTEND_ORIGIN` cho khớp rồi Save/redeploy backend.
+
+### Tạo Web Service thủ công trên Render
+
+Nếu đang ở màn hình **New → Web Service**, điền như sau:
+
+- Repository: `binanddev/Wortify`.
+- Branch: `minhtien` (nhánh hiện chứa cấu hình deploy).
+- Language / Runtime: **Python 3**. Nếu đang hiện Node hoặc gợi ý yarn, đổi runtime sang Python 3 trước.
+- Region: **Singapore**.
+- Root Directory: `Backend` (giá trị `Backend/` cũng được).
+- Instance Type: **Free**.
+
+**Build Command** — chép nguyên dòng:
+
+```sh
+pip install -r requirements-production.txt && python manage.py collectstatic --noinput
+```
+
+**Start Command** — chép nguyên dòng:
+
+```sh
+python manage.py migrate --noinput && gunicorn --config gunicorn.conf.py config.wsgi:application
+```
+
+Không chép phần tiền tố `Backend/ $` hiển thị ở đầu ô. Không thêm `cd Backend`, vì Root Directory đã là Backend. Thay toàn bộ lệnh yarn mặc định bằng các lệnh trên.
+
+Health Check Path: `/api/health/`. Auto Deploy: **On Commit**. Gunicorn tự đọc cổng `PORT` do Render cấp.
+
+Khi tạo thủ công, `render.yaml` không tự điền biến môi trường: thêm **toàn bộ** biến trong mục cấu hình backend, gồm `PYTHON_VERSION=3.12.8`, `DJANGO_ENV=production`, `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, `DATABASE_URL`, `FRONTEND_ORIGIN`, `MEDIA_STORAGE=s3`, `AWS_STORAGE_BUCKET_NAME=wortify-media` và bốn biến AWS kết nối. Lấy `DJANGO_SECRET_KEY` đã tạo từ README riêng trên máy; không điền chữ “tự tạo”. Sau đó chọn **Deploy Web Service**.
 
 ### Biến môi trường Render và giá trị
 

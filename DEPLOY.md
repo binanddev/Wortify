@@ -31,6 +31,8 @@ Nguồn: [Tạo bucket](https://neon.com/docs/storage/buckets), [Thiết lập s
 
 ## 2. Render: backend
 
+Nếu tạo bằng **New → Web Service** thủ công, xem [các ô cần điền trong README Backend](Backend/README.md#tạo-web-service-thủ-công-trên-render). Chọn runtime Python 3, nhánh `minhtien`, Root Directory `Backend`; không dùng các lệnh yarn mặc định.
+
 Đưa code lên Git. Trong Render chọn **New → Blueprint**, kết nối repo và chọn nhánh deploy. Render đọc `render.yaml` ở gốc repo, chọn Python và thư mục Backend tự động.
 
 Điền các giá trị được yêu cầu:

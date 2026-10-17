@@ -23,6 +23,35 @@ Xem [DEPLOY.md](DEPLOY.md): một repo Git, backend Render + frontend Netlify + 
 - `Backend/.env.production.example`: danh sách biến production.
 - `Backend/gunicorn.conf.py`: web server production.
 
+### Tạo Web Service thủ công trên Render
+
+Nếu đang ở màn hình **New → Web Service**, điền như sau:
+
+- Repository: `binanddev/Wortify`.
+- Branch: `minhtien` (nhánh hiện chứa cấu hình deploy).
+- Language / Runtime: **Python 3**. Nếu đang hiện Node hoặc gợi ý yarn, đổi runtime sang Python 3 trước.
+- Region: **Singapore**.
+- Root Directory: `Backend` (giá trị `Backend/` cũng được).
+- Instance Type: **Free**.
+
+**Build Command** — chép nguyên dòng:
+
+```sh
+pip install -r requirements-production.txt && python manage.py collectstatic --noinput
+```
+
+**Start Command** — chép nguyên dòng:
+
+```sh
+python manage.py migrate --noinput && gunicorn --config gunicorn.conf.py config.wsgi:application
+```
+
+Không chép phần tiền tố `Backend/ $` hiển thị ở đầu ô. Không thêm `cd Backend`, vì Root Directory đã là Backend. Thay toàn bộ lệnh yarn mặc định bằng các lệnh trên.
+
+Health Check Path: `/api/health/`. Auto Deploy: **On Commit**. Gunicorn tự đọc cổng `PORT` do Render cấp.
+
+Khi tạo thủ công, `render.yaml` không tự điền biến môi trường: thêm **toàn bộ** biến trong mục cấu hình backend, gồm `PYTHON_VERSION=3.12.8`, `DJANGO_ENV=production`, `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, `DATABASE_URL`, `FRONTEND_ORIGIN`, `MEDIA_STORAGE=s3`, `AWS_STORAGE_BUCKET_NAME=wortify-media` và bốn biến AWS kết nối. Lấy `DJANGO_SECRET_KEY` đã tạo từ README riêng trên máy; không điền chữ “tự tạo”. Sau đó chọn **Deploy Web Service**.
+
 ## Kiểm tra
 
 ```powershell
