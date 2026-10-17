@@ -1,3 +1,4 @@
+import SystemLibrary from "../explore/SystemLibrary.jsx";
 import { FlashcardAiHelp } from "./flashcard-ai-help.jsx";
 import { useWindowActive } from "../../lib/core.js";
 import {
@@ -146,6 +147,7 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
 
   return (
     <Page>
+      <SystemLibrary lang={lang}/>
       <div className="flash-library-heading">
         <div>
           <h1>{selected?.name || <><span className="studio-title-lead">My</span> Flashcards</>}</h1>

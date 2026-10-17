@@ -17,7 +17,7 @@ class Folder(models.Model):
 
     class Meta:
         ordering = ['name', 'id']
-        constraints = [models.UniqueConstraint(fields=['owner', 'language', 'name'], name='unique_owner_language_folder')]
+        constraints = [models.UniqueConstraint(fields=['owner','language','parent','name'], name='unique_folder_sibling'), models.UniqueConstraint(fields=['owner','language','name'], condition=models.Q(parent__isnull=True), name='unique_folder_root')]
 
     def __str__(self):
         return self.name

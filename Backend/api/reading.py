@@ -3,7 +3,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
-from practice.models import ReadingLesson
+from practice.models import ReadingLesson, ReadingFolder
 from .common import endpoint, body
 from .practice_hub import validate_payload
 from .practice_media import validated_attachments
@@ -31,7 +31,7 @@ def content(request, data):
 @transaction.atomic
 def library(request):
     if request.method == 'GET':
-        return JsonResponse({'lessons':list(ReadingLesson.objects.filter(owner=request.user,language=request.language).order_by('-updated_at').values('id','title','updated_at'))})
+        return JsonResponse({'folders':list(ReadingFolder.objects.filter(owner=request.user,language=request.language).values('id','title','parent_id')), 'lessons':list(ReadingLesson.objects.filter(owner=request.user,language=request.language).order_by('-updated_at').values('id','title','updated_at','folder_id'))})
     entries = body(request).get('lessons')
     if not isinstance(entries,list) or not 1 <= len(entries) <= 100 or any(not isinstance(d,dict) for d in entries):
         raise ValueError('Import between 1 and 100 reading lessons.')

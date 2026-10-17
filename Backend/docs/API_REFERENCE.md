@@ -226,6 +226,31 @@ Requires theme editing permission. Deleting a theme clears affected account sele
 
 GET/HEAD accessible theme image binary. Returns 404 if missing, inaccessible or without an image.
 
+## GET, POST /api/me/backup/
+
+**Permission:** Signed-in users
+
+Authenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges.
+
+Body POST:
+
+```json
+{
+  "workspace": {
+    "de": [],
+    "en": []
+  }
+}
+```
+
+## POST /api/me/backup/restore/
+
+**Permission:** Signed-in users
+
+Multipart file=personal ZIP; preview=true inspects counts. confirm=true restores private copies; optional settings=true replaces profile/study settings. Existing content is retained. Admin emergency ZIPs are not accepted.
+
+Multipart: file (file), preview (text)
+
 ## GET /api/me/appearance/
 
 **Permission:** Signed-in users
@@ -274,11 +299,48 @@ Multipart: image (file)
 
 GET/HEAD the signed-in account background binary with Cache-Control private,no-store.
 
+## POST /api/manage/content-packages/
+
+**Permission:** Admin / Staff
+
+Staff/Admin only. Multipart file: wortify-content JSON version 1. preview=true validates without writes; confirm=IMPORT publishes an immutable Wortify system package and creates private copies for the importer. Maximum 50 MB, 5000 nodes, 100000 cards, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.
+
+Multipart: file (file), preview (text)
+
+## POST /api/manage/backups/import/
+
+**Permission:** Admin
+
+SUPERUSER ONLY. Multipart file=emergency ZIP; preview=true validates accounts and roles. confirm=RESTORE restores new accounts, permissions and private learning content. Existing usernames cause the entire import to fail. Maximum 512 MB and 1000 accounts. Password hashes are restored only when present in the export; sessions and cross-account memberships are not restored.
+
+Multipart: file (file), preview (text)
+
+## POST /api/manage/backups/
+
+**Permission:** Admin
+
+SUPERUSER ONLY. POST scope=all, filtered or selected. selected requires ids; filtered accepts q (username/email), role=user/staff/superuser and status=active/inactive. preview=true returns matching account count. To download binary ZIP, remove preview and send confirm=EXPORT. Options: include_media=true (portable per-user ZIPs), include_audit=true, include_credentials=false (opt-in password hashes). Original account identities, roles and content relations are included. No sessions or server secrets. Exports are audited. Maximum 2 GB total and 512 MB per portable user archive; split larger exports. Use Postman Send and Download. Emergency archives require operator-led recovery; they cannot be uploaded to personal restore.
+
+Body POST:
+
+```json
+{
+  "scope": "selected",
+  "ids": [
+    1
+  ],
+  "include_media": true,
+  "include_audit": true,
+  "include_credentials": false,
+  "preview": true
+}
+```
+
 ## GET /api/manage/summary/
 
 **Permission:** Admin / Staff
 
-Work overview. Staff account counts include regular users only; content statistics include system learning content.
+Grid ordering: content supports title, owner, kind, language, visibility, updated_at; activity supports id, actor, target, message, at. Comma-separated fields, - prefix descending, evaluated before pagination. Work overview. Staff account counts include regular users only; content statistics include system learning content.
 
 ## GET /api/manage/api-docs/
 
@@ -290,13 +352,13 @@ Admin only. GET JSON for the documentation page; format=postman downloads a v2.1
 
 **Permission:** Admin / Staff
 
-q and page, 25 per page. Admins see all activity; staff see only their own log. Audit records cannot be edited or deleted through the API.
+q and page, 25 per page. Multi-sort ordering accepts id,actor,target,message,at; prefix - for descending. Admins see all activity; staff see only their own log. Audit records cannot be edited or deleted through the API.
 
 ## GET, POST /api/manage/content/
 
 **Permission:** Admin / Staff
 
-GET q,language,kind,visibility,source=system/users/mine,owner,page (25 per page). GET options=folders returns folders owned by the signed-in user. POST creates content owned by the actor; owner from the client is not accepted.
+GET q,language,kind,visibility,source=system/users/mine,owner,page (25 per page). Multi-sort ordering accepts title,owner,kind,language,visibility,updated_at; prefix - for descending. GET options=folders returns folders owned by the signed-in user. POST creates content owned by the actor; owner from the client is not accepted.
 
 Body POST:
 
@@ -396,7 +458,7 @@ Body PATCH:
 
 **Permission:** Admin / Staff
 
-GET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. 50 records per page. POST requires username,password; email,first_name,last_name are optional. Staff create regular users; only admins grant staff/superuser roles.
+GET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. Multi-sort: ordering=id,username,email,role,is_active,date_joined,last_login (choose columns, prefix - for descending); applied before pagination. 50 records per page. POST requires username,password; email,first_name,last_name are optional. Staff create regular users; only admins grant staff/superuser roles.
 
 Body POST:
 
@@ -451,6 +513,30 @@ GET shared background information; sign-in is required. Returns background_image
 **Permission:** Signed-in users
 
 GET shared background binary; sign-in required. This endpoint cannot modify the image.
+
+## GET /api/{language}/system-library/
+
+**Permission:** Signed-in users
+
+Authenticated GET lists system packages for the current language, with counts, publisher=Wortify and imported status. No uploader identity is returned.
+
+## POST /api/{language}/system-library/{pk}/copy/
+
+**Permission:** Signed-in users
+
+Authenticated POST copies the package tree into the current account, scoped to the URL language. Send an empty JSON object. Repeating the request returns the existing receipt without duplicate content.
+
+## GET, POST /api/{language}/reading/
+
+**Permission:** Signed-in users
+
+Private account/language Reading workspace, independent of Practice Hub. GET lists lessons. POST lessons:[{title,payload}] atomically creates 1-100 readings; payload uses presentation.interaction=reading, context, context_format in presentation, and choice/multi questions inferred from accepted_answers.
+
+## GET, PATCH, POST, DELETE /api/{language}/reading/{pk}/
+
+**Permission:** Signed-in users
+
+GET a reading, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading.
 
 ## GET, PATCH /api/{language}/profile/
 
@@ -546,7 +632,7 @@ Body PATCH:
 
 **Permission:** Signed-in users
 
-Multipart file, up to 200 MB; MP3/PNG/JPG/JPEG/WebP/GIF. Response media includes id/name/size/type/url. Add it to payload.attachments to attach it to an exercise.
+Multipart file, up to 200 MB; MP3/PNG/JPG/JPEG/WebP/GIF. Response media includes id/name/size/type/url. Add it to payload.attachments to attach it to an exercise or theory document. Embed its authenticated URL with the frontend lesson includegraphics command; keep the attachment so authorized readers can access it.
 
 Multipart: file (file)
 

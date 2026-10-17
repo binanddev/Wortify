@@ -631,6 +631,130 @@
           "response": []
         },
         {
+          "name": "POST /api/manage/content-packages/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content-packages/",
+            "description": "Permission: Admin / Staff\n\nStaff/Admin only. Multipart file: wortify-content JSON version 1. preview=true validates without writes; confirm=IMPORT publishes an immutable Wortify system package and creates private copies for the importer. Maximum 50 MB, 5000 nodes, 100000 cards, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "preview",
+                  "type": "text",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/manage/backups/import/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/backups/import/",
+            "description": "Permission: Admin\n\nSUPERUSER ONLY. Multipart file=emergency ZIP; preview=true validates accounts and roles. confirm=RESTORE restores new accounts, permissions and private learning content. Existing usernames cause the entire import to fail. Maximum 512 MB and 1000 accounts. Password hashes are restored only when present in the export; sessions and cross-account memberships are not restored.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "preview",
+                  "type": "text",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/manage/backups/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/backups/",
+            "description": "Permission: Admin\n\nSUPERUSER ONLY. POST scope=all, filtered or selected. selected requires ids; filtered accepts q (username/email), role=user/staff/superuser and status=active/inactive. preview=true returns matching account count. To download binary ZIP, remove preview and send confirm=EXPORT. Options: include_media=true (portable per-user ZIPs), include_audit=true, include_credentials=false (opt-in password hashes). Original account identities, roles and content relations are included. No sessions or server secrets. Exports are audited. Maximum 2 GB total and 512 MB per portable user archive; split larger exports. Use Postman Send and Download. Emergency archives require operator-led recovery; they cannot be uploaded to personal restore.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scope\": \"selected\",\n  \"ids\": [\n    1\n  ],\n  \"include_media\": true,\n  \"include_audit\": true,\n  \"include_credentials\": false,\n  \"preview\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
           "name": "GET /api/manage/summary/",
           "request": {
             "method": "GET",
@@ -641,7 +765,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/manage/summary/",
-            "description": "Permission: Admin / Staff\n\nWork overview. Staff account counts include regular users only; content statistics include system learning content."
+            "description": "Permission: Admin / Staff\n\nGrid ordering: content supports title, owner, kind, language, visibility, updated_at; activity supports id, actor, target, message, at. Comma-separated fields, - prefix descending, evaluated before pagination. Work overview. Staff account counts include regular users only; content statistics include system learning content."
           },
           "response": []
         },
@@ -671,7 +795,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/manage/activity/",
-            "description": "Permission: Admin / Staff\n\nq and page, 25 per page. Admins see all activity; staff see only their own log. Audit records cannot be edited or deleted through the API."
+            "description": "Permission: Admin / Staff\n\nq and page, 25 per page. Multi-sort ordering accepts id,actor,target,message,at; prefix - for descending. Admins see all activity; staff see only their own log. Audit records cannot be edited or deleted through the API."
           },
           "response": []
         },
@@ -686,7 +810,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/manage/content/",
-            "description": "Permission: Admin / Staff\n\nGET q,language,kind,visibility,source=system/users/mine,owner,page (25 per page). GET options=folders returns folders owned by the signed-in user. POST creates content owned by the actor; owner from the client is not accepted."
+            "description": "Permission: Admin / Staff\n\nGET q,language,kind,visibility,source=system/users/mine,owner,page (25 per page). Multi-sort ordering accepts title,owner,kind,language,visibility,updated_at; prefix - for descending. GET options=folders returns folders owned by the signed-in user. POST creates content owned by the actor; owner from the client is not accepted."
           },
           "response": []
         },
@@ -717,7 +841,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/manage/content/",
-            "description": "Permission: Admin / Staff\n\nGET q,language,kind,visibility,source=system/users/mine,owner,page (25 per page). GET options=folders returns folders owned by the signed-in user. POST creates content owned by the actor; owner from the client is not accepted.",
+            "description": "Permission: Admin / Staff\n\nGET q,language,kind,visibility,source=system/users/mine,owner,page (25 per page). Multi-sort ordering accepts title,owner,kind,language,visibility,updated_at; prefix - for descending. GET options=folders returns folders owned by the signed-in user. POST creates content owned by the actor; owner from the client is not accepted.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"kind\": \"folder\",\n  \"title\": \"System folder\",\n  \"language\": \"en\",\n  \"visibility\": \"private\"\n}",
@@ -1133,7 +1257,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/manage/users/",
-            "description": "Permission: Admin / Staff\n\nGET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. 50 records per page. POST requires username,password; email,first_name,last_name are optional. Staff create regular users; only admins grant staff/superuser roles."
+            "description": "Permission: Admin / Staff\n\nGET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. Multi-sort: ordering=id,username,email,role,is_active,date_joined,last_login (choose columns, prefix - for descending); applied before pagination. 50 records per page. POST requires username,password; email,first_name,last_name are optional. Staff create regular users; only admins grant staff/superuser roles."
           },
           "response": []
         },
@@ -1164,7 +1288,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/manage/users/",
-            "description": "Permission: Admin / Staff\n\nGET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. 50 records per page. POST requires username,password; email,first_name,last_name are optional. Staff create regular users; only admins grant staff/superuser roles.",
+            "description": "Permission: Admin / Staff\n\nGET q, role=user/staff/superuser, status=active/inactive, sort=username/newest/recent, page. Multi-sort: ordering=id,username,email,role,is_active,date_joined,last_login (choose columns, prefix - for descending); applied before pagination. 50 records per page. POST requires username,password; email,first_name,last_name are optional. Staff create regular users; only admins grant staff/superuser roles.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"username\": \"postman-user\",\n  \"email\": \"example@example.com\",\n  \"password\": \"{{newPassword}}\",\n  \"role\": \"user\"\n}",
@@ -1590,6 +1714,103 @@
           "response": []
         },
         {
+          "name": "GET /api/me/backup/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backup/",
+            "description": "Permission: Signed-in users\n\nAuthenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/me/backup/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backup/",
+            "description": "Permission: Signed-in users\n\nAuthenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspace\": {\n    \"de\": [],\n    \"en\": []\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/me/backup/restore/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backup/restore/",
+            "description": "Permission: Signed-in users\n\nMultipart file=personal ZIP; preview=true inspects counts. confirm=true restores private copies; optional settings=true replaces profile/study settings. Existing content is retained. Admin emergency ZIPs are not accepted.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "preview",
+                  "type": "text",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "GET /api/me/appearance/",
           "request": {
             "method": "GET",
@@ -1898,6 +2119,251 @@
     {
       "name": "Learning & content",
       "item": [
+        {
+          "name": "GET /api/{language}/system-library/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/system-library/",
+            "description": "Permission: Signed-in users\n\nAuthenticated GET lists system packages for the current language, with counts, publisher=Wortify and imported status. No uploader identity is returned."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/system-library/{pk}/copy/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/system-library/{{pk}}/copy/",
+            "description": "Permission: Signed-in users\n\nAuthenticated POST copies the package tree into the current account, scoped to the URL language. Send an empty JSON object. Repeating the request returns the existing receipt without duplicate content.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/reading/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/",
+            "description": "Permission: Signed-in users\n\nPrivate account/language Reading workspace, independent of Practice Hub. GET lists lessons. POST lessons:[{title,payload}] atomically creates 1-100 readings; payload uses presentation.interaction=reading, context, context_format in presentation, and choice/multi questions inferred from accepted_answers."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/reading/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/",
+            "description": "Permission: Signed-in users\n\nPrivate account/language Reading workspace, independent of Practice Hub. GET lists lessons. POST lessons:[{title,payload}] atomically creates 1-100 readings; payload uses presentation.interaction=reading, context, context_format in presentation, and choice/multi questions inferred from accepted_answers.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/reading/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/{{pk}}/",
+            "description": "Permission: Signed-in users\n\nGET a reading, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/reading/{pk}/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/{{pk}}/",
+            "description": "Permission: Signed-in users\n\nGET a reading, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/reading/{pk}/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/{{pk}}/",
+            "description": "Permission: Signed-in users\n\nGET a reading, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/{language}/reading/{pk}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/{{pk}}/",
+            "description": "Permission: Signed-in users\n\nGET a reading, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
         {
           "name": "GET /api/{language}/profile/",
           "request": {
@@ -2301,7 +2767,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/{{language}}/practice-hub/media/",
-            "description": "Permission: Signed-in users\n\nMultipart file, up to 200 MB; MP3/PNG/JPG/JPEG/WebP/GIF. Response media includes id/name/size/type/url. Add it to payload.attachments to attach it to an exercise.",
+            "description": "Permission: Signed-in users\n\nMultipart file, up to 200 MB; MP3/PNG/JPG/JPEG/WebP/GIF. Response media includes id/name/size/type/url. Add it to payload.attachments to attach it to an exercise or theory document. Embed its authenticated URL with the frontend lesson includegraphics command; keep the attachment so authorized readers can access it.",
             "body": {
               "mode": "formdata",
               "formdata": [

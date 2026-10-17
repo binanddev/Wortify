@@ -4,6 +4,8 @@ from difflib import get_close_matches
 from collections import Counter
 from threading import RLock
 
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from practice.models import PracticeNode
@@ -11,6 +13,19 @@ from practice.models import PracticeNode
 # One latest snapshot per supported language, local to each worker process.
 _snapshots = {}
 _lock = RLock()
+
+
+@receiver(post_save, sender=PracticeNode)
+@receiver(post_delete, sender=PracticeNode)
+def invalidate_snapshot(sender, instance, **kwargs):
+    # Saves can share a timestamp on low-resolution clocks. Metadata checks
+    # still handle changes from other workers; local writes invalidate directly.
+    with _lock:
+        _snapshots.pop(instance.language, None)
+
+
+def publisher(owner):
+    return 'Wortify' if owner.is_staff or owner.is_superuser else (owner.get_full_name().strip() or owner.get_username())
 
 
 def browse(request):
@@ -26,7 +41,7 @@ def browse(request):
     interests = request.GET.get('interests', '')[:600]
     # Check cheap metadata on every request, including private ancestors. Never
     # reuse visibility/path state solely on a TTL or a public-row count.
-    metadata = tuple(PracticeNode.objects.filter(language=request.language).order_by('pk').values_list('pk','parent_id','visibility','updated_at','owner_id','title','position','owner__username','owner__first_name','owner__last_name'))
+    metadata = tuple(PracticeNode.objects.filter(language=request.language).order_by('pk').values_list('pk','parent_id','visibility','updated_at','owner_id','title','position','owner__username','owner__first_name','owner__last_name','owner__is_staff','owner__is_superuser'))
     with _lock:
         cached = _snapshots.get(request.language)
         if cached is None or cached[0] != metadata:
@@ -46,7 +61,7 @@ def browse(request):
             texts = {}
             for n in rows:
                 root = paths[n.pk][0]
-                texts[n.pk] = search_text(' '.join([n.title,root.title,' '.join(root.payload.get('tags',[])),str(n.payload.get('instruction','')),str(n.payload.get('context','')),str(n.payload.get('content',''))[:2000],' '.join(str(q.get('prompt','')) for q in n.payload.get('questions',[]))[:3000],n.owner.get_username()]))
+                texts[n.pk] = search_text(' '.join([n.title,root.title,' '.join(root.payload.get('tags',[])),str(n.payload.get('instruction','')),str(n.payload.get('context','')),str(n.payload.get('content',''))[:2000],' '.join(str(q.get('prompt','')) for q in n.payload.get('questions',[]))[:3000],publisher(n.owner)]))
             vocabulary = set(word.strip('.,:;!?()') for text in texts.values() for word in text.split())
             cached = (metadata,rows,paths,texts,vocabulary,Counter(n.parent_id for n in rows))
             _snapshots[request.language] = cached
@@ -91,7 +106,7 @@ def browse(request):
         return {'id':n.pk,'parent':n.parent_id,'root_id':root.pk,'kind':n.kind,'title':n.title,
                 'tags':n.payload.get('tags',[]) if not n.parent_id and n.kind=='folder' else [],
                 'visibility':'public','position':n.position,'can_edit':n.owner_id==request.user.pk,
-                'author':n.owner.get_full_name().strip() or n.owner.get_username(),
+                'author':publisher(n.owner),
                 'updated_at':n.updated_at.isoformat(), 'question_count':len(n.payload.get('questions',[])),
                 'child_count':child_counts[n.pk]}
     selected = [n for pk,n in candidates.items() if pk in matched]

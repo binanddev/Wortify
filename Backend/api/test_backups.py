@@ -155,3 +155,14 @@ class BackupTests(TestCase):
         self.restore(result.getvalue())
         self.assertFalse(Deck.objects.filter(owner=self.target).exists())
         self.assertTrue(PracticeNode.objects.filter(owner=self.target).exists())
+
+    def test_reading_folders_restore_parent_before_child(self):
+        from practice.models import ReadingFolder, ReadingLesson
+        child=ReadingFolder.objects.create(owner=self.user,language='de',title='Child')
+        parent=ReadingFolder.objects.create(owner=self.user,language='de',title='Parent')
+        child.parent=parent; child.save()
+        ReadingLesson.objects.create(owner=self.user,language='de',folder=child,title='Reading',payload={})
+        self.restore()
+        reading=ReadingLesson.objects.get(owner=self.target)
+        self.assertEqual(reading.folder.title,'Child')
+        self.assertEqual(reading.folder.parent.title,'Parent')

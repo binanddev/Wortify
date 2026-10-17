@@ -2,7 +2,7 @@ from django.core.files.uploadhandler import TemporaryFileUploadHandler, StopFutu
 
 class BackupUploadHandler(TemporaryFileUploadHandler):
     def new_file(self,*args,**kwargs):
-        self.enabled=self.request.path=='/api/me/backup/restore/'
+        self.enabled=self.request.path in ('/api/me/backup/restore/','/api/manage/backups/import/','/api/manage/content-packages/')
         if not self.enabled:return
         super().new_file(*args,**kwargs)
         raise StopFutureHandlers()

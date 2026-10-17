@@ -24,7 +24,7 @@ TABLES = [u.Theme, u.Profile, c.StudySettings, c.Folder, c.Deck, c.Card,
           p.PracticeMedia, p.PracticeNode, u.Classroom, u.ClassroomAssignment,
           c.StudyProgress, c.DeckLearningState, p.PracticeProgress,
           c.StudyAttempt, p.PracticeAttempt, c.StudySession, c.LearningEvent,
-          c.ImportBatch, c.MatchRound, p.ReadingLesson]
+          c.ImportBatch, c.MatchRound, p.ReadingFolder, p.ReadingLesson]
 REGISTRY = {m._meta.label_lower: m for m in TABLES}
 
 
@@ -38,7 +38,7 @@ def owned_rows(user):
         p.PracticeProgress.objects.filter(user=user), c.StudyAttempt.objects.filter(user=user),
         p.PracticeAttempt.objects.filter(user=user), c.StudySession.objects.filter(user=user),
         c.LearningEvent.objects.filter(user=user), c.ImportBatch.objects.filter(deck__owner=user),
-        c.MatchRound.objects.filter(deck__owner=user), p.ReadingLesson.objects.filter(owner=user)]
+        c.MatchRound.objects.filter(deck__owner=user), p.ReadingFolder.objects.filter(owner=user), p.ReadingLesson.objects.filter(owner=user)]
 
 
 def export_archive(user, workspace=None):
@@ -181,7 +181,7 @@ def restore_archive(user, archive, records, restore_settings=False):
                                 kwargs[field.attname] = value
                             elif not isinstance(field,models.FileField): kwargs[field.name] = rewrite(value)
                         # Self-parent trees must be restored parent-first, never flattened.
-                        if fields.get('parent') is not None and model in (c.Folder,p.PracticeNode):
+                        if fields.get('parent') is not None and model in (c.Folder,p.PracticeNode,p.ReadingFolder):
                             parent=mapping.get((model._meta.label_lower,str(fields['parent'])))
                             if not parent: missing=True
                             else: kwargs['parent_id']=parent.pk
@@ -192,7 +192,7 @@ def restore_archive(user, archive, records, restore_settings=False):
                         if model == u.Classroom: kwargs['invite']=uuid.uuid4()
                         if model == c.Folder:
                             base=kwargs['name']; suffix=1
-                            while c.Folder.objects.filter(owner=user,language=kwargs['language'],name=kwargs['name']).exists():
+                            while c.Folder.objects.filter(owner=user,language=kwargs['language'],parent_id=kwargs.get('parent_id'),name=kwargs['name']).exists():
                                 kwargs['name']=f'{base[:75]} (restored {suffix})';suffix+=1
                         if model == u.Profile:
                             obj,_=u.Profile.objects.get_or_create(user=user)
@@ -236,7 +236,7 @@ def restore_archive(user, archive, records, restore_settings=False):
                         deferred.append((obj,record))
                         pending.remove(record);progressed=True
                     if not progressed:
-                        if model in (c.Folder,p.PracticeNode): raise ValueError('A folder parent is missing or cyclic.')
+                        if model in (c.Folder,p.PracticeNode,p.ReadingFolder): raise ValueError('A folder parent is missing or cyclic.')
                         skipped+=len(pending);break
             def references(value):
                 if isinstance(value,list): return [references(v) for v in value]

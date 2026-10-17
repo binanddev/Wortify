@@ -1,5 +1,17 @@
 # Change Log
 
+### [v1.2.7] - 2026-10-17 | One-file system content imports
+
+- Added staff/admin JSON package import with preview, atomic validation and retry-safe package IDs.
+- One document holds nested flashcard folders/decks, Practice Hub folders/exercises/theory and Reading folders/lessons, up to 10 folder levels.
+- Added a persistent Wortify system library without uploader attribution; learners add independent native copies with their own progress.
+- Added Reading folders and sibling-scoped flashcard folder names so different branches may use the same folder name.
+- Added a downloadable complete example and two standalone chat guides with all authoring rules; moved account ZIP recovery to a separate admin document.
+- Fixed Explore cache refresh for saves sharing a timestamp and hid staff attribution in public discovery.
+- Limits: 50 MB, 5,000 nodes and 100,000 cards per package; uploaded binary media is not embedded. Published packages are snapshots; existing packages are not overwritten.
+
+---
+
 ### [v1.2.6] - 2026-10-17 | Deployment, backup restore and content authoring
 
 - Prepared Render backend, Netlify frontend, Neon PostgreSQL and private S3 media; kept SQLite/media local and consolidated startup scripts.

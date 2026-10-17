@@ -91,7 +91,7 @@ def folder(request, pk=None):
         item.delete()
         return JsonResponse({'ok': True})
     data = {**(model_to_dict(item) if item else {}), **body(request)}
-    if Folder.objects.filter(owner=request.user, language=request.language, name=data.get('name')).exclude(pk=pk).exists():
+    if Folder.objects.filter(owner=request.user, language=request.language, parent_id=data.get('parent') or None, name=data.get('name')).exclude(pk=pk).exists():
         raise ValueError('This folder already exists.')
     item = form_save(FolderForm(data, instance=item, user=request.user, language=request.language), owner=request.user, language=request.language)
     return JsonResponse({'id': item.pk})

@@ -1,3 +1,4 @@
+import SystemLibrary from "../explore/SystemLibrary.jsx";
 import { ReadingPassage } from "../practice/reading-layout.jsx";
 import { ModalContent, ModalHeader, ModalBody } from "@heroui/react";
 import { Modal } from "../../components/modal/modal.jsx";
@@ -30,16 +31,18 @@ export default function ReadingWorkspace({ lang, route, userId, sound }) {
   const fileInput = useRef(null);
   const [showMedia,setShowMedia] = useState(false);
   const base = `/api/${lang}/reading/`;
+  const [folders,setFolders]=useState([]),[folderId,setFolderId]=useState(null);
   const [lessons,setLessons] = useState([]), [lesson,setLesson] = useState(null), [text,setText] = useState("");
   const [draft,setDraft] = useState(null), [preview,setPreview] = useState(false), [media,setMedia] = useState([]), [mediaBusy,setMediaBusy] = useState(false);
   const [busy,setBusy] = useState(false), [message,setMessage] = useState(""), [confirm,setConfirm] = useState(false), [showGuide,setShowGuide] = useState(false);
+  useEffect(() => { setFolderId(null); }, [base]);
   async function act(fn) { setBusy(true); setMessage(""); try { await fn(); } catch(e) { setMessage(e.message); } finally { setBusy(false); } }
   useEffect(() => {
     const c = new AbortController();
     if (creating) return () => c.abort();
     request(base + (id ? `${id}/` : ""),"GET",undefined,c.signal).then(d => {
       if (id) { setLesson(d); if (editing) { setText(exerciseToText(d.payload)); setMedia(d.payload.attachments || []); } }
-      else setLessons(d.lessons);
+      else {setLessons(d.lessons);setFolders(d.folders||[]);}
     }).catch(e => { if(e.name !== "AbortError") setMessage(e.message); });
     return () => c.abort();
   }, [base,id,creating,editing]);
@@ -101,8 +104,9 @@ export default function ReadingWorkspace({ lang, route, userId, sound }) {
     {!preview && <textarea className="reading-source-editor" aria-label="Reading and questions" spellCheck={false} rows={22} value={text} placeholder="Paste your reading here…" onChange={e=>{setText(e.target.value);setDraft(null);}}/>}
     {preview && draft?.map((node,i)=><section key={i}><h2>{node.title}</h2><PracticeActivity preview id={`reading-preview-${i}`} userId={userId} lang={lang} data={previewData(node.payload)}/></section>)}
   </div> : id ? lesson && <PracticeActivity key={lesson.revision} data={{...previewData(lesson.payload),progress:lesson.progress}} id={`reading-${id}-${lesson.revision}`} userId={userId} lang={lang} sound={sound} onProgress={completed=>request(base+id+"/","POST",{completed,revision:lesson.revision}).catch(e=>setMessage(e.message))}/> : <>
-    <p>Your passages and their questions, together in one place.</p><Link className="btn primary" to={`/${lang}/reading/create`}>{lessons.length ? "Create / import reading" : "Create your first reading"}</Link>
-    <div className="reading-library">{lessons.map(item=><Glass key={item.id}><h2>{item.title}</h2><Link to={`/${lang}/reading/${item.id}`}>Read & answer →</Link></Glass>)}</div>
+    <SystemLibrary lang={lang}/><p>Your passages and their questions, together in one place.</p><Link className="btn primary" to={`/${lang}/reading/create`}>{lessons.length ? "Create / import reading" : "Create your first reading"}</Link>
+    <nav aria-label="Reading folders"><Btn onClick={()=>setFolderId(null)}>All folders</Btn>{folderId&&<Btn onClick={()=>setFolderId(folders.find(f=>f.id===folderId)?.parent_id||null)}>Up</Btn>}{folders.filter(f=>(f.parent_id||null)===folderId).map(f=><Btn key={f.id} onClick={()=>setFolderId(f.id)}>{f.title}</Btn>)}</nav>
+    <div className="reading-library">{lessons.filter(item=>(item.folder_id||null)===folderId).map(item=><Glass key={item.id}><h2>{item.title}</h2><Link to={`/${lang}/reading/${item.id}`}>Read & answer →</Link></Glass>)}</div>
   </>}
   {showGuide && <Modal isOpen onClose={()=>setShowGuide(false)} size="3xl" scrollBehavior="inside" classNames={{base:"glass dialog"}}>
     <ModalContent><ModalHeader>Formatting & import guide</ModalHeader><ModalBody>

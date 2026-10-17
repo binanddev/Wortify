@@ -1,3 +1,4 @@
+import ContentPackageImport from './ContentPackageImport.jsx';
 import History from "./History.jsx";
 import DataGrid from "./DataGrid.jsx";
 import {sortQuery} from "./grid-state.js";
@@ -95,6 +96,7 @@ export default function Admin({ user }) {
     ["dashboard", "Overview"],
     ["users", "Users"],
     ["content", "Content"],
+    ["content-import", "Import content"],
     ["activity", "Activity log"],
     ["history", "Change log"],
     ...(user.superuser
@@ -120,6 +122,7 @@ export default function Admin({ user }) {
       {tab === "dashboard" && <Dashboard user={user} open={setTab} />}
       {tab === "users" && <Users user={user} />}
       {tab === "content" && <Content user={user} />}
+      {tab === "content-import" && <ContentPackageImport />}
       {tab === "activity" && <Activity user={user} />}
       {tab === "backups" && user.superuser && <EmergencyBackups />}
       {tab === "system" && user.superuser && <SystemOverview />}

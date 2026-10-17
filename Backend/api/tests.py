@@ -822,6 +822,20 @@ class ExploreDiscoveryTests(TestCase):
         item.delete()
         self.assertEqual(self.browse(q='volcano').json()['total'], 0)
 
+    def test_snapshot_refreshes_with_unchanged_timestamp_and_hides_staff(self):
+        from unittest.mock import patch
+        item = PracticeNode.objects.create(owner=self.user, language='en', parent=self.roots[0],
+            kind='theory', visibility='public', title='Astronomy', payload={'content':'telescope'})
+        self.assertEqual(self.browse(q='telescope').json()['total'], 1)
+        with patch('django.utils.timezone.now', return_value=item.updated_at):
+            item.payload = {'content':'volcano'}
+            item.save()
+        self.assertEqual(self.browse(q='volcano').json()['total'], 1)
+        self.assertEqual(self.browse(q='telescope').json()['total'], 0)
+        self.user.is_staff = True
+        self.user.save()
+        self.assertEqual(self.browse(q='volcano').json()['results'][0]['author'], 'Wortify')
+
     def test_warm_snapshot_does_not_reload_json_content(self):
         from django.db import connection
         from django.test.utils import CaptureQueriesContext

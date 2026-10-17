@@ -1,0 +1,155 @@
+{
+  "format": "wortify-content",
+  "version": 1,
+  "id": "5a5ab11d-0ab8-4745-bef1-236b52a2bac1",
+  "title": "A2 · Giao thông",
+  "language": "de",
+  "flashcards": [
+    {
+      "kind": "folder",
+      "title": "Giao thông",
+      "children": [
+        {
+          "kind": "folder",
+          "title": "Phương tiện",
+          "children": [
+            {
+              "kind": "deck",
+              "title": "Đi xe buýt",
+              "level": "A2",
+              "cards": [
+                {
+                  "german_text": "mit dem Bus fahren",
+                  "vietnamese_meaning": "đi bằng xe buýt",
+                  "example_german": "Ich fahre mit dem Bus zur Schule.",
+                  "example_vietnamese": "Tôi đi xe buýt đến trường.",
+                  "part_of_speech": "verb phrase",
+                  "notes": "mit + Dativ",
+                  "usage": "Dùng khi nói về phương tiện đi lại.",
+                  "article": "",
+                  "plural_form": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "practice": [
+    {
+      "kind": "folder",
+      "title": "Bài tập giao thông",
+      "children": [
+        {
+          "kind": "exercise",
+          "title": "Choose a response",
+          "payload": {
+            "title": "Choose a response",
+            "instruction": "Complete the sentences below.",
+            "kind": "choice",
+            "presentation": {
+              "interaction": "multiple_choice",
+              "style": "dialogue_reply"
+            },
+            "questions": [
+              {
+                "prompt": "What would you like?",
+                "accepted_answers": [
+                  "Tea, please."
+                ],
+                "options": [
+                  "Tea, please.",
+                  "Yesterday.",
+                  "At home."
+                ],
+                "blanks": [],
+                "presentation": {},
+                "id": "1",
+                "position": 1,
+                "kind": "choice"
+              }
+            ],
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "check_mode": "auto_check"
+          }
+        },
+        {
+          "kind": "theory",
+          "title": "Ghi chú",
+          "payload": {
+            "format": "markdown",
+            "content": "mit + Dativ"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": [
+    {
+      "kind": "folder",
+      "title": "Bài đọc",
+      "children": [
+        {
+          "kind": "reading",
+          "title": "Practice exercise",
+          "payload": {
+            "title": "Practice exercise",
+            "instruction": "Complete the sentences below.",
+            "kind": "choice",
+            "presentation": {
+              "interaction": "reading",
+              "style": "split_reading",
+              "context_format": "html"
+            },
+            "questions": [
+              {
+                "prompt": "When do Mia and Tom cycle to school?",
+                "accepted_answers": [
+                  "Friday"
+                ],
+                "options": [
+                  "Friday",
+                  "Monday",
+                  "Sunday",
+                  "Tuesday"
+                ],
+                "blanks": [],
+                "presentation": {
+                  "explanation": "The first sentence says every Friday."
+                },
+                "id": "1",
+                "position": 1,
+                "kind": "choice"
+              },
+              {
+                "prompt": "Which vegetables grow in the garden? Choose all that apply.",
+                "accepted_answers": [
+                  "Carrots",
+                  "Tomatoes"
+                ],
+                "options": [
+                  "Carrots",
+                  "Tomatoes",
+                  "Potatoes"
+                ],
+                "blanks": [],
+                "presentation": {
+                  "explanation": "The garden grows carrots and tomatoes."
+                },
+                "id": "2",
+                "position": 2,
+                "kind": "multi"
+              }
+            ],
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "context": "<h2>A greener school</h2>\n<p>Every Friday, Mia and Tom cycle to school. Their school garden grows carrots and tomatoes. On Monday, the students water the plants.</p>",
+            "check_mode": "auto_check"
+          }
+        }
+      ]
+    }
+  ]
+}

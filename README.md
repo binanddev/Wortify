@@ -74,10 +74,18 @@ Bucket `wortify-media` đã được tạo. Bước tiếp theo là lấy endpoi
 
 Đã tạo và kiểm tra đăng nhập 10 tài khoản trên Neon production: `wortify_admin_01` đến `wortify_admin_05` (superuser), `wortify_staff_01` đến `wortify_staff_05` (staff). Xem trạng thái tạo và mật khẩu trong README riêng. SQLite local giữ dữ liệu test độc lập; push code không copy database local lên Neon.
 
-## Tạo nội dung bằng chat và nhập ZIP
+## Tạo nội dung bằng chat
 
-Xem [CONTENT_AUTHORING.md](CONTENT_AUTHORING.md) để lấy prompt cho chat mới, quy trình tạo hàng loạt và hướng dẫn nhập ZIP tài khoản tại Manage → Backup & import.
+Gửi nguyên [CONTENT_AUTHORING.md](CONTENT_AUTHORING.md) hoặc [WORTIFY_AUTHORING_RULES.txt](WORTIFY_AUTHORING_RULES.txt) cho chat mới rồi yêu cầu nội dung. Chat xuất một gói JSON tổng để staff nhập ở Manage → Import content. Khôi phục tài khoản là chức năng riêng; xem [ADMIN_BACKUPS.md](ADMIN_BACKUPS.md).
 
 ## Version 1.2.6 — hướng dẫn cho chat mới
 
 Đọc [CONTENT_AUTHORING.md](CONTENT_AUTHORING.md) để bắt đầu chỉ bằng một câu yêu cầu. Với chat ngoài workspace, đính kèm [WORTIFY_AUTHORING_RULES.txt](WORTIFY_AUTHORING_RULES.txt): file đầy đủ luật, định dạng và mẫu cho flashcard, bài tập, lý thuyết và Reading. Xuất lại từ code bằng `npm run guide:content`.
+
+## Version 1.2.7 — import nội dung hệ thống một file
+
+Staff/Admin vào Manage → Import content, chọn một file JSON chứa cây Flashcards, Practice Hub và Reading, xem trước rồi nhập. Mẫu đầy đủ nằm ở `Frontend/public/templates/content-package.json`; hướng dẫn biên soạn trong CONTENT_AUTHORING.md. Giới hạn 50 MB, 5.000 node, 100.000 thẻ, 10 cấp folder.
+
+Gói hiển thị là Wortify trong System library, không hiện người nhập. Người học Add package để nhận bản riêng và tiến độ riêng. Cùng UUID không nhập trùng; gói sai bị hoàn tác. Cần chạy migrations mới trước khi sử dụng; Render đã tự migrate khi khởi động.
+
+Cả [CONTENT_AUTHORING.md](CONTENT_AUTHORING.md) và [WORTIFY_AUTHORING_RULES.txt](WORTIFY_AUTHORING_RULES.txt) đều chứa đủ hướng dẫn và mẫu: gửi nguyên một trong hai file cho chat, không cần sửa URL/tài khoản. Hướng dẫn khôi phục tài khoản dành riêng cho admin nằm ở [ADMIN_BACKUPS.md](ADMIN_BACKUPS.md).

@@ -1,3 +1,4 @@
+from api import content_packages
 from api import reading
 from api import admin_backups, admin_restore
 from api import backups
@@ -30,7 +31,7 @@ urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_regis
  path('api/me/backgrounds/<int:pk>/',backgrounds.remove),
  path('api/me/background/',personal_appearance.background),
  path('api/me/background/image/',personal_appearance.image),
- path('api/manage/backups/import/',admin_restore.restore),path('api/manage/backups/',admin_backups.emergency),
+ path('api/manage/content-packages/',content_packages.upload),path('api/manage/backups/import/',admin_restore.restore),path('api/manage/backups/',admin_backups.emergency),
  path('api/manage/summary/',management_center.summary),
  path('api/manage/api-docs/',api_reference.reference),
  path('api/manage/activity/',management_center.activity),
@@ -45,7 +46,7 @@ urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_regis
  path('api/manage/appearance/',management.site_appearance),path('api/site/appearance/',management.public_appearance),path('api/site/appearance/image/',management.site_appearance_image)]
 def route(pattern,view):urlpatterns.append(path('api/<str:language>/'+pattern,namespace(view)))
 for pattern,view in [
- ('reading/',reading.library),('reading/<int:pk>/',reading.detail),
+ ('system-library/',content_packages.library),('system-library/<uuid:pk>/copy/',content_packages.copy),('reading/',reading.library),('reading/<int:pk>/',reading.detail),
  ('profile/',community.profile),('classes/',community.classes),('classes/<int:pk>/',community.classroom),('classes/<int:pk>/assignments/',community.classroom_assignments),
  ('practice-hub/nodes/<int:pk>/copy/',practice_copy.copy_collection),
  ('decks/<int:pk>/review/',spaced_review.review_queue),

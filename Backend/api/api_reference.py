@@ -64,6 +64,11 @@ EXAMPLES = {
 }
 
 NOTES = {
+    'api.content_packages.upload': 'Staff/Admin only. Multipart file: wortify-content JSON version 1. preview=true validates without writes; confirm=IMPORT publishes an immutable Wortify system package and creates private copies for the importer. Maximum 50 MB, 5000 nodes, 100000 cards, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.',
+    'api.content_packages.library': 'Authenticated GET lists system packages for the current language, with counts, publisher=Wortify and imported status. No uploader identity is returned.',
+    'api.content_packages.copy': 'Authenticated POST copies the package tree into the current account, scoped to the URL language. Send an empty JSON object. Repeating the request returns the existing receipt without duplicate content.',
+    'api.admin_restore.restore': 'SUPERUSER ONLY. Multipart file=emergency ZIP; preview=true validates accounts and roles. confirm=RESTORE restores new accounts, permissions and private learning content. Existing usernames cause the entire import to fail. Maximum 512 MB and 1000 accounts. Password hashes are restored only when present in the export; sessions and cross-account memberships are not restored.',
+
     'api.reading.library': 'Private account/language Reading workspace, independent of Practice Hub. GET lists lessons. POST lessons:[{title,payload}] atomically creates 1-100 readings; payload uses presentation.interaction=reading, context, context_format in presentation, and choice/multi questions inferred from accepted_answers.',
     'api.reading.detail': 'GET a reading, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading.',
 
@@ -143,6 +148,8 @@ NOTES = {
 }
 
 MULTIPART = {
+    'api.content_packages.upload': [('file','file',''),('preview','text','true')],
+    'api.admin_restore.restore': [('file','file',''),('preview','text','true')],
     'api.backups.restore': [('file','file',''),('preview','text','true')],
     'api.practice_media.upload': [('file','file','')],
     'api.management_center.content_upload': [('file','file','')],
@@ -199,7 +206,7 @@ def reference_data():
         group = 'Learning & content'
         if '/manage/' in path:
             group = 'Administration'
-            role = 'Admin' if key in ('api.management_data.overview','api.monitoring.logs','api.management.site_appearance','api.api_reference.reference','api.admin_backups.emergency') else 'Admin / Staff'
+            role = 'Admin' if key in ('api.management_data.overview','api.monitoring.logs','api.management.site_appearance','api.api_reference.reference','api.admin_backups.emergency','api.admin_restore.restore') else 'Admin / Staff'
         elif key.startswith('api.themes.') or '/me/' in path or '/site/' in path: group = 'Appearance & media'
         elif public: group = 'Session & health'
         elif key == 'api.monitoring.report': group, role = 'Server monitoring', 'Monitor key'

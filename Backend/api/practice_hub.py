@@ -255,7 +255,7 @@ def explore(request):
         interaction = payload.get('presentation', {}).get('interaction', 'short_answer') if node.kind == 'exercise' else ''
         if node.kind == 'exercise' and interaction not in PUBLIC_MODES: continue
         if mode and interaction != mode: continue
-        author = node.owner.get_full_name().strip() or node.owner.get_username()
+        author = 'Wortify' if (node.owner.is_staff or node.owner.is_superuser) else (node.owner.get_full_name().strip() or node.owner.get_username())
         title = search_text(node.title)
         description = str(payload.get('instruction') or payload.get('context') or '')
         searchable = ' '.join([title, search_text(description), search_text(author), search_text(payload.get('context', '')), search_text(payload.get('content', '')), ' '.join(search_text(q.get('prompt', '')) for q in payload.get('questions', []))])

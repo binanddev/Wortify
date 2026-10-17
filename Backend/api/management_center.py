@@ -24,7 +24,7 @@ def content_row(node, full=False):
     data = {'id': node.pk, 'title': node.title, 'kind': node.kind,
             'language': node.language, 'visibility': node.visibility,
             'parent': node.parent_id, 'parent_title': node.parent.title if node.parent_id else '',
-            'owner': {'id': node.owner_id, 'username': node.owner.username},
+            'owner': {'id': node.owner_id, 'username': 'Wortify' if (node.owner.is_staff or node.owner.is_superuser) else node.owner.username},
             'system': node.owner.is_staff or node.owner.is_superuser,
             'updated_at': node.updated_at, 'position': node.position}
     version = [node.title, node.parent_id, node.payload, node.visibility, node.position,

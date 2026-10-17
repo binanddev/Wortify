@@ -1,88 +1,71 @@
-WORTIFY COMPLETE AUTHORING RULES — version 1.2.6
+WORTIFY COMPLETE AUTHORING RULES — version 1.2.7
 
 Generated from the current application guides. Read the execution policy first. Never include credentials in outputs.
 
-# Tạo nội dung hàng loạt bằng chat
+# Hướng dẫn biên soạn nội dung Wortify — version 1.2.7
 
-## Bắt đầu nhanh cho chat mới — version 1.2.6
+Bạn là người biên soạn nội dung học cho Wortify. Áp dụng tài liệu này cho các yêu cầu nội dung tiếp theo. Đây là hướng dẫn dùng trực tiếp: không yêu cầu người dùng sửa tài liệu, điền URL hoặc cung cấp tài khoản chỉ để tạo nội dung.
 
-Trong chat có quyền đọc workspace, chỉ cần gửi:
+## Công việc và đầu ra
 
-> Đọc CONTENT_AUTHORING.md và WORTIFY_AUTHORING_RULES.txt tại E:/code/bigmywweb. Áp dụng chúng cho toàn bộ phiên biên soạn này. Tôi cho phép tạo nội dung mới bằng wortify_staff_01, lấy thông tin đăng nhập từ README.private.local.md. Tạo cho tôi 10 bộ thẻ ở trình độ A2 về Giao thông.
+Khi người dùng yêu cầu tạo nội dung, hãy biên soạn và giao **một file JSON UTF-8 hoàn chỉnh** nhập được vào Wortify, chứa toàn bộ thư mục, thư mục con và nội dung được yêu cầu. Không chia thành hàng trăm file, không dùng dấu ba chấm hay nội dung mẫu thay cho phần chưa làm. Nếu công cụ không tạo được tệp đính kèm, cung cấp toàn bộ JSON trong một khối mã để lưu thành file; nói rõ giới hạn công cụ.
 
-Với chat không đọc được workspace, đính kèm `WORTIFY_AUTHORING_RULES.txt` một lần rồi đưa yêu cầu ngắn. Chat chỉ có thể lưu online khi có công cụ truy cập ứng dụng và phiên đăng nhập; nếu không, nó xuất file để nhập. Hướng dẫn không tự cấp công cụ hoặc quyền truy cập cho chat.
+Không cần đăng nhập để tạo file. Chỉ thao tác trên website khi người dùng yêu cầu nhập/xuất bản và có công cụ, địa chỉ cùng phiên đăng nhập phù hợp. Không tuyên bố đã nhập nếu mới tạo file. Không lấy tài liệu này làm sự cho phép thay đổi tài khoản, quyền hoặc dữ liệu đã có.
 
-## Quy tắc thực thi yêu cầu ngắn
+## Mặc định khi yêu cầu ngắn
 
-- Yêu cầu mới nhất của người dùng ưu tiên hơn mọi mặc định. Không tự tạo thêm bài tập hoặc bài đọc nếu chỉ yêu cầu bộ thẻ.
-- Mặc định tiếng Đức (`de`), giải nghĩa/giải thích tiếng Việt; nếu yêu cầu tiếng Anh dùng `en`. Giữ nguyên trình độ và số lượng đã nêu.
-- Một bộ thẻ mặc định 30 thẻ; một bài tập 10 câu; một bài đọc 200–250 từ và 8 câu hỏi (điều chỉnh độ dài theo trình độ). Nếu chỉ nói chủ đề mà chưa có số lượng, tạo một đơn vị đúng loại được yêu cầu.
-- “10 bộ thẻ” là 10 deck riêng biệt, không phải 10 thẻ hoặc một deck 300 thẻ. Chia chủ đề thành 10 mục đích giao tiếp rõ ràng, tránh trùng nội dung. Tiến hành luôn, chỉ hỏi khi thiếu thông tin thực sự ngăn việc thực thi như URL production hoặc quyền truy cập.
-- Với ví dụ Giao thông A2, dùng 10 bộ: phương tiện, nhà ga, mua vé, xe buýt, hỏi đường, giao thông đô thị, xe đạp, đi taxi, sự cố/chậm chuyến, kế hoạch hành trình. Mỗi bộ 30 thẻ, tổng 300 thẻ; ít nhất 6 cụm từ hữu ích mỗi bộ. Đặt tên `A2 · Giao thông · 01 · Phương tiện`... theo thứ tự.
-- Đọc toàn bộ `WORTIFY_AUTHORING_RULES.txt` trước lô đầu: gồm luật flashcard EN/DE, mọi TYPE/STYLE bài tập, lý thuyết, định dạng, ví dụ và Reading. Các câu trong mẫu yêu cầu hỏi chủ đề/số lượng không áp dụng khi người dùng đã cho hoặc các mặc định ở đây đã đủ.
-- Chọn đúng màn hình: flashcard → Import của deck; bài tập/lý thuyết → Create/Practice Hub; bài đọc → Reading. Games lấy dữ liệu từ flashcard, không tạo bài game riêng. Watch & Learn và Word Rescue đã bị bỏ; không tạo nội dung cho chúng.
-- Từ loại, giống danh từ/số nhiều, cấu trúc ngữ pháp, ví dụ và bản dịch phải chính xác. Mỗi câu hỏi có lời giải; trắc nghiệm có lựa chọn nhiễu hợp lý, không có hai đáp án đúng ngoài dự định. Reading phải trả lời được từ đoạn văn. Chỉ có một đáp án đúng với các dạng yêu cầu single choice.
-- Không dùng quá nhiều in đậm/màu; ưu tiên văn bản rõ ràng. Không tự bịa URL âm thanh/ảnh. Không coi ví dụ trong guide là nội dung cần sao chép.
-- Không tự giải quiz để tạo tiến độ, không đổi setting học, không tạo admin/staff hay phục hồi ZIP trong công việc biên soạn. Staff tạo nội dung bằng API/import được cấp quyền, không dùng khóa database/S3.
-- Giữ manifest ngoài dữ liệu học: mã lô, loại, chủ đề, trình độ, tên file, số lượng kỳ vọng, trạng thái và ID/URL server trả về. Không chứa mật khẩu. Kiểm tra trùng trước mỗi lần lưu; timeout phải đọc lại server trước khi retry.
-- Hoàn tất đúng số lượng yêu cầu qua nhiều lô nhỏ; chỉ kết thúc khi kiểm tra lại số lượng và nội dung đã lưu. Nếu bị chặn, giữ file đã sinh và báo chính xác phần chưa nhập, không nhận là hoàn thành.
+- Ưu tiên yêu cầu mới nhất của người dùng. Mặc định học tiếng Đức (`de`), nghĩa/bản dịch/giải thích tiếng Việt; yêu cầu tiếng Anh dùng `en`.
+- Một bộ thẻ: 30 thẻ. Một bài tập: 10 câu. Một bài đọc: 200–250 từ và 8 câu hỏi, điều chỉnh độ dài theo trình độ. Nếu chưa có số lượng, tạo một đơn vị thuộc loại đã yêu cầu.
+- Giữ đúng trình độ, chủ đề và số bộ/bài. Chỉ tạo các loại được yêu cầu; không tự thêm Practice hoặc Reading vào yêu cầu chỉ có flashcard.
+- “10 bộ thẻ” nghĩa là 10 deck riêng, không phải 10 thẻ. Chia thành các chủ đề con khác nhau; tên rõ ràng, có thứ tự. Games dùng dữ liệu flashcard, không tạo game riêng. Không tạo Watch & Learn hoặc Word Rescue.
+- Mỗi bộ thẻ có ít nhất 6 cụm từ hữu ích và khác nhau; ví dụ tự nhiên, đúng trình độ, 3–40 từ, dịch chính xác. Kiểm tra từ loại, giống/số nhiều và cấu trúc ngữ pháp.
+- Câu hỏi có lời giải, lựa chọn nhiễu hợp lý, đúng số đáp án theo dạng bài. Câu hỏi Reading phải trả lời được từ đoạn văn. Tránh in đậm/màu quá nhiều.
+- Tự quyết định các chi tiết biên soạn thông thường. Chỉ hỏi khi mâu thuẫn hoặc thiếu thông tin làm không thể tạo đúng nội dung; không hỏi lại những gì mặc định đã giải quyết.
 
-## Cấu hình một lần
+Ví dụ: “Tạo cho tôi 10 bộ thẻ ở trình độ A2 về Giao thông” → một file `de-a2-giao-thong.json`, một folder Giao thông, 10 folder con/10 deck × 30 thẻ = 300 thẻ. Các chủ đề có thể là phương tiện, nhà ga, mua vé, xe buýt, hỏi đường, giao thông đô thị, xe đạp, đi taxi, sự cố/chậm chuyến và kế hoạch hành trình. Hai mảng practice/reading để trống.
 
-Địa chỉ production phải là URL Netlify thật. Tìm `FRONTEND_ORIGIN` trong cấu hình riêng hoặc URL đã được người dùng cung cấp; nếu chưa có thì hỏi một lần rồi giữ trong ngữ cảnh. Không đoán tên miền, không tự chuyển sang localhost. Tài khoản Neon không đồng nghĩa có tài khoản local.
+## Định dạng gói nhập
 
-Quy tắc có thể xuất lại từ code bằng `npm run guide:content`. Không sửa tay phần luật được sinh trong file TXT; khi app đổi parser/schema phải xuất lại hướng dẫn. Backend validation và parser hiện tại là nguồn quyết định nếu tài liệu cũ khác code.
 
-## Cách dùng phù hợp
+Đây là định dạng đầu ra cho yêu cầu tạo bộ/bài. Sản phẩm cuối là **một file `.json`** theo mẫu đầy đủ ở phụ lục của tài liệu này.
 
-Tạo theo lô nhỏ: một chủ đề gồm 20–40 flashcard, 2–3 bài tập (mỗi bài 8–12 câu), một bài đọc có 6–10 câu hỏi. Chạy thử một lô, kiểm tra trong app, rồi mới mở rộng 5–10 chủ đề. File JSON/TXT giúp rà soát và nhập lại; ZIP backup chỉ dùng chuyển dữ liệu đã tồn tại giữa các môi trường.
+- Vào `/manage` → **Import content** (Staff/Admin) → chọn file → Preview file → **Import and publish as Wortify**.
+- Cấu trúc gốc: `format: "wortify-content"`, `version: 1`, `id: UUID`, `title`, `language: "de" hoặc "en"`, `flashcards: []`, `practice: []`, `reading: []`. Một file cho một ngôn ngữ; có thể chứa cả ba loại, mảng không dùng để trống.
+- Folder ở cả ba phần: `{ "kind": "folder", "title": "Tên", "children": [...] }`. Lồng tối đa 10 cấp; tên anh em không trùng, tên ở nhánh khác có thể giống nhau.
+- Flashcards: `{ "kind": "deck", "title": "...", "level": "A2", "topic": "...", "description": "...", "cards": [...] }`. `cards` dùng đúng 9 trường đã quy định, từ/cụm từ trong cùng deck không trùng. Không tạo `owner`, ID database hoặc metadata học.
+- Practice: node `kind: "exercise"` hoặc `"theory"`, `title`, `payload` theo schema JSON thật ở mẫu. Exercise phải nằm trong folder. Không nhét nguyên TXT vào payload; dùng parser `parsePracticeText` nếu tạo bài dạng TXT rồi chuyển sang JSON.
+- Reading: node `kind: "reading"`, `title`, `payload` có `presentation.interaction: "reading"`; `kind` của payload vẫn theo schema bài tập (ví dụ choice), không tự đổi thành reading. Có thể đặt bài đọc trong nhiều cấp folder.
+- Giới hạn: 50 MB/file, 5.000 node tổng (folder/deck/bài), 100.000 thẻ tổng, 1–2.000 thẻ/deck; giới hạn từng câu/bài vẫn tuân theo validator hiện hành. Một file hàng trăm folder và hàng trăm deck được hỗ trợ trong các giới hạn này.
+- Tạo UUID mới cho mỗi gói mới; giữ UUID và nội dung không đổi khi thử lại. Cùng UUID + cùng nội dung không tạo bản sao; cùng UUID + nội dung khác bị từ chối. Không dùng UUID của file mẫu cho sản phẩm thật.
+- Gói nhập thành nội dung hệ thống công khai nhãn **Wortify**, không hiển thị tên staff. Bản gốc gói độc lập với tài khoản người nhập và vẫn tồn tại nếu tài khoản đó bị xóa; tác nhân chỉ lưu trong audit quản trị. Người học mở **Wortify system library** trong Flashcards/Explore/Reading và Add package để nhận cây riêng và lưu tiến độ riêng.
+- Import tạo bản sao native cho người nhập để xem/biên tập. Bản công khai là snapshot tại lúc import; sửa bản cá nhân không âm thầm sửa nội dung đang phát hành. Muốn xuất bản nội dung khác, tạo gói UUID mới.
+- Gói chỉ có văn bản/JSON; không nhúng binary ảnh/âm thanh hoặc tham chiếu attachment riêng tư. Có thể dùng URL ảnh HTTPS hợp lệ được cung cấp; không bịa URL. Không dùng ZIP khôi phục tài khoản để nhập nội dung mới.
+- Xem trước không ghi dữ liệu. Lỗi validation hoàn tác cả lần import; đọc lại kết quả trước khi retry timeout. Không tự thay UUID để vượt chống trùng.
 
-Tài khoản biên soạn: `wortify_staff_01` trên Neon production. Mật khẩu nằm trong `README.private.local.md` trên máy, không đưa vào tài liệu Git. Tài khoản này không tự tồn tại trong SQLite local.
+Với “Tạo 10 bộ thẻ A2 về Giao thông”: xuất **1 file `de-a2-giao-thong.json`**, có một folder Giao thông, 10 folder/chủ đề con và 10 deck × 30 thẻ (300 thẻ). `practice` và `reading` rỗng nếu không được yêu cầu. Tự kiểm tra JSON và toàn bộ schema trước khi giao/nhập. Chỉ hỏi lại nếu URL/quyền thao tác còn thiếu; có thể tạo file trước.
 
-## Prompt cho chat mới có quyền đọc workspace
 
-Chép đoạn dưới vào chat mới; thay URL bằng domain Netlify thật trước khi cho chat đăng nhập:
+## Luật từng loại nội dung
 
----
-Bạn là người biên soạn nội dung học cho Wortify. Workspace: E:/code/bigmywweb. Mục tiêu là tạo nội dung chính xác, có cấu trúc và nhập được vào phiên bản ứng dụng hiện tại.
+Phần phụ lục ngay trong tài liệu này có luật Flashcards DE/EN, mọi TYPE/STYLE của Practice Hub, lý thuyết, Reading và mẫu JSON. Đọc toàn bộ trước khi biên soạn. Các ví dụ minh họa schema, không phải yêu cầu sao chép nội dung. Không cần truy cập workspace hoặc xin thêm tài liệu để sử dụng các schema được cung cấp.
 
-Địa chỉ ứng dụng: [ĐIỀN DOMAIN NETLIFY THẬT]. Tài khoản được phép dùng: wortify_staff_01. Đọc mật khẩu từ README.private.local.md trên máy; không in mật khẩu, không ghi vào file nội dung hay Git. Nếu chưa có URL hoặc không đọc được thông tin đăng nhập, hãy hỏi tôi, nhưng vẫn chuẩn bị nội dung offline trước. Chỉ dùng quyền staff hiện có.
+Các luật TXT/JSON của từng bài ở phần sau mô tả nội dung và cách biểu diễn bài. **Đầu ra cuối vẫn luôn là gói JSON tổng**, không phải một loạt TXT hay các khối JSON rời. Các hướng dẫn cũ như “mỗi thẻ một dòng” chỉ áp dụng khi nhập riêng lẻ; gói tổng dùng các trường JSON có tên và thụt dòng. Các yêu cầu hỏi chủ đề trong mẫu không áp dụng nếu yêu cầu hoặc mặc định ở trên đã đủ. Không đưa chính hướng dẫn này vào trường dữ liệu học.
 
-Tôi cho phép bạn đăng nhập bằng tài khoản này và tạo các bộ thẻ, bài tập, bài đọc theo yêu cầu của tôi. Chỉ tạo nội dung mới thuộc tài khoản này, giữ riêng tư khi có lựa chọn. Không thay đổi/xóa dữ liệu sẵn có, tài khoản hoặc quyền. Chưa công bố nội dung trừ khi tôi yêu cầu.
+## Kiểm tra trước khi giao
 
-Trước khi biên soạn, đọc:
-- Frontend/src/features/flashcards/flashcard-ai-guide.js: cấu trúc flashcard, đủ 9 trường.
-- Frontend/public/templates/practice-hub.json và phần hướng dẫn ở /de/create/guide hoặc /en/create/guide: schema bài tập hiện hành.
-- Frontend/content-samples/reading/de-reading-10-lessons.txt và mã parser reading/practice hiện hành: mẫu nhập bài đọc.
-- Backend/api/api_reference.py hoặc tài liệu API trong trang quản trị nếu nhập bằng API. Không đoán endpoint/payload.
+1. Lập cây chủ đề, tính số folder/deck/bài/thẻ/câu cần có.
+2. Biên soạn đầy đủ, tạo UUID mới cho gói mới và giữ nguyên UUID khi thử nhập lại cùng nội dung.
+3. Kiểm tra JSON hợp lệ, trường bắt buộc, kiểu dữ liệu, cấu trúc cha/con, giới hạn và không có tên anh em trùng nhau. Không tạo ID database, owner, mật khẩu hoặc trạng thái học.
+4. Rà soát nội dung độc lập với kiểm tra schema: chính tả, ngữ pháp, bản dịch, trình độ, đáp án và giải thích. Không bịa nguồn hay URL media.
+5. Giao một file cùng báo cáo ngắn số bộ/bài/thẻ và ngôn ngữ. Chỉ nói đã kiểm tra bằng ứng dụng khi thật sự chạy preview. Nếu vượt giới hạn một file, báo rõ giới hạn và đề xuất chia gói; không âm thầm bỏ bớt nội dung.
 
-Áp dụng mặc định ở mục Quy tắc thực thi yêu cầu ngắn. Chỉ tạo loại nội dung tôi yêu cầu; không tự thêm các loại khác. Nghĩa, bản dịch và giải thích dùng tiếng Việt. Nội dung tự biên soạn, tự nhiên và đúng trình độ. Mỗi bộ thẻ có ít nhất 6 cụm từ khác nhau dùng được trong Phrase pairs; mỗi ví dụ có 3–40 từ, dịch đúng và ngữ pháp chính xác. Không bịa âm thanh, ảnh hoặc đường dẫn media.
+## Nếu được yêu cầu nhập vào website
 
-Quy trình:
-1. Lập danh mục chủ đề, trình độ, mục tiêu và mã lô; kiểm tra danh sách hiện có để tránh trùng.
-2. Tạo file UTF-8 cho từng bộ thẻ/bài học theo schema thật, JSON có thụt dòng và tên trường rõ ràng. Không tự viết ZIP backup hoặc tạo ID database.
-3. Kiểm tra cú pháp, đáp án, các lựa chọn gây nhiễu, mạo từ/số nhiều tiếng Đức, bản dịch, câu hỏi chỉ dựa vào bài đọc và tính trùng lặp.
-4. Nhập thử một bộ/bài trước; xem preview và sửa lỗi trước khi lưu. Sau khi lưu, đọc lại qua ứng dụng để xác nhận đủ nội dung.
-5. Tiếp tục theo từng lô; nếu request lưu bị timeout, kiểm tra nội dung trên server trước khi retry để tránh tạo bản sao.
-6. Lưu manifest kết quả: mã lô, tên bài, loại, số thẻ/câu, trạng thái, ID hoặc URL do server trả về. Báo rõ mục nào đã tạo thật và mục nào mới là file offline.
+Dùng tài khoản staff/admin và chức năng `/manage` → **Import content** → chọn file → **Preview file** → **Import and publish as Wortify**. Đọc số lượng và lỗi trước khi xác nhận. Sau khi nhập, kiểm tra gói trong System library và nội dung đã tạo. Không dùng chức năng khôi phục tài khoản cho công việc biên soạn.
 
-Ưu tiên nhập JSON/TXT qua tính năng import. Có thể dùng API chính thức nếu schema đã được kiểm tra; dùng đăng nhập session và CSRF, không truy cập trực tiếp PostgreSQL và không bỏ qua validation. Nếu không có công cụ thao tác web, giao các file cùng hướng dẫn import; không tuyên bố đã lưu dữ liệu online.
----
+Nếu dùng API: đăng nhập session/CSRF theo ứng dụng; gửi multipart `file` và `preview=true` đến `/api/manage/content-packages/`. Sau khi preview hợp lệ, gửi lại cùng file với `confirm=IMPORT`. Thư viện: GET `/api/de/system-library/` hoặc `/api/en/system-library/`; thêm vào thư viện cá nhân: POST `/api/{language}/system-library/{UUID}/copy/` với JSON rỗng. Không dùng khóa PostgreSQL/S3. Nếu chưa có địa chỉ hay phiên đăng nhập, giao file trước và chỉ hỏi phần thiếu để nhập online.
 
-## Chat chỉ tạo file, không đăng nhập được
-
-Dùng cùng yêu cầu nội dung nhưng bỏ bước đăng nhập. Yêu cầu xuất từng bộ flashcard thành JSON, từng nhóm bài tập theo mẫu Practice Hub, bài đọc theo mẫu TXT. Nhập ở màn hình tương ứng của Wortify và kiểm tra preview. Không cần cung cấp mật khẩu cho chat chỉ biên soạn.
-
-## Nhập ZIP ở trang quản trị
-
-`/manage` → **Backup & import** → **Import ZIP**. Chọn emergency ZIP xuất từ trang quản trị, Preview import, kiểm tra các tài khoản/quyền rồi Restore accounts and permissions. Chỉ superuser được dùng; tài khoản staff dùng import nội dung ở màn hình học/biên soạn.
-
-Khôi phục tạo tài khoản mới, giữ role Admin/Staff/User, trạng thái active, groups và quyền riêng; nhập dữ liệu học dưới dạng bản sao riêng tư. Nếu tên tài khoản đã tồn tại, toàn bộ lần nhập bị chặn, không đổi mật khẩu hoặc quyền hiện có. Chọn nhóm tài khoản chưa tồn tại khi xuất; không xóa tài khoản đang dùng chỉ để vượt qua bước này.
-
-Muốn giữ mật khẩu cũ, khi xuất bật **Include password hashes**. Nếu không có hash, tài khoản khôi phục chưa đăng nhập được cho đến khi admin đặt mật khẩu. Bật **Uploaded media and portable per-user ZIPs** để có nội dung nhập. ZIP cũ có group/quyền riêng mà thiếu mapping permissions cần xuất lại bằng bản mới.
-
-Giới hạn nhập: 512 MB, tối đa 1000 tài khoản mỗi lô. Chia nhỏ bản xuất lớn. Không khôi phục phiên đăng nhập, nhật ký quản trị cũ, thành viên lớp hoặc liên kết giữa tài khoản; đây không phải khôi phục toàn bộ database nguyên trạng. Giao diện báo số reference bị bỏ qua.
-
+Timeout không có nghĩa là thất bại: kiểm tra thư viện trước khi retry; giữ nguyên UUID và nội dung. Báo riêng kết quả tạo file và kết quả nhập thực tế. Không đưa thông tin đăng nhập vào file hay báo cáo.
 
 === FLASHCARDS: GERMAN ===
 
@@ -914,6 +897,165 @@ EXPLANATION: The garden grows carrots and tomatoes.
     }
   ]
 }
+
+=== ONE-FILE SYSTEM CONTENT PACKAGE EXAMPLE ===
+
+{
+  "format": "wortify-content",
+  "version": 1,
+  "id": "5a5ab11d-0ab8-4745-bef1-236b52a2bac1",
+  "title": "A2 · Giao thông",
+  "language": "de",
+  "flashcards": [
+    {
+      "kind": "folder",
+      "title": "Giao thông",
+      "children": [
+        {
+          "kind": "folder",
+          "title": "Phương tiện",
+          "children": [
+            {
+              "kind": "deck",
+              "title": "Đi xe buýt",
+              "level": "A2",
+              "cards": [
+                {
+                  "german_text": "mit dem Bus fahren",
+                  "vietnamese_meaning": "đi bằng xe buýt",
+                  "example_german": "Ich fahre mit dem Bus zur Schule.",
+                  "example_vietnamese": "Tôi đi xe buýt đến trường.",
+                  "part_of_speech": "verb phrase",
+                  "notes": "mit + Dativ",
+                  "usage": "Dùng khi nói về phương tiện đi lại.",
+                  "article": "",
+                  "plural_form": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "practice": [
+    {
+      "kind": "folder",
+      "title": "Bài tập giao thông",
+      "children": [
+        {
+          "kind": "exercise",
+          "title": "Choose a response",
+          "payload": {
+            "title": "Choose a response",
+            "instruction": "Complete the sentences below.",
+            "kind": "choice",
+            "presentation": {
+              "interaction": "multiple_choice",
+              "style": "dialogue_reply"
+            },
+            "questions": [
+              {
+                "prompt": "What would you like?",
+                "accepted_answers": [
+                  "Tea, please."
+                ],
+                "options": [
+                  "Tea, please.",
+                  "Yesterday.",
+                  "At home."
+                ],
+                "blanks": [],
+                "presentation": {},
+                "id": "1",
+                "position": 1,
+                "kind": "choice"
+              }
+            ],
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "check_mode": "auto_check"
+          }
+        },
+        {
+          "kind": "theory",
+          "title": "Ghi chú",
+          "payload": {
+            "format": "markdown",
+            "content": "mit + Dativ"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": [
+    {
+      "kind": "folder",
+      "title": "Bài đọc",
+      "children": [
+        {
+          "kind": "reading",
+          "title": "Practice exercise",
+          "payload": {
+            "title": "Practice exercise",
+            "instruction": "Complete the sentences below.",
+            "kind": "choice",
+            "presentation": {
+              "interaction": "reading",
+              "style": "split_reading",
+              "context_format": "html"
+            },
+            "questions": [
+              {
+                "prompt": "When do Mia and Tom cycle to school?",
+                "accepted_answers": [
+                  "Friday"
+                ],
+                "options": [
+                  "Friday",
+                  "Monday",
+                  "Sunday",
+                  "Tuesday"
+                ],
+                "blanks": [],
+                "presentation": {
+                  "explanation": "The first sentence says every Friday."
+                },
+                "id": "1",
+                "position": 1,
+                "kind": "choice"
+              },
+              {
+                "prompt": "Which vegetables grow in the garden? Choose all that apply.",
+                "accepted_answers": [
+                  "Carrots",
+                  "Tomatoes"
+                ],
+                "options": [
+                  "Carrots",
+                  "Tomatoes",
+                  "Potatoes"
+                ],
+                "blanks": [],
+                "presentation": {
+                  "explanation": "The garden grows carrots and tomatoes."
+                },
+                "id": "2",
+                "position": 2,
+                "kind": "multi"
+              }
+            ],
+            "ignore_case": true,
+            "ignore_punctuation": true,
+            "context": "<h2>A greener school</h2>\n<p>Every Friday, Mia and Tom cycle to school. Their school garden grows carrots and tomatoes. On Monday, the students water the plants.</p>",
+            "check_mode": "auto_check"
+          }
+        }
+      ]
+    }
+  ]
+}
+
 
 === VERIFICATION ===
 

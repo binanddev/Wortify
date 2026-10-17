@@ -59,6 +59,7 @@ class PracticeProgress(models.Model):
 
 
 class ReadingLesson(models.Model):
+    folder = models.ForeignKey("ReadingFolder", null=True, blank=True, on_delete=models.SET_NULL)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     language = models.CharField(max_length=2, choices=[('en','English'),('de','German')])
     title = models.CharField(max_length=200)
@@ -66,3 +67,28 @@ class ReadingLesson(models.Model):
     completed = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class ReadingFolder(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    language = models.CharField(max_length=2)
+    title = models.CharField(max_length=200)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+
+
+class SystemContentPackage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=200)
+    language = models.CharField(max_length=2)
+    digest = models.CharField(max_length=64)
+    document = models.JSONField()
+    counts = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class PackageReceipt(models.Model):
+    package = models.ForeignKey(SystemContentPackage, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    result = models.JSONField(default=dict)
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['package','user'], name='unique_package_user')]
