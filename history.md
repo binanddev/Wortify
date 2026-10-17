@@ -1,5 +1,12 @@
 # Change Log
 
+### [v1.2.8] - 2026-10-17 | Workspace cleanup
+
+- Moved both standalone content-authoring guides into docs/authoring and updated README links and the guide exporter.
+- Removed generated local test logs, previews, build outputs and caches; preserved local database, media, environment configuration. Removed obsolete development recovery backups after explicit confirmation.
+
+---
+
 ### [v1.2.7] - 2026-10-17 | One-file system content imports
 
 - Added staff/admin JSON package import with preview, atomic validation and retry-safe package IDs.
