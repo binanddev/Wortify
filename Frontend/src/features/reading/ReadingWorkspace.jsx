@@ -1,3 +1,4 @@
+import VisibilitySelect from "../../components/ui/VisibilitySelect.jsx";
 import ContentSwitcher from "../../components/navigation/content-switcher.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import ReadingDiscover from "./ReadingDiscover.jsx";
@@ -118,7 +119,7 @@ export default function ReadingWorkspace({ lang, route, userId, sound }) {
     <div className="reading-library">{lessons.filter(item=>(item.folder_id||null)===folderId).map(item=><Glass key={item.id}><h2>{item.title}</h2><Link to={`/${lang}/reading/${item.id}`}>{tr("Read & answer →")}</Link></Glass>)}</div>
   </>}
   {sharing && <PracticeModal title={tr("Sharing & categories")} onClose={()=>setSharing(null)} pending={busy}>
-    <Select label={tr("Visibility")} value={sharing.visibility} onChange={v=>setSharing(s=>({...s,visibility:v}))}><option value="private">{tr("Private")}</option><option value="public">{tr("Public")}</option></Select>
+    <VisibilitySelect value={sharing.visibility} onChange={v=>setSharing(s=>({...s,visibility:v}))} />
     <p className="text-sm">{tr("Public readings appear in Explore. Other learners can read and practice them.")}</p>
     <Select label={tr("Level")} value={sharing.level} onChange={v=>setSharing(s=>({...s,level:v}))}><option value="">{tr("Level not specified")}</option>{['A1','A2','B1','B2','C1','C2'].map(v=><option key={v} value={v}>{v}</option>)}</Select>
     <Field label={tr("Topic")} value={sharing.topic} maxLength={80} onChange={v=>setSharing(s=>({...s,topic:v}))}/>

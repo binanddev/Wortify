@@ -1,3 +1,4 @@
+from content.sharing import SharedContent
 import uuid
 from django.conf import settings
 from django.db import models
@@ -24,7 +25,9 @@ class Folder(models.Model):
         return self.name
 
 
-class Deck(models.Model):
+class Deck(SharedContent):
+    visibility = models.CharField(max_length=10, default="private", choices=[("private","Private"),("public","Public")])
+    source_deck = models.ForeignKey("self", null=True, blank=True, on_delete=models.SET_NULL, related_name="personal_copies")
     folder = models.ForeignKey(Folder, verbose_name='Folder', null=True, blank=True, on_delete=models.SET_NULL, related_name='decks')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     archived = models.BooleanField(default=False)

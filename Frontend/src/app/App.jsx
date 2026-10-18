@@ -1,3 +1,4 @@
+import FlashcardDiscover from "../features/flashcards/flashcard-discover.jsx";
 import { t as tr, setLanguage, useLocale } from "../i18n/index.js";
 import { ReadingWorkspace, Explore, ExerciseStudio, PracticeGuide, FlashcardStudio, PracticeHub, Admin } from "./workspace-pages.js";
 import PracticeArea from "../features/practice/PracticeArea.jsx";
@@ -395,11 +396,11 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
   useThemeBackground(prefs.interface, user.id);
   const navWidth = widthForScale(prefs.navScale);
   const [smallScreen, setSmallScreen] = useState(
-    () => window.matchMedia("(max-width: 1024px)").matches,
+    () => window.matchMedia("(max-width: 1024px), (any-pointer: coarse)").matches,
   );
   const [navOpen, setNavOpen] = useState(false);
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 1024px)");
+    const media = window.matchMedia("(max-width: 1024px), (any-pointer: coarse)");
     const change = () => {
       setSmallScreen(media.matches);
       setNavOpen(false);
@@ -778,7 +779,7 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
   let content;
   if (section === "flashcard") {
     content =
-      parts[2] === "deck" ? (
+      parts[2] === "discover" ? <FlashcardDiscover lang={lang}/> : parts[2] === "deck" ? (
         parts[4] === "edit" ? (
           <Deck key={parts[3]} lang={lang} id={parts[3]} sound={prefs.sound} />
         ) : (

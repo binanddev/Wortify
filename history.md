@@ -1,5 +1,19 @@
 # Change Log
 
+### [v1.4.0] - 2026-10-18 | Public content, discovery and import controls
+
+- Added a shared publishing policy for staff and administrators: publish all existing and future learning content, or let users choose public/private. Switching back to user choice preserves current visibility. Enforced the policy for normal edits, imports and bulk writes across flashcards, practice and reading.
+- Added public Flashcard Explore with search, level/topic filters and independent personal deck copies. Repeated saves reuse the existing copy; learning progress is not copied.
+- Unified public Practice Explore and migrated Wortify packages into the same catalogue as other public authors, removing the separate system-library panel.
+- Split staff file imports and bot API instructions into Flashcard, Practice Hub and Reading sections. Added compact DECK/TERM/MEANING syntax with optional example, translation and part of speech; validated section matching before publication.
+- Updated OpenAPI, section-specific templates, English/Vietnamese/German labels and both standalone authoring guides. Added a clear backend-update error for deployed services missing the import API.
+- Extended touch navigation handling to iPad widths beyond the mobile breakpoint and explicitly hid inactive navigation faces to prevent mirrored overlap.
+- Added Refresh application in Settings to clear application caches and reload while retaining local preferences and pending learning data.
+- Validation: 248 backend tests and 124 frontend tests passed; four focused publishing-policy tests passed after the final API regression check. Production frontend build passed. No web/server was started; physical iPad verification remains outstanding.
+- Deployment: apply the included cards, content and practice migrations. Update Render and Netlify together; an older Render deployment still returns 404 for the import API. The default publishing policy remains user choice until staff/admin changes it.
+
+---
+
 ### [v1.3.1] - 2026-10-18 | Mobile navigation repair
 
 - Replaced the mobile 3D navigation flip with a single visible drawer panel to prevent mirrored, overlapping menus on iOS/Safari. Desktop navigation keeps its existing animation.

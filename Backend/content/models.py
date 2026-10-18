@@ -19,3 +19,8 @@ class BackendCheck(models.Model):
 
     class Meta:
         ordering = ['-checked_at', '-pk']
+
+
+class ContentPolicy(models.Model):
+    mode = models.CharField(max_length=16, default='choice', choices=[('choice', 'User choice'), ('public', 'All public')])
+    updated_at = models.DateTimeField(auto_now=True)

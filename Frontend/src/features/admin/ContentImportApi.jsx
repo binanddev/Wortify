@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { request, useResource, readPreference, savePreference } from "../../lib/core.js";
 import { Btn, Loading, Status, Confirm } from "../../components/ui/ui.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
-export default function ContentImportApi() {
+export default function ContentImportApi({section="practice"}) {
   useLocale();
   const flight = useRef(false);
   const resource = useResource("/api/manage/import-api/", true);
@@ -16,6 +16,7 @@ export default function ContentImportApi() {
   const [editingEndpoint, setEditingEndpoint] = useState(false);
   const [draftEndpoint, setDraftEndpoint] = useState(url);
   const [endpointError, setEndpointError] = useState("");
+  const importUrl = `${url}?section=${section}`;
   const origin = url.replace(/\/api\/import\/content\/$/, "");
   function editEndpoint() { setDraftEndpoint(url); setEndpointError(""); setEditingEndpoint(true); }
   function saveEndpoint(event) {
@@ -51,17 +52,13 @@ export default function ContentImportApi() {
       setBusy(false);
     }
   }
-  const preview = `curl "${url}" -H "Authorization: Bearer YOUR_IMPORT_KEY" -F "file=@content-package.txt;type=text/plain" -F "preview=true"`;
+  const preview = `curl "${importUrl}" -H "Authorization: Bearer YOUR_IMPORT_KEY" -F "file=@content-package.txt;type=text/plain" -F "preview=true"`;
   const publish = preview.replace("preview=true", "confirm=IMPORT") + ' -F "preview_token=TOKEN_FROM_PREVIEW"';
   return (
     <section className="space-y-4">
       <h2>{tr("Content import API")}</h2>
-      <p>
-        {tr(
-          "Enable an import-only key for scripts or your authoring assistant. Practice Hub and Reading only; flashcards remain personal.",
-        )}
-      </p>
-      <Loading resource={resource}>
+
+      <Loading resource={{...resource,error:resource.error?.includes("There is no API") ? tr("Update the Render backend to enable content import.") : resource.error}}>
         {(data) => (
           <>
             <p>
@@ -118,7 +115,7 @@ export default function ContentImportApi() {
         {editingEndpoint ? <form onSubmit={saveEndpoint} className="space-y-2">
           <input autoFocus type="text" aria-label={tr("Import endpoint")} className="w-full" value={draftEndpoint} onFocus={e=>e.target.select()} onChange={e=>setDraftEndpoint(e.target.value)} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();setEditingEndpoint(false);setEndpointError('');}}}/>
           <div className="flex gap-2"><Btn type="submit">{tr("Save changes")}</Btn><Btn onClick={()=>{setEditingEndpoint(false);setEndpointError('');}}>{tr("Cancel")}</Btn></div>
-        </form> : <button type="button" className="w-full text-left break-all rounded-xl border border-(--line) p-3" onDoubleClick={editEndpoint} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();editEndpoint();}}} title={tr("Double-click to edit endpoint")}>{url}</button>}
+        </form> : <button type="button" className="w-full text-left break-all rounded-xl border border-(--line) p-3" onDoubleClick={editEndpoint} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();editEndpoint();}}} title={tr("Double-click to edit endpoint")}>{importUrl}</button>}
         <p className="text-sm text-(--muted)">{tr("Double-click to edit endpoint")}</p>
         {endpointError&&<p role="alert">{tr(endpointError)}</p>}
         {url!==defaultUrl&&<Btn onClick={()=>{setUrl(defaultUrl);savePreference('wortify:content-import-endpoint',defaultUrl);setEditingEndpoint(false);setEndpointError('');}}>{tr("Use current site")}</Btn>}
@@ -146,7 +143,7 @@ export default function ContentImportApi() {
           )}
         </li>
       </ol>
-      <ContentImportGuide bot origin={origin} />
+      <ContentImportGuide bot section={section} origin={origin} />
       <p><a href={`${origin}/api/import/openapi/`} target="_blank" rel="noopener noreferrer">{tr("OpenAPI schema for bots")}</a></p>
       <p>{tr("Bots can send JSON with text and preview=true, then the same text with confirm=IMPORT and preview_token. The content itself uses the compact text format.")}</p>
       <h4>{tr("1. Preview")}</h4>
@@ -169,7 +166,7 @@ export default function ContentImportApi() {
       </p>
       <p>
         {tr(
-          "This key cannot manage accounts, restore backups or access personal flashcards. Keep it out of shared files and chat guides.",
+          "This key can only import content. Keep it out of shared files and chat guides.",
         )}
       </p>
       {confirm && (

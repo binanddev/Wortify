@@ -27,7 +27,7 @@ def decks(request):
     if request.method == 'POST':
         if body(request).get('language', request.language) != request.language:
             raise ValueError('Language must match the current workspace.')
-        deck = form_save(DeckForm({**body(request), 'language': request.language, 'level': body(request).get('level','A1')}, user=request.user, language=request.language), owner=request.user)
+        deck = form_save(DeckForm({**body(request), 'language': request.language, 'visibility': body(request).get('visibility','private'), 'level': body(request).get('level','A1')}, user=request.user, language=request.language), owner=request.user)
         return JsonResponse({'id': deck.pk}, status=201)
     qs = Deck.objects.filter(owner=request.user, language=request.language)
     folders = list(Folder.objects.filter(owner=request.user, language=request.language).values('id','name','parent_id','archived'))
@@ -44,7 +44,7 @@ def decks(request):
         qs = qs.filter(language=request.GET['language'])
     if request.GET.get('q'):
         qs = qs.filter(title__icontains=request.GET['q'][:100])
-    rows = list(qs.annotate(count=Count('cards')).order_by('-updated_at').values('id','title','description','level','language','folder_id','count','archived'))
+    rows = list(qs.annotate(count=Count('cards')).order_by('-updated_at').values('id','title','description','level','language','folder_id','count','archived','visibility','topic'))
     progress = StudyProgress.objects.filter(user=request.user, card__deck__language=request.language)
     per_deck = {p['card__deck_id']: p for p in progress.values('card__deck_id').annotate(mastered=Count('id', filter=Q(state='mastered')), due=Count('id', filter=Q(due_at__lte=timezone.now())|Q(state='weak')))}
     for row in rows:

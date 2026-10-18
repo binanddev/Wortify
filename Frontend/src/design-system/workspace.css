@@ -64,7 +64,7 @@
 .sidebar-tools-group .manage-terms-link {
   @apply justify-center text-center;
 }
-@media (max-width: 1024px) {
+@media (max-width: 1024px), (any-pointer: coarse) {
   .nav-flip {
     @apply w-[min(var(--nav-width,422px),calc(100vw-24px))];
   }
@@ -86,7 +86,7 @@
 .nav-scrim {
   @apply fixed inset-0 z-70 bg-black/35 border-0;
 }
-@media (max-width: 1024px) {
+@media (max-width: 1024px), (any-pointer: coarse) {
   .mobile-nav-bar {
     @apply fixed top-0 inset-x-0 z-73 flex items-center justify-between gap-2 p-2 pt-[max(8px,env(safe-area-inset-top))] bg-(--solid) border-b border-(--line);
   }
@@ -226,7 +226,7 @@
 .flash-route-nav svg {
   @apply shrink-0;
 }
-@media (max-width: 1024px) {
+@media (max-width: 1024px), (any-pointer: coarse) {
   .nav-resize {
     @apply hidden;
   }
@@ -236,7 +236,7 @@
 .nav-flip {
   @apply bottom-auto! h-[calc(100dvh-24px)];
 }
-@media (max-width: 1024px) {
+@media (max-width: 1024px), (any-pointer: coarse) {
   .nav-flip { @apply h-[calc(100dvh-84px)]; }
 }
 

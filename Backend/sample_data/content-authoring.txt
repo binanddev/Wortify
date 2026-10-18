@@ -1,5 +1,5 @@
 WORTIFY TEXT 1 — SYSTEM CONTENT AUTHORING
-Create original Practice Hub exercises/theory and Reading lessons. No flashcards, accounts or progress. Everything imported here is public system content, credited to Wortify. Return one UTF-8 .txt file, no Markdown fences or commentary.
+Create original flashcard decks, Practice Hub exercises/theory and Reading lessons. No accounts or progress. Everything imported here is public content credited to Wortify. Generate one file per section for the three separate import tools. Return one UTF-8 .txt file, no Markdown fences or commentary.
 Use the user request; do not ask again for supplied details. If unspecified, use A2, 10 questions per practice lesson, 5 questions per reading, Vietnamese explanations, and the requested learning language. Verify language and answers, not only syntax.
 
 PACKAGE HEADERS (once, before SECTION):
@@ -9,17 +9,18 @@ TITLE: package title, 1–200 characters
 LANGUAGE: en or de (one language per file)
 
 CONTAINER DIRECTIVES:
-SECTION: practice or reading. Switching section resets folder to /, level and topic to unspecified.
+SECTION: flashcards, practice or reading. Switching section resets folder to /, level and topic to unspecified.
 FOLDER: path such as A2/Travel/Transport. Paths start at section root; / means root. Folders are created automatically, reused within this file, up to 10 levels. No empty segments, . or ..; / cannot appear inside a folder name. Maximum 200 characters per name.
-LEVEL: A1/A2/B1/B2/C1/C2; applies to subsequent readings. TOPIC: consistent short topic, up to 80 characters. Use - to clear either.
+LEVEL: A1/A2/B1/B2/C1/C2; applies to subsequent readings and flashcard decks. TOPIC: consistent short topic, up to 80 characters. Use - to clear either.
 FOLDER, LEVEL and TOPIC apply until replaced; put them BETWEEN lessons, never inside a lesson. SECTION may repeat. Existing folders in other packages are not merged.
 EXERCISE: starts a lesson using the existing text rules below. TYPE: reading goes only in SECTION reading; the nine practice types go only in SECTION practice.
+DECK: title starts a flashcard deck in SECTION flashcards. Title max 150 characters; flashcard folder names max 100. LEVEL defaults to A1. Each card starts with TERM: then MEANING: (both required, max 500 characters each). Optional EXAMPLE: and TRANSLATION: max 2000 characters each, POS: max 50. Use > for line breaks. No article/plural/notes/usage/alternative answers. Maximum 2000 cards per deck, 100000 per package. No duplicate terms within a deck.
 THEORY: title is allowed only in SECTION practice. Follow with CONTENT: Markdown then > continuation lines. It is not an EXERCISE. Maximum 2 MB theory content.
 Use > continuation for multiline text, including any line resembling a directive. Blank lines and # comments are ignored. No explicit END markers, JSON objects, database IDs or user identifiers.
 Unique sibling titles across folders/lessons. Maximum 5000 nodes including generated folders and 50 MB/file. More than 100 lessons is allowed; each lesson still has 1–100 questions including a non-example. Keep a package small enough for the bot's request limits; split into new packages only for distinct content.
 No uploaded/private attachments in packages. Use only supplied, legitimate HTTPS image URLs. Never invent media URLs.
 
-COMPLETE MIXED EXAMPLE (replace UUID and content for a new package):
+EXAMPLE (replace UUID and content for a new package):
 WORTIFY: 1
 ID: 7cdbb39c-e1ee-4a49-a10f-f2ff1551f5bd
 TITLE: A2 Travel

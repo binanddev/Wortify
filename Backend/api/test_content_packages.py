@@ -25,8 +25,8 @@ class ContentPackageTests(TestCase):
         self.assertEqual(SystemContentPackage.objects.count(),0)
         response=self.upload(confirm='IMPORT');self.assertEqual(response.status_code,201,response.content)
         self.assertEqual(Deck.objects.count(),0)
-        self.assertEqual(ReadingLesson.objects.get().folder.title,'Bài đọc')
-        self.assertEqual(PracticeNode.objects.filter(kind='exercise').get().parent.title,'Bài tập giao thông')
+        self.assertEqual(ReadingLesson.objects.get(owner=self.staff).folder.title,'Bài đọc')
+        self.assertEqual(PracticeNode.objects.filter(owner=self.staff,kind='exercise').get().parent.title,'Bài tập giao thông')
 
     def test_retry_does_not_duplicate_and_changed_id_is_rejected(self):
         self.assertEqual(self.upload(confirm='IMPORT').status_code,201)
@@ -62,15 +62,15 @@ class ContentPackageTests(TestCase):
         template=self.data['practice'][0]
         self.data['practice']=[{**deepcopy(template),'title':f'Topic {i}'} for i in range(120)]
         result=self.upload(confirm='IMPORT');self.assertEqual(result.status_code,201,result.content)
-        self.assertEqual(PracticeNode.objects.filter(kind='exercise').count(),120)
+        self.assertEqual(PracticeNode.objects.filter(owner=self.staff,kind='exercise').count(),120)
         self.assertEqual(Deck.objects.count(),0)
 
-    def test_depth_and_flashcards_rejected(self):
+    def test_depth_and_invalid_flashcards_rejected(self):
         node={'kind':'folder','title':'leaf','children':[]}
         for i in range(10):node={'kind':'folder','title':str(i),'children':[node]}
         data=deepcopy(self.data);data['practice']=[node]
         self.assertEqual(self.upload(data,confirm='IMPORT').status_code,400)
-        for value in ([], [{'kind':'deck','title':'Private'}]):
+        for value in ({}, [{'kind':'deck','title':'Missing cards'}]):
             data=deepcopy(self.data);data['flashcards']=value
             self.assertEqual(self.upload(data,confirm='IMPORT').status_code,400)
         self.assertEqual(SystemContentPackage.objects.count(),0)

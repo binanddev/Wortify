@@ -1,3 +1,4 @@
+import RefreshApp from "./refresh-app.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import LanguageSettings from "../../i18n/LanguageSettings.jsx";
 import BackupSettings from "./BackupSettings.jsx";
@@ -91,6 +92,7 @@ function SettingsContent({
         description={tr("A comfortable space to see, hear and learn.")}
       />
       <LanguageSettings />
+      <RefreshApp />
       <SidebarTools navOnly>
         <div
           role="tablist"

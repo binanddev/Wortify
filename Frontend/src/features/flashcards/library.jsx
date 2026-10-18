@@ -1,3 +1,4 @@
+import VisibilitySelect from "../../components/ui/VisibilitySelect.jsx";
 import WorkspaceManager from "./workspace-manager.jsx";
 import ContentSwitcher from "../../components/navigation/content-switcher.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
@@ -59,6 +60,7 @@ function DeckOptions({ values, set, folders }) {
           </option>
         ))}
       </Select>
+      <VisibilitySelect value={values.visibility || "private"} onChange={visibility=>set({...values,visibility})} />
       <Select
         label={tr("Level")}
         value={values.level || "A1"}
@@ -217,6 +219,7 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
             startContent={<Icon name="search" />}
           />
           <div className="flash-icon-row">
+            <Link className="btn flash-icon-link" to={`/${lang}/flashcard/discover`} title={tr("Explore")} aria-label={tr("Explore")}><Icon name="search"/></Link>
             <Btn primary icon="plus" onClick={() => setPanel("add")}>{tr("Add new")}</Btn>
             <Btn icon="select" aria-pressed={selecting} onClick={() => { setSelecting(!selecting); setChecked([]); }}>{tr("Select decks")}</Btn>
             <Btn icon="settings" onClick={() => { setPanel("settings"); }}>{tr("Workspace options")}</Btn>

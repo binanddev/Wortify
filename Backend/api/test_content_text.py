@@ -46,7 +46,7 @@ class ContentTextTests(TestCase):
         self.assertEqual(response.json()['visibility'],'public')
         self.assertEqual(self.send(confirm='IMPORT',preview_token=preview['preview_token']).status_code,200)
         self.assertEqual(SystemContentPackage.objects.count(),1)
-        self.assertEqual(ReadingLesson.objects.count(),1)
+        self.assertEqual(ReadingLesson.objects.filter(owner=self.staff).count(),1)
         learner=get_user_model().objects.create_user('text-reader')
         self.client.force_login(learner)
         self.assertEqual(self.client.get('/api/en/reading/discover/').json()['total'],1)
@@ -90,7 +90,7 @@ class ContentTextTests(TestCase):
         published=self.send(large,confirm='IMPORT',preview_token=preview.json()['preview_token'])
         self.assertEqual(published.status_code,201,published.content)
         from practice.models import PracticeNode
-        self.assertEqual(PracticeNode.objects.filter(kind='exercise').count(),150)
+        self.assertEqual(PracticeNode.objects.filter(owner=self.staff,kind='exercise').count(),150)
 
     def test_theory_continuation_and_invalid_directives(self):
         text=self.text+'SECTION: practice\nFOLDER: Notes\nTHEORY: Tips\nCONTENT: # Heading\n> SECTION: literal text\n> **Bold**\n'

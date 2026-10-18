@@ -55,7 +55,7 @@ class ContentImportApiTests(TestCase):
     def test_flashcards_confirmation_and_session_not_accepted(self):
         key=self.enable()
         self.assertEqual(self.send(key).status_code,400)
-        self.data['flashcards']=[]
+        self.data['flashcards']=[{'kind':'deck','title':'Invalid empty deck'}]
         self.assertEqual(self.send(key,confirm='IMPORT').status_code,400)
         self.assertEqual(SystemContentPackage.objects.count(),0)
         self.assertEqual(self.client.post('/api/import/content/',{}).status_code,401)

@@ -1,5 +1,4 @@
 import { t as tr, useLocale } from "../../i18n/index.js";
-import SystemLibrary from "./SystemLibrary.jsx";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@heroui/react";
 import { motion, useReducedMotion } from "framer-motion";
@@ -330,7 +329,6 @@ function ExploreContent({ lang, userId }) {
   const ancestors = results.ancestors || [];
   return (
     <Page>
-      <SystemLibrary lang={lang}/>
       <SidebarTools navOnly>
         <div className="explore-nav">
           <nav className="studio-nav-shortcuts" aria-label={tr("Discover tools")}>

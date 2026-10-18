@@ -69,7 +69,7 @@
 .hub-import .glass-body {
   @apply gap-[18px];
 }
-@media (max-width: 1024px) {
+@media (max-width: 1024px), (any-pointer: coarse) {
   .main-shell {
     @apply [margin-left:0];
   }

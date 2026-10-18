@@ -64,6 +64,11 @@ EXAMPLES = {
 }
 
 NOTES = {
+    'api.content_policy.current': 'Authenticated read of publishing mode: choice or public.',
+    'api.content_policy.settings': 'Staff/Admin GET or PATCH mode=choice/public. Public publishes all existing decks, practice and readings. Choice preserves visibility and restores individual controls.',
+    'api.flashcard_discovery.discover': 'Public decks, q/level/topic filters, page of 24. Includes the owned copy ID when saved.',
+    'api.flashcard_discovery.copy': 'POST creates an independent owned copy, without learning state. Retrying returns the existing copy.',
+
     'api.reading_discovery.save': 'Authenticated POST {key} saves a private independent reading and copies immutable media ownership records. Repeated source/user/language returns the same reading ID. 201 saved, 200 already saved. Start learning on the returned private ID to persist progress.',
     'api.content_import_docs.guide': 'Public GET of complete Wortify Text authoring rules and examples. Returns UTF-8 plain text, no account data.',
     'api.content_import_docs.openapi': 'Public GET of the OpenAPI 3.1 schema for import bots. Contains only placeholders, never secrets.',

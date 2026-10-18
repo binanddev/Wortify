@@ -5294,5 +5294,33 @@
   "No cards in this session": {
     "vi": "Phiên học không còn thẻ",
     "de": "Keine Karten in dieser Sitzung"
+  },
+  "Publishing mode": {
+    "vi": "Chế độ công khai",
+    "de": "Veröffentlichungsmodus"
+  },
+  "All content public": {
+    "vi": "Tất cả công khai",
+    "de": "Alle Inhalte öffentlich"
+  },
+  "Users choose public or private": {
+    "vi": "Cho phép chọn công khai / riêng tư",
+    "de": "Nutzer wählen öffentlich oder privat"
+  },
+  "Refresh application": {
+    "vi": "Làm mới ứng dụng",
+    "de": "App neu laden"
+  },
+  "Add to My Flashcards": {
+    "vi": "Thêm vào thẻ của tôi",
+    "de": "Zu meinen Lernkarten hinzufügen"
+  },
+  "Update the Render backend to enable content import.": {
+    "vi": "Cập nhật backend trên Render để sử dụng API import.",
+    "de": "Aktualisiere das Render-Backend, um den Inhaltsimport zu aktivieren."
+  },
+  "This key can only import content. Keep it out of shared files and chat guides.": {
+    "vi": "Khóa chỉ dùng để nhập nội dung. Không đưa khóa vào file chia sẻ hoặc hướng dẫn chat.",
+    "de": "Dieser Schlüssel dient nur zum Inhaltsimport. Nicht in geteilte Dateien oder Chat-Anleitungen aufnehmen."
   }
 }

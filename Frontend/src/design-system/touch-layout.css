@@ -40,7 +40,7 @@
 
 /* Mobile navigation is a two-panel drawer, not a 3D card. Safari can flatten
    transformed faces when themes add filters, masks or scroll containers. */
-@media (max-width:1024px) {
+@media (max-width:1024px), (any-pointer:coarse) {
  :root[data-interface] body .nav-flip { @apply [perspective:none]!; }
  :root[data-interface] body .nav-flip-inner,
  :root[data-interface] body .nav-flip-inner.is-flipped { @apply transform-none! [transform-style:flat]! [transition:none]!; }
@@ -56,3 +56,7 @@
  :root[data-interface] body .workspace-context .sidebar-tools-group .btn:is([data-icon-only=true],[aria-label]) { @apply w-11 min-w-11 max-w-11 p-2; }
  :root[data-interface] body .workspace-context :is(.flash-icon-row,.reading-nav-tools,.toolbar) { @apply flex flex-wrap items-center gap-2; }
 }
+
+/* Never paint the reverse side, including Safari tablet compositing. */
+:root[data-interface] body .nav-face[aria-hidden="true"] { @apply invisible! opacity-0! pointer-events-none!; }
+:root[data-interface] body .nav-face[aria-hidden="false"] { @apply visible! opacity-100!; }

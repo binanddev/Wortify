@@ -129,7 +129,7 @@ def parse_lesson(lines):
 
 
 def parse_package(text):
-    document = {'format':'wortify-content','version':1,'practice':[],'reading':[]}
+    document = {'format':'wortify-content','version':1,'practice':[],'reading':[],'flashcards':[]}
     section = None
     folder = '/'
     level = topic = ''
@@ -143,7 +143,23 @@ def parse_package(text):
         if not section: raise ValueError(f'Line {start}: SECTION is required.')
         theory = block[0][1].startswith('THEORY:')
         title = block[0][1].split(':',1)[1].strip()
-        if theory:
+        is_deck = block[0][1].startswith('DECK:')
+        if is_deck:
+            if section != 'flashcards': raise ValueError(f'Line {start}: DECK belongs in flashcards.')
+            fields = {'TERM':'german_text','MEANING':'vietnamese_meaning','EXAMPLE':'example_german','TRANSLATION':'example_vietnamese','POS':'part_of_speech'}
+            cards=[]; card=None; last=None
+            for n, raw in block[1:]:
+                if raw.startswith('>') and card is not None and last:
+                    card[last] += '\n' + raw[1:].lstrip(); continue
+                key, sep, value = raw.partition(':')
+                if not sep or key not in fields: raise ValueError(f'Line {n}: Use TERM, MEANING, EXAMPLE, TRANSLATION or POS.')
+                if key == 'TERM': card={}; cards.append(card)
+                if card is None: raise ValueError(f'Line {n}: Start each card with TERM.')
+                last=fields[key]
+                if last in card: raise ValueError(f'Line {n}: Duplicate card field {key}.')
+                card[last]=value.strip()
+            payload={}
+        elif theory:
             if section != 'practice': raise ValueError(f'Line {start}: THEORY belongs in practice.')
             content=[]
             for n, raw in block[1:]:
@@ -153,9 +169,11 @@ def parse_package(text):
                 else: raise ValueError(f'Line {n}: Use CONTENT then > continuation lines for theory.')
             if not content: raise ValueError(f'Line {start}: Theory needs CONTENT.')
             payload={'format':'markdown','content':'\n'.join(content)}
-        else: payload=parse_lesson(block)
+        else:
+            if section == 'flashcards': raise ValueError(f'Line {start}: Flashcards require DECK.')
+            payload=parse_lesson(block)
         is_reading = payload.get('presentation',{}).get('interaction') == 'reading'
-        if not theory and is_reading != (section=='reading'): raise ValueError(f'Line {start}: TYPE reading must be in SECTION reading; other exercises in practice.')
+        if not theory and not is_deck and is_reading != (section=='reading'): raise ValueError(f'Line {start}: TYPE reading must be in SECTION reading; other exercises in practice.')
         parts=[] if folder=='/' else [p.strip() for p in folder.split('/')]
         if len(parts)>10 or any(not p or p in ('.','..') or len(p)>200 for p in parts): raise ValueError(f'Line {start}: Invalid FOLDER path (maximum 10 levels).')
         if not parts and section=='practice' and not theory: raise ValueError(f'Line {start}: Practice exercises require a FOLDER.')
@@ -166,7 +184,8 @@ def parse_package(text):
                 node={'kind':'folder','title':part,'children':[]};children.append(node);count+=1
             children=node['children']
         node={'kind':'theory' if theory else 'reading' if is_reading else 'exercise','title':title,'payload':payload}
-        if is_reading: node.update(level=level,topic=topic)
+        if is_deck: node={'kind':'deck','title':title,'level':level or 'A1','topic':topic,'cards':cards}
+        elif is_reading: node.update(level=level,topic=topic)
         children.append(node);count+=1
         if count>5000: raise ValueError(f'Line {start}: Maximum 5000 nodes.')
         block=[]
@@ -184,13 +203,13 @@ def parse_package(text):
         elif key in ('SECTION','FOLDER','LEVEL','TOPIC') and sep:
             flush()
             if key=='SECTION':
-                if value not in ('practice','reading'): raise ValueError(f'Line {number}: SECTION must be practice or reading.')
+                if value not in ('practice','reading','flashcards'): raise ValueError(f'Line {number}: SECTION must be flashcards, practice or reading.')
                 section=value;folder='/';level=topic=''
             elif not section: raise ValueError(f'Line {number}: SECTION is required first.')
             elif key=='FOLDER': folder=value
             elif key=='LEVEL': level='' if value=='-' else value
             else: topic='' if value=='-' else value
-        elif key in ('EXERCISE','THEORY') and sep:
+        elif key in ('EXERCISE','THEORY','DECK') and sep:
             flush();block=[(number,s)]
         elif block: block.append((number,s))
         else: raise ValueError(f'Line {number}: Unexpected field; start a lesson with EXERCISE or THEORY.')

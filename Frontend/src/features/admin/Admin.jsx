@@ -1,3 +1,5 @@
+import ImportSections from "./ImportSections.jsx";
+import ContentPolicy from "./ContentPolicy.jsx";
 import ContentImportApi from "./ContentImportApi.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import LanguageSettings from "../../i18n/LanguageSettings.jsx";
@@ -103,6 +105,7 @@ export default function Admin({ user }) {
     ["dashboard", "Overview"],
     ["users", "Users"],
     ["content", "Content"],
+    ["publishing", "Publishing mode"],
     ["content-import", "Import content"],
     ["import-api", "Content import API"],
     ["activity", "Activity log"],
@@ -130,9 +133,10 @@ export default function Admin({ user }) {
       {tab === "language" && <LanguageSettings />}
 {tab === "dashboard" && <Dashboard user={user} open={setTab} />}
       {tab === "users" && <Users user={user} />}
+      {tab === "publishing" && <ContentPolicy />}
       {tab === "content" && <Content user={user} />}
-      {tab === "content-import" && <ContentPackageImport />}
-      {tab === "import-api" && <ContentImportApi />}
+      {tab === "content-import" && <ImportSections component={ContentPackageImport} />}
+      {tab === "import-api" && <ImportSections component={ContentImportApi} />}
       {tab === "activity" && <Activity user={user} />}
       {tab === "backups" && user.superuser && <EmergencyBackups />}
       {tab === "system" && user.superuser && <SystemOverview />}

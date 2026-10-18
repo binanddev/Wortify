@@ -45,7 +45,7 @@ class DeckForm(forms.ModelForm):
     level = forms.ChoiceField(choices=[(x,x) for x in ['A1','A2','B1','B2','C1','C2']])
     class Meta:
         model = Deck
-        fields = ['title', 'description', 'level', 'topic', 'language', 'folder']
+        fields = ['title', 'description', 'level', 'topic', 'language', 'folder', 'visibility']
 
     def __init__(self, *args, user, language=None, **kwargs):
         super().__init__(*args, **kwargs)

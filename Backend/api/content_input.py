@@ -34,4 +34,9 @@ def import_input(request):
         except UnicodeError: raise ValueError('Use UTF-8 text.')
     else: raise ValueError('Send a .txt/.json file, text/plain body, or JSON with a text field.')
     document, compact=decode_text(text)
+    section=request.GET.get('section') or params.get('section')
+    if section:
+        if section not in ('flashcards','practice','reading'):raise ValueError('Invalid import section.')
+        if any(document.get(k) for k in ('flashcards','practice','reading') if k!=section):raise ValueError('Content does not match the selected import section.')
+        if not document.get(section):raise ValueError('Selected import section is empty.')
     return document, dict(preview=params.get('preview') in (True,'true'), confirm=params.get('confirm'), preview_token=params.get('preview_token') or request.headers.get('X-Wortify-Preview'), require_preview=compact)

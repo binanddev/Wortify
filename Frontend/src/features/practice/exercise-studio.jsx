@@ -1,3 +1,4 @@
+import VisibilitySelect from "../../components/ui/VisibilitySelect.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
 import {FormattingHelp} from "./formatting-help.jsx";
@@ -560,7 +561,7 @@ export function ExerciseStudio({
           onClose={() => setSettingId(null)}
         >
           <Status error={action.error} />
-          <Select
+          <VisibilitySelect
             label={tr("Who can study?")}
             value={setting.visibility}
             disabled={action.pending}
@@ -576,9 +577,9 @@ export function ExerciseStudio({
               })
             }
           >
-            <option value="private">{tr("Private")}</option>
-            <option value="public">{tr("Public")}</option>
-          </Select>
+
+
+          </VisibilitySelect>
           {setting.kind === "folder" && !setting.parent && (
             <FolderTags
               key={setting.id}

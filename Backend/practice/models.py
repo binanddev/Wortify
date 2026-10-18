@@ -1,3 +1,4 @@
+from content.sharing import SharedContent
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -13,7 +14,7 @@ class PracticeMedia(models.Model):
     content_type = models.CharField(max_length=32)
     created_at = models.DateTimeField(auto_now_add=True)
 
-class PracticeNode(models.Model):
+class PracticeNode(SharedContent):
     """Flexible folder tree for exercises and theory."""
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='practice_nodes')
     language = models.CharField(max_length=2, choices=[('en','English'),('de','Deutsch')])
@@ -58,7 +59,7 @@ class PracticeProgress(models.Model):
         constraints = [models.UniqueConstraint(fields=['user', 'node'], name='unique_practice_progress')]
 
 
-class ReadingLesson(models.Model):
+class ReadingLesson(SharedContent):
     folder = models.ForeignKey("ReadingFolder", null=True, blank=True, on_delete=models.SET_NULL)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     language = models.CharField(max_length=2, choices=[('en','English'),('de','German')])
