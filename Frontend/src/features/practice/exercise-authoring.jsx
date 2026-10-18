@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import {FormattingHelp} from "./formatting-help.jsx";
 import { questionWordBank } from "./gap-bank.js";
 import { useRef, useState } from "react";
@@ -5,9 +6,10 @@ import { Btn, Icon, Select } from "../../components/ui/ui.jsx";
 import { AutoTextarea } from "./exercise-interactions.jsx";
 import { newQuestion, modeOf } from "./exercise-types.js";
 export function AField({ label, value = "", onChange, ...props }) {
+  useLocale();
   return (
     <label className="author-field">
-      <span>{label}</span>
+      <span>{tr(label)}</span>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -17,9 +19,10 @@ export function AField({ label, value = "", onChange, ...props }) {
   );
 }
 function Lines({ label, value = [], onChange }) {
+  useLocale();
   return (
     <AutoTextarea
-      label={label}
+      label={tr(label)}
       value={value.join("\n")}
       onChange={(v) => onChange(v.split("\n"))}
     />
@@ -54,6 +57,7 @@ export function prepareExercise(exercise) {
   return e;
 }
 export function ExerciseForm({ exercise: e, onChange, onUpload }) {
+  useLocale();
   const mode = modeOf(e);
   const update = (i, patch) =>
     onChange({
@@ -62,53 +66,53 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
   return (
     <section className="author-panel">
       <FormattingHelp/>
-      <AutoTextarea label="Exercise comment · shown after a correct answer or reveal" value={e.presentation?.comment || ""} onChange={comment=>onChange({presentation:{...e.presentation,comment}})}/>
+      <AutoTextarea label={tr("Exercise comment · shown after a correct answer or reveal")} value={e.presentation?.comment || ""} onChange={comment=>onChange({presentation:{...e.presentation,comment}})}/>
       <AField
-        label="Exercise title"
+        label={tr("Exercise title")}
         value={e.title}
         onChange={(title) => onChange({ title })}
       />
       <AField
-        label="Request"
+        label={tr("Request")}
         value={e.instruction}
         onChange={(instruction) => onChange({ instruction })}
       />
       {["cloze_drag_drop", "inline_selection"].includes(mode) && (
         <div className="form-columns">
           <Select
-            label="Fill method"
+            label={tr("Fill method")}
             value={mode}
             onChange={(interaction) =>
               onChange({ presentation: { ...e.presentation, interaction } })
             }
           >
-            <option value="cloze_drag_drop">Drag / select words</option>
-            <option value="inline_selection">Select within the sentence</option>
+            <option value="cloze_drag_drop">{tr("Drag / select words")}</option>
+            <option value="inline_selection">{tr("Select within the sentence")}</option>
           </Select>
         </div>
       )}
-      {mode === "cloze_drag_drop" && <Select label="Word bank" value={e.presentation?.bank_scope || "exercise"} onChange={(bank_scope) => onChange({presentation:{...e.presentation,bank_scope}})}>
-        <option value="question">Separate choices for each question</option>
-        <option value="exercise">Shared choices for the whole exercise</option>
+      {mode === "cloze_drag_drop" && <Select label={tr("Word bank")} value={e.presentation?.bank_scope || "exercise"} onChange={(bank_scope) => onChange({presentation:{...e.presentation,bank_scope}})}>
+        <option value="question">{tr("Separate choices for each question")}</option>
+        <option value="exercise">{tr("Shared choices for the whole exercise")}</option>
       </Select>}
       {mode === "multiple_choice" && (
         <Select
-          label="Correct answers"
+          label={tr("Correct answers")}
           value={e.kind}
           onChange={(kind) => { if (kind !== "multi" || !["dialogue_reply", "elimination"].includes(e.presentation?.style || "dialogue_reply")) onChange({ kind }); }}
         >
-          <option value="choice">Single answer</option>
-          {e.kind === "multi" && ["dialogue_reply","elimination"].includes(e.presentation?.style || "dialogue_reply") && <option value="multi" disabled>Choose Single answer for this style</option>}
-          {!["dialogue_reply","elimination"].includes(e.presentation?.style || "dialogue_reply") && <option value="multi">Multiple answers</option>}
+          <option value="choice">{tr("Single answer")}</option>
+          {e.kind === "multi" && ["dialogue_reply","elimination"].includes(e.presentation?.style || "dialogue_reply") && <option value="multi" disabled>{tr("Choose Single answer for this style")}</option>}
+          {!["dialogue_reply","elimination"].includes(e.presentation?.style || "dialogue_reply") && <option value="multi">{tr("Multiple answers")}</option>}
         </Select>
       )}
       {mode === "categorization" && (
         <div className="author-groups">
-          <h3>Categories</h3>
+          <h3>{tr("Categories")}</h3>
           {(e.presentation.categories || []).map((name, i) => (
             <div className="form-row" key={i}>
               <AField
-                label={`Group ${i + 1}`}
+                label={tr("Group {v0}", { v0: i + 1 })}
                 value={name}
                 onChange={(v) =>
                   onChange({
@@ -128,7 +132,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
                 }
               />
               <Btn
-                aria-label={`Delete group ${i + 1}`}
+                aria-label={tr("Delete group {v0}", { v0: i + 1 })}
                 onClick={() =>
                   onChange({
                     presentation: {
@@ -151,24 +155,23 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
                   ...e.presentation,
                   categories: [
                     ...(e.presentation.categories || []),
-                    `Group ${e.presentation.categories.length + 1}`,
+                    tr("Group {v0}", { v0: e.presentation.categories.length + 1 }),
                   ],
                 },
               })
             }
           >
-            <Icon name="plus" /> Group
-          </Btn>
+            <Icon name="plus" />{tr(" Group")}</Btn>
         </div>
       )}
       {["true_false_not_given", "reading"].includes(mode) && (
         <AutoTextarea
-          label="Reading"
+          label={tr("Reading")}
           value={e.context || ""}
           onChange={(context) => onChange({ context })}
         />
       )}
-      {mode === "reading" && <Select label="Passage format" value={e.presentation.context_format || "markdown"} onChange={context_format => onChange({presentation:{...e.presentation,context_format}})}><option value="markdown">Lesson markup</option><option value="html">Safe HTML</option></Select>}
+      {mode === "reading" && <Select label={tr("Passage format")} value={e.presentation.context_format || "markdown"} onChange={context_format => onChange({presentation:{...e.presentation,context_format}})}><option value="markdown">{tr("Lesson markup")}</option><option value="html">{tr("Safe HTML")}</option></Select>}
       {["short_answer", "audio_dictation"].includes(mode) && (
         <label className="author-switch">
           <input
@@ -180,9 +183,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
                 ignore_punctuation: x.target.checked,
               })
             }
-          />
-          Ignore case and punctuation
-        </label>
+          />{tr("Ignore case and punctuation")}</label>
       )}
       <div className="author-question-list">
         {e.questions.map((q, i) => (
@@ -190,15 +191,15 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
             <header>
               <h3>
                 {mode === "matching"
-                  ? "Pair"
+                  ? tr("Pair")
                   : mode === "categorization"
-                    ? "Word"
-                    : "Question"}{" "}
+                    ? tr("Word")
+                    : tr("Question")}{" "}
                 {i + 1}
               </h3>
               {e.questions.length > 1 && (
                 <Btn
-                  aria-label={`Delete question ${i + 1}`}
+                  aria-label={tr("Delete question {v0}", { v0: i + 1 })}
                   onClick={() =>
                     onChange({
                       questions: e.questions.filter((_, j) => i !== j),
@@ -217,7 +218,7 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
               categories={e.presentation.categories || []}
               onUpload={onUpload}
             />
-            <AutoTextarea label="Explanation / comment · shown after this answer" value={q.presentation?.explanation || ""} onChange={explanation=>update(i,{presentation:{...q.presentation,explanation}})}/>
+            <AutoTextarea label={tr("Explanation / comment · shown after this answer")} value={q.presentation?.explanation || ""} onChange={explanation=>update(i,{presentation:{...q.presentation,explanation}})}/>
           </section>
         ))}
       </div>
@@ -228,10 +229,10 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
       >
         <Icon name="plus" />{" "}
         {mode === "matching"
-          ? "Add pair"
+          ? tr("Add pair")
           : mode === "categorization"
-            ? "Add word"
-            : "Add question"}
+            ? tr("Add word")
+            : tr("Add question")}
       </Btn>
     </section>
   );
@@ -244,6 +245,7 @@ function QuestionForm({
   categories,
   onUpload,
 }) {
+  useLocale();
   if (
     [
       "cloze_drag_drop",
@@ -256,13 +258,13 @@ function QuestionForm({
     return (
       <div className="pair-author-row">
         <AField
-          label="Column A"
+          label={tr("Column A")}
           value={q.prompt}
           onChange={(prompt) => onChange({ prompt })}
         />
         <span>↔</span>
         <AField
-          label="Column B"
+          label={tr("Column B")}
           value={q.accepted_answers[0] || ""}
           onChange={(v) => onChange({ accepted_answers: [v] })}
         />
@@ -272,16 +274,16 @@ function QuestionForm({
     return (
       <div className="form-columns">
         <AField
-          label="Word / phrase"
+          label={tr("Word / phrase")}
           value={q.prompt}
           onChange={(prompt) => onChange({ prompt })}
         />
         <Select
-          label="Category"
+          label={tr("Category")}
           value={q.accepted_answers[0] || ""}
           onChange={(v) => onChange({ accepted_answers: [v] })}
         >
-          <option value="">Choose a category</option>
+          <option value="">{tr("Choose a category")}</option>
           {categories.map((g) => (
             <option key={g}>{g}</option>
           ))}
@@ -294,7 +296,7 @@ function QuestionForm({
     <>
       {mode !== "audio_dictation" && (
         <AutoTextarea
-          label={mode === "true_false_not_given" ? "Statement" : "Prompt"}
+          label={mode === "true_false_not_given" ? tr("Statement") : tr("Prompt")}
           value={q.prompt}
           onChange={(prompt) => onChange({ prompt })}
         />
@@ -302,22 +304,20 @@ function QuestionForm({
       {mode === "audio_dictation" && (
         <>
           <AField
-            label="Audio title"
+            label={tr("Audio title")}
             value={q.prompt}
             onChange={(prompt) => onChange({ prompt })}
           />
           <div className="form-row">
             <AField
-              label="Audio URL"
+              label={tr("Audio URL")}
               value={q.presentation?.audio || ""}
               placeholder="https://…"
               onChange={(audio) =>
                 onChange({ presentation: { ...q.presentation, audio } })
               }
             />
-            <label className="file-button">
-              Download file
-              <input
+            <label className="file-button">{tr("Download file")}<input
                 type="file"
                 accept="audio/*"
                 onChange={(e) => {
@@ -333,13 +333,13 @@ function QuestionForm({
       )}
       {["multiple_choice", "reading"].includes(mode) ? (
         <div className="options-editor">
-          <h4>Answer choices</h4>
-          <p>Select the letter beside the correct answer. Choices are shuffled during practice; correctness is saved by answer text.</p>
+          <h4>{tr("Answer choices")}</h4>
+          <p>{tr("Select the letter beside the correct answer. Choices are shuffled during practice; correctness is saved by answer text.")}</p>
           {q.options.map((option, i) => (
             <div className="option-editor-row" key={i}>
               <button
                 type="button"
-                aria-label={`Set answer ${String.fromCharCode(65 + i)} correct`}
+                aria-label={tr("Set answer {v0} correct", { v0: String.fromCharCode(65 + i) })}
                 aria-pressed={!!option && q.accepted_answers.includes(option)}
                 className={
                   option && q.accepted_answers.includes(option)
@@ -363,7 +363,7 @@ function QuestionForm({
                   : String.fromCharCode(65 + i)}
               </button>
               <AField
-                label={`Option ${String.fromCharCode(65 + i)}`}
+                label={tr("Option {v0}", { v0: String.fromCharCode(65 + i) })}
                 value={option}
                 onChange={(v) =>
                   onChange({
@@ -376,7 +376,7 @@ function QuestionForm({
               />
               <button
                 type="button"
-                aria-label={`Delete option ${i + 1}`}
+                aria-label={tr("Delete option {v0}", { v0: i + 1 })}
                 onClick={() =>
                   onChange({
                     options: q.options.filter((_, j) => i !== j),
@@ -391,13 +391,12 @@ function QuestionForm({
             </div>
           ))}
           <Btn onClick={() => onChange({ options: [...q.options, ""] })}>
-            <Icon name="plus" /> Option
-          </Btn>
+            <Icon name="plus" />{tr(" Option")}</Btn>
 
         </div>
       ) : mode === "true_false_not_given" ? (
         <Select
-          label="Correct answer"
+          label={tr("Correct answer")}
           value={q.accepted_answers[0] || ""}
           onChange={(v) =>
             onChange({
@@ -406,19 +405,19 @@ function QuestionForm({
             })
           }
         >
-          <option value="">Choose an answer</option>
-          <option value="TRUE">True</option>
-          <option value="FALSE">False</option>
-          <option value="NOT_GIVEN">Not given</option>
+          <option value="">{tr("Choose an answer")}</option>
+          <option value="TRUE">{tr("True")}</option>
+          <option value="FALSE">{tr("False")}</option>
+          <option value="NOT_GIVEN">{tr("Not given")}</option>
         </Select>
       ) : (
         <Lines
           label={
             mode === "audio_dictation"
-              ? "Reference transcript"
+              ? tr("Reference transcript")
               : mode === "short_answer"
-                ? "Required answer · one alternative per line"
-                : "Accepted answers · one variation per line"
+                ? tr("Required answer · one alternative per line")
+                : tr("Accepted answers · one variation per line")
           }
           value={q.accepted_answers}
           onChange={(accepted_answers) => onChange({ accepted_answers })}
@@ -428,6 +427,7 @@ function QuestionForm({
   );
 }
 function TokenAuthor({ mode, q, onChange }) {
+  useLocale();
   const ref = useRef(),
     [selection, setSelection] = useState(null);
   const errorMode = mode === "inline_error_identification";
@@ -462,7 +462,7 @@ function TokenAuthor({ mode, q, onChange }) {
   return (
     <>
       <label className="work-field">
-        <span>Text</span>
+        <span>{tr("Text")}</span>
         <textarea
           ref={ref}
           rows={6}
@@ -475,7 +475,7 @@ function TokenAuthor({ mode, q, onChange }) {
         />
       </label>
       <div className="selection-toolbar">
-        <span>Highlight words in the text</span>
+        <span>{tr("Highlight words in the text")}</span>
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}
@@ -483,10 +483,10 @@ function TokenAuthor({ mode, q, onChange }) {
           onClick={mark}
         >
           {errorMode
-            ? "Mark words"
+            ? tr("Mark words")
             : mode === "inline_selection"
-              ? "Create options"
-              : "Create a gap"}
+              ? tr("Create options")
+              : tr("Create a gap")}
         </button>
       </div>
       {errorMode ? (
@@ -505,7 +505,7 @@ function TokenAuthor({ mode, q, onChange }) {
                 }
               />
               <strong>{t.text}</strong>
-              <span>Correct answer</span>
+              <span>{tr("Correct answer")}</span>
             </label>
           ))}
         </div>
@@ -514,7 +514,7 @@ function TokenAuthor({ mode, q, onChange }) {
           <div className="gap-editor" key={i}>
             <span className="gap-number">{i + 1}</span>
             <AField
-              label="Answer"
+              label={tr("Answer")}
               value={b.answers.join(" | ")}
               onChange={(v) =>
                 onChange({
@@ -556,7 +556,7 @@ function TokenAuthor({ mode, q, onChange }) {
             )}
             <button
               type="button"
-              aria-label={`Remove gap ${i + 1}`}
+              aria-label={tr("Remove gap {v0}", { v0: i + 1 })}
               onClick={() =>
                 onChange({
                   prompt: q.prompt.replace(/\{\{(\d+)\}\}/g, (m, n) =>
@@ -575,7 +575,7 @@ function TokenAuthor({ mode, q, onChange }) {
       )}
       {mode === "cloze_drag_drop" && (
         <AField
-          label="Word bank · separated by commas"
+          label={tr("Word bank · separated by commas")}
           value={(q.presentation?.word_bank || q.presentation?.distractors || []).join(", ")}
           onChange={(v) =>
             onChange({
@@ -592,6 +592,7 @@ function TokenAuthor({ mode, q, onChange }) {
   );
 }
 function SentenceAuthor({ q, onChange }) {
+  useLocale();
   const [sentence, setSentence] = useState(() =>
       q.accepted_answers
         .map((id) => q.presentation?.tokens?.find((t) => t.id === id)?.text)
@@ -618,11 +619,11 @@ function SentenceAuthor({ q, onChange }) {
   return (
     <>
       <AutoTextarea
-        label="Complete sentence"
+        label={tr("Complete sentence")}
         value={sentence}
         onChange={setSentence}
       />
-      <Btn onClick={create}>Split into words</Btn>
+      <Btn onClick={create}>{tr("Split into words")}</Btn>
       <div className="sentence-token-editor">
         {ordered.map((t, i) => (
           <span key={t.id}>
@@ -630,7 +631,7 @@ function SentenceAuthor({ q, onChange }) {
             {i < ordered.length - 1 && (
               <button
                 type="button"
-                aria-label={`Match ${t.text} with the next word`}
+                aria-label={tr("Match {v0} with the next word", { v0: t.text })}
                 onClick={() => {
                   const next = ordered[i + 1];
                   onChange({
@@ -657,12 +658,12 @@ function SentenceAuthor({ q, onChange }) {
         ))}
       </div>
       <AField
-        label="Hint / translation"
+        label={tr("Hint / translation")}
         value={q.prompt}
         onChange={(prompt) => onChange({ prompt })}
       />
       <div className="form-row">
-        <AField label="Distractors" value={noise} onChange={setNoise} />
+        <AField label={tr("Distractors")} value={noise} onChange={setNoise} />
         <Btn
           isDisabled={!noise.trim()}
           onClick={() => {
@@ -677,9 +678,7 @@ function SentenceAuthor({ q, onChange }) {
             });
             setNoise("");
           }}
-        >
-          Add
-        </Btn>
+        >{tr("Add")}</Btn>
       </div>
       {tokens
         .filter((t) => !q.accepted_answers.includes(t.id))

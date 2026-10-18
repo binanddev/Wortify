@@ -8,11 +8,11 @@ Local default: http://127.0.0.1:8000. With the frontend proxy: http://127.0.0.1:
 
 ## 2. Authenticate with a session cookie
 
-The API uses Django sessions, with no user Bearer token or API key. Select No Auth and enable the Postman cookie jar. GET /api/session/ obtains csrftoken; POST /api/session/ with username/password signs in. Postman stores sessionid automatically. Sign-in rotates the CSRF token, so retrieve the new csrftoken from its response. Never commit session cookies or passwords to Git or shared collections.
+Most APIs use Django sessions. The separate /api/import/content/ endpoint accepts only a staff-generated Bearer import key. Select No Auth and enable the Postman cookie jar. GET /api/session/ obtains csrftoken; POST /api/session/ with username/password signs in. Postman stores sessionid automatically. Sign-in rotates the CSRF token, so retrieve the new csrftoken from its response. Never commit session cookies or passwords to Git or shared collections.
 
 ## 3. CSRF cho request ghi
 
-POST, PATCH and DELETE require X-CSRFToken matching the csrftoken cookie, plus sessionid after sign-in. The collection reads CSRF from Set-Cookie after each response and sets the next request header. Origin is {{baseUrl}}; HTTPS Referer is {{baseUrl}}/. Production must allow the hostname in DJANGO_ALLOWED_HOSTS and the frontend origin in DJANGO_CSRF_TRUSTED_ORIGINS. POST /api/monitor/ is exempt from CSRF and uses a separate server key.
+POST, PATCH and DELETE require X-CSRFToken matching the csrftoken cookie, plus sessionid after sign-in. The collection reads CSRF from Set-Cookie after each response and sets the next request header. Origin is {{baseUrl}}; HTTPS Referer is {{baseUrl}}/. Production must allow the hostname in DJANGO_ALLOWED_HOSTS and the frontend origin in DJANGO_CSRF_TRUSTED_ORIGINS. POST /api/monitor/ and /api/import/content/ are CSRF-exempt and require their respective server/import keys.
 
 ## 4. Import and use Postman
 
@@ -122,6 +122,34 @@ GET details first to obtain the version. The collection updates contentVersion f
   "visibility": "public",
   "cascade": true,
   "reason": "Exercise and media reviewed"
+}
+```
+
+## GET, POST, DELETE /api/manage/import-api/
+
+**Permission:** Admin / Staff
+
+Staff/Admin session API. GET returns enabled status and key prefix, never the secret. POST enables or rotates the import key and reveals it once. DELETE revokes it. CSRF required for writes.
+
+## POST /api/import/content/
+
+**Permission:** Import key
+
+Import-only Bearer key, no session or CSRF. Multipart file (UTF-8 JSON, maximum 50 MB) and preview=true to validate; then same file with confirm=IMPORT to publish as Wortify. Only practice and reading sections. Keep UUID unchanged on retries. 200 preview/retry, 201 created, 400 invalid document, 401 invalid/revoked key or non-staff account.
+
+Multipart: file (file), preview (text)
+
+## PATCH /api/me/language/
+
+**Permission:** Signed-in users
+
+Signed-in PATCH with language=en/vi/de saves the account-wide interface language. Does not change learning content or workspace language.
+
+Body PATCH:
+
+```json
+{
+  "language": "vi"
 }
 ```
 
@@ -303,7 +331,7 @@ GET/HEAD the signed-in account background binary with Cache-Control private,no-s
 
 **Permission:** Admin / Staff
 
-Staff/Admin only. Multipart file: wortify-content JSON version 1. preview=true validates without writes; confirm=IMPORT publishes an immutable Wortify system package and creates private copies for the importer. Maximum 50 MB, 5000 nodes, 100000 cards, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.
+Staff/Admin only. Multipart file: wortify-content JSON version 1. preview=true validates without writes; confirm=IMPORT publishes an immutable Wortify system package and creates private copies for the importer. Practice Hub and Reading only; flashcards are personal and the flashcards field is rejected. Maximum 50 MB, 5000 nodes, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.
 
 Multipart: file (file), preview (text)
 
@@ -611,22 +639,11 @@ Body DELETE:
 
 Copy accessible content into the current account. Content and links are validated by the API.
 
-## GET, PATCH /api/{language}/decks/{pk}/review/
+## GET, POST /api/{language}/decks/{pk}/notebook/
 
 **Permission:** Signed-in users
 
-GET review queue, config, due, new, reviewed_today, next_due, forecast, cards and difficult. PATCH retention=0.8–0.97, new_limit/review_limit=0–500 and adapt_time boolean. Deck owner only.
-
-Body PATCH:
-
-```json
-{
-  "retention": 0.9,
-  "new_limit": 20,
-  "review_limit": 100,
-  "adapt_time": true
-}
-```
+Owner/language scoped vocabulary notebook. GET returns cards, notebook revision, current set and review dates. POST requires token UUID, revision and action: start (size 3-8, selection ready/all), step (answer, correction, remembered boolean), or discard. Steps are prepare, recall, sentence, variation, check. Sentences are self-assessed, not automatically graded. Repeated token is idempotent; stale revision returns 409. Successful scheduled sets advance 1/3/7/14 days; difficult words return tomorrow.
 
 ## POST /api/{language}/practice-hub/media/
 

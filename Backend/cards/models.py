@@ -7,6 +7,7 @@ from django.utils import timezone
 
 
 class Folder(models.Model):
+    archived = models.BooleanField(default=False)
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.SET_NULL, related_name="children")
     language = models.CharField(max_length=2, default='de', choices=[('de', 'German'), ('en', 'English')])
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -26,6 +27,7 @@ class Folder(models.Model):
 class Deck(models.Model):
     folder = models.ForeignKey(Folder, verbose_name='Folder', null=True, blank=True, on_delete=models.SET_NULL, related_name='decks')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    archived = models.BooleanField(default=False)
     title = models.CharField('Deck name', max_length=150)
     description = models.TextField('Description', blank=True)
     level = models.CharField('Level', max_length=10, default='A2')
@@ -158,6 +160,7 @@ class StudySession(models.Model):
 
 
 class DeckLearningState(models.Model):
+    notebook = models.JSONField(default=dict, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
     options = models.JSONField(default=dict)

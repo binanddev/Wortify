@@ -1,4 +1,7 @@
-import SystemLibrary from "../explore/SystemLibrary.jsx";
+import WorkspaceManager from "./workspace-manager.jsx";
+import ContentSwitcher from "../../components/navigation/content-switcher.jsx";
+import { t as tr, useLocale } from "../../i18n/index.js";
+import { cardFields } from "./card-fields.js";
 import { FlashcardAiHelp } from "./flashcard-ai-help.jsx";
 import { useWindowActive } from "../../lib/core.js";
 import {
@@ -39,30 +42,17 @@ const deckFields = [
   { name: "description", label: "Description", multiline: true },
   { name: "topic", label: "Topic", advanced: true },
 ];
-const cardFields = [
-  { name: "german_text", label: "Vocabulary", isRequired: true },
-  { name: "vietnamese_meaning", label: "Vietnamese meaning", isRequired: true },
-  ...Object.entries({
-    example_german: "Example sentence",
-    example_vietnamese: "Example sentence meaning",
-    part_of_speech: "Part of speech",
-    article: "Article",
-    plural_form: "Plural",
-    notes: "Notes",
-    usage: "Usage",
-    accepted_answers: "Alternative answers (one per line)",
-    accepted_examples: "Alternative example sentences (one per line)",
-  }).map(([name, label]) => ({ name, label, advanced: true, multiline: true })),
-];
+
 function DeckOptions({ values, set, folders }) {
+  useLocale();
   return (
     <div className="grid two">
       <Select
-        label="Folde"
+        label={tr("Folde")}
         value={values.folder}
         onChange={(folder) => set({ ...values, folder })}
       >
-        <option value="">My Flashcards</option>
+        <option value="">{tr("My Flashcards")}</option>
         {folders.map((f) => (
           <option key={f.id} value={f.id}>
             {folderPath(folders, f)}
@@ -70,7 +60,7 @@ function DeckOptions({ values, set, folders }) {
         ))}
       </Select>
       <Select
-        label="Level"
+        label={tr("Level")}
         value={values.level || "A1"}
         onChange={(level) => set({ ...values, level })}
       >
@@ -82,7 +72,8 @@ function DeckOptions({ values, set, folders }) {
   );
 }
 export function Library({ lang, interfaceName }) {
-  const resource = useResource(endpoint(lang, "decks/"));
+  useLocale();
+  const resource = useResource(endpoint(lang, "decks/"), true);
   return (
     <Loading resource={resource}>
       {(data) => (
@@ -95,6 +86,7 @@ export function Library({ lang, interfaceName }) {
   );
 }
 function LibraryContent({ data, lang, interfaceName, reload }) {
+  useLocale();
   const navigate = useNavigate();
   const route = useRoute();
   const folder =
@@ -109,18 +101,22 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
     [remove, setRemove] = useState(null),
     [panel, setPanel] = useState(null),
     [layout, setLayout] = useState("grid");
-  const [studyPile, setStudyPile] = useState(false);
+  const [selecting, setSelecting] = useState(false);
+  const [checked, setChecked] = useState([]);
+  const [bulk, setBulk] = useState(null);
+  const [destination, setDestination] = useState("");
+  useEffect(() => { setChecked([]); }, [folder, query]);
   const action = useAction();
   const api = (p, m, d, s) => request(endpoint(lang, p), m, d, s);
   let decks = data.decks.filter(
     (d) =>
-      String(d.folder_id ?? "all") === folder &&
+      (selecting && folder === "all" || String(d.folder_id ?? "all") === folder) &&
       `${d.title} ${d.description}`.toLowerCase().includes(query.toLowerCase()),
   );
-  if (interfaceName === "notebook" && studyPile) decks = decks.filter((d) => d.due > 0);
   if (sort === "name") decks.sort((a, b) => a.title.localeCompare(b.title));
   if (sort === "count") decks.sort((a, b) => b.count - a.count);
   const selected = data.folders.find((f) => String(f.id) === folder);
+  const toggleDeck = id => setChecked(ids => ids.includes(id) ? ids.filter(v => v !== id) : [...ids,id]);
   const createHere = (type) => {
     if (folder !== "all" && !selected) return;
     setPanel(null);
@@ -145,51 +141,60 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
   if (sort === "name")
     visibleFolders.sort((a, b) => a.name.localeCompare(b.name));
 
+  const runBulk = async (signal) => {
+    const failures = [];
+    for (const id of checked) {
+      try {
+        await api(`decks/${id}/`, bulk === "delete" ? "DELETE" : "PATCH", bulk === "delete" ? undefined : {folder: destination}, signal);
+      } catch (error) { if (error.name === "AbortError") throw error; failures.push(id); }
+    }
+    setChecked(failures);
+    reload();
+    if (failures.length) throw new Error(tr("Some decks could not be updated. Please retry."));
+    setBulk(null); setSelecting(false);
+  };
   return (
     <Page>
-      <SystemLibrary lang={lang}/>
       <div className="flash-library-heading">
         <div>
-          <h1>{selected?.name || <><span className="studio-title-lead">My</span> Flashcards</>}</h1>
+          <h1>
+            {selected?.name || (
+              <>
+                <span className="studio-title-lead">{tr("My")}</span>{tr(" Flashcards")}</>
+            )}
+          </h1>
         </div>
         <div className="flash-icon-row">
           <Btn
             icon="grid"
             aria-pressed={layout === "grid"}
             onClick={() => setLayout("grid")}
-          >
-            Grid view
-          </Btn>
+          >{tr("Grid view")}</Btn>
           <Btn
             icon="list"
             aria-pressed={layout === "list"}
             onClick={() => setLayout("list")}
-          >
-            List view
-          </Btn>
+          >{tr("List view")}</Btn>
         </div>
       </div>
-      {interfaceName === "notebook" && <section className="notebook-desk" aria-label="Study desk">
-        <div className="notebook-sticky"><span className="notebook-caption">On my desk</span><strong>{data.due} cards to revisit</strong><p>Pick a note and make it yours.</p>
-          {data.resume && <Link className="notebook-ink-action" to={`/${lang}/flashcard/session/${data.resume}`}>Continue studying <Icon name="arrow" /></Link>}
-        </div>
-        <div className="notebook-desk-actions">
-          <button className="notebook-ink-action" onClick={() => createHere("deck")}><Icon name="plus" /> New card collection</button>
-          <button className="notebook-ink-action" onClick={() => createHere("folder")}><Icon name="folder" /> New notebook section</button>
-          <label className="notebook-check"><input type="checkbox" checked={studyPile} onChange={e => setStudyPile(e.target.checked)} /> Only notes due for review</label>
-        </div>
-      </section>}
       <Status error={action.error} />
-      <div
+      {bulk === "delete" && <Confirm title={tr("Delete selected decks?")} description={tr("The selected decks, cards and learning progress will be permanently deleted.")} onClose={() => setBulk(null)} onConfirm={runBulk}/>}
+      {bulk === "move" && <PracticeModal title={tr("Move to folder")} onClose={() => setBulk(null)} size="md">
+        <Status error={action.error}/>
+        <Select label={tr("Folder")} value={destination} onChange={setDestination}>
+          <option value="">{tr("My Flashcards")}</option>
+          {data.folders.map(f => <option key={f.id} value={f.id}>{folderPath(data.folders,f)}</option>)}
+        </Select>
+        <Btn isDisabled={action.pending} onClick={() => action.run(runBulk)}>{tr("Move")}</Btn>
+      </PracticeModal>}
+      {!selecting && <div
         className={`mb-5 grid gap-3 ${layout === "list" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"}`}
       >
         {selected?.parent_id && (
           <Btn
             icon="undo"
             onClick={() => setFolder(String(selected.parent_id))}
-          >
-            Back to parent folder
-          </Btn>
+          >{tr("Back to parent folder")}</Btn>
         )}
         {visibleFolders.map((f) => (
           <button
@@ -202,50 +207,39 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
             <span>{f.name}</span>
           </button>
         ))}
-      </div>
+      </div>}
       <SidebarTools>
         <div className="flash-nav">
           <Field
-            label="Search folders or decks"
+            label={tr("Search folders or decks")}
             value={query}
             onChange={setQuery}
             startContent={<Icon name="search" />}
           />
           <div className="flash-icon-row">
-            <Btn primary icon="plus" onClick={() => setPanel("add")}>
-              Add new
-            </Btn>
-            <Btn icon="settings" onClick={() => setPanel("settings")}>
-              Sort and manage
-            </Btn>
-            <Btn
-              icon="spark"
-              isDisabled={!data.due}
-              isLoading={action.pending}
-              onClick={() =>
-                action.run(async (signal) => {
-                  const session = await api(
-                    "sessions/",
-                    "POST",
-                    { kind: "learn", today: true },
-                    signal,
-                  );
-                  navigate(`/${lang}/flashcard/session/${session.token}`);
-                })
-              }
-            >{`Review today · ${data.due} cards`}</Btn>
+            <Btn primary icon="plus" onClick={() => setPanel("add")}>{tr("Add new")}</Btn>
+            <Btn icon="select" aria-pressed={selecting} onClick={() => { setSelecting(!selecting); setChecked([]); }}>{tr("Select decks")}</Btn>
+            <Btn icon="settings" onClick={() => { setPanel("settings"); }}>{tr("Workspace options")}</Btn>
             {data.resume && (
               <Link
                 className="btn flash-icon-link"
-                title="Continue session"
-                aria-label="Continue session"
+                title={tr("Continue session")}
+                aria-label={tr("Continue session")}
                 to={`/${lang}/flashcard/session/${data.resume}`}
               >
                 <Icon name="play" />
               </Link>
             )}
           </div>
-          <div className="flash-folder-list" aria-label="Folde flashcard">
+          {selecting && <section className="flash-nav-selection" aria-label={tr("Select decks")}>
+            <div className="flash-selection-summary"><span role="status">{tr("{count} selected", {count:checked.length})}</span><Btn icon="close" onClick={() => { setSelecting(false); setChecked([]); }}>{tr("Cancel selection")}</Btn></div>
+            <label><input type="checkbox" checked={decks.length > 0 && decks.every(d => checked.includes(d.id))} ref={el => { if(el) el.indeterminate=checked.length>0 && !decks.every(d=>checked.includes(d.id)); }} onChange={e => setChecked(e.target.checked ? decks.map(d => d.id) : [])}/>{tr("Select all")}</label>
+            <div className="flash-icon-row">
+              <Btn icon="folder" isDisabled={!checked.length} onClick={() => { setDestination(""); setBulk("move"); }}>{tr("Move to folder")}</Btn>
+              <Btn icon="trash" isDisabled={!checked.length} onClick={() => setBulk("delete")}>{tr("Delete selected")}</Btn>
+            </div>
+          </section>}
+          <div className="flash-folder-list" aria-label={tr("Folde flashcard")}>
             {[{ id: "all", name: "My Flashcards", icon: "home" }].map((f) => (
               <button
                 key={f.id}
@@ -274,74 +268,49 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
           </div>
         </div>
       </SidebarTools>
-      {panel && (
+      {panel === "settings" && <WorkspaceManager lang={lang} onClose={() => setPanel(null)} onChanged={() => { setChecked([]); reload(); }}/>}
+      {panel && panel !== "settings" && (
         <PracticeModal
           title={
             panel === "add"
-              ? `Add to ${selected?.name || "My Flashcards"}`
-              : "Library options"
+              ? tr("Add to {v0}", { v0: selected?.name || "My Flashcards" })
+              : tr("Workspace options")
           }
           size="md"
           onClose={() => setPanel(null)}
         >
-          {panel === "add" ? (
             <div className="flash-action-menu">
               <Btn
                 onClick={() => {
                   createHere("deck");
                 }}
               >
-                <Icon name="cards" /> Decks
-              </Btn>
+                <Icon name="cards" />{tr(" Decks")}</Btn>
               <Btn
                 onClick={() => {
                   createHere("folder");
                 }}
               >
-                <Icon name="folder" /> Folde
-              </Btn>
+                <Icon name="folder" />{tr(" Folde")}</Btn>
             </div>
-          ) : (
-            <div className="flash-settings">
-              <Select label="Sort" value={sort} onChange={setSort}>
-                <option value="recent">Recently updated</option>
-                <option value="name">Name A–Z</option>
-                <option value="count">Card count</option>
-              </Select>
-              {selected && (
-                <div className="flash-action-menu">
-                  <Btn
-                    onClick={() => {
-                      setPanel(null);
-                      setEdit({ type: "folder", item: selected });
-                    }}
-                  >
-                    <Icon name="edit" /> Edit folder
-                  </Btn>
-                  <Btn
-                    onClick={() => {
-                      setPanel(null);
-                      setRemove(selected);
-                    }}
-                  >
-                    <Icon name="trash" /> Delete folder
-                  </Btn>
-                </div>
-              )}
-            </div>
-          )}
         </PracticeModal>
       )}
       <div
         className={`deck-grid flash-library-grid ${layout === "list" ? "flash-library-list" : ""}`}
       >
         {decks.map((d) => (
+          <div key={d.id} className={`flash-deck-item ${selecting ? "selecting" : ""} ${checked.includes(d.id) ? "is-selected" : ""}`}>
           <Link
             className="deck-link"
-            key={d.id}
             to={`/${lang}/flashcard/deck/${d.id}`}
+            role={selecting ? "checkbox" : undefined}
+            aria-checked={selecting ? checked.includes(d.id) : undefined}
+            aria-label={selecting ? tr("Select {title}",{title:d.title}) : undefined}
+            onKeyDown={e => { if(selecting && e.key === " ") { e.preventDefault(); toggleDeck(d.id); } }}
+            onClick={e => { if(selecting) { e.preventDefault(); toggleDeck(d.id); } }}
           >
             <Glass className="deck-tile">
+              {selecting && <span className="deck-pick-mark" aria-hidden="true"><Icon name={checked.includes(d.id) ? "check" : "select"} size={18}/></span>}
               <div className="tile-top">
                 <span className="tile-icon">
                   <Icon name="cards" size={26} />
@@ -351,7 +320,7 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
               <h3>{d.title}</h3>
               {d.description && <p>{d.description}</p>}
               <div className="tile-bottom">
-                <span>{d.count} terms</span>
+                <span>{d.count}{tr(" terms")}</span>
                 <Icon name="arrow" />
               </div>
               <div className="thin-progress">
@@ -361,27 +330,23 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
                   }}
                 />
               </div>
-              <small>
-                {d.mastered} mastered{d.due ? ` · ${d.due} due for review` : ""}
-              </small>
+              <small>{d.mastered}{tr(" mastered")}</small>
             </Glass>
           </Link>
+          </div>
         ))}
       </div>
-      {interfaceName === "notebook" && studyPile && !decks.length && <p className="notebook-empty">No notes are due in this section. Uncheck the filter to see all your notes.</p>}
-      {!decks.length && !visibleFolders.length && !(interfaceName === "notebook" && studyPile) && (
+      {!decks.length && !visibleFolders.length && (
         <div className="flash-empty">
           <Icon name={query ? "search" : "cards"} size={36} />
           <p>
             {query
-              ? "Content not found."
+              ? tr("Content not found.")
               : folder === "all"
-                ? "No folders yet."
-                : "This folder is empty."}
+                ? tr("No folders yet.")
+                : tr("This folder is empty.")}
           </p>
-          <Btn icon="plus" primary onClick={() => setPanel("add")}>
-            Add new
-          </Btn>
+          <Btn icon="plus" primary onClick={() => setPanel("add")}>{tr("Add new")}</Btn>
         </div>
       )}
       {edit && (
@@ -389,10 +354,10 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
           key={`${edit.type}:${edit.item?.id ?? "new"}:${edit.location ?? ""}`}
           title={
             edit.type === "deck"
-              ? "Create deck"
+              ? tr("Create deck")
               : edit.item
-                ? "Edit folder"
-                : "New folder"
+                ? tr("Edit folder")
+                : tr("New folder")
           }
           fields={
             edit.type === "deck"
@@ -437,11 +402,11 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
               )
             : (values, set) => (
                 <Select
-                  label="Trong folde"
+                  label={tr("Trong folde")}
                   value={values.parent ?? ""}
                   onChange={(parent) => set({ ...values, parent })}
                 >
-                  <option value="">My Flashcards</option>
+                  <option value="">{tr("My Flashcards")}</option>
                   {data.folders
                     .filter(
                       (f) =>
@@ -460,8 +425,8 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
       )}
       {remove && (
         <Confirm
-          title="Delete folder?"
-          description={`Decks in “${remove.name}” will be kept.`}
+          title={tr("Delete folder?")}
+          description={tr("Decks in “{v0}” will be kept.", { v0: remove.name })}
           onClose={() => setRemove(null)}
           onConfirm={async (s) => {
             await api(`folders/${remove.id}/`, "DELETE", undefined, s);
@@ -474,6 +439,7 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
   );
 }
 export function Deck({ lang, id, sound }) {
+  useLocale();
   const resource = useResource(endpoint(lang, `decks/${id}/`));
   return (
     <Loading resource={resource}>
@@ -484,9 +450,10 @@ export function Deck({ lang, id, sound }) {
   );
 }
 function DeckContent({ lang, id, data, reload, sound }) {
+  useLocale();
   const [selected, setSelected] = useState([]);
 
- const windowActive = useWindowActive();
+  const windowActive = useWindowActive();
   const navigate = useNavigate();
   const [edit, setEdit] = useState(null),
     [remove, setRemove] = useState(null),
@@ -505,9 +472,18 @@ function DeckContent({ lang, id, data, reload, sound }) {
   const action = useAction(),
     audio = useSound(sound, lang);
   const api = (p, m, d, s) => request(endpoint(lang, p), m, d, s);
-  const visibleCards = data.cards.filter(c => `${c.german_text} ${c.vietnamese_meaning}`.toLowerCase().includes(query.toLowerCase()));
+  const visibleCards = data.cards.filter((c) =>
+    `${c.german_text} ${c.vietnamese_meaning}`
+      .toLowerCase()
+      .includes(query.toLowerCase()),
+  );
   const card = order[index];
-  useEffect(() => { setOrder(data.cards); setSelected(ids => ids.filter(id => data.cards.some(c => c.id === id))); }, [data.cards]);
+  useEffect(() => {
+    setOrder(data.cards);
+    setSelected((ids) =>
+      ids.filter((id) => data.cards.some((c) => c.id === id)),
+    );
+  }, [data.cards]);
   const flip = (v) => {
     setFlipped(v);
     audio.tick();
@@ -550,7 +526,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
   const start = () =>
     action.run(async (signal) => {
       if (
-        ["spell", "write", "quiz", "speak", "order", "match", "games"].includes(mode)
+        ["spell", "write", "quiz", "speak", "order", "match"].includes(mode)
       ) {
         navigate(
           `/${lang}/flashcard/study?deck=${id}&mode=${mode}&filter=${filter}`,
@@ -568,33 +544,47 @@ function DeckContent({ lang, id, data, reload, sound }) {
   return (
     <Page className="flashcard-workspace">
       <Heading
-        eyebrow={`${data.deck.level} · ${data.cards.length} TERM`}
+        eyebrow={tr("{v0} · {v1} TERM", { v0: data.deck.level, v1: data.cards.length })}
         title={data.deck.title}
         description={data.deck.description}
         contentDescription
       />
       <SidebarTools>
+        <div className="flash-icon-row">
+          <Link className="btn flash-icon-link" to={`/${lang}/flashcard`} title={tr("My Flashcards")} aria-label={tr("My Flashcards")}><Icon name="home"/></Link>
+          <ContentSwitcher lang={lang} kind="decks" currentId={id}/>
+        </div>
+
         <div className="grid gap-3">
-          <h3 className="context-section-title">Create cards</h3>
-          <Btn primary onClick={() => setImporting(true)}>Import</Btn>
-          <Btn onClick={() => setEdit({ type: "card" })}>Add card</Btn>
-          <h3 className="context-section-title">View</h3>
+          <h3 className="context-section-title">{tr("Create cards")}</h3>
+          <Btn primary onClick={() => setImporting(true)}>{tr("Import")}</Btn>
+          <Btn onClick={() => setEdit({ type: "card" })}>{tr("Add card")}</Btn>
+          <h3 className="context-section-title">{tr("View")}</h3>
           <div className="grid grid-cols-2 gap-2">
-            <Btn aria-pressed={view === "terms"} onClick={() => setView("terms")}>Terms</Btn>
-            <Btn aria-pressed={view === "cards"} onClick={() => setView("cards")}>Preview</Btn>
+            <Btn
+              aria-pressed={view === "terms"}
+              onClick={() => setView("terms")}
+            >{tr("Terms")}</Btn>
+            <Btn
+              aria-pressed={view === "cards"}
+              onClick={() => setView("cards")}
+            >{tr("Preview")}</Btn>
           </div>
-          <Link className="btn" to={"/" + lang + "/flashcard/deck/" + id}>Study →</Link>
+          <Link className="btn" to={"/" + lang + "/flashcard/deck/" + id}>{tr("Study →")}</Link>
           <details>
-            <summary>More</summary>
+            <summary>{tr("More")}</summary>
             <div className="mt-3 grid gap-2">
-              <Btn onClick={() => setEdit({ type: "deck", item: data.deck })}>Deck details</Btn>
-              <Btn onClick={() => setToolPanel("manage")}>Export and manage</Btn>
+              <Btn onClick={() => setEdit({ type: "deck", item: data.deck })}>{tr("Deck details")}</Btn>
+              <Btn onClick={() => setToolPanel("manage")}>{tr("Export and manage")}</Btn>
             </div>
           </details>
         </div>
       </SidebarTools>
       <div className="my-4 flex flex-wrap items-center gap-3">
-        <Link className="btn" to={"/" + lang + "/flashcard/study?deck=" + id + "&mode=games"}>Games</Link>
+        <Link
+          className="btn"
+          to={"/" + lang + "/flashcard/deck/" + id + "?mode=notebook"}
+        >{tr("Vocabulary notebook")}</Link>
       </div>
       <div className="study-layout">
         {view === "cards" && (
@@ -610,7 +600,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                 />
                 <div className="card-navigation">
                   <Btn
-                    aria-label="Previous card"
+                    aria-label={tr("Previous card")}
                     isDisabled={!index}
                     onClick={() => step(-1)}
                   >
@@ -620,7 +610,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                     {index + 1} <span className="muted">/ {order.length}</span>
                   </span>
                   <Btn
-                    aria-label="Next card"
+                    aria-label={tr("Next card")}
                     isDisabled={index === order.length - 1}
                     onClick={() => step(1)}
                   >
@@ -635,9 +625,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                       setIndex(0);
                       setFlipped(false);
                     }}
-                  >
-                    Shuffle cards
-                  </Btn>
+                  >{tr("Shuffle cards")}</Btn>
                   <Btn
                     icon="flip"
                     aria-pressed={reverse}
@@ -645,44 +633,38 @@ function DeckContent({ lang, id, data, reload, sound }) {
                       setReverse(!reverse);
                       setFlipped(false);
                     }}
-                  >
-                    Swap sides
-                  </Btn>
+                  >{tr("Swap sides")}</Btn>
                   <Btn
                     icon="sound"
                     onClick={() =>
                       action.run(() => audio.speak(card.german_text))
                     }
-                  >
-                    Nghe
-                  </Btn>
+                  >{tr("Nghe")}</Btn>
                   <Btn
                     icon={auto ? "pause" : "play"}
                     aria-pressed={auto}
                     onClick={() => setAuto(!auto)}
                   >
-                    {auto ? "Ⅱ Stop" : "▷ Autoplay"}
+                    {auto ? tr("Ⅱ Stop") : tr("▷ Autoplay")}
                   </Btn>
                 </div>
               </>
             ) : (
               <Glass>
-                <h3>Add the first word to this deck</h3>
+                <h3>{tr("Add the first word to this deck")}</h3>
 
                 <Btn
                   icon="plus"
                   primary
                   onClick={() => setEdit({ type: "card" })}
-                >
-                  Add term
-                </Btn>
+                >{tr("Add term")}</Btn>
               </Glass>
             )}
           </div>
         )}
         {toolPanel === "study" && (
           <PracticeModal
-            title="Study session"
+            title={tr("Study session")}
             size="md"
             onClose={() => setToolPanel(null)}
           >
@@ -690,7 +672,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
               <span className="tile-icon">
                 <Icon name="spark" size={26} />
               </span>
-              <Select label="Study mode" value={mode} onChange={setMode}>
+              <Select label={tr("Study mode")} value={mode} onChange={setMode}>
                 {[
                   ["flash", "Flashcards · Self-assessment"],
                   ["learn", "Learn · Memory practice"],
@@ -701,7 +683,6 @@ function DeckContent({ lang, id, data, reload, sound }) {
                   ["order", "Arrange sentence"],
                   ["match", "Matching"],
                   ["speak", "Speaking practice"],
-                  ["games", "Word playground · Context and phrase games"],
                 ].map(([v, t]) => (
                   <option key={v} value={v}>
                     {t}
@@ -710,7 +691,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
               </Select>
               {["flash", "learn", "test"].includes(mode) && (
                 <Field
-                  label="Number of questions"
+                  label={tr("Number of questions")}
                   type="number"
                   min="1"
                   max="100"
@@ -718,10 +699,9 @@ function DeckContent({ lang, id, data, reload, sound }) {
                   onChange={setCount}
                 />
               )}
-              <Select label="Card scope" value={filter} onChange={setFilter}>
+              <Select label={tr("Card scope")} value={filter} onChange={setFilter}>
                 {[
                   ["all", "All cards"],
-                  ["due", "Due"],
                   ["weak", "Needs practice"],
                   ["new", "New cards"],
                 ].map(([v, t]) => (
@@ -737,8 +717,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                 }
                 isLoading={action.pending}
                 onClick={start}
-              >
-                Start learning <Icon name="arrow" />
+              >{tr("Start learning ")}<Icon name="arrow" />
               </Btn>
               <Status error={action.error} />
             </div>
@@ -748,65 +727,120 @@ function DeckContent({ lang, id, data, reload, sound }) {
       {view === "terms" && (
         <>
           <div className="section-heading">
-            <h2>
-              Term <span className="count">{data.cards.length}</span>
+            <h2>{tr("Term ")}<span className="count">{data.cards.length}</span>
             </h2>
-            <Btn icon="plus" primary onClick={() => setEdit({ type: "card" })}>
-              Add term
-            </Btn>
+            <Btn icon="plus" primary onClick={() => setEdit({ type: "card" })}>{tr("Add term")}</Btn>
           </div>
           <SidebarTools>
-            <Field label="Search this deck" value={query} onChange={setQuery} />
+            <Field label={tr("Search this deck")} value={query} onChange={setQuery} />
           </SidebarTools>
-          <div className="toolbar" role="group" aria-label="Select cards">
-            <label><input type="checkbox" aria-label="Select all visible cards" checked={visibleCards.length > 0 && visibleCards.every(c => selected.includes(c.id))} onChange={e => setSelected(ids => e.target.checked ? [...new Set([...ids, ...visibleCards.map(c => c.id)])] : ids.filter(id => !visibleCards.some(c => c.id === id)))} /> Select all</label>
-            <span>{selected.length} selected</span>
-            {selected.length > 0 && <>
-              <Btn onClick={() => setSelected([])}>Clear</Btn>
-              <a className="btn" download="flashcards.json" href={"data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data.cards.filter(c => selected.includes(c.id)).map(c => Object.fromEntries(["german_text", "vietnamese_meaning", "example_german", "example_vietnamese", "part_of_speech", "notes", "usage", "article", "plural_form"].map(k => [k, c[k] || ""]))), null, 2))}>Export</a>
-              <Btn icon="trash" onClick={() => setRemove({ type: "selected", ids: [...selected] })}>Delete selected</Btn>
-            </>}
+          <div className="toolbar" role="group" aria-label={tr("Select cards")}>
+            <label>
+              <input
+                type="checkbox"
+                aria-label={tr("Select all visible cards")}
+                checked={
+                  visibleCards.length > 0 &&
+                  visibleCards.every((c) => selected.includes(c.id))
+                }
+                onChange={(e) =>
+                  setSelected((ids) =>
+                    e.target.checked
+                      ? [...new Set([...ids, ...visibleCards.map((c) => c.id)])]
+                      : ids.filter(
+                          (id) => !visibleCards.some((c) => c.id === id),
+                        ),
+                  )
+                }
+              />{" "}{tr("Select all")}</label>
+            <span>{selected.length}{tr(" selected")}</span>
+            {selected.length > 0 && (
+              <>
+                <Btn onClick={() => setSelected([])}>{tr("Clear")}</Btn>
+                <a
+                  className="btn"
+                  download="flashcards.json"
+                  href={
+                    "data:application/json;charset=utf-8," +
+                    encodeURIComponent(
+                      JSON.stringify(
+                        data.cards
+                          .filter((c) => selected.includes(c.id))
+                          .map((c) =>
+                            Object.fromEntries(
+                              [
+                                "german_text",
+                                "vietnamese_meaning",
+                                "example_german",
+                                "example_vietnamese",
+                                "part_of_speech",
+                              ].map((k) => [k, c[k] || ""]),
+                            ),
+                          ),
+                        null,
+                        2,
+                      ),
+                    )
+                  }
+                >{tr("Export")}</a>
+                <Btn
+                  icon="trash"
+                  onClick={() =>
+                    setRemove({ type: "selected", ids: [...selected] })
+                  }
+                >{tr("Delete selected")}</Btn>
+              </>
+            )}
           </div>
           <div className="term-list">
-            {visibleCards
-              .map((c) => (
-                <Glass className="term-row" key={c.id}>
-                  <div>
-                    <label className="card-select"><input type="checkbox" aria-label={`Select ${c.german_text}`} checked={selected.includes(c.id)} onChange={e => setSelected(ids => e.target.checked ? [...ids, c.id] : ids.filter(id => id !== c.id))} /><strong>{c.german_text}</strong></label>
-                    <p>{c.example_german}</p>
-                  </div>
-                  <div>
-                    {c.vietnamese_meaning}
-                    <small>{c.example_vietnamese}</small>
-                  </div>
-                  <div className="toolbar">
-                    <Btn
-                      aria-label={`Move ${c.german_text}`}
-                      onClick={() => setEdit({ type: "position", item: c })}
-                    >
-                      ↕
-                    </Btn>
-                    <Btn
-                      icon="edit"
-                      onClick={() => setEdit({ type: "card", item: c })}
-                    >
-                      Edit
-                    </Btn>
-                    <Btn
-                      icon="trash"
-                      onClick={() => setRemove({ type: "card", item: c })}
-                    >
-                      Delete
-                    </Btn>
-                  </div>
-                </Glass>
-              ))}
+            {visibleCards.map((c) => (
+              <Glass className="term-row" key={c.id}>
+                <div>
+                  <label className="card-select">
+                    <input
+                      type="checkbox"
+                      aria-label={tr("Select {v0}", { v0: c.german_text })}
+                      checked={selected.includes(c.id)}
+                      onChange={(e) =>
+                        setSelected((ids) =>
+                          e.target.checked
+                            ? [...ids, c.id]
+                            : ids.filter((id) => id !== c.id),
+                        )
+                      }
+                    />
+                    <strong>{c.german_text}</strong>
+                  </label>
+                  <p>{c.example_german}</p>
+                </div>
+                <div>
+                  {c.vietnamese_meaning}
+                  <small>{c.example_vietnamese}</small>
+                </div>
+                <div className="toolbar">
+                  <Btn
+                    aria-label={tr("Move {v0}", { v0: c.german_text })}
+                    onClick={() => setEdit({ type: "position", item: c })}
+                  >
+                    ↕
+                  </Btn>
+                  <Btn
+                    icon="edit"
+                    onClick={() => setEdit({ type: "card", item: c })}
+                  >{tr("Edit")}</Btn>
+                  <Btn
+                    icon="trash"
+                    onClick={() => setRemove({ type: "card", item: c })}
+                  >{tr("Delete")}</Btn>
+                </div>
+              </Glass>
+            ))}
           </div>
         </>
       )}
       {toolPanel === "manage" && (
         <PracticeModal
-          title="Manage decks"
+          title={tr("Manage decks")}
           size="md"
           onClose={() => setToolPanel(null)}
         >
@@ -826,8 +860,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                 setRemove({ type: "deck", item: data.deck });
               }}
             >
-              <Icon name="trash" /> Delete deck
-            </Btn>
+              <Icon name="trash" />{tr(" Delete deck")}</Btn>
           </div>
         </PracticeModal>
       )}
@@ -835,12 +868,12 @@ function DeckContent({ lang, id, data, reload, sound }) {
         <Editor
           title={
             edit.type === "deck"
-              ? "Edit deck"
+              ? tr("Edit deck")
               : edit.type === "position"
-                ? "Term position"
+                ? tr("Term position")
                 : edit.item
-                  ? "Edit term"
-                  : "Add term"
+                  ? tr("Edit term")
+                  : tr("Add term")
           }
           fields={
             edit.type === "deck"
@@ -905,18 +938,37 @@ function DeckContent({ lang, id, data, reload, sound }) {
       )}
       {remove && (
         <Confirm
-          title={remove.type === "selected" ? `Delete ${remove.ids.length} cards?` : remove.type === "deck" ? "Delete deck?" : "Delete this term?"}
-          description="Content and related progress will be deleted. This cannot be undone."
+          title={
+            remove.type === "selected"
+              ? `Delete ${remove.ids.length} cards?`
+              : remove.type === "deck"
+                ? tr("Delete deck?")
+                : tr("Delete this term?")
+          }
+          description={tr("Content and related progress will be deleted. This cannot be undone.")}
           onClose={() => setRemove(null)}
           onConfirm={async (s) => {
             if (remove.type === "selected") {
               try {
                 for (const cardId of remove.ids) {
-                  await api(`decks/${id}/cards/${cardId}/`, "DELETE", undefined, s);
-                  setSelected(ids => ids.filter(value => value !== cardId));
-                  setRemove(current => current && ({ ...current, ids: current.ids.filter(value => value !== cardId) }));
+                  await api(
+                    `decks/${id}/cards/${cardId}/`,
+                    "DELETE",
+                    undefined,
+                    s,
+                  );
+                  setSelected((ids) => ids.filter((value) => value !== cardId));
+                  setRemove(
+                    (current) =>
+                      current && {
+                        ...current,
+                        ids: current.ids.filter((value) => value !== cardId),
+                      },
+                  );
                 }
-              } finally { reload(); }
+              } finally {
+                reload();
+              }
               return;
             }
             await api(
@@ -943,17 +995,14 @@ function DeckContent({ lang, id, data, reload, sound }) {
   );
 }
 function ImportCards({ api, id, reload, onClose, lang }) {
+  useLocale();
   const [preview, setPreview] = useState(null);
   return (
     <Editor
-      title={
-        preview
-          ? `Confirm import ${preview.count} cards`
-          : "Import terms"
-      }
+      title={preview ? `Confirm import ${preview.count} cards` : tr("Import terms")}
       fields={[]}
       initial={{ separator: "|" }}
-      submitLabel={preview ? "Import cards" : "Preview cards"}
+      submitLabel={preview ? tr("Import cards") : tr("Preview cards")}
       onClose={onClose}
       onSave={async (v, s) => {
         if (preview) {
@@ -971,37 +1020,44 @@ function ImportCards({ api, id, reload, onClose, lang }) {
           <div>
             {preview.preview.map((r, i) => (
               <div key={i} className="mb-3">
-                <strong>{r.german_text} — {r.vietnamese_meaning}</strong>
+                <strong>
+                  {r.german_text} — {r.vietnamese_meaning}
+                </strong>
                 {r.example_german && <p>{r.example_german}</p>}
                 {r.example_vietnamese && <p>{r.example_vietnamese}</p>}
               </div>
             ))}
-            <Btn onClick={() => setPreview(null)}>
-              Edit imported content
-            </Btn>
+            <Btn onClick={() => setPreview(null)}>{tr("Edit imported content")}</Btn>
           </div>
         ) : (
           <div className="grid gap-4">
-          <FlashcardAiHelp lang={lang} separator={v.separator} />
-          <Field label="Paste cards from AI, Quizlet or your spreadsheet" multiline rows={8} isRequired value={v.text || ""} onChange={text => set({...v,text})}
-            description="Paste the JSON from AI, or rows from Quizlet / a spreadsheet." />
-          <Select
-            label="Separator (spreadsheet rows only)"
-            value={v.separator}
-            onChange={(separator) => set({ ...v, separator })}
-          >
-            {[
-              [",", "Comma"],
-              [";", "Semicolon"],
-              ["\t", "Tab"],
-              ["|", "Vertical bar"],
-            ].map(([a, b]) => (
-              <option key={a} value={a}>
-                {b}
-              </option>
-            ))}
-          </Select>
-          <p className="text-sm">Preview first. Nothing is added until you confirm the import.</p>
+            <FlashcardAiHelp lang={lang} separator={v.separator} />
+            <Field
+              label={tr("Paste cards from AI, Quizlet or your spreadsheet")}
+              multiline
+              rows={8}
+              isRequired
+              value={v.text || ""}
+              onChange={(text) => set({ ...v, text })}
+              description={tr("Paste the JSON from AI, or rows from Quizlet / a spreadsheet.")}
+            />
+            <Select
+              label={tr("Separator (spreadsheet rows only)")}
+              value={v.separator}
+              onChange={(separator) => set({ ...v, separator })}
+            >
+              {[
+                [",", "Comma"],
+                [";", "Semicolon"],
+                ["\t", "Tab"],
+                ["|", "Vertical bar"],
+              ].map(([a, b]) => (
+                <option key={a} value={a}>
+                  {b}
+                </option>
+              ))}
+            </Select>
+            <p className="text-sm">{tr("Preview first. Nothing is added until you confirm the import.")}</p>
           </div>
         )
       }

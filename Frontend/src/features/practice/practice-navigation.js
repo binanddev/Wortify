@@ -50,15 +50,15 @@ export function workspaceNodes(nodes, pinned) {
       }
   }
   const visible = nodes.filter((n) => included.has(n.id));
+  const visibleIds = new Set(visible.map(n => n.id));
   return visible.map((n) => ({
     ...n,
-    parent: visible.some((p) => p.id === n.parent) ? n.parent : null,
+    parent: visibleIds.has(n.parent) ? n.parent : null,
   }));
 }
 
 // Resolve only ancestors the API has authorized this user to see.
-export function workspaceRoot(nodes, id) {
-  const byId = new Map(nodes.map((node) => [node.id, node]));
+function rootFromIndex(byId, id) {
   let node = byId.get(id);
   const seen = new Set();
   while (node && byId.has(node.parent) && !seen.has(node.parent)) {
@@ -67,11 +67,15 @@ export function workspaceRoot(nodes, id) {
   }
   return node;
 }
+export function workspaceRoot(nodes, id) {
+  return rootFromIndex(new Map(nodes.map(node => [node.id,node])), id);
+}
 export function workspaceRoots(nodes, pinned) {
+  const byId = new Map(nodes.map(node => [node.id,node]));
   return [
     ...new Set(
       pinned
-        .map((id) => workspaceRoot(nodes, id)?.id)
+        .map((id) => rootFromIndex(byId, id)?.id)
         .filter((id) => id != null),
     ),
   ];
@@ -85,18 +89,21 @@ export function toggleWorkspaceRoot(nodes, pinned, id) {
     : [...roots, root.id];
 }
 export function catalogRoots(nodes, query = "") {
+  const byId = new Map(nodes.map(node => [node.id,node]));
+  const needle = query.trim().toLocaleLowerCase();
+  if (!needle) return nodes.filter(node => !byId.has(node.parent));
   const matches = new Set(
     nodes
       .filter((node) =>
         node.title
           .toLocaleLowerCase()
-          .includes(query.trim().toLocaleLowerCase()),
+          .includes(needle),
       )
-      .map((node) => workspaceRoot(nodes, node.id)?.id),
+      .map((node) => rootFromIndex(byId, node.id)?.id),
   );
   return nodes.filter(
     (node) =>
-      (!node.parent || !nodes.some((parent) => parent.id === node.parent)) &&
+      (!node.parent || !byId.has(node.parent)) &&
       matches.has(node.id),
   );
 }

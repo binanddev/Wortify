@@ -1,3 +1,4 @@
+import { t as tr, setLanguage, useLocale } from "../i18n/index.js";
 import { ReadingWorkspace, Explore, ExerciseStudio, PracticeGuide, FlashcardStudio, PracticeHub, Admin } from "./workspace-pages.js";
 import PracticeArea from "../features/practice/PracticeArea.jsx";
 import { practiceArea } from "../features/practice/practice-area.js";
@@ -54,10 +55,19 @@ import { Session, ExtraStudy } from "../features/flashcards/study.jsx";
 import { Community, Settings } from "../features/settings/learning.jsx";
 
 export default function App() {
+  useLocale();
   const route = useRoute(),
     [user, setUser] = useState(undefined),
     [appearance, setAppearance] = useState({ background_url: "" }),
     [error, setError] = useState("");
+  useLayoutEffect(() => {
+    if (user) setLanguage(user.preferences?.uiLanguage || "en");
+  }, [user?.id, user?.preferences?.uiLanguage]);
+  useEffect(() => {
+    const changed = e => setUser(old => old ? { ...old, preferences: { ...old.preferences, uiLanguage: e.detail } } : old);
+    window.addEventListener("interface-language-changed", changed);
+    return () => window.removeEventListener("interface-language-changed", changed);
+  }, []);
   const isWorkspace = /^\/(en|de|manage)(\/|\?|$)/.test(route);
   useLayoutEffect(() => {
     if (!isWorkspace || !user) {
@@ -148,11 +158,9 @@ export default function App() {
     return (
       <div className="welcome">
         <Glass>
-          <h1>Unable to connect</h1>
+          <h1>{tr("Unable to connect")}</h1>
           <Status error={error} />
-          <Btn icon="refresh" onClick={() => location.reload()}>
-            Reconnect
-          </Btn>
+          <Btn icon="refresh" onClick={() => location.reload()}>{tr("Reconnect")}</Btn>
         </Glass>
       </div>
     );
@@ -160,7 +168,7 @@ export default function App() {
     return (
       <div className="welcome">
         <span className="loader" />
-        <p>Loading…</p>
+        <p>{tr("Loading…")}</p>
       </div>
     );
   if (setupKey)
@@ -186,11 +194,11 @@ export default function App() {
     return (
       <div className="welcome">
         <span className="loader" />
-        <p>Preparing your workspace…</p>
+        <p>{tr("Preparing your workspace…")}</p>
       </div>
     );
   if (parts[0] === "manage" || (["en", "de"].includes(parts[0]) && parts[1] === "admin"))
-    return user.staff || user.superuser ? <Suspense fallback={<p>Opening administration…</p>}><Admin user={user} /></Suspense> : <Home {...{user,setUser}}><Status error="You do not have administrative access." /></Home>;
+    return user.staff || user.superuser ? <Suspense fallback={<p>{tr("Opening administration…")}</p>}><Admin user={user} /></Suspense> : <Home {...{user,setUser}}><Status error="You do not have administrative access." /></Home>;
   if (!lang) return <Home {...{ user, setUser }} />;
   return (
     <Workspace
@@ -201,6 +209,7 @@ export default function App() {
   );
 }
 function Login({ onLogin, setupKey }) {
+  useLocale();
   const [register, setRegister] = useState(Boolean(setupKey)),
     [values, setValues] = useState({
       username: "",
@@ -234,12 +243,12 @@ function Login({ onLogin, setupKey }) {
         <span className="eyebrow">WORTIFY</span>
         <h2>
           {setupKey
-            ? "Create admin account"
+            ? tr("Create admin account")
             : register
-              ? "Create account"
-              : "Sign in"}
+              ? tr("Create account")
+              : tr("Sign in")}
         </h2>
-        {setupState === "loading" && <p>Checking paths…</p>}
+        {setupState === "loading" && <p>{tr("Checking paths…")}</p>}
         <Status error={setupError} />
         {setupState === "ready" && (
           <form
@@ -264,7 +273,7 @@ function Login({ onLogin, setupKey }) {
             }}
           >
             <Field
-              label="Username"
+              label={tr("Username")}
               value={values.username}
               onChange={(v) => setValues({ ...values, username: v })}
               autoComplete="username"
@@ -274,7 +283,7 @@ function Login({ onLogin, setupKey }) {
               (key, i) => (
                 <Field
                   key={key}
-                  label={i ? "Confirm password" : "Password"}
+                  label={i ? tr("Confirm password") : tr("Password")}
                   type="password"
                   value={values[key]}
                   onChange={(v) => setValues({ ...values, [key]: v })}
@@ -290,30 +299,31 @@ function Login({ onLogin, setupKey }) {
               className="btn primary full"
               isLoading={action.pending}
             >
-              {register ? "Create account" : "Sign in"}
+              {register ? tr("Create account") : tr("Sign in")}
               <Icon name="arrow" />
             </Btn>
           </form>
         )}
         {!setupKey && (
           <div className="auth-switch">
-            {register ? "Already have an account?" : "No account yet?"}
+            {register ? tr("Already have an account?") : tr("No account yet?")}
             <Btn
               onClick={() => {
                 setRegister(!register);
                 action.setError("");
               }}
             >
-              {register ? "Sign in" : "Create account"}
+              {register ? tr("Sign in") : tr("Create account")}
             </Btn>
           </div>
         )}
-        {setupKey && <Link to="/">Back to main page</Link>}
+        {setupKey && <Link to="/">{tr("Back to main page")}</Link>}
       </Glass>
     </div>
   );
 }
 function Brand() {
+  useLocale();
   return (
     <Link to="/" className="brand">
       <img
@@ -328,6 +338,7 @@ function Brand() {
   );
 }
 function Workspace({ user, setUser, lang, parts, route, appearance }) {
+  useLocale();
   const sync = useLearningSync(user.id, lang);
   const prefKey = `wortify:${user.id}:appearance`,
     [prefs, setLocalPrefs] = useState(() => {
@@ -360,7 +371,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         navPinned: p.navPinned !== false,
         navScale: navScale(
           p.navScale ??
-            (readPreference(`nav-width:${user.id}`, 422) / 422) * 100,
+            (readPreference(`nav-width:${user.id}`, 295.4) / 422) * 100,
         ),
         ambientTrack: ambientTrack(p.ambientTrack).id,
         font: Math.min(60, Math.max(24, Number(p?.font) || 36)),
@@ -373,7 +384,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         textWeight: Math.min(700, Math.max(400, Number(p.textWeight) || 500)),
         textContrast: Math.min(100, Math.max(0, Number(p.textContrast ?? 80))),
         textColor: /^#[0-9a-f]{6}$/i.test(p.textColor) ? p.textColor : "auto",
-        textSize: Math.min(22, Math.max(16, Number(p?.textSize) || 18)),
+        textSize: Math.min(22, Math.max(16, Number(p?.textSize) || 16)),
         background: ["mist", "paper", "night"].includes(p?.background)
           ? p.background
           : "mist",
@@ -414,6 +425,9 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
     document.addEventListener("keydown", escape);
     return () => document.removeEventListener("keydown", escape);
   }, [smallScreen, navOpen]);
+  useEffect(() => {
+    setLocalPrefs(old => ({ ...old, uiLanguage: user.preferences?.uiLanguage || "en" }));
+  }, [user.preferences?.uiLanguage]);
   const setPrefs = (requested) => {
     const v = updateAppearance(
       prefs,
@@ -509,9 +523,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
         track={prefs.ambientTrack}
         volume={prefs.volume}
       />
-      <a className="skip-link" href="#main-content">
-        Skip to main content
-      </a>
+      <a className="skip-link" href="#main-content">{tr("Skip to main content")}</a>
       {prefs.interface !== "xp" && (
         <>
           <div className="mobile-nav-bar">
@@ -524,8 +536,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                 setNavOpen((open) => !open);
               }}
             >
-              <Icon name="menu" /> Menu
-            </button>
+              <Icon name="menu" />{tr(" Menu")}</button>
             <button
               aria-controls="app-navigation"
               aria-expanded={navOpen && navBack}
@@ -533,14 +544,12 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                 setNavBack(true);
                 setNavOpen(true);
               }}
-            >
-              Page tools
-            </button>
+            >{tr("Page tools")}</button>
           </div>
           {smallScreen && navOpen && (
             <button
               className="nav-scrim"
-              aria-label="Close menu"
+              aria-label={tr("Close menu")}
               onClick={() => setNavOpen(false)}
             />
           )}
@@ -581,7 +590,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                   inert={navBack}
                   aria-hidden={navBack}
                 >
-                  {prefs.interface === "rpg" && <button className="nav-link" onClick={() => setTerminalOpen(v => !v)}>{terminalOpen ? "Exit terminal" : "Terminal"}</button>}
+                  {prefs.interface === "rpg" && <button className="nav-link" onClick={() => setTerminalOpen(v => !v)}>{terminalOpen ? tr("Exit terminal") : tr("Terminal")}</button>}
                   {prefs.interface === "rpg" && terminalOpen ? <QuestConsole lang={lang} onExit={() => setTerminalOpen(false)} /> : <>
                   <nav>
                     {[
@@ -596,7 +605,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                         aria-current={(section === id || (id === "practice" && practiceArea(section))) ? "page" : undefined}
                       >
                         <Icon name={icon} />
-                        {title}
+                        {tr(title)}
                         
                       </Link>
                     ))}
@@ -614,7 +623,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                         aria-current={(section === id || (id === "practice" && practiceArea(section))) ? "page" : undefined}
                       >
                         <Icon name={icon} />
-                        {title}
+                        {tr(title)}
                       </Link>
                     ))}
                   </nav>
@@ -624,9 +633,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                       className={`nav-link ${section === "settings" ? "active" : ""}`}
                       to={`/${lang}/settings`}
                     >
-                      <Icon name="settings" />
-                      Study settings
-                    </Link>
+                      <Icon name="settings" />{tr("Study settings")}</Link>
                     <div className="account">
                       <Link to={`/${lang}/profile`} className="account-name">
                         <span className="avatar">
@@ -635,7 +642,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                         <span>{user.username}</span>
                       </Link>
                       <Btn
-                        aria-label="Sign out"
+                        aria-label={tr("Sign out")}
                         isLoading={action.pending}
                         onClick={() =>
                           action.run(async (s) => {
@@ -674,7 +681,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                 />
                 <aside
                   className="workspace-context context-panel open"
-                  aria-label="Tools and contents"
+                  aria-label={tr("Tools and contents")}
                   inert={!navBack}
                   aria-hidden={!navBack}
                 >
@@ -701,16 +708,15 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
           {prefs.interface === "studio" && (
             <header className="studio-masthead">
               <div>
-                <span className="studio-kicker">WORTIFY / LEARNING SPACE</span>
+                <span className="studio-kicker">{tr("WORTIFY / LEARNING SPACE")}</span>
                 <strong>{contextItems.title}</strong>
               </div>
               <Link
                 to={`/${lang}/settings`}
                 className="studio-appearance-link"
-                aria-label="Change appearance in Settings"
+                aria-label={tr("Change appearance in Settings")}
               >
-                <Icon name="palette" /> Appearance
-              </Link>
+                <Icon name="palette" />{tr(" Appearance")}</Link>
             </header>
           )}
           <main id="main-content" tabIndex={-1}>
@@ -724,20 +730,21 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
   );
 }
 function NavStatic({ navBack, setNavBack, onClose }) {
+  useLocale();
   return (
     <div className="nav-static">
       <Brand />
       <button
         className="mobile-nav-close"
-        aria-label="Close menu"
+        aria-label={tr("Close menu")}
         onClick={onClose}
       >
         <Icon name="close" />
       </button>
       <button
         className="nav-rotate"
-        aria-label={navBack ? "Main navigation" : "Page tools"}
-        title={navBack ? "Main navigation" : "Page tools"}
+        aria-label={navBack ? tr("Main navigation") : tr("Page tools")}
+        title={navBack ? tr("Main navigation") : tr("Page tools")}
         aria-pressed={navBack}
         onClick={() => setNavBack((v) => !v)}
       >
@@ -764,6 +771,7 @@ function getContextItems(lang, section, parts) {
 }
 
 function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
+  useLocale();
   const parts = route.split("?")[0].split("/").filter(Boolean);
   const section = parts[0] === "manage" ? "admin" : parts[1] || "flashcard";
   const legacyDestination = legacyPracticeDestination(lang, section, parts[2]);
@@ -804,7 +812,7 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
   else if (legacyDestination)
     content = (
       <Page>
-        <Status>Opening Create…</Status>
+        <Status>{tr("Opening Create…")}</Status>
       </Page>
     );
   else if (section === "create" && parts[2] === "guide")
@@ -841,7 +849,7 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
   else if (section === "admin")
     content =
       user.superuser || user.staff ? (
-        <Suspense fallback={<p>Opening administration…</p>}>
+        <Suspense fallback={<p>{tr("Opening administration…")}</p>}>
           <Admin user={user} />
         </Suspense>
       ) : (
@@ -860,10 +868,10 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
   else
     content = (
       <Page>
-        <Heading title="Page not found" />
-        <Link to={`/${lang}/flashcard`}>Back to library</Link>
+        <Heading title={tr("Page not found")} />
+        <Link to={`/${lang}/flashcard`}>{tr("Back to library")}</Link>
       </Page>
     );
 
-  return <Suspense fallback={<Status>Loading workspace…</Status>}>{practiceArea(section) ? <PracticeArea lang={lang} section={section} focused={!!parts[2] && section !== "explore"}>{content}</PracticeArea> : content}</Suspense>;
+  return <Suspense fallback={<Status>{tr("Loading workspace…")}</Status>}>{practiceArea(section) ? <PracticeArea lang={lang} section={section} focused={!!parts[2] && section !== "explore"}>{content}</PracticeArea> : content}</Suspense>;
 }

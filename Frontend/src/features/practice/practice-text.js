@@ -81,16 +81,17 @@ TYPES AND STYLES
 cloze_drag_drop: drag_drop (move word tiles), tap_fill (tap words to fill blanks).
 error_correction: click_edit (edit incorrect text), cross_out (remove extra words).
   ANSWER is the entire corrected sentence. For cross_out, only remove words; do not add or reorder them.
-matching: tap_match (match cards). Each QUESTION is one card; ANSWER is its unique partner.
+matching: tap_match (match cards). Each QUESTION is one card; ANSWER is exactly one unique partner. Never reuse a partner across questions.
 sentence_building: tap_build (arrange tokens). WORDS defines the correct token order.
 categorization: drag_sort (sort cards). Each QUESTION is one card; ANSWER is exactly one GROUPS value.
 inline_selection: pill_toggle (toggle choices), inline_select (select a choice), fall_away (wrong choices disappear after a correct answer).
   Every BLANK needs at least two options, including every accepted answer.
 BANK_SCOPE: question or exercise for cloze_drag_drop; exercise uses a shared word bank (default).
 multiple_choice: dialogue_reply or elimination; these styles require a single correct answer.
-  OPTIONS: choices separated by |. ANSWER must match one choice.
-true_false_not_given: evidence_judge. Use CONTEXT for the passage and ANSWER: TRUE, FALSE or NOT_GIVEN.
+  OPTIONS: at least two distinct choices separated by |. ANSWER must be the exact text of one choice, never its letter or index.
+true_false_not_given: evidence_judge. Use CONTEXT for the passage, OPTIONS: TRUE | FALSE | NOT_GIVEN and exactly one ANSWER: TRUE, FALSE or NOT_GIVEN. FALSE contradicts the passage; NOT_GIVEN is not established by it.
 short_answer: partial_input (complete a required PREFIX), sentence_rewrite (write the whole answer).
+  partial_input requires a nonempty PREFIX. Every accepted ANSWER must begin with that exact PREFIX.
   ANSWER always contains the entire sentence, including PREFIX when provided.
 
 WORKSPACE AND EDITING

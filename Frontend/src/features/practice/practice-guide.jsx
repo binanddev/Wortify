@@ -1,131 +1,29 @@
-import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
-import {FormattingHelp} from "./formatting-help.jsx";
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useState } from "react";
+import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
 import { PracticeModal } from "./practice-workspace.jsx";
 import { Page, Heading, Link, SidebarTools, Select, Btn, Icon } from "../../components/ui/ui.jsx";
 import { EXERCISE_TYPES, exerciseStylesOf } from "./exercise-types.js";
-import {
-  TEXT_GUIDE,
-  textTemplate,
-  completePracticeGuide,
-} from "./practice-text.js";
-import { PracticeRichText, TEXT_COLORS } from "./practice-rich-text.jsx";
-
-const panel =
-  "glass rounded-3xl border border-(--line) bg-(--surface) p-5 sm:p-7 backdrop-blur-xl shadow-sm";
-function Download({ text, name, label }) {
-  return (
-    <a
-      className="btn"
-      title={label}
-      aria-label={label}
-      download={name}
-      href={`data:text/plain;charset=utf-8,${encodeURIComponent(text)}`}
-    >
-      <Icon name="download" />
-    </a>
-  );
-}
+import { textTemplate } from "./practice-text.js";
+const panel = "rounded-2xl border border-(--line) bg-(--surface) p-5";
 export function PracticeGuide({ lang }) {
-  const [notice, setNotice] = useState("");
-  const [dialog, setDialog] = useState(null);
+  useLocale();
   const [mode, setMode] = useState("cloze_drag_drop");
   const [style, setStyle] = useState("drag_drop");
-  const [color, setColor] = useState("blue");
-  const fullGuide = completePracticeGuide();
+  const [dialog, setDialog] = useState(null);
+  const [notice, setNotice] = useState("");
   const template = textTemplate(mode, style);
-  const colorExample = `[color=${color}]Your text[/color]`;
-  const copy = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setNotice("Copied.");
-    } catch {
-      setNotice("Copy failed. Select the text manually or download the file.");
-    }
-  };
-  const code = (text) => (
-    <pre
-      className="my-3 max-h-[55vh] overflow-auto whitespace-pre-wrap wrap-anywhere rounded-2xl border border-(--line) bg-transparent p-4 text-sm leading-7"
-      tabIndex={0}
-    >
-      {text}
-    </pre>
-  );
-  return (
-    <Page className="lesson-guide-page">
-      <SidebarTools navOnly>
-        <div className="guide-actions">
-          <Link
-            className="btn guide-icon-link"
-            to={`/${lang}/create`}
-            title="My Exercise Library"
-            aria-label="My Exercise Library"
-          >
-            <Icon name="home" />
-          </Link>
-          <Link
-            className="btn guide-icon-link"
-            to={`/${lang}/create/new`}
-            title="Create exercise"
-            aria-label="Create exercise"
-          >
-            <Icon name="plus" />
-          </Link>
-          <Btn icon="download" onClick={() => setDialog("full")}>
-            Instructions and all templates
-          </Btn>
-        </div>
-      </SidebarTools>
-      <div className="mx-auto grid w-full max-w-5xl gap-6 text-(--ink)">
-        <Heading title="Create a lesson" />
-        <AiAuthoringHelp lang={lang} guide />
-        <div className="flex flex-wrap gap-3">
-          <Link className="btn guide-draft-link" to={"/" + lang + "/create/new"}><Icon name="plus" />New draft</Link>
-        </div>
-        <details className="grid gap-4">
-          <summary className="cursor-pointer text-xl font-semibold">Reference</summary>
-          <div className="mt-4 grid gap-6">
-        <FormattingHelp/>
+  return <Page className="lesson-guide-page">
+    <SidebarTools navOnly><div className="guide-actions">
+      <Link className="btn guide-icon-link" to={`/${lang}/create`} title={tr("My Exercise Library")} aria-label={tr("My Exercise Library")}><Icon name="home" /></Link>
+      <Link className="btn guide-icon-link" to={`/${lang}/create/new`} title={tr("Create exercise")} aria-label={tr("Create exercise")}><Icon name="plus" /></Link>
+    </div></SidebarTools>
+    <div className="mx-auto grid w-full max-w-5xl gap-6 text-(--ink)">
+      <Heading title={tr("Create a lesson")} />
+      <AiAuthoringHelp lang={lang} guide />
+      <div><Link className="btn guide-draft-link" to={`/${lang}/create/new`}><Icon name="plus" />{tr("New draft")}</Link></div>
+      <details><summary className="cursor-pointer font-semibold">{tr("Template library")}</summary><div className="mt-3">
         <section className={panel}>
-          <h2>Choose how learners answer</h2>
-          <p>Use BANK_SCOPE: question for a separate word bank per question, or BANK_SCOPE: exercise for a shared bank across the exercise. Repeat words when more than one gap needs them.</p>
-          <p>For inline choices, STYLE: fall_away keeps the correct word and removes incorrect choices after a correct answer. Dialogue replies and Eliminate and decide support one correct answer.</p>
-          <p>Add COMMENT: before the first QUESTION for a shared note. Add EXPLANATION: after each question or matching pair. Notes appear after a correct answer or an answer reveal; matching reveals each completed pair separately.</p>
-          <p>Settings → Learning lets learners adjust exercise text size and weight. Use lesson markup for line breaks, tables and image placement; keep answers and word banks plain.</p>
-          <p>Theory supports Markdown + lesson markup, uploaded images and a preview. Keep uploaded images attached when embedding their URLs. HTML theory remains a separate sandboxed format.</p>
-        </section>
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            [
-              "01",
-              "Choose a template",
-              String(EXERCISE_TYPES.length) + " exercise types. Each template lists its supported styles.",
-            ],
-            [
-              "02",
-              "Write content",
-              "Save the .txt file as UTF-8. Add EXERCISE: to include multiple exercises in one file.",
-            ],
-            [
-              "03",
-              "Preview & save",
-              "Import the file into a folder in Create, review it and save. You can add images and MP3 files.",
-            ],
-          ].map(([n, title, body]) => (
-            <article key={n} className={panel}>
-              <span className="text-sm font-bold text-(--accent)">{n}</span>
-              <h2 className="my-2 text-lg font-semibold">{title}</h2>
-              <p className="leading-7">{body}</p>
-            </article>
-          ))}
-        </div>
-        <section className={panel}>
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold">Template library</h2>
-            <Btn icon="download" onClick={() => setDialog("full")}>
-              Download all instructions and templates
-            </Btn>
-          </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {EXERCISE_TYPES.map(([key, title, number]) => (
               <button
@@ -139,160 +37,22 @@ export function PracticeGuide({ lang }) {
                 }}
               >
                 <span className="font-bold text-(--accent)">{number}</span>
-                <span className="flex-1 font-semibold">{title}</span>
+                <span className="flex-1 font-semibold">{tr(title)}</span>
                 <Icon name="arrow" />
               </button>
             ))}
           </div>
         </section>
-        <section className={panel}>
-          <h2 className="text-xl font-semibold">Content format</h2>
-          <p className="mt-2 leading-7">
-            Use in instructions, reading passages, explanations and questions. Keep answers and interactive words in plain text.
-          </p>
-          <div className="my-4 grid gap-3 sm:grid-cols-2">
-            {["**Bold text**", "*Italic text*"].map((text) => (
-              <div
-                key={text}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-(--line) p-4"
-              >
-                <div>
-                  <code className="text-sm">{text}</code>
-                  <p className="mt-2">
-                    <PracticeRichText>{text}</PracticeRichText>
-                  </p>
-                </div>
-                <Btn icon="copy" onClick={() => copy(text)}>
-                  Copy syntax
-                </Btn>
-              </div>
-            ))}
-          </div>
-          <div
-            className="grid grid-cols-5 gap-2 sm:grid-cols-10"
-            role="group"
-            aria-label="20 text colors"
-          >
-            {Object.entries(TEXT_COLORS).map(([name, hex]) => (
-              <button
-                key={name}
-                type="button"
-                aria-pressed={color === name}
-                title={name}
-                aria-label={`Color ${name}`}
-                onClick={() => setColor(name)}
-                className={`grid justify-items-center gap-2 rounded-xl border p-2 text-xs ${color === name ? "border-(--accent)" : "border-transparent"}`}
-              >
-                <span
-                  className="h-5 w-5 rounded-full ring-1 ring-current"
-                  style={{ backgroundColor: hex }}
-                />
-                {name}
-              </button>
-            ))}
-          </div>
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-(--line) p-4">
-            <div>
-              <code className="text-sm">{colorExample}</code>
-              <p className="mt-2">
-                <PracticeRichText>{colorExample}</PracticeRichText>
-              </p>
-            </div>
-            <Btn icon="copy" onClick={() => copy(colorExample)}>
-              Copy selected color
-            </Btn>
-          </div>
-          <p className="mt-4 text-sm leading-7">
-            End formatting before each gap. For correction exercises, keep questions in plain text so learners can edit words. Choose colors that contrast with the lesson background.
-          </p>
-        </section>
-        <section className={panel}>
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold">Rules & documentation</h2>
-            <div className="flex gap-2">
-              <Btn icon="copy" onClick={() => copy(fullGuide)}>
-                Copy all instructions and templates
-              </Btn>
-              <Download
-                text={fullGuide}
-                name="practice-complete-guide.txt"
-                label="Download all instructions and templates"
-              />
-              <Btn icon="eye" onClick={() => setDialog("rules")}>
-                Read the rules
-              </Btn>
-            </div>
-          </div>
-          <p className="mt-3 leading-7">
-            Keywords and syntax are in English; content can use any language. Up to 100 exercises per import, 100 questions per exercise and 2 MB of text.
-          </p>
-          <p className="mt-2 leading-7">
-            Images and MP3 files are optional, up to 200 MB per exercise. Attach them to the entire exercise or individual questions in Media; attachments are not included in .txt files.
-          </p>
-        </section>
-          </div>
-        </details>
-        <p role="status" className="text-sm">
-          {notice}
-        </p>
-      </div>
-      {dialog && (
-        <PracticeModal
-          title={
-            dialog === "template"
-              ? "Exercise template"
-              : dialog === "rules"
-                ? "Text format rules"
-                : "Full guide"
-          }
-          onClose={() => setDialog(null)}
-        >
-          {dialog === "template" && (
-            <Select label="Style" value={style} onChange={setStyle}>
-              {exerciseStylesOf(mode).map(([key, title]) => (
-                <option key={key} value={key}>
-                  {title}
-                </option>
-              ))}
-            </Select>
-          )}
-          <div className="flex gap-2">
-            <Btn
-              icon="copy"
-              onClick={() =>
-                copy(
-                  dialog === "template"
-                    ? template
-                    : dialog === "rules"
-                      ? TEXT_GUIDE
-                      : fullGuide,
-                )
-              }
-            >
-              Copy content
-            </Btn>
-            <Download
-              text={dialog === "template" ? template : fullGuide}
-              name={
-                dialog === "template"
-                  ? `${mode}-${style}.txt`
-                  : "practice-complete-guide.txt"
-              }
-              label="Download .txt file"
-            />
-          </div>
-          <p role="status" className="text-sm">
-            {notice}
-          </p>
-          {code(
-            dialog === "template"
-              ? template
-              : dialog === "rules"
-                ? TEXT_GUIDE
-                : fullGuide,
-          )}
-        </PracticeModal>
-      )}
-    </Page>
-  );
+
+      </div></details>
+    </div>
+    {dialog && <PracticeModal title={tr("Exercise template")} onClose={()=>{setDialog(null);setNotice("");}}>
+      <Select label={tr("Style")} value={style} onChange={setStyle}>
+        {exerciseStylesOf(mode).map(([key,title])=><option key={key} value={key}>{tr(title)}</option>)}
+      </Select>
+      <Btn icon="copy" onClick={async()=>{try{await navigator.clipboard.writeText(template);setNotice("Copied.");}catch{setNotice("Clipboard access is unavailable. Select the instructions below to copy them.");}}}>{tr("Copy content")}</Btn>
+      {notice && <p role="status">{tr(notice)}</p>}
+      <textarea aria-label={tr("Exercise template")} readOnly value={template} rows={12} onFocus={e=>e.currentTarget.select()} className="mt-3 w-full rounded-xl border border-(--line) bg-transparent p-3 text-sm" />
+    </PracticeModal>}
+  </Page>;
 }

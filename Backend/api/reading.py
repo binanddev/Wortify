@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import timedelta
 from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -10,7 +11,7 @@ from .practice_media import validated_attachments
 
 
 def serialized(lesson):
-    return {'id':lesson.pk,'title':lesson.title,'payload':lesson.payload,'progress':{'completed':lesson.completed},'revision':lesson.updated_at.isoformat()}
+    return {'id':lesson.pk,'title':lesson.title,'visibility':lesson.visibility,'level':lesson.level,'topic':lesson.topic,'payload':lesson.payload,'progress':{'completed':lesson.completed},'revision':lesson.updated_at.isoformat()}
 
 
 def content(request, data):
@@ -39,6 +40,7 @@ def library(request):
     for data in entries:
         title,payload = content(request,data)
         lesson = ReadingLesson.objects.create(owner=request.user,language=request.language,title=title,payload=payload)
+        lesson.attachments.set(validated_attachments(request,payload))
         result.append(serialized(lesson))
     return JsonResponse({'lessons':result},status=201)
 
@@ -67,6 +69,45 @@ def detail(request, pk):
         lesson.save(update_fields=['completed'])
     else:
         lesson.title,lesson.payload=content(request,data)
+        lesson.attachments.set(validated_attachments(request,lesson.payload))
         lesson.completed=[]
+        previous_revision = lesson.updated_at
         lesson.save()
+        # Fast saves can share a clock tick; every content edit must invalidate
+        # progress submissions from the previous revision.
+        if lesson.updated_at <= previous_revision:
+            lesson.updated_at = previous_revision + timedelta(microseconds=1)
+            ReadingLesson.objects.filter(pk=lesson.pk).update(updated_at=lesson.updated_at)
+    return JsonResponse(serialized(lesson))
+
+
+LEVELS = ('A1', 'A2', 'B1', 'B2', 'C1', 'C2')
+
+
+def metadata(data):
+    level = data.get('level', '')
+    topic = data.get('topic', '')
+    if level not in ('', *LEVELS):
+        raise ValueError('Choose a level from A1 to C2.')
+    if not isinstance(topic, str) or len(topic.strip()) > 80:
+        raise ValueError('Topic must contain at most 80 characters.')
+    return {'level': level, 'topic': topic.strip()}
+
+
+@endpoint
+@require_http_methods(['PATCH'])
+@transaction.atomic
+def sharing(request, pk):
+    lesson = get_object_or_404(ReadingLesson.objects.select_for_update(), pk=pk, owner=request.user, language=request.language)
+    data = body(request)
+    visibility = data.get('visibility')
+    if visibility not in ('private', 'public'):
+        raise ValueError('Choose private or public.')
+    values = metadata(data)
+    lesson.visibility = visibility
+    lesson.level = values['level']
+    lesson.topic = values['topic']
+    # Establish media access only for files already owned by this author.
+    lesson.attachments.set(validated_attachments(request, lesson.payload))
+    lesson.save(update_fields=['visibility', 'level', 'topic'])
     return JsonResponse(serialized(lesson))

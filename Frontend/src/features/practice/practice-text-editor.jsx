@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
 import {FormattingHelp} from "./formatting-help.jsx";
 import { remapQuestionMedia } from "./exercise-media-utils.js";
@@ -23,6 +24,7 @@ export function PracticeTextEditor({
   pending = false,
   lang = "en",
 }) {
+  useLocale();
   const [media, setMedia] = useState({ existing: exercise?.attachments || [] });
   const [mediaBusy, setMediaBusy] = useState(false);
   const [activeDraft, setActiveDraft] = useState(0);
@@ -130,29 +132,23 @@ export function PracticeTextEditor({
     <section className="practice-text-editor studio-content">
       <SidebarTools navOnly>
         <h3 className="context-section-title">
-          {exercise ? "Edit exercise" : "Create exercise"}
+          {exercise ? tr("Edit exercise") : tr("Create exercise")}
         </h3>
-        <Btn icon="upload" onClick={() => setToolsOpen(true)}>
-          Import file / choose template
-        </Btn>
+        <Btn icon="upload" onClick={() => setToolsOpen(true)}>{tr("Import file / choose template")}</Btn>
         <Status error={error} />
         <Btn
           icon="eye"
           isDisabled={!text.trim() || reading || pending || mediaBusy}
           onClick={() => validateDraft("preview")}
-        >
-          Check and preview
-        </Btn>
+        >{tr("Check and preview")}</Btn>
         <Btn
           icon="image"
           isDisabled={!text.trim() || reading || pending || mediaBusy}
           onClick={() => validateDraft("media")}
-        >
-          Media · MP3 and images
-        </Btn>
+        >{tr("Media · MP3 and images")}</Btn>
         {checked?.nodes.length > 1 && (
           <Select
-            label="Exercise draft"
+            label={tr("Exercise draft")}
             value={activeDraft}
             onChange={(value) => setActiveDraft(Number(value))}
           >
@@ -166,35 +162,32 @@ export function PracticeTextEditor({
         {checked && (
           <>
             <p role="status">
-              {checked.nodes.length} valid exercises ready to save.
-            </p>
+              {checked.nodes.length}{tr(" valid exercises ready to save.")}</p>
             <Btn
               primary
               isLoading={pending}
               isDisabled={pending || mediaBusy}
               onClick={() => onApply(checked.nodes.map(withMedia))}
             >
-              {exercise ? "Save changes" : `Create ${checked.nodes.length} exercises`}
+              {exercise ? tr("Save changes") : `Create ${checked.nodes.length} exercises`}
             </Btn>
           </>
         )}
       </SidebarTools>
       {toolsOpen && (
         <PracticeModal
-          title={exercise ? "Edit exercise" : "Import .txt exercises"}
+          title={exercise ? tr("Edit exercise") : tr("Import .txt exercises")}
           pending={pending || reading || mediaBusy}
           onClose={() => setToolsOpen(false)}
         >
           <div className="studio-import-tools">
             <Status error={error} />
-            <h3>{exercise ? "Edit exercise" : "Import .txt exercises"}</h3>
+            <h3>{exercise ? tr("Edit exercise") : tr("Import .txt exercises")}</h3>
             <a
               href={`/${lang}/create/guide`}
               target="_blank"
               rel="noopener noreferrer"
-            >
-              Text format rules and templates ↗
-            </a>
+            >{tr("Text format rules and templates ↗")}</a>
             <label
               className="practice-file-drop"
               onDragOver={(event) => event.preventDefault()}
@@ -204,10 +197,10 @@ export function PracticeTextEditor({
               }}
             >
               <span aria-hidden="true">📄</span>
-              <strong>Choose or drop a .txt file</strong>
-              <small>UTF-8 · max 2 MB · multiple files allowed</small>
+              <strong>{tr("Choose or drop a .txt file")}</strong>
+              <small>{tr("UTF-8 · max 2 MB · multiple files allowed")}</small>
               <input
-                aria-label="Choose a .txt file"
+                aria-label={tr("Choose a .txt file")}
                 type="file"
                 accept=".txt,text/plain"
                 multiple={!exercise}
@@ -217,9 +210,9 @@ export function PracticeTextEditor({
             </label>
             {files.length > 0 && <p>{files.join(" · ")}</p>}
             <details>
-              <summary>Templates for {EXERCISE_TYPES.length} exercise types</summary>
+              <summary>{tr("Templates for ")}{EXERCISE_TYPES.length}{tr(" exercise types")}</summary>
               <Select
-                label="Sample exercise type"
+                label={tr("Sample exercise type")}
                 value={mode}
                 disabled={pending || reading || mediaBusy}
                 onChange={(value) => {
@@ -229,19 +222,19 @@ export function PracticeTextEditor({
               >
                 {EXERCISE_TYPES.map(([key, title]) => (
                   <option key={key} value={key}>
-                    {title}
+                    {tr(title)}
                   </option>
                 ))}
               </Select>
               <Select
-                label="Available styles"
+                label={tr("Available styles")}
                 value={style}
                 disabled={pending || reading || mediaBusy}
                 onChange={setStyle}
               >
                 {exerciseStylesOf(mode).map(([key, title]) => (
                   <option key={key} value={key}>
-                    {title}
+                    {tr(title)}
                   </option>
                 ))}
               </Select>
@@ -249,36 +242,30 @@ export function PracticeTextEditor({
                 className="btn"
                 download={`${mode}-${style}.txt`}
                 href={`data:text/plain;charset=utf-8,${encodeURIComponent(textTemplate(mode, style))}`}
-              >
-                Download sample file
-              </a>
+              >{tr("Download sample file")}</a>
               <Btn
                 isDisabled={pending || reading || mediaBusy}
                 onClick={() => {
                   update(textTemplate(mode, style));
                   setToolsOpen(false);
                 }}
-              >
-                Open sample content
-              </Btn>
+              >{tr("Open sample content")}</Btn>
             </details>
             <a
               className="btn"
               download="bai-tap.txt"
               href={`data:text/plain;charset=utf-8,${encodeURIComponent(text)}`}
-            >
-              Download draft
-            </a>
+            >{tr("Download draft")}</a>
           </div>
         </PracticeModal>
       )}
-      <h1>{exercise ? exercise.title : "Exercise content"}</h1>
+      <h1>{exercise ? exercise.title : tr("Exercise content")}</h1>
       <AiAuthoringHelp lang={lang} />
       <FormattingHelp/>
       {mediaNotice && <p role="status">{mediaNotice}</p>}
       <Field
-        label="Text draft"
-        description="Paste the exercise text from your AI chat here, or import a .txt file. Use Check and preview before saving."
+        label={tr("Text draft")}
+        description={tr("Paste the exercise text from your AI chat here, or import a .txt file. Use Check and preview before saving.")}
         multiline
         rows={24}
         value={text}
@@ -287,13 +274,13 @@ export function PracticeTextEditor({
       />
       {checked && mediaIndex !== null && checked.nodes[mediaIndex] && (
         <PracticeModal
-          title={`Media · ${checked.nodes[mediaIndex].title}`}
+          title={tr("Media · {v0}", { v0: checked.nodes[mediaIndex].title })}
           pending={mediaBusy}
           onClose={() => setMediaIndex(null)}
         >
           {checked.nodes.length > 1 && (
             <Select
-              label="Exercises"
+              label={tr("Exercises")}
               value={mediaIndex}
               disabled={mediaBusy}
               onChange={(value) => {
@@ -326,12 +313,12 @@ export function PracticeTextEditor({
       )}
       {checked && previewIndex !== null && checked.nodes[previewIndex] && (
         <PracticeModal
-          title="Preview draft"
+          title={tr("Preview draft")}
           onClose={() => setPreviewIndex(null)}
         >
           {checked.nodes.length > 1 && (
             <Select
-              label="Exercises"
+              label={tr("Exercises")}
               value={previewIndex}
               onChange={(value) => setPreviewIndex(Number(value))}
             >

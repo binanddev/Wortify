@@ -41,7 +41,7 @@ export function applyAppearance(p = {}) {
   );
   root.style.setProperty(
     "--ui-font",
-    `${clamp(p.textSize ?? 18, 16, 22, 18)}px`,
+    `${clamp(p.textSize ?? 16, 16, 22, 16)}px`,
   );
   root.style.setProperty("--card-font", `${clamp(p.font ?? 36, 24, 60, 36)}px`);
   root.style.setProperty(

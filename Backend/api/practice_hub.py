@@ -18,8 +18,11 @@ def visible(request):
     return PracticeNode.objects.filter(language=request.language).filter(access).distinct()
 
 def node_data(n,user):
+    presentation = n.payload.get('presentation', {})
+    legacy_mode = presentation.get('type') or n.payload.get('kind')
+    interaction = presentation.get('interaction') or {'cloze':'cloze_drag_drop','choice':'multiple_choice','multi':'multiple_choice','text':'short_answer','order':'sentence_building','wordset':'short_answer'}.get(legacy_mode, legacy_mode)
     progress=next((p for p in n.learning_progress.all() if p.user_id==user.pk and p.revision==n.updated_at.isoformat()),None)
-    return {'id':n.pk,'parent':n.parent_id,'kind':n.kind,'title':n.title,'payload':n.payload,'tags':n.payload.get('tags',[]) if n.kind=='folder' and not n.parent_id else [],'links':[r.pk for r in n.links.all()], 'visibility':n.visibility,'position':n.position,'can_edit':n.owner_id==user.pk,'updated_at':n.updated_at.isoformat(),'interaction':n.payload.get('presentation',{}).get('interaction') if n.kind=='exercise' else None,'progress':{'completed':progress.completed if progress else []}}
+    return {'id':n.pk,'parent':n.parent_id,'kind':n.kind,'title':n.title,'payload':n.payload,'tags':n.payload.get('tags',[]) if n.kind=='folder' and not n.parent_id else [],'links':[r.pk for r in n.links.all()], 'visibility':n.visibility,'position':n.position,'can_edit':n.owner_id==user.pk,'updated_at':n.updated_at.isoformat(),'interaction':interaction if n.kind=='exercise' else None,'progress':{'completed':progress.completed if progress else []}}
 
 def validate_payload(kind,payload):
     if not isinstance(payload,dict):raise ValueError('Content must be a JSON object.')

@@ -1,8 +1,10 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useEffect, useState } from "react";
 import { PracticeModal } from "./practice-workspace.jsx";
 import { Btn, Link, Icon, SidebarTools, Status, Field } from "../../components/ui/ui.jsx";
 
 export function DestinationPicker({ nodes, ids, onChoose, onClose, pending }) {
+  useLocale();
   const excluded = new Set(ids);
   let changed = true;
   while (changed) {
@@ -27,7 +29,7 @@ export function DestinationPicker({ nodes, ids, onChoose, onClose, pending }) {
   return (
     <div
       className="destination-picker"
-      aria-label="Choose an exercise location"
+      aria-label={tr("Choose an exercise location")}
       onKeyDown={(event) => {
         if (event.key === "Escape") onClose();
       }}
@@ -35,9 +37,7 @@ export function DestinationPicker({ nodes, ids, onChoose, onClose, pending }) {
       {!ids.some(
         (id) => nodes.find((node) => node.id === id)?.kind === "exercise",
       ) && (
-        <button type="button" disabled={pending} onClick={() => onChoose(null)}>
-          My Exercise Library
-        </button>
+        <button type="button" disabled={pending} onClick={() => onChoose(null)}>{tr("My Exercise Library")}</button>
       )}
       {nodes
         .filter((n) => n.kind === "folder" && n.can_edit && !excluded.has(n.id))
@@ -75,6 +75,7 @@ export function PracticeLibrary({
   searching,
   routeBase = "create",
 }) {
+  useLocale();
   const [menuId, setMenuId] = useState(null);
   const [groupName, setGroupName] = useState("New folder");
   const [grouping, setGrouping] = useState(false);
@@ -139,23 +140,22 @@ export function PracticeLibrary({
       setMessage("Exercise order updated.");
   };
   return (
-    <section className="practice-library" aria-label="Folder contents">
+    <section className="practice-library" aria-label={tr("Folder contents")}>
       {(selected.length > 0 || undo) && (
         <SidebarTools navOnly>
           <div
             className="create-selection-tools"
-            aria-label="Selected item tools"
+            aria-label={tr("Selected item tools")}
           >
             {selected.length > 0 && (
               <>
-                <p className="mb-3 text-sm font-semibold">
-                  Selected {selected.length}
+                <p className="mb-3 text-sm font-semibold">{tr("Selected ")}{selected.length}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Btn
                     isIconOnly
-                    title="Move"
-                    aria-label="Move selected item"
+                    title={tr("Move")}
+                    aria-label={tr("Move selected item")}
                     isDisabled={pending}
                     onClick={() => setDestination(true)}
                   >
@@ -163,20 +163,20 @@ export function PracticeLibrary({
                   </Btn>
                   <Btn
                     isIconOnly
-                    title="Group into a folder"
-                    aria-label="Group into a folder"
+                    title={tr("Group into a folder")}
+                    aria-label={tr("Group into a folder")}
                     isDisabled={pending}
                     onClick={() => setGrouping(true)}
                   >
                     <Icon name="folder" />
                   </Btn>
                   <Btn isDisabled={pending} onClick={() => setDeleting([...selected])}>
-                    <Icon name="trash" /> Delete selected ({selected.length})
+                    <Icon name="trash" />{tr(" Delete selected (")}{selected.length})
                   </Btn>
                   <Btn
                     isIconOnly
-                    title="Deselect"
-                    aria-label="Deselect all"
+                    title={tr("Deselect")}
+                    aria-label={tr("Deselect all")}
                     isDisabled={pending}
                     onClick={() => setSelected([])}
                   >
@@ -188,8 +188,8 @@ export function PracticeLibrary({
             {undo && (
               <Btn
                 isIconOnly
-                title="Undo"
-                aria-label="Undo move"
+                title={tr("Undo")}
+                aria-label={tr("Undo move")}
                 isDisabled={pending}
                 onClick={async () => {
                   if (
@@ -211,29 +211,29 @@ export function PracticeLibrary({
         </SidebarTools>
       )}
       {deleting && (
-        <PracticeModal title={`Delete ${deleting.length} selected items?`} pending={pending} onClose={() => setDeleting(null)}>
-          <p>Selected folders and everything inside them will be deleted, including their learning progress. This cannot be undone.</p>
-          <ul>{deleting.map(id => <li key={id}>{nodes.find(node => node.id === id)?.title || "Selected item"}</li>)}</ul>
+        <PracticeModal title={tr("Delete {v0} selected items?", { v0: deleting.length })} pending={pending} onClose={() => setDeleting(null)}>
+          <p>{tr("Selected folders and everything inside them will be deleted, including their learning progress. This cannot be undone.")}</p>
+          <ul>{deleting.map(id => <li key={id}>{nodes.find(node => node.id === id)?.title || tr("Selected item")}</li>)}</ul>
           <Status error={error} />
           <div className="flex flex-wrap gap-3">
-            <Btn isDisabled={pending} onClick={() => setDeleting(null)}>Cancel</Btn>
+            <Btn isDisabled={pending} onClick={() => setDeleting(null)}>{tr("Cancel")}</Btn>
             <Btn isDisabled={pending} onClick={async () => {
               if (await onOrganize({action:"delete",ids:deleting})) {
                 setSelected([]);setDeleting(null);setDestination(false);setUndo(null);setMessage("Selected items deleted.");
               }
-            }}>{pending ? "Deleting…" : "Delete permanently"}</Btn>
+            }}>{pending ? tr("Deleting…") : tr("Delete permanently")}</Btn>
           </div>
         </PracticeModal>
       )}
       {grouping && (
         <PracticeModal
-          title="Group into a folder"
+          title={tr("Group into a folder")}
           pending={pending}
           onClose={() => setGrouping(false)}
         >
           <Status error={error} />
           <Field
-            label="Folder name"
+            label={tr("Folder name")}
             value={groupName}
             onChange={setGroupName}
             maxLength={200}
@@ -244,14 +244,12 @@ export function PracticeLibrary({
             onClick={async () => {
               if (await move(selected, parent, "group")) setGrouping(false);
             }}
-          >
-            Gom {selected.length} items
-          </Btn>
+          >{tr("Gom ")}{selected.length}{tr(" items")}</Btn>
         </PracticeModal>
       )}
       {renaming !== null && nodes.some((node) => node.id === renaming) && (
         <PracticeModal
-          title="Rename"
+          title={tr("Rename")}
           size="sm"
           pending={pending}
           onClose={() => setRenaming(null)}
@@ -259,7 +257,7 @@ export function PracticeLibrary({
           <Status error={error} />
           <Field
             autoFocus
-            label="New name"
+            label={tr("New name")}
             value={title}
             maxLength={200}
             onChange={setTitle}
@@ -283,8 +281,8 @@ export function PracticeLibrary({
           />
           <Btn
             icon="check"
-            title="Save name"
-            aria-label="Save name"
+            title={tr("Save name")}
+            aria-label={tr("Save name")}
             isDisabled={pending || !title.trim()}
             onClick={async () => {
               if (
@@ -295,9 +293,7 @@ export function PracticeLibrary({
               )
                 setRenaming(null);
             }}
-          >
-            Save name
-          </Btn>
+          >{tr("Save name")}</Btn>
         </PracticeModal>
       )}
       {menu && (
@@ -317,9 +313,7 @@ export function PracticeLibrary({
                 setMenuId(null);
               }}
             >
-              <Icon name="edit" />
-              Rename
-            </Btn>
+              <Icon name="edit" />{tr("Rename")}</Btn>
             <Btn
               isDisabled={pending}
               onClick={() => {
@@ -328,9 +322,7 @@ export function PracticeLibrary({
                 setMenuId(null);
               }}
             >
-              <Icon name="arrow" />
-              Move
-            </Btn>
+              <Icon name="arrow" />{tr("Move")}</Btn>
             {onSettings && (
               <Btn
                 isDisabled={pending}
@@ -339,9 +331,7 @@ export function PracticeLibrary({
                   onSettings(menu);
                 }}
               >
-                <Icon name="settings" />
-                Share and delete
-              </Btn>
+                <Icon name="settings" />{tr("Share and delete")}</Btn>
             )}
             {!searching && (
               <>
@@ -349,14 +339,12 @@ export function PracticeLibrary({
                   isDisabled={pending || menuIndex <= 0}
                   onClick={() => reorder(menu, -1)}
                 >
-                  <Icon name="chevron_left" /> Move earlier
-                </Btn>
+                  <Icon name="chevron_left" />{tr(" Move earlier")}</Btn>
                 <Btn
                   isDisabled={pending || menuIndex >= menuSiblings.length - 1}
                   onClick={() => reorder(menu, 1)}
                 >
-                  <Icon name="chevron_right" /> Move later
-                </Btn>
+                  <Icon name="chevron_right" />{tr(" Move later")}</Btn>
               </>
             )}
           </div>
@@ -367,7 +355,7 @@ export function PracticeLibrary({
       </div>
       {destination && (
         <PracticeModal
-          title="Move"
+          title={tr("Move")}
           pending={pending}
           onClose={() => setDestination(false)}
         >
@@ -445,7 +433,7 @@ export function PracticeLibrary({
                 {node.can_edit && (
                   <input
                     type="checkbox"
-                    aria-label={`Choose ${node.title}`}
+                    aria-label={tr("Choose {v0}", { v0: node.title })}
                     checked={selected.includes(node.id)}
                     disabled={pending}
                     onChange={() => toggle(node.id)}
@@ -456,7 +444,7 @@ export function PracticeLibrary({
                 <button
                   type="button"
                   className="library-card-title text-left"
-                  title={`Preview ${node.title}`}
+                  title={tr("Preview {v0}", { v0: node.title })}
                   onClick={() => onPreview(node)}
                 >
                   {node.title}
@@ -473,7 +461,7 @@ export function PracticeLibrary({
                 {folder
                   ? `${nodes.filter((n) => n.parent === node.id).length} content`
                   : node.kind === "theory"
-                    ? "Reading content"
+                    ? tr("Reading content")
                     : `${node.payload?.questions?.length || 0} questions`}
               </small>
               {node.can_edit && (
@@ -481,8 +469,8 @@ export function PracticeLibrary({
                   {folder && onCreate && (
                     <Btn
                       isIconOnly
-                      title="Add"
-                      aria-label={`Add to ${node.title}`}
+                      title={tr("Add")}
+                      aria-label={tr("Add to {v0}", { v0: node.title })}
                       isDisabled={pending}
                       onClick={() => onCreate(node)}
                     >
@@ -492,8 +480,8 @@ export function PracticeLibrary({
                   {!folder && onPreview && (
                     <Btn
                       isIconOnly
-                      title="Preview"
-                      aria-label={`Preview ${node.title}`}
+                      title={tr("Preview")}
+                      aria-label={tr("Preview {v0}", { v0: node.title })}
                       onClick={() => onPreview(node)}
                     >
                       <Icon name="eye" />
@@ -502,8 +490,8 @@ export function PracticeLibrary({
                   {!folder && (
                     <Btn
                       isIconOnly
-                      title="Edit exercise"
-                      aria-label={`Edit ${node.title}`}
+                      title={tr("Edit exercise")}
+                      aria-label={tr("Edit {v0}", { v0: node.title })}
                       isDisabled={pending}
                       onClick={() => onEdit(node)}
                     >
@@ -512,8 +500,8 @@ export function PracticeLibrary({
                   )}
                   <Btn
                     isIconOnly
-                    title="Options"
-                    aria-label={`Options ${node.title}`}
+                    title={tr("Options")}
+                    aria-label={tr("Options {v0}", { v0: node.title })}
                     isDisabled={pending}
                     onClick={() => setMenuId(node.id)}
                   >
@@ -529,7 +517,7 @@ export function PracticeLibrary({
         <div className="library-empty">
           <span aria-hidden="true">🌱</span>
           <p>
-            {searching ? "No matching exercises found." : "No content yet."}
+            {searching ? tr("No matching exercises found.") : tr("No content yet.")}
           </p>
         </div>
       )}

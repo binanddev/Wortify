@@ -1,4 +1,4 @@
-import { WordGames } from "./word-games.jsx";
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useWindowActive } from "../../lib/core.js";
 import { SkipButton } from "../learning/skip-controls.jsx";
 import { SKIPPED_ANSWER } from "../learning/skip-learning.js";
@@ -34,6 +34,7 @@ import {
   useSound,
 } from "../../components/ui/ui.jsx";
 export function Session({ lang, token, sound }) {
+  useLocale();
   const resource = useResource(endpoint(lang, `sessions/${token}/`));
   return (
     <Loading resource={resource}>
@@ -42,7 +43,8 @@ export function Session({ lang, token, sound }) {
   );
 }
 function SessionContent({ initial, lang, token, sound }) {
- const windowActive = useWindowActive();
+  useLocale();
+  const windowActive = useWindowActive();
   const navigate = useNavigate();
   const draftKey = `wortify:session:${token}`;
   const restored = readPreference(draftKey, {});
@@ -172,28 +174,26 @@ function SessionContent({ initial, lang, token, sound }) {
         <Link
           className="breadcrumb"
           to={`/${lang}/flashcard/deck/${session.deck}`}
-        >
-          ← Back to deck
-        </Link>
+        >{tr("← Back to deck")}</Link>
       )}
       <Heading
         eyebrow={
           session.kind === "flash"
-            ? "FLASHCARDS"
+            ? tr("FLASHCARDS")
             : session.kind === "learn"
-              ? "LEARN"
-              : "TEST"
+              ? tr("LEARN")
+              : tr("TEST")
         }
         title={title}
         description={
           session.kind === "test"
-            ? "Complete all questions, then submit. Answers stay hidden until then."
-            : "Take your time. Try recalling the answer before revealing it."
+            ? tr("Complete all questions, then submit. Answers stay hidden until then.")
+            : tr("Take your time. Try recalling the answer before revealing it.")
         }
       />
       <div className="session-width">
         <div className="section-heading">
-          <span>Session progress</span>
+          <span>{tr("Session progress")}</span>
           <strong>
             {session.completed} / {session.total}
           </strong>
@@ -203,12 +203,12 @@ function SessionContent({ initial, lang, token, sound }) {
           <>
             <Glass className="result-summary">
               <Icon name="check" size={36} />
-              <h2>Study session complete</h2>
+              <h2>{tr(session.result.total ? "Study session complete" : "No cards in this session")}</h2>
               <div className="result-number">
                 {session.result.correct}
                 <span> / {session.result.total}</span>
               </div>
-              <p>questions mastered</p>
+              <p>{tr("questions mastered")}</p>
               {session.result.correct < session.result.total && (
                 <Btn
                   primary
@@ -230,8 +230,7 @@ function SessionContent({ initial, lang, token, sound }) {
                       navigate(`/${lang}/flashcard/session/${next.token}`);
                     })
                   }
-                >
-                  Practice missed words <Icon name="arrow" />
+                >{tr("Practice missed words ")}<Icon name="arrow" />
                 </Btn>
               )}
             </Glass>
@@ -240,14 +239,13 @@ function SessionContent({ initial, lang, token, sound }) {
                 <strong>
                   {i + 1}. {r.target}
                 </strong>
-                <p>
-                  Your answer:{" "}
+                <p>{tr("Your answer:")}{" "}
                   {r.answer === SKIPPED_ANSWER
-                    ? "Answer revealed"
+                    ? tr("Answer revealed")
                     : r.answer === "remember"
-                      ? "Remembered"
+                      ? tr("Remembered")
                       : r.answer === "again"
-                        ? "Due for review"
+                        ? tr("Due for review")
                         : r.answer}
                 </p>
                 <Feedback row={r} />
@@ -285,7 +283,7 @@ function SessionContent({ initial, lang, token, sound }) {
                 }}
               >
                 <Glass id={`session-test-${i}`} tabIndex={-1}>
-                  <span className="eyebrow">QUESTION {i + 1}</span>
+                  <span className="eyebrow">{tr("QUESTION ")}{i + 1}</span>
                   <h2 className="question-text">{question.prompt}</h2>
                   <Answer
                     question={question}
@@ -323,9 +321,7 @@ function SessionContent({ initial, lang, token, sound }) {
                           )
                           ?.focus()
                       }
-                    >
-                      Continue
-                    </Btn>
+                    >{tr("Continue")}</Btn>
                   ) : (
                     <SkipButton
                       onClick={() => {
@@ -345,8 +341,7 @@ function SessionContent({ initial, lang, token, sound }) {
             {session.result ? (
               <Glass className="result-summary">
                 <h2>
-                  {session.result.correct} / {session.result.total} correct answers
-                </h2>
+                  {session.result.correct} / {session.result.total}{tr(" correct answers")}</h2>
 
                 {session.result.correct < session.result.total && (
                   <Btn
@@ -367,9 +362,7 @@ function SessionContent({ initial, lang, token, sound }) {
                         navigate(`/${lang}/flashcard/session/${next.token}`);
                       })
                     }
-                  >
-                    Practice missed words
-                  </Btn>
+                  >{tr("Practice missed words")}</Btn>
                 )}
               </Glass>
             ) : (
@@ -382,11 +375,9 @@ function SessionContent({ initial, lang, token, sound }) {
                   Object.values(answers).filter((v) => v.trim()).length !==
                   session.total
                 }
-              >
-                Submit all ·{" "}
+              >{tr("Submit all ·")}{" "}
                 {Object.values(answers).filter((v) => v.trim()).length}/
-                {session.total} questions
-              </Btn>
+                {session.total}{tr(" questions")}</Btn>
             )}
           </form>
         ) : q ? (
@@ -405,38 +396,32 @@ function SessionContent({ initial, lang, token, sound }) {
                 />
                 <div className="toolbar centered">
                   <Btn onClick={() => action.run(() => audio.speak(q.target))}>
-                    <Icon name="sound" />
-                    Listen to word
-                  </Btn>
+                    <Icon name="sound" />{tr("Listen to word")}</Btn>
                   {!feedback &&
                     (!flipped ? (
-                      <Btn primary onClick={() => setFlipped(true)}>
-                        Flip card <Icon name="flip" />
+                      <Btn primary onClick={() => setFlipped(true)}>{tr("Flip card ")}<Icon name="flip" />
                       </Btn>
                     ) : (
                       <>
                         <Btn
                           isDisabled={action.pending}
                           onClick={() => send("again")}
-                        >
-                          ↻ Review again
-                        </Btn>
+                        >{tr("↻ Review again")}</Btn>
                         <Btn
                           primary
                           isLoading={action.pending}
                           onClick={() => send("remember")}
-                        >
-                          ✓ Remembered
-                        </Btn>
+                        >{tr("✓ Remembered")}</Btn>
                       </>
                     ))}
                 </div>
               </>
             ) : (
               <Glass>
-                <span className="eyebrow">
-                  QUESTION {session.completed + 1} ·{" "}
-                  {q.mode === "quiz" ? "CHOOSE THE CORRECT MEANING" : "WRITE THE MATCHING WORD"}
+                <span className="eyebrow">{tr("QUESTION ")}{session.completed + 1} ·{" "}
+                  {q.mode === "quiz"
+                    ? tr("CHOOSE THE CORRECT MEANING")
+                    : tr("WRITE THE MATCHING WORD")}
                 </span>
                 <h2 className="question-text">{q.prompt}</h2>
                 <form
@@ -461,8 +446,7 @@ function SessionContent({ initial, lang, token, sound }) {
                       type="submit"
                       isLoading={action.pending}
                       isDisabled={!answer.trim()}
-                    >
-                      Check <Icon name="arrow" />
+                    >{tr("Check ")}<Icon name="arrow" />
                     </Btn>
                   )}
                 </form>
@@ -479,7 +463,7 @@ function SessionContent({ initial, lang, token, sound }) {
             <Feedback row={feedback} />
             {feedback && (
               <Btn primary icon="arrow" onClick={continueSession}>
-                {next?.result ? "View summary" : "Continue"}{" "}
+                {next?.result ? tr("View summary") : tr("Continue")}{" "}
                 <Icon name="arrow" />
               </Btn>
             )}
@@ -491,13 +475,14 @@ function SessionContent({ initial, lang, token, sound }) {
   );
 }
 function Answer({ question, value, onChange, disabled, feedback }) {
+  useLocale();
   return question.options?.length ? (
     <Choice
       options={question.options}
       value={value}
       onChange={onChange}
       disabled={disabled}
-      label="Choose an answer"
+      label={tr("Choose an answer")}
       graded={!!feedback}
       correctAnswer={
         question.mode === "quiz"
@@ -507,7 +492,7 @@ function Answer({ question, value, onChange, disabled, feedback }) {
     />
   ) : (
     <Field
-      label="Your answer"
+      label={tr("Your answer")}
       value={value}
       onChange={onChange}
       isRequired
@@ -525,17 +510,32 @@ function summarizeLocal(questions, answers) {
   };
 }
 export function ExtraStudy({ lang, params, sound, userId }) {
+  useLocale();
+  if (params.get("mode") === "games")
+    return (
+      <Page>
+        <h1>{tr("Games have been replaced")}</h1>
+        <Link
+          to={`/${lang}/flashcard${params.get("deck") ? `/deck/${params.get("deck")}?mode=notebook` : ""}`}
+        >{tr("Open vocabulary notebook")}</Link>
+      </Page>
+    );
+  return <ExtraStudyContent {...{ lang, params, sound, userId }} />;
+}
+function ExtraStudyContent({ lang, params, sound, userId }) {
+  useLocale();
   const query = new URLSearchParams();
   if (params.get("deck")) query.set("deck", params.get("deck"));
   query.set("filter", params.get("filter") || "all");
   const resource = useResource(endpoint(lang, `study-pack/?${query}`));
   return (
     <Loading resource={resource}>
-      {(pack) => params.get("mode") === "games" ? <WordGames {...{ pack, lang, sound }} deck={params.get("deck")} /> : <LocalPractice {...{ pack, lang, params, sound, userId }} />}
+      {(pack) => <LocalPractice {...{ pack, lang, params, sound, userId }} />}
     </Loading>
   );
 }
 function LocalPractice({ pack, lang, params, sound, userId }) {
+  useLocale();
   const navigate = useNavigate();
   const mode = params.get("mode") || "write",
     deck = params.get("deck");
@@ -666,7 +666,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
   };
   return (
     <Page>
-      {deck && <Link to={`/${lang}/flashcard/deck/${deck}`}>← Decks</Link>}
+      {deck && <Link to={`/${lang}/flashcard/deck/${deck}`}>{tr("← Decks")}</Link>}
       <Heading
         title={
           {
@@ -676,14 +676,14 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
             order: "Arrange words",
             match: "Matching",
             speak: "Pronunciation practice",
-          }[mode] || "Practice"
+          }[mode] || tr("Practice")
         }
       />
       <div className="session-width">
         <Status error={action.error} />
         {!c ? (
           <Glass>
-            <h2>Completed</h2>
+            <h2>{tr("Completed")}</h2>
           </Glass>
         ) : (
           <Glass>
@@ -692,7 +692,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
             </p>
             <h2>
               {mode === "spell"
-                ? "Listen and type what you hear"
+                ? tr("Listen and type what you hear")
                 : mode === "quiz" || mode === "speak"
                   ? target
                   : example
@@ -700,9 +700,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
                     : c.vietnamese_meaning}
             </h2>
             {["spell", "speak"].includes(mode) && (
-              <Btn icon="sound" onClick={() => audio.speak(target)}>
-                Listen to example
-              </Btn>
+              <Btn icon="sound" onClick={() => audio.speak(target)}>{tr("Listen to example")}</Btn>
             )}
             {mode === "match" ? (
               <LocalMatching
@@ -723,7 +721,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
             ) : mode === "speak" ? (
               <>
                 <Btn onClick={record} isLoading={action.pending}>
-                  {recording ? "Stop recording" : "Record"}
+                  {recording ? tr("Stop recording") : tr("Record")}
                 </Btn>
                 {recordUrl && <audio controls src={recordUrl} />}
                 <Btn
@@ -731,9 +729,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
                   onClick={() =>
                     setResult({ is_correct: true, target, card: c })
                   }
-                >
-                  Practice complete
-                </Btn>
+                >{tr("Practice complete")}</Btn>
               </>
             ) : mode === "quiz" ? (
               <LocalChoices
@@ -749,16 +745,14 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
               />
             ) : (
               <Field
-                label="Answer"
+                label={tr("Answer")}
                 value={answer}
                 onChange={setAnswer}
                 isDisabled={!!result}
               />
             )}
             {!result && mode !== "speak" && mode !== "quiz" && (
-              <Btn primary onClick={() => check()}>
-                Check
-              </Btn>
+              <Btn primary onClick={() => check()}>{tr("Check")}</Btn>
             )}
             {!result && (
               <SkipButton
@@ -775,8 +769,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
               <>
                 {mode === "match" ? (
                   <Status>
-                    {result.correct}/{result.total} correct pairs
-                    {result.rows.map((r, i) => (
+                    {result.correct}/{result.total}{tr(" correct pairs")}{result.rows.map((r, i) => (
                       <p key={i}>
                         {r.is_correct ? "✓" : "↻"} {r.term} — {r.meaning}
                       </p>
@@ -796,9 +789,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
                     setResult(null);
                     setRecordUrl("");
                   }}
-                >
-                  Continue
-                </Btn>
+                >{tr("Continue")}</Btn>
               </>
             )}
           </Glass>
@@ -808,6 +799,7 @@ function LocalPractice({ pack, lang, params, sound, userId }) {
   );
 }
 function LocalChoices({ options, answer, setAnswer, disabled, correctAnswer }) {
+  useLocale();
   const [rows] = useState(() => shuffled(options));
   return (
     <Choice
@@ -821,6 +813,7 @@ function LocalChoices({ options, answer, setAnswer, disabled, correctAnswer }) {
   );
 }
 function LocalOrder({ items, answer, setAnswer, disabled }) {
+  useLocale();
   const [rows] = useState(() => shuffled(items));
   return (
     <WordOrder
@@ -832,6 +825,7 @@ function LocalOrder({ items, answer, setAnswer, disabled }) {
   );
 }
 function LocalMatching({ group, answer, setAnswer, disabled }) {
+  useLocale();
   const [right] = useState(() =>
     shuffled(
       group.map((c) => ({ id: String(c.id), text: c.vietnamese_meaning })),
@@ -848,6 +842,7 @@ function LocalMatching({ group, answer, setAnswer, disabled }) {
   );
 }
 function Recorder({ lang, token, onResult }) {
+  useLocale();
   const [recording, setRecording] = useState(false),
     [blob, setBlob] = useState(null),
     [url, setUrl] = useState(""),
@@ -896,7 +891,9 @@ function Recorder({ lang, token, onResult }) {
           stream.getTracks().forEach((t) => t.stop());
           const b = new Blob(parts, { type: rec.mimeType });
           if (b.size > 10 * 1024 * 1024) {
-            action.setError("The recording exceeds 10 MB. Please make a shorter recording.");
+            action.setError(
+              "The recording exceeds 10 MB. Please make a shorter recording.",
+            );
             return;
           }
           if (ref.current.url) URL.revokeObjectURL(ref.current.url);
@@ -916,9 +913,9 @@ function Recorder({ lang, token, onResult }) {
     });
   return (
     <div className="recorder">
-      <p>Temporary recording, up to 60 seconds. Feedback evaluates the recognized content.</p>
+      <p>{tr("Temporary recording, up to 60 seconds. Feedback evaluates the recognized content.")}</p>
       <Btn onClick={recording ? stop : start} isLoading={action.pending}>
-        {recording ? "■ Stop recording" : "● Start recording"}
+        {recording ? tr("■ Stop recording") : tr("● Start recording")}
       </Btn>
       {url && <audio controls src={url} />}
       <label className="check-line">
@@ -926,9 +923,7 @@ function Recorder({ lang, token, onResult }) {
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-        />
-        I agree to send my recording to the speech recognition service when I submit.
-      </label>
+        />{tr("I agree to send my recording to the speech recognition service when I submit.")}</label>
       <Btn
         primary
         isDisabled={!blob || !consent || recording}
@@ -953,21 +948,22 @@ function Recorder({ lang, token, onResult }) {
               s,
             );
             if (r.status !== "done")
-              throw new Error(r.error || "Speech was unclear. Please record again.");
+              throw new Error(
+                r.error || "Speech was unclear. Please record again.",
+              );
             onResult(r.result);
             setBlob(null);
             setUrl("");
           })
         }
-      >
-        Submit for checking
-      </Btn>
+      >{tr("Submit for checking")}</Btn>
       <Status error={action.error} />
     </div>
   );
 }
 
 function TimedArea({ id, enabled, onTimer, children }) {
+  useLocale();
   const clock = useAnswerClock(id, enabled);
   useEffect(() => {
     onTimer(clock.read);

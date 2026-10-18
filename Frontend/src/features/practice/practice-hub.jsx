@@ -1,7 +1,9 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { folderPage } from "./practice-area.js";
 import { PracticeTree, PracticeModal } from "./practice-workspace.jsx";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
+  request,
   useNavigate,
   useResource,
   endpoint,
@@ -33,9 +35,10 @@ import {
 } from "./practice-navigation.js";
 
 export function PracticeHub({ lang, id, userId, sound }) {
+  useLocale();
   const navigate = useNavigate();
   const resource = useResource(
-    endpoint(lang, "practice-hub/nodes/?full=1"),
+    endpoint(lang, "practice-hub/nodes/"),
     true,
   );
   const sync = useLearningSync(userId, lang);
@@ -58,7 +61,20 @@ export function PracticeHub({ lang, id, userId, sound }) {
     });
   const [query, setQuery] = useState("");
   const [progress, setProgress] = useState({});
-  const nodes = supportedPracticeNodes(resource.data?.nodes || []).map(
+  const [details, setDetails] = useState({});
+  const [detailError, setDetailError] = useState("");
+  useEffect(() => {
+    const controller = new AbortController();
+    setDetailError("");
+    const ids = [...new Set([id, previewId])].filter(value => resource.data?.nodes.some(n => String(n.id)===String(value) && n.kind!=="folder"));
+    Promise.all(ids.map(async value => {
+      const key = `${lang}:${value}`;
+      const result = await request(endpoint(lang,`practice-hub/nodes/${value}/`),"GET",undefined,controller.signal);
+      if (!controller.signal.aborted) setDetails(previous => ({...previous,[key]:result.node}));
+    })).catch(error => { if(error.name!=="AbortError") setDetailError(error.message); });
+    return () => controller.abort();
+  }, [id, previewId, lang, resource.data]);
+  const nodes = useMemo(() => supportedPracticeNodes(resource.data?.nodes || []).map(
     (node) => {
       const key = `${node.id}:${node.updated_at}`;
       const local =
@@ -69,6 +85,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
         );
       return {
         ...node,
+        ...(details[`${lang}:${node.id}`] || {}),
         progress: {
           completed: [
             ...new Set([
@@ -79,23 +96,32 @@ export function PracticeHub({ lang, id, userId, sound }) {
         },
       };
     },
-  );
+  ), [resource.data, details, progress, userId, lang]);
   const current = nodes.find((node) => String(node.id) === String(id));
-  const workspace = workspaceNodes(nodes, pinned);
-  const catalog = catalogRoots(nodes, catalogQuery);
+  const workspace = useMemo(() => workspaceNodes(nodes, pinned), [nodes,pinned]);
+  const catalog = useMemo(() => catalogRoots(nodes, catalogQuery), [nodes,catalogQuery]);
   const { page, pageCount, items: visibleCatalog } = folderPage(catalog, catalogPage);
   const roots = workspaceRoots(nodes, pinned);
   const isPinned = (node) => roots.includes(workspaceRoot(nodes, node.id)?.id);
   const preview = nodes.find((node) => node.id === previewId);
   return (
     <Page>
+      <Status error={detailError}/>
+      {!detailError && [current,preview].some(n=>n && n.kind!=="folder" && !n.payload) && <div role="status">{tr("Loading…")}</div>}
       <SidebarTools navOnly>
+        <div className="flex flex-wrap gap-2 mb-3">
+          <Link className="btn" to={`/${lang}/create`} title={tr("My Exercise Library")} aria-label={tr("My Exercise Library")}><Icon name="home"/></Link>
+          <Link className="btn" to={`${practiceRoutes(lang).learn}/all`} title={tr("Switch lesson")} aria-label={tr("Switch lesson")}><Icon name="folder"/></Link>
+          {current?.can_edit&&current.kind!=="folder"&&<Link className="btn" to={`/${lang}/create/${current.id}/edit?return=learn`} title={tr("Edit content")} aria-label={tr("Edit content")}><Icon name="edit"/></Link>}
+          <Link className="btn" to={`/${lang}/create${current?.can_edit&&(current.kind==='folder'||current.parent)?`/new?parent=${current.kind==='folder'?current.id:current.parent}`:''}`} title={tr("Create exercise")} aria-label={tr("Create exercise")}><Icon name="plus"/></Link>
+        </div>
+
         <div className="learning-navigation">
           <div className="workspace-search">
-            <Field label="Find an exercise" value={query} onChange={setQuery} />
+            <Field label={tr("Find an exercise")} value={query} onChange={setQuery} />
           </div>
           <Status error={resource.error} />
-          <nav aria-label="Lesson list">
+          <nav aria-label={tr("Lesson list")}>
             <PracticeTree
               compact={false}
               nodes={workspace}
@@ -106,13 +132,11 @@ export function PracticeHub({ lang, id, userId, sound }) {
             />
           </nav>
           {!resource.loading && !workspace.length && (
-            <p>
-              Add folders or lessons from Your exercise library to your workspace.
-            </p>
+            <p>{tr("Add folders or lessons from Your exercise library to your workspace.")}</p>
           )}
           {current?.links?.length > 0 && (
             <div className="learning-related">
-              <h3>Continue learning</h3>
+              <h3>{tr("Continue learning")}</h3>
               {current.links.map((target) => {
                 const node = nodes.find((n) => n.id === target);
                 return (
@@ -130,22 +154,20 @@ export function PracticeHub({ lang, id, userId, sound }) {
           )}
         </div>
       </SidebarTools>
-      {current?.kind === "exercise" && <Status error={sync.error} />}
+      {current?.kind === "exercise" && current.payload && <Status error={sync.error} />}
       {preview && (
         <PracticeModal title={preview.title} onClose={() => setPreviewId(null)}>
           <div className="flex flex-wrap items-center gap-3">
             {nodes.some((node) => node.id === preview.parent) && (
-              <Btn onClick={() => setPreviewId(preview.parent)}>
-                ← Folder cha
-              </Btn>
+              <Btn onClick={() => setPreviewId(preview.parent)}>{tr("← Folder cha")}</Btn>
             )}
             <Btn
               isIconOnly
               title={
-                isPinned(preview) ? "Remove from workspace" : "Add to workspace"
+                isPinned(preview) ? tr("Remove from workspace") : tr("Add to workspace")
               }
               aria-label={
-                isPinned(preview) ? "Remove from workspace" : "Add to workspace"
+                isPinned(preview) ? tr("Remove from workspace") : tr("Add to workspace")
               }
               onClick={() => togglePin(preview)}
             >
@@ -155,13 +177,9 @@ export function PracticeHub({ lang, id, userId, sound }) {
               className="btn primary"
               to={`${practiceRoutes(lang).learn}/${preview.id}`}
               onClick={() => setPreviewId(null)}
-            >
-              Start learning
-            </Link>
+            >{tr("Start learning")}</Link>
           </div>
-          <p className="text-sm text-(--muted)">
-            Preview content without changing your learning progress.
-          </p>
+          <p className="text-sm text-(--muted)">{tr("Preview content without changing your learning progress.")}</p>
           {preview.kind === "folder" ? (
             <div className="grid gap-2">
               {nodes
@@ -186,27 +204,27 @@ export function PracticeHub({ lang, id, userId, sound }) {
                   </button>
                 ))}
               {!nodes.some((node) => node.parent === preview.id) && (
-                <p>No accessible content in this folder.</p>
+                <p>{tr("No accessible content in this folder.")}</p>
               )}
             </div>
-          ) : preview.kind === "exercise" ? (
+          ) : preview.kind === "exercise" && preview.payload ? (
             <PracticeActivity
               key={preview.id}
               preview
               data={previewData(preview.payload)}
               sound={sound}
             />
-          ) : (
+          ) : preview.payload ? (
             <TheoryActivity payload={preview.payload} />
-          )}
+          ) : null}
         </PracticeModal>
       )}
       {setting && (
         <PracticeModal title={setting.title} onClose={() => setSetting(null)}>
           <p>
             {isPinned(setting)
-              ? "Removing a root folder from the workspace does not delete its content or progress."
-              : "Add this content's root folder to your workspace."}
+              ? tr("Removing a root folder from the workspace does not delete its content or progress.")
+              : tr("Add this content's root folder to your workspace.")}
           </p>
           <Btn
             onClick={() => {
@@ -214,20 +232,20 @@ export function PracticeHub({ lang, id, userId, sound }) {
               setSetting(null);
             }}
           >
-            {isPinned(setting) ? "Remove from workspace" : "Add to workspace"}
+            {isPinned(setting) ? tr("Remove from workspace") : tr("Add to workspace")}
           </Btn>
         </PracticeModal>
       )}
       {resource.loading && !resource.data ? (
-        <Status>Opening your learning space…</Status>
+        <Status>{tr("Opening your learning space…")}</Status>
       ) : all ? (
         <section className="practice-catalog">
           <Heading
-            title="Your exercise library"
-            description="Root folders containing exercises you can access. Open a card to preview it."
+            title={tr("Your exercise library")}
+            description={tr("Root folders containing exercises you can access. Open a card to preview it.")}
           />
           <Field
-            label="Search all content"
+            label={tr("Search all content")}
             value={catalogQuery}
             onChange={(value) => { setCatalogQuery(value); setCatalogPage(1); }}
           />
@@ -252,10 +270,10 @@ export function PracticeHub({ lang, id, userId, sound }) {
                 </button>
                 <small>
                   {node.kind === "folder"
-                    ? "Folder"
+                    ? tr("Folder")
                     : node.kind === "theory"
-                      ? "Reading content"
-                      : "Exercises"}
+                      ? tr("Reading content")
+                      : tr("Exercises")}
                   {node.parent && nodes.find((n) => n.id === node.parent)
                     ? ` · ${nodes.find((n) => n.id === node.parent).title}`
                     : ""}
@@ -263,9 +281,9 @@ export function PracticeHub({ lang, id, userId, sound }) {
                 <button
                   type="button"
                   className="catalog-pin"
-                  aria-label={`${isPinned(node) ? "Remove" : "Add"} ${node.title} ${isPinned(node) ? "from" : "into"} workspace`}
+                  aria-label={tr("{v0} {v1} {v2} workspace", { v0: isPinned(node) ? "Remove" : "Add", v1: node.title, v2: isPinned(node) ? "from" : "into" })}
                   title={
-                    isPinned(node) ? "Remove from workspace" : "Add to workspace"
+                    isPinned(node) ? tr("Remove from workspace") : tr("Add to workspace")
                   }
                   aria-pressed={isPinned(node)}
                   onClick={() => togglePin(node)}
@@ -275,12 +293,12 @@ export function PracticeHub({ lang, id, userId, sound }) {
               </article>
             ))}
           </div>
-          {pageCount > 1 && <nav className="practice-pagination" aria-label="Folder pages">
-            <Btn isDisabled={page === 1} onClick={() => setCatalogPage(page - 1)}>Previous</Btn>
-            <span role="status">Page {page} of {pageCount}</span>
-            <Btn isDisabled={page === pageCount} onClick={() => setCatalogPage(page + 1)}>Next</Btn>
+          {pageCount > 1 && <nav className="practice-pagination" aria-label={tr("Folder pages")}>
+            <Btn isDisabled={page === 1} onClick={() => setCatalogPage(page - 1)}>{tr("Previous")}</Btn>
+            <span role="status">{tr("Page ")}{page}{tr(" of ")}{pageCount}</span>
+            <Btn isDisabled={page === pageCount} onClick={() => setCatalogPage(page + 1)}>{tr("Next")}</Btn>
           </nav>}
-          {!visibleCatalog.length && <p>No matching content.</p>}
+          {!visibleCatalog.length && <p>{tr("No matching content.")}</p>}
         </section>
       ) : current?.kind === "folder" ? (
         <section className="practice-catalog">
@@ -306,7 +324,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
               ))}
           </div>
         </section>
-      ) : current?.kind === "exercise" ? (
+      ) : current?.kind === "exercise" && current.payload ? (
         <>
           <Heading title={current.title} />
           <PracticeActivity
@@ -346,7 +364,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
             }}
           />
         </>
-      ) : current?.kind === "theory" ? (
+      ) : current?.kind === "theory" && current.payload ? (
         <>
           <Heading title={current.title} />
           <TheoryActivity payload={current.payload} />
@@ -354,14 +372,10 @@ export function PracticeHub({ lang, id, userId, sound }) {
       ) : (
         <section className="learning-welcome">
           <span aria-hidden="true">🌿</span>
-          <h1>{current?.title || "A little practice every day."}</h1>
-          <p>
-            Choose a lesson in the sidebar to start. Work through each question at your own pace.
-          </p>
+          <h1>{current?.title || tr("A little practice every day.")}</h1>
+          <p>{tr("Choose a lesson in the sidebar to start. Work through each question at your own pace.")}</p>
           {id && !current && !resource.loading && (
-            <Status>
-              This lesson does not exist or you do not have access.
-            </Status>
+            <Status>{tr("This lesson does not exist or you do not have access.")}</Status>
           )}
         </section>
       )}

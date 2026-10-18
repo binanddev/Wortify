@@ -84,8 +84,19 @@ Gửi nguyên [CONTENT_AUTHORING.md](docs/authoring/CONTENT_AUTHORING.md) hoặc
 
 ## Version 1.2.7 — import nội dung hệ thống một file
 
-Staff/Admin vào Manage → Import content, chọn một file JSON chứa cây Flashcards, Practice Hub và Reading, xem trước rồi nhập. Mẫu đầy đủ nằm ở `Frontend/public/templates/content-package.json`; hướng dẫn biên soạn trong `docs/authoring/CONTENT_AUTHORING.md`. Giới hạn 50 MB, 5.000 node, 100.000 thẻ, 10 cấp folder.
+Staff/Admin vào Manage → Import content, chọn/dán một file Wortify Text 1 chứa Luyện tập và Đọc hiểu, xem trước rồi công bố công khai dưới tên Wortify. Flashcard không nằm trong luồng này. Mẫu: `Frontend/public/templates/content-package.txt`; luật: `docs/authoring/CONTENT_AUTHORING.md`. Giới hạn 50 MB/file, 5.000 mục, 10 cấp folder; vẫn nhận JSON cũ.
 
 Gói hiển thị là Wortify trong System library, không hiện người nhập. Người học Add package để nhận bản riêng và tiến độ riêng. Cùng UUID không nhập trùng; gói sai bị hoàn tác. Cần chạy migrations mới trước khi sử dụng; Render đã tự migrate khi khởi động.
 
 Cả [CONTENT_AUTHORING.md](docs/authoring/CONTENT_AUTHORING.md) và [WORTIFY_AUTHORING_RULES.txt](docs/authoring/WORTIFY_AUTHORING_RULES.txt) đều chứa đủ hướng dẫn và mẫu: gửi nguyên một trong hai file cho chat, không cần sửa URL/tài khoản. Hướng dẫn khôi phục tài khoản dành riêng cho admin nằm ở [ADMIN_BACKUPS.md](ADMIN_BACKUPS.md).
+
+
+### Ngôn ngữ giao diện và API nhập nội dung
+
+- Cài đặt → **App language**: English / Tiếng Việt / Deutsch. Lưu theo tài khoản cho toàn ứng dụng; không đổi ngôn ngữ hoặc nội dung bài học. Bộ dịch viết sẵn tại `Frontend/src/i18n/messages.json`, không gọi dịch vụ dịch tự động.
+- Staff/admin → `/manage` → **Content import API** → Enable API để lấy khóa nhập riêng. Có hướng dẫn curl/Postman ngay tại màn hình; Rotate API key đổi khóa, Disable API thu hồi khóa.
+- Endpoint `POST /api/import/content/`: Bearer key. Bot gửi JSON `{text, preview: true}`, sau đó gửi nguyên text với `confirm: "IMPORT"` và `preview_token` nhận được (hiệu lực 24 giờ). Text/JSON request tối đa 8 MB; multipart file tối đa 50 MB. Giữ nguyên UUID/nội dung khi retry.
+- `/api/import/guide/` cung cấp luật, `/api/import/openapi/` cung cấp đặc tả cho công cụ HTTP/bot. Chat không có công cụ HTTP chỉ tạo file, không tự công bố.
+- Gói JSON hệ thống chỉ gồm `practice` và `reading`. Không chấp nhận `flashcards` kể cả mảng rỗng. Thẻ vẫn nhập trong bộ thẻ cá nhân. Khóa API không thể quản lý người dùng, khôi phục ZIP hay truy cập thẻ cá nhân.
+- Sau khi cập nhật backend cần chạy migrations (deploy hiện có thực hiện bước này) để tạo bảng khóa API. Không thêm biến môi trường hoặc cài dịch vụ ngoài.
+- Hai tài liệu gửi nguyên cho chat nằm trong `docs/authoring/`; hướng dẫn phân biệt nội dung hệ thống và thẻ cá nhân, có quy tắc tạo file và nhập API. Không ghi khóa API vào tài liệu hay Git.

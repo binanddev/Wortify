@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useState } from "react";
 import { request, useResource, useAction } from "../../lib/core.js";
 import { Btn, Icon, Field, Select, Status, Loading, Confirm } from "../../components/ui/ui.jsx";
@@ -25,6 +26,7 @@ const labels = {
   theory_format: "Theory format",
 };
 function RelationPicker({ base, field, value, onChange, language }) {
+  useLocale();
   const [query, setQuery] = useState("");
   const url = `${base}${field.relation}/`;
   const resource = useResource(
@@ -35,7 +37,7 @@ function RelationPicker({ base, field, value, onChange, language }) {
   return (
     <div className="grid gap-2 rounded-xl border border-(--line) p-3">
       <Field
-        label={`Search ${labels[field.name] || field.name}`}
+        label={tr("Search {v0}", { v0: labels[field.name] || field.name })}
         value={query}
         onChange={setQuery}
       />
@@ -46,7 +48,7 @@ function RelationPicker({ base, field, value, onChange, language }) {
         required={field.required}
       >
         <option value="">
-          {field.required ? "Choose an item" : "Not linked"}
+          {field.required ? tr("Choose an item") : tr("Not linked")}
         </option>
         {value && !rows.some((r) => String(r.id) === String(value)) && (
           <option value={value}>
@@ -64,7 +66,7 @@ function RelationPicker({ base, field, value, onChange, language }) {
       </Select>
       <small className="text-(--muted)">
         {resource.loading
-          ? "Searching…"
+          ? tr("Searching…")
           : `${resource.data?.total || 0} matching items. Enter a name to narrow results.`}
       </small>
       <Status error={resource.error || selected.error} />
@@ -72,6 +74,7 @@ function RelationPicker({ base, field, value, onChange, language }) {
   );
 }
 function RecordEditor({ row, schema, url, base, onClose, onSaved }) {
+  useLocale();
   const [values, setValues] = useState(() =>
     Object.fromEntries(
       schema.map((f) => {
@@ -138,7 +141,7 @@ function RecordEditor({ row, schema, url, base, onClose, onSaved }) {
     });
   return (
     <PracticeModal
-      title={row ? `Edit · ${row.label}` : "Add data"}
+      title={row ? tr("Edit · {v0}", { v0: row.label }) : tr("Add data")}
       onClose={onClose}
       pending={action.pending}
     >
@@ -188,13 +191,12 @@ function RecordEditor({ row, schema, url, base, onClose, onSaved }) {
         )}
       </div>
       <Status error={action.error} />
-      <Btn primary isLoading={action.pending} onClick={save}>
-        Save
-      </Btn>
+      <Btn primary isLoading={action.pending} onClick={save}>{tr("Save")}</Btn>
     </PracticeModal>
   );
 }
 export default function UserData({ user, onClose }) {
+  useLocale();
   const base = `/api/manage/users/${user.id}/data/`;
   const summary = useResource(base);
   const [kind, setKind] = useState("decks"),
@@ -217,27 +219,23 @@ export default function UserData({ user, onClose }) {
     <>
       <div className="my-5 grid gap-4 rounded-2xl border border-(--line) p-4">
         <div className="flash-icon-row">
-          <Btn onClick={onClose}>Back to users</Btn>
-          <Btn onClick={reload}>Update</Btn>
+          <Btn onClick={onClose}>{tr("Back to users")}</Btn>
+          <Btn onClick={reload}>{tr("Update")}</Btn>
           <Btn
             isDisabled={!resource.data?.can_create}
             onClick={() => setEdit({ create: true })}
-          >
-            Add data
-          </Btn>
+          >{tr("Add data")}</Btn>
           {!user.is_staff && !user.is_superuser && (
             <Btn
               onClick={() => {
                 setPurge(true);
                 setConfirm("");
               }}
-            >
-              Delete all data
-            </Btn>
+            >{tr("Delete all data")}</Btn>
           )}
         </div>
         <Select
-          label="Data"
+          label={tr("Data")}
           value={kind}
           onChange={(value) => {
             setKind(value);
@@ -260,8 +258,8 @@ export default function UserData({ user, onClose }) {
           }}
           className="grid gap-2"
         >
-          <Field label="Search by name" value={query} onChange={setQuery} />
-          <Btn type="submit">Search</Btn>
+          <Field label={tr("Search by name")} value={query} onChange={setQuery} />
+          <Btn type="submit">{tr("Search")}</Btn>
         </form>
       </div>
       <h1 className="mb-2 text-3xl font-bold">{user.username}</h1>
@@ -269,7 +267,7 @@ export default function UserData({ user, onClose }) {
         {summary.data?.collections.find((c) => c.key === kind)?.label}
       </p>
       <Status error={summary.error || action.error} />
-      <Loading label="Loading admin data…" resource={resource}>
+      <Loading label={tr("Loading admin data…")} resource={resource}>
         {(data) => (
           <>
             <div className="grid gap-3">
@@ -288,32 +286,25 @@ export default function UserData({ user, onClose }) {
                         : ""}
                     </small>
                   </div>
-                  <Btn onClick={() => setEdit(row)}>View and edit</Btn>
-                  <Btn onClick={() => setRemove(row)}>Delete</Btn>
+                  <Btn onClick={() => setEdit(row)}>{tr("View and edit")}</Btn>
+                  <Btn onClick={() => setRemove(row)}>{tr("Delete")}</Btn>
                 </div>
               ))}
               {!data.rows.length && (
-                <p className="py-12 text-center text-(--muted)">
-                  No data yet.
-                </p>
+                <p className="py-12 text-center text-(--muted)">{tr("No data yet.")}</p>
               )}
             </div>
             <div className="toolbar centered">
               <Btn
                 isDisabled={page === 1}
                 onClick={() => setPage((p) => p - 1)}
-              >
-                Previous
-              </Btn>
+              >{tr("Previous")}</Btn>
               <span>
-                {page} · {data.total} items
-              </span>
+                {page} · {data.total}{tr(" items")}</span>
               <Btn
                 isDisabled={page * 25 >= data.total}
                 onClick={() => setPage((p) => p + 1)}
-              >
-                Sau
-              </Btn>
+              >{tr("Sau")}</Btn>
             </div>
           </>
         )}
@@ -331,8 +322,8 @@ export default function UserData({ user, onClose }) {
       )}
       {remove && (
         <Confirm
-          title={`Delete ${remove.label}?`}
-          description="Dependent data may also be deleted. This cannot be undone."
+          title={tr("Delete {v0}?", { v0: remove.label })}
+          description={tr("Dependent data may also be deleted. This cannot be undone.")}
           onClose={() => setRemove(null)}
           onConfirm={async (signal) => {
             await request(
@@ -347,16 +338,14 @@ export default function UserData({ user, onClose }) {
       )}
       {purge && (
         <PracticeModal
-          title={`Delete data · ${user.username}`}
+          title={tr("Delete data · {v0}", { v0: user.username })}
           onClose={() => setPurge(false)}
           pending={action.pending}
           size="md"
         >
-          <p>
-            Delete all owned folders, decks, exercises, progress, learning history, profile and classes in both languages. Keep the account and password; sign out existing sessions. This cannot be undone.
-          </p>
+          <p>{tr("Delete all owned folders, decks, exercises, progress, learning history, profile and classes in both languages. Keep the account and password; sign out existing sessions. This cannot be undone.")}</p>
           <Field
-            label={`Import ${user.username} to confirm`}
+            label={tr("Import {v0} to confirm", { v0: user.username })}
             value={confirm}
             onChange={setConfirm}
           />
@@ -372,9 +361,7 @@ export default function UserData({ user, onClose }) {
                 reload();
               })
             }
-          >
-            Delete all data
-          </Btn>
+          >{tr("Delete all data")}</Btn>
         </PracticeModal>
       )}
     </>

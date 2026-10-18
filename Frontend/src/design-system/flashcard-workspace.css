@@ -145,8 +145,6 @@
 .flashcard-workspace section.flashcard-workspace .heading h1 { @apply text-[22px]; }
 .flashcard-workspace h2, .flashcard-workspace h3 { @apply font-sans text-lg font-semibold; }
 .flashcard-workspace .btn, .flashcard-workspace select, .flashcard-workspace label { @apply text-sm; }
-.flashcard-workspace .arcade-lobby { @apply p-7 gap-3.5; }
-.flashcard-workspace .arcade-lobby p { @apply max-w-[58ch] text-sm leading-[1.6]; }
 .flashcard-workspace .card-select { @apply flex items-center gap-3; }
 .flashcard-workspace input[type="checkbox"] { @apply w-4 h-4 accent-(--accent); }
 .flashcard-workspace .term-row strong { @apply text-base font-semibold; }

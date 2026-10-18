@@ -11,7 +11,7 @@ const allowed = new Set([
   "QUESTION: cat\nANSWER: mèo\nQUESTION: dog\nANSWER: chó",
   "Nội dung không còn truy cập được.",
 ]);
-test("Interface copy stays English while multilingual learning examples remain intact", async () => {
+test("Interface source keys stay English; translations live in the i18n catalog", async () => {
   const failures = [];
   function walk(node, file) {
     if (!node || typeof node !== "object") return;
@@ -30,7 +30,7 @@ test("Interface copy stays English while multilingual learning examples remain i
   async function scan(dir) {
     for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
       const file = path.join(dir, entry.name);
-      if (entry.isDirectory()) await scan(file);
+      if (entry.isDirectory() && entry.name !== "i18n") await scan(file);
       else if (/\.(js|jsx)$/.test(file))
         walk(
           parsers.babel.parse(await fs.readFile(file, "utf8"), {

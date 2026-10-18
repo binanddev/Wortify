@@ -1,3 +1,4 @@
+import {contentTextGuide} from '../Frontend/src/features/admin/content-text-guide.js';
 import {readFile,writeFile} from 'node:fs/promises';
 import {flashcardAiGuide} from '../Frontend/src/features/flashcards/flashcard-ai-guide.js';
 import {aiAuthoringGuide} from '../Frontend/src/features/practice/ai-authoring-guide.js';
@@ -12,17 +13,18 @@ ${READING_TEXT_RULES}
 
 ${textTemplate('reading')}`;
 const parts=[
- 'WORTIFY COMPLETE AUTHORING RULES — version 1.2.7',
+ 'WORTIFY COMPLETE AUTHORING RULES — current local version',
  'Generated from the current application guides. Read the execution policy first. Never include credentials in outputs.',
  policy,
- '=== FLASHCARDS: GERMAN ===',flashcardAiGuide('de'),
- '=== FLASHCARDS: ENGLISH ===',flashcardAiGuide('en'),
+ '=== PREFERRED SYSTEM BATCH FORMAT: WORTIFY TEXT 1 ===',contentTextGuide(),
+ '=== PERSONAL FLASHCARDS ONLY: GERMAN ===',flashcardAiGuide('de'),
+ '=== PERSONAL FLASHCARDS ONLY: ENGLISH ===',flashcardAiGuide('en'),
  '=== PRACTICE, THEORY, ALL TYPES/STYLES AND FORMATTING ===',
  aiAuthoringGuide('de','Apply the user request and the execution defaults above. Do not ask again for details already specified. Use English learning content when en is requested; explanations default to Vietnamese.'),
  '=== READING ===',reading,
  '=== PRACTICE HUB JSON SCHEMA EXAMPLE ===',
  await readFile(new URL('Frontend/public/templates/practice-hub.json',root),'utf8'),
- '=== ONE-FILE SYSTEM CONTENT PACKAGE EXAMPLE ===',
+ '=== LEGACY JSON SYSTEM CONTENT EXAMPLE (OPTIONAL) ===',
  await readFile(new URL('Frontend/public/templates/content-package.json',root),'utf8'),
  '=== VERIFICATION ===',
  'Validate each generated batch using the current application parser/preview and backend. Check answer correctness separately. Save only after validation. Confirm counts by reading saved content. Report offline files separately from saved content. Do not paste this guide into the app import box.'

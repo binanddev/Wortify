@@ -4,38 +4,6 @@
   "id": "5a5ab11d-0ab8-4745-bef1-236b52a2bac1",
   "title": "A2 · Giao thông",
   "language": "de",
-  "flashcards": [
-    {
-      "kind": "folder",
-      "title": "Giao thông",
-      "children": [
-        {
-          "kind": "folder",
-          "title": "Phương tiện",
-          "children": [
-            {
-              "kind": "deck",
-              "title": "Đi xe buýt",
-              "level": "A2",
-              "cards": [
-                {
-                  "german_text": "mit dem Bus fahren",
-                  "vietnamese_meaning": "đi bằng xe buýt",
-                  "example_german": "Ich fahre mit dem Bus zur Schule.",
-                  "example_vietnamese": "Tôi đi xe buýt đến trường.",
-                  "part_of_speech": "verb phrase",
-                  "notes": "mit + Dativ",
-                  "usage": "Dùng khi nói về phương tiện đi lại.",
-                  "article": "",
-                  "plural_form": ""
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ],
   "practice": [
     {
       "kind": "folder",

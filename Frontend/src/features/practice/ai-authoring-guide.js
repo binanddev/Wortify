@@ -3,10 +3,10 @@ import { FORMAT_EXAMPLES } from "./formatting-examples.js";
 
 export function aiAuthoringGuide(lang = "en", brief = "") {
   return [
-    "WORTIFY · AI AUTHORING INSTRUCTIONS · v1.2.4",
+    "WORTIFY · AI AUTHORING INSTRUCTIONS",
     "Create original, accurate language-learning exercises using the exact Wortify text format below.",
     "Learning language: " + (lang === "de" ? "German" : "English") + ".",
-    brief.trim() ? "MY REQUEST:\n" + brief.trim() : "Ask me for the topic, learner level, exercise type and number of questions before generating.",
+    brief.trim() ? "MY REQUEST:\n" + brief.trim() : "Use the topic, learner level, exercise type and number of questions in my request. Ask me for the topic or other essential missing details only; do not ask again for information already supplied.",
     "Return only importable exercise text, without Markdown code fences, a preamble or a closing message. Do not copy the documentation or sample exercises into the result.",
     "Use natural contexts, varied questions and plausible distractors. Avoid ambiguous questions. Verify every answer. Include EXPLANATION for each question and COMMENT only when a shared note is useful.",
     "Choose only supported TYPE and STYLE values. Keep fields and syntax in English. Follow the requested language for learning content and explanations.",

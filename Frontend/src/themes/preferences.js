@@ -1,10 +1,10 @@
 import { interfaceName } from "./registry.js";
 import { glassPolicy } from "./glass/policy.js";
 export const visualDefaults = {
-  navScale: 100,
+  navScale: 70,
   font: 36,
   transparency: 25,
-  textSize: 18,
+  textSize: 16,
   textWeight: 500,
   textContrast: 80,
   textColor: "auto",

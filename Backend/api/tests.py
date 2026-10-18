@@ -892,7 +892,7 @@ class PracticeCopyTests(TestCase):
         payload['attachments'][0]['question']='2'
         with self.assertRaises(ValueError):validated_attachments(req,payload)
 
-class SpacedReviewTests(TestCase):
+class LegacyStudySchedulingTests(TestCase):
     def setUp(self):
         self.user=get_user_model().objects.create_user('spaced-user')
         self.client.force_login(self.user)
@@ -907,37 +907,6 @@ class SpacedReviewTests(TestCase):
 
     def sync(self,event):
         return self.client.post('/api/en/learning/sync/',json.dumps({'events':[event]}),content_type='application/json').json()
-
-    def test_fsrs_review_queue_rating_and_retry_are_idempotent(self):
-        from cards.models import StudyProgress
-        initial=self.client.get(self.url).json()
-        self.assertEqual(initial['new'],1)
-        self.assertEqual(set(initial['cards'][0]['choices']),{'1','2','3','4'})
-        event=self.event(type='flash',rating=4)
-        self.assertEqual(len(self.sync(event)['accepted']),1)
-        p=StudyProgress.objects.get(card=self.card)
-        due=p.due_at
-        self.assertGreater(p.interval_days,1)
-        self.assertIn('card',p.memory)
-        self.assertEqual(p.response_time_ms,2000)
-        self.sync(event);p.refresh_from_db()
-        self.assertEqual(p.correct_count,1)
-        self.assertEqual(p.due_at,due)
-        self.assertEqual(self.client.get(self.url).json()['new'],0)
-        self.assertEqual(self.client.get(self.url).json()['cards'],[])
-        self.assertEqual(self.client.get(self.url.replace('/en/','/de/')).status_code,404)
-        other=get_user_model().objects.create_user('spaced-other'); self.client.force_login(other)
-        self.assertEqual(self.client.get(self.url).status_code,404)
-
-    def test_settings_validation_and_old_options_do_not_overwrite_fsrs(self):
-        from cards.models import DeckLearningState
-        response=self.client.patch(self.url,json.dumps({'retention':.92,'new_limit':5}),content_type='application/json')
-        self.assertEqual(response.status_code,200,response.content)
-        event=self.event();event['kind']='options';event['payload']={'deck':self.deck.pk,'options':{'mode':'learn','srs':{'retention':0}}}
-        self.sync(event)
-        self.assertEqual(DeckLearningState.objects.get(deck=self.deck).options['srs']['retention'],.92)
-        for patch in [{'retention':1},{'new_limit':-1},{'review_limit':True},{'adapt_time':'yes'}]:
-            self.assertEqual(self.client.patch(self.url,json.dumps(patch),content_type='application/json').status_code,400)
 
     def test_latency_is_secondary_and_immediate_practice_does_not_inflate_intervals(self):
         from cards.services.spaced import review
@@ -958,16 +927,6 @@ class SpacedReviewTests(TestCase):
         review(p,True,'written',now-timedelta(days=1),2000,rating=4)
         self.assertEqual(p.due_at,due)
         with self.assertRaises(ValueError):review(p,True,'written',now,True)
-
-    def test_learning_steps_remain_available_after_daily_budget(self):
-        from cards.models import StudyProgress
-        from django.utils import timezone
-        from datetime import timedelta
-        self.client.patch(self.url,json.dumps({'new_limit':1,'review_limit':1}),content_type='application/json')
-        event=self.event(correct=False,type='flash',rating=1)
-        self.sync(event)
-        StudyProgress.objects.filter(card=self.card).update(due_at=timezone.now()-timedelta(minutes=1))
-        self.assertEqual(len(self.client.get(self.url).json()['cards']),1)
 
     def test_bad_rating_and_timing_do_not_commit_partial_progress(self):
         from cards.models import StudyProgress

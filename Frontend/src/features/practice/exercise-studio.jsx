@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
 import {FormattingHelp} from "./formatting-help.jsx";
 import { MediaEditor, ExerciseMediaDialog } from "./exercise-media.jsx";
@@ -9,6 +10,7 @@ import {
   useAction,
   request,
   useNavigate,
+  useRoute,
   readPreference,
   savePreference,
 } from "../../lib/core.js";
@@ -37,7 +39,10 @@ export function ExerciseStudio({
   parentId = null,
   edit = false,
 }) {
+  useLocale();
   const navigate = useNavigate();
+  const route = useRoute();
+  const returnToLearning = new URLSearchParams(route.split("?")[1]||"").get("return")==="learn";
   const routes = practiceRoutes(lang);
   const base = endpoint(lang, "practice-hub/nodes/");
   const resource = useResource(`${base}?full=1`, true);
@@ -119,7 +124,7 @@ export function ExerciseStudio({
         );
         setNotice("Exercise updated.");
         refresh();
-        navigate(`${routes.studio}/${current.id}`);
+        navigate(returnToLearning?`${routes.learn}/${current.id}`:`${routes.studio}/${current.id}`);
       } else {
         if (!parent) throw new Error("Choose a folder before saving.");
         const result = await request(
@@ -130,7 +135,7 @@ export function ExerciseStudio({
         );
         setNotice(`Created ${result.created.length} exercises.`);
         refresh();
-        navigate(`${routes.studio}/${parent}`);
+        navigate(`${routes.studio}/${result.created.length===1?result.created[0]:parent}`);
       }
     });
   const browsing = !create && !edit && (!current || current.kind === "folder");
@@ -156,12 +161,12 @@ export function ExerciseStudio({
     <Page>
       <SidebarTools navOnly>
         <div className="studio-navigation">
-          <nav className="studio-nav-shortcuts" aria-label="Create tools">
+          <nav className="studio-nav-shortcuts" aria-label={tr("Create tools")}>
             <Link
               className={`studio-nav-icon ${!current && !create ? "active" : ""}`}
               to={routes.studio}
-              title="My Exercise Library"
-              aria-label="My Exercise Library"
+              title={tr("My Exercise Library")}
+              aria-label={tr("My Exercise Library")}
               aria-current={!current && !create ? "page" : undefined}
             >
               <Icon name="home" size={23} />
@@ -169,8 +174,8 @@ export function ExerciseStudio({
             <Link
               className="studio-nav-icon"
               to={routes.guide}
-              title="Instructions and .txt templates"
-              aria-label="Instructions and .txt templates"
+              title={tr("Instructions and .txt templates")}
+              aria-label={tr("Instructions and .txt templates")}
             >
               <Icon name="book" size={23} />
             </Link>
@@ -178,19 +183,19 @@ export function ExerciseStudio({
           {(create || edit) && (
             <>
               <div className="rounded-xl border border-(--line) p-3">
-                <small>Folde</small>
+                <small>{tr("Folde")}</small>
                 <strong className="mt-1 block">
                   {nodes.find((node) => node.id === parent)?.title ||
-                    "Not selected"}
+                    tr("Not selected")}
                 </strong>
               </div>
               <Btn
                 isIconOnly
-                title="Close draft"
-                aria-label="Close draft"
+                title={tr("Close draft")}
+                aria-label={tr("Close draft")}
                 isDisabled={action.pending}
                 onClick={() =>
-                  navigate(`${routes.studio}/${current?.id || parent || ""}`)
+                  navigate(returnToLearning&&current?`${routes.learn}/${current.id}`:`${routes.studio}/${current?.id || parent || ""}`)
                 }
               >
                 <Icon name="logout" />
@@ -202,13 +207,13 @@ export function ExerciseStudio({
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-5">
         {(current || create) && (
           <nav
-            aria-label="Folder position"
+            aria-label={tr("Folder position")}
             className="flex flex-wrap items-center gap-2 text-sm text-(--muted)"
           >
             <Link
               to={routes.studio}
-              title="My Exercise Library"
-              aria-label="My Exercise Library"
+              title={tr("My Exercise Library")}
+              aria-label={tr("My Exercise Library")}
             >
               <Icon name="home" />
             </Link>
@@ -220,7 +225,7 @@ export function ExerciseStudio({
             ))}
             <span>/</span>
             <span aria-current="page" className="font-semibold text-(--ink)">
-              {create ? "Create exercise" : current?.title}
+              {create ? tr("Create exercise") : current?.title}
             </span>
           </nav>
         )}
@@ -231,15 +236,13 @@ export function ExerciseStudio({
           </p>
         )}
         {resource.loading && !resource.data ? (
-          <Status>Opening Create…</Status>
+          <Status>{tr("Opening Create…")}</Status>
         ) : id && !current && !create ? (
-          <Status>
-            This content does not exist or is not owned by you.
-          </Status>
+          <Status>{tr("This content does not exist or is not owned by you.")}</Status>
         ) : browsing ? (
           <>
             <header className="flex flex-wrap items-start justify-between gap-4">
-              <Heading title={current?.title || "My Exercise Library"} />
+              <Heading title={current?.title || tr("My Exercise Library")} />
               <div className="flex gap-2">
                 {[
                   ["grid", "Grid view"],
@@ -248,8 +251,8 @@ export function ExerciseStudio({
                   <Btn
                     key={mode}
                     isIconOnly
-                    title={label}
-                    aria-label={label}
+                    title={tr(label)}
+                    aria-label={tr(label)}
                     aria-pressed={view === mode}
                     onClick={() => {
                       setView(mode);
@@ -262,8 +265,8 @@ export function ExerciseStudio({
                 <Btn
                   primary
                   isIconOnly
-                  title="Add"
-                  aria-label="Add an exercise or folder"
+                  title={tr("Add")}
+                  aria-label={tr("Add an exercise or folder")}
                   onClick={() => setAddTarget({ parent })}
                 >
                   <Icon name="plus" />
@@ -271,8 +274,8 @@ export function ExerciseStudio({
                 {current && (
                   <Btn
                     isIconOnly
-                    title="Options"
-                    aria-label="Folder options"
+                    title={tr("Options")}
+                    aria-label={tr("Folder options")}
                     onClick={() => openSettings(current)}
                   >
                     <Icon name="settings" />
@@ -282,8 +285,8 @@ export function ExerciseStudio({
             </header>
             {!current && <AiAuthoringHelp lang={lang} />}
             <Field
-              aria-label="Search"
-              placeholder={current ? "Search this folder…" : "Search folders…"}
+              aria-label={tr("Search")}
+              placeholder={current ? tr("Search this folder…") : tr("Search folders…")}
               value={query}
               onChange={setQuery}
               startContent={<Icon name="search" />}
@@ -318,16 +321,16 @@ export function ExerciseStudio({
           />
         ) : theory ? (
           <>
-            <Heading title={`Edit · ${current.title}`} />
+            <Heading title={tr("Edit · {v0}", { v0: current.title })} />
             <div className="flex flex-wrap gap-3">
               <Select
-                label="Format"
+                label={tr("Format")}
                 value={theory.format || "markdown"}
                 onChange={(format) =>
                   setTheory((value) => ({ ...value, format }))
                 }
               >
-                <option value="markdown">Markdown + lesson markup</option>
+                <option value="markdown">{tr("Markdown + lesson markup")}</option>
                 <option value="html">HTML</option>
               </Select>
               <Btn
@@ -344,17 +347,15 @@ export function ExerciseStudio({
                       signal,
                     );
                     refresh();
-                    navigate(`${routes.studio}/${current.id}`);
+                    navigate(returnToLearning?`${routes.learn}/${current.id}`:`${routes.studio}/${current.id}`);
                   })
                 }
-              >
-                Save content
-              </Btn>
+              >{tr("Save content")}</Btn>
             </div>
             <FormattingHelp/>
-            <details className="lesson-format-help"><summary>Upload images / media</summary><MediaEditor lang={lang} items={theory.attachments || []} onChange={attachments=>setTheory(value=>({...value,attachments}))} onBusy={setTheoryMediaBusy} disabled={action.pending}/><p>Copy an image command into Theory content. Keep its attachment listed so readers can access it.</p></details>
+            <details className="lesson-format-help"><summary>{tr("Upload images / media")}</summary><MediaEditor lang={lang} items={theory.attachments || []} onChange={attachments=>setTheory(value=>({...value,attachments}))} onBusy={setTheoryMediaBusy} disabled={action.pending}/><p>{tr("Copy an image command into Theory content. Keep its attachment listed so readers can access it.")}</p></details>
             <Field
-              label="Theory content"
+              label={tr("Theory content")}
               multiline
               rows={24}
               value={theory.content || ""}
@@ -362,18 +363,19 @@ export function ExerciseStudio({
                 setTheory((value) => ({ ...value, content }))
               }
             />
-            <details className="lesson-format-help"><summary>Preview theory</summary><TheoryActivity payload={theory}/></details>
+            <details className="lesson-format-help"><summary>{tr("Preview theory")}</summary><TheoryActivity payload={theory}/></details>
           </>
         ) : current && current.kind !== "folder" ? (
           <>
             <header className="flex flex-wrap items-start justify-between gap-4">
               <Heading title={current.title} />
               <div className="flex gap-2">
+                <Link className="btn primary" to={`${routes.learn}/${current.id}`}>{tr("Study now")}</Link>
                 <Btn
                   primary
                   isIconOnly
-                  title="Edit content"
-                  aria-label="Edit content"
+                  title={tr("Edit content")}
+                  aria-label={tr("Edit content")}
                   onClick={() =>
                     navigate(`${routes.studio}/${current.id}/edit`)
                   }
@@ -382,8 +384,8 @@ export function ExerciseStudio({
                 </Btn>
                 <Btn
                   isIconOnly
-                  title="Content options"
-                  aria-label="Content options"
+                  title={tr("Content options")}
+                  aria-label={tr("Content options")}
                   onClick={() => openSettings(current)}
                 >
                   <Icon name="settings" />
@@ -404,9 +406,7 @@ export function ExerciseStudio({
       </section>
       {current?.kind === "exercise" && !edit && (
         <SidebarTools navOnly>
-          <Btn icon="image" onClick={() => setMediaOpen(true)}>
-            Manage MP3 and images
-          </Btn>
+          <Btn icon="image" onClick={() => setMediaOpen(true)}>{tr("Manage MP3 and images")}</Btn>
         </SidebarTools>
       )}
       {mediaOpen && current?.kind === "exercise" && (
@@ -426,9 +426,7 @@ export function ExerciseStudio({
                 setPreviewId(null);
                 navigate(`${routes.studio}/${preview.id}/edit`);
               }}
-            >
-              Edit content
-            </Btn>
+            >{tr("Edit content")}</Btn>
           </div>
           {preview.kind === "exercise" ? (
             <PracticeActivity
@@ -442,7 +440,7 @@ export function ExerciseStudio({
         </PracticeModal>
       )}
       {addTarget && (
-        <PracticeModal title="Add" onClose={() => setAddTarget(null)}>
+        <PracticeModal title={tr("Add")} onClose={() => setAddTarget(null)}>
           <div className="grid gap-2">
             <Btn
               onClick={() => {
@@ -455,9 +453,7 @@ export function ExerciseStudio({
             >
               <span className="create-type-icon exercise">
                 <Icon name="exercise" />
-              </span>
-              Exercises from .txt
-            </Btn>
+              </span>{tr("Exercises from .txt")}</Btn>
             <Btn
               onClick={() => {
                 setFolderDraft({ title: "", parent: addTarget.parent });
@@ -466,22 +462,20 @@ export function ExerciseStudio({
             >
               <span className="create-type-icon folder">
                 <Icon name="folder" />
-              </span>
-              New folder
-            </Btn>
+              </span>{tr("New folder")}</Btn>
           </div>
         </PracticeModal>
       )}
       {(choosingFolder || (create && !parent && !resource.loading)) &&
         !folderDraft && (
           <PracticeModal
-            title="Add to folder"
+            title={tr("Add to folder")}
             onClose={() => {
               setChoosingFolder(false);
               if (create) navigate(routes.studio);
             }}
           >
-            <p>Choose a destination folder.</p>
+            <p>{tr("Choose a destination folder.")}</p>
             {roots.map((node) => (
               <Btn
                 key={node.id}
@@ -501,23 +495,21 @@ export function ExerciseStudio({
                 setChoosingFolder(false);
                 setFolderDraft({ title: "", parent: null });
               }}
-            >
-              New folder
-            </Btn>
+            >{tr("New folder")}</Btn>
           </PracticeModal>
         )}
       {folderDraft && (
         <PracticeModal
-          title="New folder"
+          title={tr("New folder")}
           pending={action.pending}
           onClose={() => setFolderDraft(null)}
         >
           <Status error={action.error} />
           <Field
-            label="Folder name"
+            label={tr("Folder name")}
             autoFocus
             maxLength={200}
-            placeholder="Example: Present simple"
+            placeholder={tr("Example: Present simple")}
             value={folderDraft.title}
             onChange={(title) =>
               setFolderDraft((value) => ({ ...value, title }))
@@ -525,13 +517,13 @@ export function ExerciseStudio({
           />
           {!folderDraft.parent && (
             <Field
-              label="Tags"
-              placeholder="grammar, present simple, A1"
+              label={tr("Tags")}
+              placeholder={tr("grammar, present simple, A1")}
               value={folderDraft.tags || ""}
               onChange={(tags) =>
                 setFolderDraft((value) => ({ ...value, tags }))
               }
-              description="Up to 12 tags, separated by commas."
+              description={tr("Up to 12 tags, separated by commas.")}
             />
           )}
           <Btn
@@ -558,20 +550,18 @@ export function ExerciseStudio({
                 navigate(`${routes.studio}/${result.node.id}`);
               })
             }
-          >
-            Create folder
-          </Btn>
+          >{tr("Create folder")}</Btn>
         </PracticeModal>
       )}
       {setting && (
         <PracticeModal
-          title={`Options · ${setting.title}`}
+          title={tr("Options · {v0}", { v0: setting.title })}
           pending={action.pending}
           onClose={() => setSettingId(null)}
         >
           <Status error={action.error} />
           <Select
-            label="Who can study?"
+            label={tr("Who can study?")}
             value={setting.visibility}
             disabled={action.pending}
             onChange={(visibility) =>
@@ -586,8 +576,8 @@ export function ExerciseStudio({
               })
             }
           >
-            <option value="private">Private</option>
-            <option value="public">Public</option>
+            <option value="private">{tr("Private")}</option>
+            <option value="public">{tr("Public")}</option>
           </Select>
           {setting.kind === "folder" && !setting.parent && (
             <FolderTags
@@ -608,18 +598,14 @@ export function ExerciseStudio({
             />
           )}
           {!removing ? (
-            <Btn onClick={() => setRemoving(true)}>
-              Delete {setting.kind === "folder" ? "folde" : "content"}
+            <Btn onClick={() => setRemoving(true)}>{tr("Delete ")}{setting.kind === "folder" ? tr("folde") : tr("content")}
             </Btn>
           ) : (
             <div role="alert">
-              <p>
-                Delete “{setting.title}”
+              <p>{tr("Delete “")}{setting.title}”
                 {setting.kind === "folder"
-                  ? " and all its contents"
-                  : ""}
-                ? This action cannot be undone.
-              </p>
+                  ? tr(" and all its contents")
+                  : ""}{tr("? This action cannot be undone.")}</p>
               <div className="mt-4 flex gap-3">
                 <Btn
                   isDisabled={action.pending}
@@ -639,10 +625,8 @@ export function ExerciseStudio({
                         navigate(`${routes.studio}/${removed.parent || ""}`);
                     })
                   }
-                >
-                  Confirm deletion
-                </Btn>
-                <Btn onClick={() => setRemoving(false)}>Keep</Btn>
+                >{tr("Confirm deletion")}</Btn>
+                <Btn onClick={() => setRemoving(false)}>{tr("Keep")}</Btn>
               </div>
             </div>
           )}
@@ -653,16 +637,17 @@ export function ExerciseStudio({
 }
 
 function FolderTags({ node, pending, onSave }) {
+  useLocale();
   const [value, setValue] = useState((node.tags || []).join(", "));
   return (
     <div className="flex items-end gap-2">
       <div className="min-w-0 flex-1">
         <Field
-          label="Tags"
+          label={tr("Tags")}
           value={value}
           onChange={setValue}
-          placeholder="grammar, present simple, A1"
-          description="Up to 12 tags, 40 characters each. Separate with commas."
+          placeholder={tr("grammar, present simple, A1")}
+          description={tr("Up to 12 tags, 40 characters each. Separate with commas.")}
         />
       </div>
       <Btn
@@ -676,9 +661,7 @@ function FolderTags({ node, pending, onSave }) {
               .filter(Boolean),
           )
         }
-      >
-        Save tags
-      </Btn>
+      >{tr("Save tags")}</Btn>
     </div>
   );
 }

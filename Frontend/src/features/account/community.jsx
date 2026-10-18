@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import LearningProfile from "./profile.jsx";
 import { useState } from "react";
 import { endpoint, request, useResource, useAction } from "../../lib/core.js";
@@ -16,6 +17,7 @@ import {
   Confirm,
 } from "../../components/ui/ui.jsx";
 export function Community(props) {
+  useLocale();
   return props.section === "profile" ? (
     <LearningProfile lang={props.lang} />
   ) : (
@@ -23,6 +25,7 @@ export function Community(props) {
   );
 }
 function CommunityPage({ lang, section, id }) {
+  useLocale();
   const resource = useResource(
     endpoint(lang, `${section}/${id ? `${id}/` : ""}`),
   );
@@ -38,17 +41,18 @@ function CommunityPage({ lang, section, id }) {
   );
 }
 function Content({ lang, section, id, data, reload }) {
+  useLocale();
   const [edit, setEdit] = useState(null),
     [remove, setRemove] = useState(null);
   const action = useAction();
   return (
     <Page>
       <Heading
-        title={id ? data.title : "Classes"}
+        title={id ? data.title : tr("Classes")}
         description={
           id
             ? `Created by: ${data.owner}`
-            : "Learn together with Practice Hub exercises and folders."
+            : tr("Learn together with Practice Hub exercises and folders.")
         }
         actions={
           !id ? (
@@ -62,9 +66,7 @@ function Content({ lang, section, id, data, reload }) {
                     ],
                   })
                 }
-              >
-                Create class
-              </Btn>
+              >{tr("Create class")}</Btn>
               <Btn
                 onClick={() =>
                   setEdit({
@@ -74,9 +76,7 @@ function Content({ lang, section, id, data, reload }) {
                     ],
                   })
                 }
-              >
-                Tham gia
-              </Btn>
+              >{tr("Tham gia")}</Btn>
             </>
           ) : data.manage ? (
             <>
@@ -91,12 +91,8 @@ function Content({ lang, section, id, data, reload }) {
                     initial: data,
                   })
                 }
-              >
-                Rename
-              </Btn>
-              <Btn icon="trash" onClick={() => setRemove({ classroom: true })}>
-                Delete class
-              </Btn>
+              >{tr("Rename")}</Btn>
+              <Btn icon="trash" onClick={() => setRemove({ classroom: true })}>{tr("Delete class")}</Btn>
             </>
           ) : null
         }
@@ -119,30 +115,26 @@ function Content({ lang, section, id, data, reload }) {
           {data.manage && (
             <>
               <SidebarTools>
-                <p>Invite code: {data.invite}</p>
+                <p>{tr("Invite code: ")}{data.invite}</p>
                 <Btn
                   onClick={() =>
                     action.run(() => navigator.clipboard.writeText(data.invite))
                   }
-                >
-                  Copy invite code
-                </Btn>
+                >{tr("Copy invite code")}</Btn>
               </SidebarTools>
               <AssignmentPicker {...{ lang, id, reload }} />
               <details>
-                <summary>Members ({data.members.length})</summary>
+                <summary>{tr("Members (")}{data.members.length})</summary>
                 {data.members.map((m) => (
                   <div className="history-row" key={m.id}>
                     {m.username}
-                    <Btn icon="trash" onClick={() => setRemove(m)}>
-                      Remove from class
-                    </Btn>
+                    <Btn icon="trash" onClick={() => setRemove(m)}>{tr("Remove from class")}</Btn>
                   </div>
                 ))}
               </details>
             </>
           )}
-          <h2>Assigned content</h2>
+          <h2>{tr("Assigned content")}</h2>
           {data.assignments.map((a) => (
             <div className="history-row" key={a.id}>
               <Link to={`/${lang}/practice/${a.node}`}>{a.title}</Link>
@@ -162,13 +154,11 @@ function Content({ lang, section, id, data, reload }) {
                       reload();
                     })
                   }
-                >
-                  Unassign
-                </Btn>
+                >{tr("Unassign")}</Btn>
               )}
             </div>
           ))}
-          {!data.assignments.length && <p>No assigned content yet.</p>}
+          {!data.assignments.length && <p>{tr("No assigned content yet.")}</p>}
         </>
       )}
       <Status error={action.error} />
@@ -191,7 +181,7 @@ function Content({ lang, section, id, data, reload }) {
         <Confirm
           title={
             remove.classroom
-              ? "Delete this class?"
+              ? tr("Delete this class?")
               : `Delete ${remove.username} from this class?`
           }
           onClose={() => setRemove(null)}
@@ -212,15 +202,16 @@ function Content({ lang, section, id, data, reload }) {
   );
 }
 function AssignmentPicker({ lang, id, reload }) {
+  useLocale();
   const resource = useResource(endpoint(lang, "practice-hub/nodes/")),
     action = useAction();
   const [node, setNode] = useState(""),
     [due, setDue] = useState("");
   return (
     <SidebarTools>
-      <h3>Assign content</h3>
-      <Select label="Exercise / theory / folder" value={node} onChange={setNode}>
-        <option value="">Choose content</option>
+      <h3>{tr("Assign content")}</h3>
+      <Select label={tr("Exercise / theory / folder")} value={node} onChange={setNode}>
+        <option value="">{tr("Choose content")}</option>
         {resource.data?.nodes.map((n) => (
           <option key={n.id} value={n.id}>
             {n.title}
@@ -228,7 +219,7 @@ function AssignmentPicker({ lang, id, reload }) {
         ))}
       </Select>
       <Field
-        label="Due date (optional)"
+        label={tr("Due date (optional)")}
         type="datetime-local"
         value={due}
         onChange={setDue}
@@ -249,9 +240,7 @@ function AssignmentPicker({ lang, id, reload }) {
             reload();
           })
         }
-      >
-        Assign to class
-      </Btn>
+      >{tr("Assign to class")}</Btn>
       <Status error={resource.error || action.error} />
     </SidebarTools>
   );

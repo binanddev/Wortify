@@ -260,6 +260,15 @@ def restore_archive(user, archive, records, restore_settings=False):
                     obj.stars=card_keys(obj.stars)
                     # Progress stores card IDs in per-mode maps.
                     obj.progress=card_keys(obj.progress)
+                    if obj.notebook:
+                        obj.notebook['records']=card_keys(obj.notebook.get('records', {}))
+                        session=obj.notebook.get('session')
+                        if session:
+                            session['answers']=card_keys(session.get('answers', {}))
+                            remapped=[mapping[('cards.card',str(cid))].pk for cid in session['cards'] if ('cards.card',str(cid)) in mapping]
+                            if len(remapped)!=len(session['cards']): obj.notebook['session']=None
+                            else: session['cards']=remapped
+                        obj.notebook.pop('last_token', None)
                     obj.save()
             workspace=json.loads(archive.read('reference/workspace.json')) if 'reference/workspace.json' in archive.namelist() else {}
             restored_workspace={lang:[mapping[('practice.practicenode',str(pk))].pk for pk in ids if ('practice.practicenode',str(pk)) in mapping] for lang,ids in workspace.items() if lang in ('de','en') and isinstance(ids,list)}

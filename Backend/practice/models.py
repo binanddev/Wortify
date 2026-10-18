@@ -62,11 +62,20 @@ class ReadingLesson(models.Model):
     folder = models.ForeignKey("ReadingFolder", null=True, blank=True, on_delete=models.SET_NULL)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     language = models.CharField(max_length=2, choices=[('en','English'),('de','German')])
+    source_key = models.CharField(max_length=160, blank=True, default='')
     title = models.CharField(max_length=200)
     payload = models.JSONField(default=dict)
+    visibility = models.CharField(max_length=10, default='private', choices=[('private','Private'),('public','Public')])
+    level = models.CharField(max_length=2, blank=True, default='')
+    topic = models.CharField(max_length=80, blank=True, default='')
+    attachments = models.ManyToManyField(PracticeMedia, blank=True, related_name='readings')
     completed = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['owner','language','source_key'], condition=~models.Q(source_key=''), name='unique_saved_reading_source')]
 
 
 class ReadingFolder(models.Model):

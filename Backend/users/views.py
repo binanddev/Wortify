@@ -59,3 +59,24 @@ def session(request, superuser_registration=False):
         if not request.session.get("appearance_session"):
             request.session["appearance_session"] = uuid.uuid4().hex
     return JsonResponse({'user': {'id': user.pk, 'username': user.username, 'staff': user.is_staff, 'superuser': user.is_superuser, 'preferences':preferences, 'appearance_session':request.session.get('appearance_session')} if user.is_authenticated else None})
+
+
+@require_http_methods(['PATCH'])
+def interface_language(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Please sign in first.'}, status=401)
+    try:
+        language = body(request).get('language')
+        if language not in ('en', 'vi', 'de'):
+            raise ValueError('Choose English, Vietnamese or German.')
+    except (ValueError, AttributeError):
+        return JsonResponse({'error': 'Choose English, Vietnamese or German.'}, status=400)
+    from .models import Profile
+    from django.utils import timezone
+    with transaction.atomic():
+        Profile.objects.get_or_create(user=request.user)
+        profile = Profile.objects.select_for_update().get(user=request.user)
+        profile.preferences = {**profile.preferences, 'uiLanguage': language}
+        profile.preferences_at = {**profile.preferences_at, 'uiLanguage': timezone.now().isoformat()}
+        profile.save(update_fields=['preferences', 'preferences_at'])
+    return JsonResponse({'language': language})

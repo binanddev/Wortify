@@ -1,20 +1,21 @@
-from api import content_packages
-from api import reading
+from api import content_import_api, content_import_docs
+from api import content_packages, vocabulary_notebook
+from api import reading, reading_discovery
 from api import admin_backups, admin_restore
 from api import backups
-from api import api_reference, management_center, spaced_review, management_data, personal_appearance, monitoring, themes, backgrounds
+from api import api_reference, management_center, management_data, personal_appearance, monitoring, themes, backgrounds
 from django.urls import path,re_path
 from django.http import JsonResponse
 from api import views,sessions,community,management,practice_hub,learning_sync,practice_media,practice_copy
 from api.common import legacy_json,namespace
-from users.views import session, superuser_registration
+from users.views import session, superuser_registration, interface_language
 from api import card_learning as cards
 def health(request):
     import hashlib
     from django.conf import settings
     identity=hashlib.sha256(str(settings.BASE_DIR).lower().encode()).hexdigest()[:16]
     return JsonResponse({'app':'Wortify','workspace':identity})
-urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_registration),path('api/health/',health),path('api/session/',session),
+urlpatterns=[path("api/import/guide/",content_import_docs.guide),path("api/import/openapi/",content_import_docs.openapi),path("api/manage/import-api/",content_import_api.settings),path("api/import/content/",content_import_api.upload),path('api/me/language/',interface_language),path('api/superuser-registration/<slug:setup_key>/',superuser_registration),path('api/health/',health),path('api/session/',session),
  path('api/health/check/',monitoring.probe),
  path('api/monitor/',monitoring.report),
  path('api/manage/monitor/',monitoring.logs),
@@ -46,10 +47,10 @@ urlpatterns=[path('api/superuser-registration/<slug:setup_key>/',superuser_regis
  path('api/manage/appearance/',management.site_appearance),path('api/site/appearance/',management.public_appearance),path('api/site/appearance/image/',management.site_appearance_image)]
 def route(pattern,view):urlpatterns.append(path('api/<str:language>/'+pattern,namespace(view)))
 for pattern,view in [
- ('system-library/',content_packages.library),('system-library/<uuid:pk>/copy/',content_packages.copy),('reading/',reading.library),('reading/<int:pk>/',reading.detail),
+ ('system-library/',content_packages.library),('system-library/<uuid:pk>/copy/',content_packages.copy),('reading/discover/',reading_discovery.library),('reading/discover/open/',reading_discovery.detail),('reading/discover/save/',reading_discovery.save),('reading/<int:pk>/sharing/',reading.sharing),('reading/',reading.library),('reading/<int:pk>/',reading.detail),
  ('profile/',community.profile),('classes/',community.classes),('classes/<int:pk>/',community.classroom),('classes/<int:pk>/assignments/',community.classroom_assignments),
  ('practice-hub/nodes/<int:pk>/copy/',practice_copy.copy_collection),
- ('decks/<int:pk>/review/',spaced_review.review_queue),
+ ('decks/<int:pk>/notebook/',vocabulary_notebook.notebook),
  ('practice-hub/media/',practice_media.upload),('practice-hub/media/<uuid:pk>/',practice_media.content),
  ('practice-hub/explore/',practice_hub.explore),('practice-hub/nodes/',practice_hub.nodes),('practice-hub/nodes/<int:pk>/',practice_hub.node),('practice-hub/import/',practice_hub.import_nodes),('practice-hub/organize/',practice_hub.organize),
  ('learning/sync/',learning_sync.sync),('decks/<int:pk>/learning/',learning_sync.deck_state),

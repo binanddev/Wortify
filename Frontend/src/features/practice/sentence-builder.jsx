@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useRef, useState, useContext, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, useReducedMotion } from "framer-motion";
@@ -12,6 +13,7 @@ export function SentenceBuilder({
   disabled,
   uiStyle,
 }) {
+  useLocale();
   const tokens = q.presentation?.tokens || [];
   const [order] = useState(() => shuffled(tokens));
   const root = useRef(null),
@@ -157,7 +159,7 @@ export function SentenceBuilder({
       <div
         className="sentence-target"
         data-sentence-target
-        aria-label="Assembled sentence"
+        aria-label={tr("Assembled sentence")}
       >
         {placed.flatMap((id, index) => [
           marker(index),
@@ -168,13 +170,13 @@ export function SentenceBuilder({
         ])}
         {marker(placed.length)}
         {!placed.length && target?.index === undefined && (
-          <span className="drop-placeholder">Place words here</span>
+          <span className="drop-placeholder">{tr("Place words here")}</span>
         )}
       </div>
       <div
         className={`word-bank sentence-bank ${target?.bank ? "is-drag-over" : ""}`}
         data-sentence-bank
-        aria-label="Word bank; drop a word here to remove it from the sentence"
+        aria-label={tr("Word bank; drop a word here to remove it from the sentence")}
       >
         {order
           .filter((token) => !value.includes(token.id) && token.id !== moving)

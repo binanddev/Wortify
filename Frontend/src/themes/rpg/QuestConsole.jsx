@@ -1,7 +1,9 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useState } from 'react';
 import { useNavigate, request, endpoint } from '../../lib/core.js';
 import { destinations, parseCommand } from './commands.js';
 export default function QuestConsole({lang,onExit}) {
+  useLocale();
  const go=useNavigate();
  const [input,setInput]=useState(''),[log,setLog]=useState(['Wortify DOS. Type help.']),[history,setHistory]=useState([]),[cursor,setCursor]=useState(-1),[cwd,setCwd]=useState('/'),[entries,setEntries]=useState([]),[busy,setBusy]=useState(false);
  const write=line=>setLog(l=>[...l,line].slice(-30));
@@ -37,7 +39,7 @@ export default function QuestConsole({lang,onExit}) {
  return <section className="quest-console terminal" aria-label="DOS terminal">
   <div className="dos-log" role="log" aria-live="polite">{log.map((line,i)=><p key={i}>{line}</p>)}</div>
   <form onSubmit={e=>{e.preventDefault();run(input);}}>
-   <label htmlFor="quest-command">C:{cwd}&gt;</label><div className="quest-prompt"><input id="quest-command" value={input} autoComplete="off" spellCheck={false} placeholder="help" onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();const next=e.key==='ArrowUp'?Math.min(cursor+1,history.length-1):Math.max(-1,cursor-1);setCursor(next);setInput(history[next]||'');}}}/><button disabled={busy} type="submit" className="btn btn-primary">{busy?'...':'Run'}</button></div>
+   <label htmlFor="quest-command">C:{cwd}&gt;</label><div className="quest-prompt"><input id="quest-command" value={input} autoComplete="off" spellCheck={false} placeholder="help" onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();const next=e.key==='ArrowUp'?Math.min(cursor+1,history.length-1):Math.max(-1,cursor-1);setCursor(next);setInput(history[next]||'');}}}/><button disabled={busy} type="submit" className="btn btn-primary">{busy?'...':tr("Run")}</button></div>
   </form>
   <div className="quest-command-list">{['help','ls','cd flashcard','cd practice','exit()'].map(key=><button disabled={busy} key={key} type="button" onClick={()=>run(key)}>{key}</button>)}</div>
  </section>;

@@ -21,17 +21,17 @@ class ContentPackageTests(TestCase):
 
     def test_preview_creates_nothing_and_import_preserves_tree(self):
         response=self.upload(preview='true'); self.assertEqual(response.status_code,200,response.content)
-        self.assertEqual(response.json()['counts']['cards'],1)
+        self.assertEqual(response.json()['counts']['exercise'],1)
         self.assertEqual(SystemContentPackage.objects.count(),0)
         response=self.upload(confirm='IMPORT');self.assertEqual(response.status_code,201,response.content)
-        self.assertEqual(Deck.objects.get().folder.parent.name,'Giao thông')
+        self.assertEqual(Deck.objects.count(),0)
         self.assertEqual(ReadingLesson.objects.get().folder.title,'Bài đọc')
         self.assertEqual(PracticeNode.objects.filter(kind='exercise').get().parent.title,'Bài tập giao thông')
 
     def test_retry_does_not_duplicate_and_changed_id_is_rejected(self):
         self.assertEqual(self.upload(confirm='IMPORT').status_code,201)
         self.assertTrue(self.upload(confirm='IMPORT').json()['already_imported'])
-        self.assertEqual(Deck.objects.count(),1)
+        self.assertEqual(Deck.objects.count(),0)
         self.data['title']='Changed'
         self.assertEqual(self.upload(confirm='IMPORT').status_code,400)
 
@@ -42,7 +42,7 @@ class ContentPackageTests(TestCase):
         self.assertNotIn('staff',json.dumps(catalog))
         endpoint=f'/api/de/system-library/{self.data["id"]}/copy/'
         response=self.client.post(endpoint,{},content_type='application/json');self.assertEqual(response.status_code,200,response.content)
-        self.assertEqual(Deck.objects.filter(owner=self.learner).count(),1)
+        self.assertEqual(Deck.objects.filter(owner=self.learner).count(),0)
         self.assertTrue(self.client.post(endpoint,{},content_type='application/json').json()['already_imported'])
         self.assertEqual(ReadingLesson.objects.filter(owner=self.learner).count(),1)
         self.assertEqual(self.client.post(endpoint.replace('/de/','/en/'),{},content_type='application/json').status_code,404)
@@ -59,21 +59,21 @@ class ContentPackageTests(TestCase):
         self.assertEqual(SystemContentPackage.objects.count(),0)
 
     def test_many_folders_allow_same_name_in_different_branches(self):
-        template=self.data['flashcards'][0]
-        self.data['flashcards']=[{**deepcopy(template),'title':f'Topic {i}'} for i in range(120)]
+        template=self.data['practice'][0]
+        self.data['practice']=[{**deepcopy(template),'title':f'Topic {i}'} for i in range(120)]
         result=self.upload(confirm='IMPORT');self.assertEqual(result.status_code,201,result.content)
-        self.assertEqual(Folder.objects.count(),240)
-        self.assertEqual(Deck.objects.count(),120)
-        self.assertEqual(Card.objects.count(),120)
+        self.assertEqual(PracticeNode.objects.filter(kind='exercise').count(),120)
+        self.assertEqual(Deck.objects.count(),0)
 
-    def test_depth_and_duplicate_terms_rejected(self):
+    def test_depth_and_flashcards_rejected(self):
         node={'kind':'folder','title':'leaf','children':[]}
         for i in range(10):node={'kind':'folder','title':str(i),'children':[node]}
-        data=deepcopy(self.data);data['flashcards']=[node]
+        data=deepcopy(self.data);data['practice']=[node]
         self.assertEqual(self.upload(data,confirm='IMPORT').status_code,400)
-        cards=self.data['flashcards'][0]['children'][0]['children'][0]['cards']
-        cards.append(deepcopy(cards[0]))
-        self.assertEqual(self.upload(confirm='IMPORT').status_code,400)
+        for value in ([], [{'kind':'deck','title':'Private'}]):
+            data=deepcopy(self.data);data['flashcards']=value
+            self.assertEqual(self.upload(data,confirm='IMPORT').status_code,400)
+        self.assertEqual(SystemContentPackage.objects.count(),0)
 
     def test_library_survives_uploader_deletion(self):
         self.upload(confirm='IMPORT');self.staff.delete();self.client.force_login(self.learner)

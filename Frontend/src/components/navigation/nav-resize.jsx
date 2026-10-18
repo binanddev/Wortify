@@ -1,14 +1,16 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useState } from "react";
 import { NAV_BASE, NAV_MIN, NAV_MAX } from "./navigation-settings.js";
 const BASE = NAV_BASE,
   MIN = NAV_MIN,
   MAX = NAV_MAX;
 export function NavResize({ width, setWidth }) {
+  useLocale();
   const [drag, setDrag] = useState(null);
   return (
     <div
       role="separator"
-      aria-label="Navigation width"
+      aria-label={tr("Navigation width")}
       aria-orientation="vertical"
       aria-valuemin={MIN}
       aria-valuemax={MAX}
@@ -16,7 +18,7 @@ export function NavResize({ width, setWidth }) {
       aria-valuetext={`${Math.round((width / BASE) * 100)}%`}
       tabIndex={0}
       className="nav-resize"
-      title="Drag to resize · double-click to reset"
+      title={tr("Drag to resize · double-click to reset")}
       onDoubleClick={() => setWidth(BASE)}
       onKeyDown={(e) => {
         const next = {

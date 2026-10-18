@@ -1,0 +1,27 @@
+WORTIFY: 1
+ID: 7cdbb39c-e1ee-4a49-a10f-f2ff1551f5bd
+TITLE: A2 Travel
+LANGUAGE: en
+
+SECTION: practice
+FOLDER: A2/Travel/Transport
+EXERCISE: At the station
+TYPE: multiple_choice
+STYLE: dialogue_reply
+QUESTION: Where can I buy a ticket?
+OPTIONS: At the ticket office. | At seven o'clock. | By train.
+ANSWER: At the ticket office.
+EXPLANATION: Where asks for a place.
+
+SECTION: reading
+FOLDER: A2/Travel
+LEVEL: A2
+TOPIC: Travel
+EXERCISE: A morning journey
+TYPE: reading
+STYLE: split_reading
+CONTEXT: Anna takes the bus to school every morning. The journey takes twenty minutes.
+QUESTION: How does Anna get to school?
+OPTIONS: By bus | By train | On foot | By bicycle
+ANSWER: By bus
+EXPLANATION: The passage says Anna takes the bus.

@@ -201,12 +201,9 @@ through text import/export and support lesson markup. Explanations stay hidden
 until a correct answer or reveal; matching reveals each solved pair separately.
 
 
-### Flashcard arcade games
+### Vocabulary notebook
 
-Games include Sentence Quest and Phrase pairs. Sentence Quest uses saved examples of 3–40 words and has optional clocks, hints and energy. Phrase pairs matches phrases and meanings. Neither game modifies SRS progress. Watch & Learn and Word Rescue have been removed. Migration cards.0006 deletes video lessons and their directly linked decks; unrelated decks remain. Legacy backups skip retired video data.
-
-Game components: `features/flashcards/arcade-games.jsx`; pure rules: `arcade-engine.js`; scoped visuals: `design-system/word-arcade.css`. Inspired by word-tile games such as https://wordwall.net/about/template/anagram; implementation and content use Wortify's own deck data.
-
+Flashcard → Sổ học replaces Sentence Quest, Phrase pairs and the Anki-style Due reviews screen. Default: five words per set; adjustable 3–8. Complete preparation for the full set, recall terms, translate example sentences, create new sentences, then recall terms again. Sentences are self-assessed with sample comparison and optional copy-to-chat feedback; no AI grading service is implied. Finished steps sync to the account; unfinished text stays in this browser. Review intervals are 1/3/7/14 days; struggling words return tomorrow. Early practice does not advance the interval. Old progress remains stored for existing study modes and backups.
 
 ### Reading workspace
 

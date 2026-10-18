@@ -1,6 +1,8 @@
+import { t as tr, useLocale } from "../i18n/index.js";
 import { Link, Status } from "../components/ui/ui.jsx";
 import { request, useAction } from "../lib/core.js";
 export default function Home({ user, setUser, children }) {
+  useLocale();
   const action = useAction();
   return (
     <div id="wortify-home" className="home-simple">
@@ -16,16 +18,14 @@ export default function Home({ user, setUser, children }) {
                 setUser(null);
               })
             }
-          >
-            Sign out
-          </button>
+          >{tr("Sign out")}</button>
         )}
       </header>
       <main>
         {children || (
           <section className="home-choice">
-            <h1>Choose a language</h1>
-            <p>Continue your learning.</p>
+            <h1>{tr("Choose a language")}</h1>
+            <p>{tr("Continue your learning.")}</p>
             <div>
               {[
                 ["en", "English", "English"],
@@ -41,9 +41,7 @@ export default function Home({ user, setUser, children }) {
               ))}
             </div>
             {(user?.staff || user?.superuser) && (
-              <Link className="home-admin" to="/manage">
-                Open Admin center →
-              </Link>
+              <Link className="home-admin" to="/manage">{tr("Open Admin center →")}</Link>
             )}
           </section>
         )}

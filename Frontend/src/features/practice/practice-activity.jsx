@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { ReadingLayout } from "./reading-layout.jsx";
 import {visibleExerciseComments} from "./exercise-comments.js";
 import { sharedGapQuestions } from "./gap-bank.js";
@@ -22,6 +23,7 @@ import {
 } from "./practice-session.js";
 
 export function PracticeActivity(props) {
+  useLocale();
   return modeOf(props.data.exercise) === "reading" ? <ReadingLayout exercise={props.data.exercise} onProgress={props.onProgress} progress={props.data.progress} preview={props.preview}><PracticeActivityBody {...props}/></ReadingLayout> : <PracticeActivityBody {...props}/>;
 }
 function PracticeActivityBody({
@@ -35,6 +37,7 @@ function PracticeActivityBody({
   lang,
   uiStyle,
 }) {
+  useLocale();
   const e = data.exercise;
   const mode = modeOf(e);
   const sourceQuestions = data.questions.filter((q) => !q.example);
@@ -205,7 +208,7 @@ function PracticeActivityBody({
     uiStyle: style,
     rows: feedback?.rows || [],
   };
-  if (!questions.length) return <Status>This exercise has no questions yet.</Status>;
+  if (!questions.length) return <Status>{tr("This exercise has no questions yet.")}</Status>;
   return (
     <div
       className="exercise-workspace practice-journey learning-stage"
@@ -226,8 +229,8 @@ function PracticeActivityBody({
         <span>
           {index >= questions.length
             ? skipped.length
-              ? "Set reviewed"
-              : "Session complete"
+              ? tr("Set reviewed")
+              : tr("Session complete")
             : mode === "matching"
               ? `Matching · ${questions.length} pairs`
               : mode === "categorization"
@@ -236,7 +239,7 @@ function PracticeActivityBody({
         </span>
         {!isWholeExercise(mode) && (
           <progress
-            aria-label="Lesson progress"
+            aria-label={tr("Lesson progress")}
             value={
               replaying ? Math.min(index, questions.length) : completed.length
             }
@@ -247,7 +250,7 @@ function PracticeActivityBody({
           type="button"
           className="exercise-sound-toggle"
           aria-label={
-            soundEnabled ? "Mute exercise audio" : "Enable exercise audio"
+            soundEnabled ? tr("Mute exercise audio") : tr("Enable exercise audio")
           }
           aria-pressed={soundEnabled}
           onClick={() => setSoundEnabled((v) => !v)}
@@ -262,13 +265,13 @@ function PracticeActivityBody({
           </span>
           <h2>
             {skipped.length
-              ? "I have reviewed this set"
-              : "You did it!"}
+              ? tr("I have reviewed this set")
+              : tr("You did it!")}
           </h2>
           <p>
             {skipped.length
               ? `${skipped.length} questions with revealed answers. Practice again to answer on your own.`
-              : "Every completed question is progress. See you in the next exercise."}
+              : tr("Every completed question is progress. See you in the next exercise.")}
           </p>
           <Btn
             onClick={() => {
@@ -281,9 +284,7 @@ function PracticeActivityBody({
               setFeedback(null);
               checked.current = "";
             }}
-          >
-            Practice again to reinforce learning
-          </Btn>
+          >{tr("Practice again to reinforce learning")}</Btn>
         </section>
       ) : (
         <>
@@ -316,7 +317,7 @@ function PracticeActivityBody({
                   <PracticeRichText>{question.prompt}</PracticeRichText>
                 </p>
               )}
-            {mode === "reading" && <p className="reading-answer-hint">{question.kind === "multi" ? "Select all correct answers." : "Select one answer."}</p>}
+            {mode === "reading" && <p className="reading-answer-hint">{question.kind === "multi" ? tr("Select all correct answers.") : tr("Select one answer.")}</p>}
             {mode === "matching" ? (
               <MatchPairs {...props} />
             ) : mode === "categorization" ? (
@@ -334,8 +335,8 @@ function PracticeActivityBody({
                 <button
                   type="button"
                   className="btn primary exercise-next"
-                  aria-label="Continue"
-                  title="Continue"
+                  aria-label={tr("Continue")}
+                  title={tr("Continue")}
                   onClick={advance}
                 >
                   <Icon name="arrow" />
@@ -343,7 +344,7 @@ function PracticeActivityBody({
               ) : mode === "matching" ? null : manual ? (
                 <>
                   {feedback && !feedback.correct && (
-                    <Btn onClick={reveal}>Show answer</Btn>
+                    <Btn onClick={reveal}>{tr("Show answer")}</Btn>
                   )}
                   <Btn
                     primary
@@ -352,12 +353,10 @@ function PracticeActivityBody({
                       composing || !batch.every((q) => readyToCheck(q, answers))
                     }
                     onClick={checkNow}
-                  >
-                    Check
-                  </Btn>
+                  >{tr("Check")}</Btn>
                 </>
               ) : style === "click_edit" ? (
-                <Btn onClick={reveal}>Show answer</Btn>
+                <Btn onClick={reveal}>{tr("Show answer")}</Btn>
               ) : (
                 <SkipButton
                   disabled={feedback?.correct || composing}
@@ -374,8 +373,8 @@ function PracticeActivityBody({
                 ? ""
                 : feedback
                   ? feedback.correct
-                    ? "Correct!"
-                    : "Not quite. Try again."
+                    ? tr("Correct!")
+                    : tr("Not quite. Try again.")
                   : ""}
               {visibleExerciseComments({exercise:e,questions:batch,mode,answers,correct:Boolean(feedback?.correct),revealed:revealed || (style==="partial_input" && Boolean(feedback))}).map(note=><section className="exercise-comment" key={note.id}><strong>{note.label}</strong><div><PracticeRichText>{note.text}</PracticeRichText></div></section>)}
             </div>

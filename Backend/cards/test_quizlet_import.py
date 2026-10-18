@@ -24,3 +24,13 @@ class QuizletImportTests(TestCase):
         for text in ['[]', '[null]', '[{"german_text": 3}]', '[{"german_text": "Haus"}]', '[invalid]']:
             with self.subTest(text=text), self.assertRaises(ValidationError):
                 parse_cards(text, '|')
+
+    def test_five_field_json_and_csv(self):
+        import json
+        card = dict(german_text='der Bus', vietnamese_meaning='bus',
+                    example_german='Ich nehme den Bus.', example_vietnamese='I take the bus.',
+                    part_of_speech='noun')
+        for text in (json.dumps([card]), '|'.join(card.values())):
+            row = parse_cards(text, '|')[0]
+            for key, value in card.items():
+                self.assertEqual(row[key], value)

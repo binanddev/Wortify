@@ -56,3 +56,12 @@ def delete_theme_background(sender, instance, **kwargs):
     if instance.background_image:
         storage, name = instance.background_image.storage, instance.background_image.name
         transaction.on_commit(lambda: storage.delete(name))
+
+
+class ContentImportKey(models.Model):
+    """One revocable import-only key per staff account; raw secrets are never stored."""
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    digest = models.CharField(max_length=64, unique=True)
+    prefix = models.CharField(max_length=12)
+    created_at = models.DateTimeField(auto_now=True)
+    last_used_at = models.DateTimeField(null=True, blank=True)

@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useEffect, useState, useRef } from "react";
 import { endpoint, useResource } from "../../lib/core.js";
 import { Btn, Icon, Link } from "../../components/ui/ui.jsx";
@@ -26,6 +27,7 @@ export function FolderTree({
   onSelect,
   depth = 0,
 }) {
+  useLocale();
   return folders
     .filter((f) => (f.parent_id ?? null) === parent)
     .map((f) => (
@@ -36,6 +38,7 @@ export function FolderTree({
     ));
 }
 function FolderBranch({ f, folders, decks, lang, selected, onSelect, depth }) {
+  useLocale();
   const activePath = folderAncestors(
     folders,
     folders.find((v) => String(v.id) === selected),
@@ -86,15 +89,16 @@ function FolderBranch({ f, folders, decks, lang, selected, onSelect, depth }) {
             depth={depth + 1}
           />
           {children.map((d) => (
+            <div key={d.id} className="flex min-w-0 items-center">
             <Link
-              key={d.id}
               to={`/${lang}/flashcard/deck/${d.id}`}
               title={d.title}
-              className="flex min-w-0 items-center gap-3 rounded-xl px-3 py-2 text-base hover:bg-(--surface)"
+              className="flex flex-1 min-w-0 items-center gap-3 rounded-xl px-3 py-2 text-base hover:bg-(--surface)"
             >
               <Icon name="cards" />
               <span className="truncate">{d.title}</span>
             </Link>
+            </div>
           ))}
         </div>
       )}
@@ -102,6 +106,7 @@ function FolderBranch({ f, folders, decks, lang, selected, onSelect, depth }) {
   );
 }
 export default function FlashcardNavigation({ lang, route }) {
+  useLocale();
   const resource = useResource(endpoint(lang, "decks/"));
   const { data } = resource;
   const lastRoute = useRef(route);
@@ -124,23 +129,19 @@ export default function FlashcardNavigation({ lang, route }) {
         <Link
           className="btn flash-icon-link"
           to={base}
-          title="My Flashcards"
-          aria-label="My Flashcards"
+          title={tr("My Flashcards")}
+          aria-label={tr("My Flashcards")}
         >
           <Icon name="home" />
         </Link>
-        <Btn icon="undo" onClick={() => window.history.back()}>
-          Back
-        </Btn>
-        <Btn icon="arrow" onClick={() => window.history.forward()}>
-          Moving forward
-        </Btn>
+        <Btn icon="undo" onClick={() => window.history.back()}>{tr("Back")}</Btn>
+        <Btn icon="arrow" onClick={() => window.history.forward()}>{tr("Moving forward")}</Btn>
         {deck && folder && (
           <Link
             className="btn flash-icon-link"
             to={`${base}?folder=${folder.id}`}
             title={folderPath(data.folders, folder)}
-            aria-label={`Back ${folder.name}`}
+            aria-label={tr("Back {v0}", { v0: folder.name })}
           >
             <Icon name="folder" />
           </Link>

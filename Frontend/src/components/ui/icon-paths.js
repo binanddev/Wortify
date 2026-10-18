@@ -19,6 +19,7 @@ export const ICON_PATHS = {
   sound: "M3 9h4l5-5v16l-5-5H3Z M16 8a6 6 0 0 1 0 8 M19 5a10 10 0 0 1 0 14",
   spark:
     "m11 3 2.5 6.5L20 12l-6.5 2.5L11 21l-2.5-6.5L2 12l6.5-2.5L11 3Z M20 2v4m-2-2h4",
+  select: "M9 3H5a2 2 0 0 0-2 2v4m12-6h4a2 2 0 0 1 2 2v4M3 15v4a2 2 0 0 0 2 2h4m6 0h4a2 2 0 0 0 2-2v-4M8 12l3 3 5-6",
   check: "m4 12 5 5L20 6",
   class: "M3 4h18v12H3Z M8 8h8 M8 12h4 M12 16v5m-5 0h10",
   logout: "M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4 M10 12h11m-4-4 4 4-4 4",

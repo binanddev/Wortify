@@ -7,6 +7,8 @@ def validate_preferences(data):
             if type(value) not in (int,float) or not lo<=value<=hi:raise ValueError('Invalid setting value: '+key)
         elif key in ('sound','ambient','navPinned'):
             if type(value) is not bool:raise ValueError('Invalid audio settings.')
+        elif key=='uiLanguage':
+            if value not in ('en','vi','de'):raise ValueError('Invalid interface language.')
         elif key=='ambientTrack':
             if value not in ('morning','marimba','picnic','bubbles','cafe','garden','puzzle','clouds','starlight','steps','bounce','ghost','begin','ukulele','island','tropical','sunshine','arcade','dew','hearth'):raise ValueError('Invalid background melody.')
         elif key=='appearanceSelections':

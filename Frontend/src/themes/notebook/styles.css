@@ -65,7 +65,7 @@
 :root[data-interface="notebook"] body .flip-back { @apply bg-[#e6efdf]!; }
 :root[data-interface="notebook"] body .notebook-desk { @apply grid sm:grid-cols-[minmax(200px,1fr)_2fr] gap-7 items-center mb-10 mt-5; }
 :root[data-interface="notebook"] body .notebook-sticky { @apply relative p-6 bg-[#fff0ad] shadow-[2px_5px_8px_-4px_#54482f50] rounded-[2px_2px_20px_2px] flex flex-col gap-2; }
-:root[data-interface="notebook"] body .notebook-caption { @apply [font-family:'Kalam',cursive] text-2xl; }
+:root[data-interface="notebook"] body .notebook-caption { @apply [font-family:system-ui,'Segoe_UI',Arial,sans-serif] text-2xl; }
 :root[data-interface="notebook"] body .notebook-sticky p { @apply text-sm; }
 :root[data-interface="notebook"] body .notebook-desk-actions { @apply flex flex-col items-start gap-5; }
 :root[data-interface="notebook"] body .notebook-ink-action { @apply inline-flex items-center gap-2 min-h-11 text-[#293b46] underline underline-offset-8 decoration-[#97a08f] bg-transparent border-0; }
@@ -80,5 +80,5 @@
  :root[data-interface="notebook"] body .deck-link { @apply transition-none transform-none; }
 }
 
-:root[data-interface="notebook"] body :is(h1,h2,h3,.notebook-ink-action,.nav-link) { @apply [font-family:'Kalam',cursive] tracking-normal; }
+:root[data-interface="notebook"] body :is(h1,h2,h3,.notebook-ink-action,.nav-link) { @apply [font-family:system-ui,'Segoe_UI',Arial,sans-serif] tracking-normal; }
 :root[data-interface="notebook"] body :is(.work-paper,[role="dialog"]) { @apply [border-radius:18px_5px_16px_6px/5px_18px_6px_16px]; }

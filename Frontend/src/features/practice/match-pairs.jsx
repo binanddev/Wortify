@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useEffect, useRef, useState } from "react";
 import { shuffled } from "../../lib/core.js";
 import { gradeExercise } from "../learning/local-learning.js";
@@ -12,6 +13,7 @@ export function MatchPairs({
   disabled,
   uiStyle,
 }) {
+  useLocale();
   const [picked, setPicked] = useState(null);
   const [error, setError] = useState(null);
   const timer = useRef(null);
@@ -95,7 +97,7 @@ export function MatchPairs({
         })}
       </div>
       <span className="match-status" role="status">
-        {error ? "Not a match. Try again." : ""}
+        {error ? tr("Not a match. Try again.") : ""}
       </span>
     </div>
   );

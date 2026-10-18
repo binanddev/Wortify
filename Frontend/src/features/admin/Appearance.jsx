@@ -1,8 +1,10 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useRef, useState } from "react";
 import { request, useResource, useAction } from "../../lib/core.js";
 import { Btn, Icon, Glass, Heading, Loading, Page, Status } from "../../components/ui/ui.jsx";
 
 export default function Appearance({ backgroundUrl = "" }) {
+  useLocale();
   const resource = useResource("/api/manage/appearance/"),
     input = useRef(null),
     action = useAction(),
@@ -32,26 +34,26 @@ export default function Appearance({ backgroundUrl = "" }) {
   return (
     <Page>
       <Heading
-        eyebrow="WORTIFY STUDIO · APPEARANCE"
-        title="One shared background for all learners."
-        description="Administrator backgrounds are shared across Wortify."
+        eyebrow={tr("WORTIFY STUDIO · APPEARANCE")}
+        title={tr("One shared background for all learners.")}
+        description={tr("Administrator backgrounds are shared across Wortify.")}
       />
       {notice && <p role="status">{notice}</p>}
-      <Loading label="Loading admin data…" resource={resource}>
+      <Loading label={tr("Loading admin data…")} resource={resource}>
         {(data) => (
           <div className="appearance-layout">
             <Glass className="appearance-editor">
               <div className="appearance-heading">
                 <div>
-                  <span className="eyebrow">CURRENT BACKGROUND</span>
+                  <span className="eyebrow">{tr("CURRENT BACKGROUND")}</span>
                   <h2>
                     {data.background_image
-                      ? "Using the shared background"
-                      : "Using the default background"}
+                      ? tr("Using the shared background")
+                      : tr("Using the default background")}
                   </h2>
                 </div>
                 <span className="appearance-status">
-                  {data.background_image ? "Enabled" : "Default"}
+                  {data.background_image ? tr("Enabled") : tr("Default")}
                 </span>
               </div>
               <div
@@ -73,11 +75,11 @@ export default function Appearance({ backgroundUrl = "" }) {
                   accept="image/png,image/jpeg,image/webp"
                   onChange={(e) => setSelected(e.target.files?.[0] || null)}
                 />
-                <Btn onClick={() => input.current?.click()}>Choose a new image</Btn>
+                <Btn onClick={() => input.current?.click()}>{tr("Choose a new image")}</Btn>
                 <span className="appearance-file">
                   {selected
                     ? selected.name
-                    : "PNG, JPG or WebP · max 30 MB"}
+                    : tr("PNG, JPG or WebP · max 30 MB")}
                 </span>
               </div>
               <div className="toolbar">
@@ -86,13 +88,9 @@ export default function Appearance({ backgroundUrl = "" }) {
                   isLoading={action.pending}
                   isDisabled={!selected}
                   onClick={upload}
-                >
-                  Save background
-                </Btn>
+                >{tr("Save background")}</Btn>
                 {data.background_image && (
-                  <Btn isLoading={action.pending} onClick={remove}>
-                    Restore default background
-                  </Btn>
+                  <Btn isLoading={action.pending} onClick={remove}>{tr("Restore default background")}</Btn>
                 )}
               </div>
               <Status error={action.error} />
@@ -101,13 +99,11 @@ export default function Appearance({ backgroundUrl = "" }) {
               <span className="tile-icon">
                 <Icon name="image" size={32} />
               </span>
-              <h2>Image suggestions</h2>
+              <h2>{tr("Image suggestions")}</h2>
               <ul>
-                <li>Choose a landscape image with few details to keep text readable.</li>
-                <li>
-                  The image applies to all signed-in accounts.
-                </li>
-                <li>Changes take effect the next time you sign in.</li>
+                <li>{tr("Choose a landscape image with few details to keep text readable.")}</li>
+                <li>{tr("The image applies to all signed-in accounts.")}</li>
+                <li>{tr("Changes take effect the next time you sign in.")}</li>
               </ul>
             </Glass>
           </div>

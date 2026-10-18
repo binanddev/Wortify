@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import SidebarResize from "./SidebarResize.jsx";
 import DesktopShortcut from "./DesktopShortcut.jsx";
 import {
@@ -26,6 +27,7 @@ export default function WindowsDesktop({
   canManage,
   onLogout,
 }) {
+  useLocale();
   const [state, dispatch] = useReducer(
     desktopReducer,
     { active: null, windows: [] },
@@ -64,7 +66,7 @@ export default function WindowsDesktop({
   return (
     <>
       <div className="xp-desktop-area" id="main-content" tabIndex={-1}>
-        <div className="xp-desktop-launchers" aria-label="Applications">
+        <div className="xp-desktop-launchers" aria-label={tr("Applications")}>
           {apps.map(([id, label, icon]) => (
             <DesktopShortcut
               key={id}
@@ -112,6 +114,7 @@ function DesktopWindow({
   navigate,
   children,
 }) {
+  useLocale();
   const [closing, setClosing] = useState(false);
   const [target] = useState(() => {
     const node = document.createElement("div");
@@ -221,30 +224,30 @@ function DesktopWindow({
           <strong>{win.title} — Wortify</strong>
           <div className="xp-window-controls">
             <button
-              title="Toggle sidebar"
-              aria-label={`Toggle ${win.title} sidebar`}
+              title={tr("Toggle sidebar")}
+              aria-label={tr("Toggle {v0} sidebar", { v0: win.title })}
               onClick={() => setSidebarOpen((v) => !v)}
             >
               ☰
             </button>
             <button
-              title="Minimize"
-              aria-label={`Minimize ${win.title}`}
+              title={tr("Minimize")}
+              aria-label={tr("Minimize {v0}", { v0: win.title })}
               onClick={() => dispatch({ type: "minimize", id: win.id })}
             >
               _
             </button>
             <button
-              title="Maximize / Restore"
-              aria-label={`Maximize or restore ${win.title}`}
+              title={tr("Maximize / Restore")}
+              aria-label={tr("Maximize or restore {v0}", { v0: win.title })}
               onClick={maximize}
             >
               {win.maximized ? "❐" : "□"}
             </button>
             <button
               className="xp-close"
-              title="Close"
-              aria-label={`Close ${win.title}`}
+              title={tr("Close")}
+              aria-label={tr("Close {v0}", { v0: win.title })}
               onClick={() => {
                 setClosing(true);
               }}
@@ -258,7 +261,7 @@ function DesktopWindow({
             className="xp-app-sidebar"
             style={{ width: sidebarWidth }}
             hidden={!sidebarOpen}
-            aria-label={`${win.title} navigation`}
+            aria-label={tr("{v0} navigation", { v0: win.title })}
           >
             <h2>{win.title}</h2>
             {renderNavigation?.(win.route)}
@@ -272,14 +275,14 @@ function DesktopWindow({
         <footer className="xp-window-status">
           <span>{win.title}</span>
           <button
-            aria-label="Arrange windows"
+            aria-label={tr("Arrange windows")}
             onClick={() => dispatch({ type: "reset" })}
           >
             ▦
           </button>
           <button
             className="xp-window-resize"
-            aria-label={`Resize ${win.title}`}
+            aria-label={tr("Resize {v0}", { v0: win.title })}
             onPointerDown={(e) => start(e, true)}
             onPointerMove={move}
             onPointerUp={stop}
@@ -313,9 +316,9 @@ function DesktopWindow({
       </section>
       {closing && (
         <Confirm
-          title={`Close ${win.title}?`}
-          description="Unsaved content in this window may be lost."
-          confirmLabel="Close window"
+          title={tr("Close {v0}?", { v0: win.title })}
+          description={tr("Unsaved content in this window may be lost.")}
+          confirmLabel={tr("Close window")}
           onClose={() => setClosing(false)}
           onConfirm={() => dispatch({ type: "close", id: win.id })}
         />

@@ -8,7 +8,7 @@ test('retired Space selections restore safely and new themes keep independent se
  assert.ok(INTERFACES.includes('notebook') && INTERFACES.includes('rpg'));
  const notebook = {interface:'notebook',background:'mist',textSize:20};
  const rpg = updateAppearance(notebook,{...notebook,interface:'rpg'},null);
- assert.equal(rpg.textSize,18);
+ assert.equal(rpg.textSize,16);
  const restored = updateAppearance(rpg,{...rpg,interface:'notebook'},null);
  assert.equal(restored.textSize,20);
 });

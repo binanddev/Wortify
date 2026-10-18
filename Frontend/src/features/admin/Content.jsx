@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import RowActions from "./RowActions.jsx";
 import DataGrid from "./DataGrid.jsx";
 import {sortQuery} from "./grid-state.js";
@@ -19,6 +20,7 @@ const kindNames = {
 };
 
 function ContentEditor({ initial, folders, onClose, onSaved }) {
+  useLocale();
   const [value, setValue] = useState({
       ...initial,
       payload:
@@ -103,7 +105,7 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
       <PracticeModal
         title={
           value.id
-            ? `Edit · ${initial.title}`
+            ? tr("Edit · {v0}", { v0: initial.title })
             : `Create ${kindNames[value.kind].toLowerCase()}`
         }
         onClose={close}
@@ -114,11 +116,11 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
           <p className="text-sm text-(--muted)">
             {value.id
               ? `Content owner: ${value.owner.username}. Editing does not change ownership.`
-              : "New content is private. Publish it after reviewing."}
+              : tr("New content is private. Publish it after reviewing.")}
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             <Select
-              label="Language"
+              label={tr("Language")}
               value={value.language}
               disabled={
                 Boolean(value.id) ||
@@ -127,11 +129,11 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
               }
               onChange={(language) => change({ language, parent: null })}
             >
-              <option value="en">English</option>
-              <option value="de">German</option>
+              <option value="en">{tr("English")}</option>
+              <option value="de">{tr("German")}</option>
             </Select>
             <Select
-              label="Parent folder"
+              label={tr("Parent folder")}
               value={value.parent || ""}
               onChange={(parent) =>
                 change({ parent: parent ? Number(parent) : null })
@@ -139,8 +141,8 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
             >
               <option value="">
                 {value.kind === "exercise"
-                  ? "Choose a folder (required)"
-                  : "None — root"}
+                  ? tr("Choose a folder (required)")
+                  : tr("None — root")}
               </option>
               {availableFolders.map((f) => (
                 <option key={f.id} value={f.id}>
@@ -154,7 +156,7 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
           )}
           {value.kind !== "exercise" && (
             <Field
-              label="Title"
+              label={tr("Title")}
               value={value.title}
               onChange={(title) => change({ title })}
               maxLength={200}
@@ -163,20 +165,20 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
           )}
           {value.kind === "folder" && (
             <Field
-              label="Search tags · separated by commas"
+              label={tr("Search tags · separated by commas")}
               value={tags}
               onChange={(text) => {
                 setTags(text);
                 setDirty(true);
               }}
-              description="Search tags apply only to root folders."
+              description={tr("Search tags apply only to root folders.")}
               isDisabled={Boolean(value.parent)}
             />
           )}
           {value.kind === "theory" && (
             <>
               <Select
-                label="Format"
+                label={tr("Format")}
                 value={value.payload.format || "markdown"}
                 onChange={(format) =>
                   change({ payload: { ...value.payload, format } })
@@ -186,7 +188,7 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
                 <option value="html">HTML</option>
               </Select>
               <Field
-                label="Theory content"
+                label={tr("Theory content")}
                 multiline
                 rows={12}
                 value={value.payload.content || ""}
@@ -224,12 +226,10 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
           )}
           <Status error={action.error} />
           <div className="sticky bottom-0 flex flex-wrap justify-end gap-2 rounded-xl bg-(--surface) p-3">
-            <Btn isDisabled={action.pending || mediaBusy} onClick={close}>
-              Cancel
-            </Btn>
+            <Btn isDisabled={action.pending || mediaBusy} onClick={close}>{tr("Cancel")}</Btn>
             {value.kind !== "folder" && (
               <Btn onClick={() => setPreview((v) => !v)}>
-                {preview ? "Close preview" : "Preview"}
+                {preview ? tr("Close preview") : tr("Preview")}
               </Btn>
             )}
             <Btn
@@ -239,9 +239,7 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
                 mediaBusy || (value.kind === "exercise" && !value.parent)
               }
               onClick={save}
-            >
-              Save content
-            </Btn>
+            >{tr("Save content")}</Btn>
           </div>
           {preview &&
             (value.kind === "theory" ? (
@@ -258,10 +256,10 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
       </PracticeModal>
       {discard && (
         <ActionDialog
-          title="Discard unsaved changes?"
-          description="Changes in this editing session have not been saved."
+          title={tr("Discard unsaved changes?")}
+          description={tr("Changes in this editing session have not been saved.")}
           reasonRequired={false}
-          label="Discard changes"
+          label={tr("Discard changes")}
           onClose={() => setDiscard(false)}
           onConfirm={onClose}
         />
@@ -271,6 +269,7 @@ function ContentEditor({ initial, folders, onClose, onSaved }) {
 }
 
 function EditorLoader({ item, onClose, onSaved }) {
+  useLocale();
   const resource = useResource(
     item.id
       ? `/api/manage/content/${item.id}/`
@@ -278,8 +277,8 @@ function EditorLoader({ item, onClose, onSaved }) {
   );
   if (!resource.data)
     return (
-      <PracticeModal title="Open content" onClose={onClose}>
-        <Loading label="Loading admin data…" resource={resource}>
+      <PracticeModal title={tr("Open content")} onClose={onClose}>
+        <Loading label={tr("Loading admin data…")} resource={resource}>
           {() => null}
         </Loading>
       </PracticeModal>
@@ -295,6 +294,7 @@ function EditorLoader({ item, onClose, onSaved }) {
 }
 
 export default function Content() {
+  useLocale();
   const [query, setQuery] = useState(""),
     [search, setSearch] = useState(""),
     [language, setLanguage] = useState(""),
@@ -339,16 +339,12 @@ export default function Content() {
     <>
       <div className="mb-3 flex flex-wrap justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold">Content library</h2>
-          <p className="mt-1 text-sm text-(--muted)">
-            Edit lessons, preview content and manage publication.
-          </p>
+          <h2 className="text-xl font-bold">{tr("Content library")}</h2>
+          <p className="mt-1 text-sm text-(--muted)">{tr("Edit lessons, preview content and manage publication.")}</p>
         </div>
         <div className="flex gap-2">
-          <Btn onClick={resource.reload}>Refresh</Btn>
-          <Btn primary onClick={() => setCreating(true)}>
-            Create content
-          </Btn>
+          <Btn onClick={resource.reload}>{tr("Refresh")}</Btn>
+          <Btn primary onClick={() => setCreating(true)}>{tr("Create content")}</Btn>
         </div>
       </div>
       <form
@@ -360,26 +356,24 @@ export default function Content() {
         }}
       >
         <Field
-          label="Title or owner"
+          label={tr("Title or owner")}
           value={query}
           onChange={setQuery}
         />
-        <Btn type="submit" primary>
-          Search
-        </Btn>
+        <Btn type="submit" primary>{tr("Search")}</Btn>
       </form>
       <Status>{notice}</Status>
-      <Loading label="Loading admin data…" resource={resource}>
+      <Loading label={tr("Loading admin data…")} resource={resource}>
         {(d) => (
           <>
-            <DataGrid id="content" label="Content" rows={d.rows} sort={sort} onSort={next=>{setSort(next);setPage(1);}} columns={[
+            <DataGrid id="content" label={tr("Content")} rows={d.rows} sort={sort} onSort={next=>{setSort(next);setPage(1);}} columns={[
              {key:'title',label:'Title',required:true},
-             {key:'owner',label:'Owner',render:n=>n.owner.username,filtered:!!source,filter:<Select label="Source" value={source} onChange={filter(setSource)}><option value="">All sources</option><option value="system">Admin / Staff</option><option value="users">Users</option><option value="mine">Mine</option></Select>},
-             {key:'kind',label:'Type',render:n=>kindNames[n.kind],filtered:!!kind,filter:<Select label="Type" value={kind} onChange={filter(setKind)}><option value="">All types</option>{Object.entries(kindNames).map(([key,name])=><option key={key} value={key}>{name}</option>)}</Select>},
-             {key:'language',label:'Language',filtered:!!language,filter:<Select label="Language" value={language} onChange={filter(setLanguage)}><option value="">All languages</option><option value="en">English</option><option value="de">German</option></Select>},
-             {key:'visibility',label:'Visibility',filtered:!!visibility,filter:<Select label="Visibility" value={visibility} onChange={filter(setVisibility)}><option value="">Any visibility</option><option value="public">Public</option><option value="private">Private</option></Select>},
+             {key:'owner',label:'Owner',render:n=>n.owner.username,filtered:!!source,filter:<Select label={tr("Source")} value={source} onChange={filter(setSource)}><option value="">{tr("All sources")}</option><option value="system">{tr("Admin / Staff")}</option><option value="users">{tr("Users")}</option><option value="mine">{tr("Mine")}</option></Select>},
+             {key:'kind',label:'Type',render:n=>kindNames[n.kind],filtered:!!kind,filter:<Select label={tr("Type")} value={kind} onChange={filter(setKind)}><option value="">{tr("All types")}</option>{Object.entries(kindNames).map(([key,name])=><option key={key} value={key}>{name}</option>)}</Select>},
+             {key:'language',label:'Language',filtered:!!language,filter:<Select label={tr("Language")} value={language} onChange={filter(setLanguage)}><option value="">{tr("All languages")}</option><option value="en">{tr("English")}</option><option value="de">{tr("German")}</option></Select>},
+             {key:'visibility',label:'Visibility',filtered:!!visibility,filter:<Select label={tr("Visibility")} value={visibility} onChange={filter(setVisibility)}><option value="">{tr("Any visibility")}</option><option value="public">{tr("Public")}</option><option value="private">{tr("Private")}</option></Select>},
              {key:'updated_at',label:'Updated',numeric:true,render:n=>dateText(n.updated_at)},
-             {key:'actions',label:'Actions',required:true,sortable:false,render:n=><RowActions label={`Actions for ${n.title}`} items={[
+             {key:'actions',label:'Actions',required:true,sortable:false,render:n=><RowActions label={tr("Actions for {v0}", { v0: n.title })} items={[
  {key:'edit',label:'Edit & preview',run:()=>setEdit(n)},
  {key:'visibility',label:n.visibility==='public'?'Unpublish':'Publish',run:()=>{setCascade(false);setOperation({n,kind:'visibility'});}},
  {key:'delete',label:'Delete content',danger:true,run:()=>setOperation({n,kind:'delete'})}
@@ -391,27 +385,23 @@ export default function Content() {
       </Loading>
       {creating && (
         <PracticeModal
-          title="Create content"
+          title={tr("Create content")}
           onClose={() => setCreating(false)}
           size="md"
         >
-          <p>
-            Content will belong to your account. Create folders first to organize exercises.
-          </p>
+          <p>{tr("Content will belong to your account. Create folders first to organize exercises.")}</p>
           <div className="my-3 flex flex-wrap gap-2">
-            <Btn onClick={() => create("folder")}>Folder</Btn>
-            <Btn onClick={() => create("theory")}>Theory</Btn>
+            <Btn onClick={() => create("folder")}>{tr("Folder")}</Btn>
+            <Btn onClick={() => create("theory")}>{tr("Theory")}</Btn>
           </div>
-          <Select label="Exercise type" value={mode} onChange={setMode}>
+          <Select label={tr("Exercise type")} value={mode} onChange={setMode}>
             {EXERCISE_TYPES.map(([key, label]) => (
               <option key={key} value={key}>
                 {label}
               </option>
             ))}
           </Select>
-          <Btn primary onClick={() => create("exercise")}>
-            Create exercise
-          </Btn>
+          <Btn primary onClick={() => create("exercise")}>{tr("Create exercise")}</Btn>
         </PracticeModal>
       )}
       {edit && (
@@ -427,8 +417,8 @@ export default function Content() {
           title={`${operation.kind === "delete" ? "Delete" : operation.n.visibility === "public" ? "Hide" : "Publish"} · ${operation.n.title}`}
           description={
             operation.kind === "delete"
-              ? "Permanently delete this content, its children and related learning data. This cannot be undone."
-              : "Public content is accessible to learners. Unpublishing preserves access for its owner and assigned classes."
+              ? tr("Permanently delete this content, its children and related learning data. This cannot be undone.")
+              : tr("Public content is accessible to learners. Unpublishing preserves access for its owner and assigned classes.")
           }
           confirmText={
             operation.kind === "delete" ? operation.n.title : undefined
@@ -464,9 +454,7 @@ export default function Content() {
                 type="checkbox"
                 checked={cascade}
                 onChange={(e) => setCascade(e.target.checked)}
-              />
-              Apply to all content in the folder
-            </label>
+              />{tr("Apply to all content in the folder")}</label>
           )}
         </ActionDialog>
       )}

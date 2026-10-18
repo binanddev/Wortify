@@ -1,5 +1,23 @@
 # Change Log
 
+### [v1.3.0] - 2026-10-18 | Learning workflows, languages and workspace management
+
+- Added manually maintained English, Vietnamese and German application languages, independent of the learning language.
+- Replaced flashcard games and the separate due-review interface with the vocabulary notebook: prepare, recall, translate, write a sentence and check again. Added recall grading, review intervals and in-session card editing.
+- Simplified card fields and import templates; added quick card creation, deck switching, multi-selection and folder moves. Removed duplicate Notebook library actions.
+- Added workspace management for top-level flashcard folders: search, active/all filters, remove and restore complete branches, rename and explicitly confirmed permanent deletion. Removing a branch preserves cards and learning progress.
+- Repaired resume for sessions containing deleted cards; retained valid answers and excluded sessions without pending questions from the resume action.
+- Added Reading discovery with search and level/topic filters, public sharing, Study now and Save to My readings. Personal copies retain independent progress and repeated saves reuse the same copy.
+- Connected Practice Hub learning, editing and creation flows; reduced catalogue requests to metadata and loaded lesson content on demand. Replaced repeated tree scans with indexed lookups and memoized derived data.
+- Added compact Wortify Text 1 packages for staff Practice Hub and Reading imports, including nested folders. Shared validation supports preview/publish, signed preview tokens and retry-safe package IDs; personal flashcards stay outside system imports.
+- Added revocable import API keys, bot OpenAPI/authoring endpoints, editable endpoint examples and synchronized standalone content-authoring guides.
+- Simplified authoring screens and fixed superuser account management. Updated API documentation and backup handling for the new learning data.
+- Switched Studio and Notebook to Vietnamese-safe system fonts; refined responsive layouts and touch controls for Studio, Notebook and MS-DOS. Reduced default navigation width and interface text size while preserving saved preferences.
+- Reused shared HeroUI controls for workspace dialogs and recorded the project-wide preference for concise interface copy.
+- Deployment: apply the included cards, practice and users database migrations before serving the updated application.
+
+---
+
 ### [v1.2.8] - 2026-10-17 | Workspace cleanup
 
 - Moved both standalone content-authoring guides into docs/authoring and updated README links and the guide exporter.

@@ -1,0 +1,5298 @@
+{
+  "App language": {
+    "vi": "Ngôn ngữ ứng dụng",
+    "de": "App-Sprache"
+  },
+  "Changes the interface language only. Your lessons and learning language stay the same.": {
+    "vi": "Chỉ thay đổi ngôn ngữ giao diện. Nội dung bài học và ngôn ngữ đang học vẫn giữ nguyên.",
+    "de": "Ändert nur die Sprache der Oberfläche. Lerninhalte und Lernsprache bleiben unverändert."
+  },
+  "This page could not be opened.": {
+    "vi": "Không thể mở trang này.",
+    "de": "Diese Seite konnte nicht geöffnet werden."
+  },
+  "Data already saved on the server is preserved.": {
+    "vi": "Dữ liệu đã lưu trên máy chủ vẫn được giữ nguyên.",
+    "de": "Bereits gespeicherte Daten auf dem Server bleiben erhalten."
+  },
+  "Reload page": {
+    "vi": "Tải lại trang",
+    "de": "Seite neu laden"
+  },
+  "Adventure journal": {
+    "vi": "Nhật ký hành trình",
+    "de": "Abenteuertagebuch"
+  },
+  "My study notebook": {
+    "vi": "Sổ học tập của tôi",
+    "de": "Mein Lernheft"
+  },
+  "Quick travel": {
+    "vi": "Điều hướng nhanh",
+    "de": "Schnellnavigation"
+  },
+  "Open tabs": {
+    "vi": "Các thẻ đang mở",
+    "de": "Offene Tabs"
+  },
+  "Adventure destinations": {
+    "vi": "Điểm đến",
+    "de": "Reiseziele"
+  },
+  "Notebook tabs": {
+    "vi": "Các mục trong sổ",
+    "de": "Heftregister"
+  },
+  "page": {
+    "vi": "trang",
+    "de": "Seite"
+  },
+  "Start menu": {
+    "vi": "Menu bắt đầu",
+    "de": "Startmenü"
+  },
+  "Administration": {
+    "vi": "Quản trị",
+    "de": "Verwaltung"
+  },
+  "Home": {
+    "vi": "Trang chủ",
+    "de": "Startseite"
+  },
+  "Sign out": {
+    "vi": "Đăng xuất",
+    "de": "Abmelden"
+  },
+  "Start": {
+    "vi": "Bắt đầu",
+    "de": "Starten"
+  },
+  "Applications": {
+    "vi": "Ứng dụng",
+    "de": "Anwendungen"
+  },
+  "Toggle sidebar": {
+    "vi": "Ẩn/hiện thanh bên",
+    "de": "Seitenleiste umschalten"
+  },
+  "Minimize": {
+    "vi": "Thu nhỏ",
+    "de": "Minimieren"
+  },
+  "Maximize / Restore": {
+    "vi": "Phóng to / Khôi phục",
+    "de": "Maximieren / Wiederherstellen"
+  },
+  "Close": {
+    "vi": "Đóng",
+    "de": "Schließen"
+  },
+  "Arrange windows": {
+    "vi": "Sắp xếp cửa sổ",
+    "de": "Fenster anordnen"
+  },
+  "Unsaved content in this window may be lost.": {
+    "vi": "Nội dung chưa lưu trong cửa sổ này có thể bị mất.",
+    "de": "Ungespeicherte Inhalte in diesem Fenster können verloren gehen."
+  },
+  "Close window": {
+    "vi": "Đóng cửa sổ",
+    "de": "Fenster schließen"
+  },
+  "Drag to widen navigation. Double-click to reset.": {
+    "vi": "Kéo để chỉnh độ rộng thanh điều hướng. Nhấp đúp để đặt lại.",
+    "de": "Ziehen, um die Navigation zu verbreitern. Doppelklicken zum Zurücksetzen."
+  },
+  "Run": {
+    "vi": "Chạy",
+    "de": "Ausführen"
+  },
+  "Retry": {
+    "vi": "Thử lại",
+    "de": "Erneut versuchen"
+  },
+  "Additional details": {
+    "vi": "Thông tin bổ sung",
+    "de": "Weitere Angaben"
+  },
+  "Cancel": {
+    "vi": "Hủy",
+    "de": "Abbrechen"
+  },
+  "Keep": {
+    "vi": "Giữ lại",
+    "de": "Behalten"
+  },
+  "Flip back to the term": {
+    "vi": "Lật lại mặt từ vựng",
+    "de": "Zur Wortseite zurückdrehen"
+  },
+  "Flip card to see the meaning": {
+    "vi": "Lật thẻ để xem nghĩa",
+    "de": "Karte umdrehen, um die Bedeutung zu sehen"
+  },
+  "VOCABULARY": {
+    "vi": "TỪ VỰNG",
+    "de": "WORTSCHATZ"
+  },
+  "MEANING": {
+    "vi": "NGHĨA",
+    "de": "BEDEUTUNG"
+  },
+  "Assembled sentence": {
+    "vi": "Câu đã ghép",
+    "de": "Zusammengesetzter Satz"
+  },
+  "Select the words below in order…": {
+    "vi": "Chọn các từ bên dưới theo thứ tự…",
+    "de": "Wähle die Wörter unten in der richtigen Reihenfolge…"
+  },
+  "Answer revealed · Review again": {
+    "vi": "Đã xem đáp án · Ôn lại",
+    "de": "Antwort aufgedeckt · Erneut üben"
+  },
+  "Saved • Awaiting review": {
+    "vi": "Đã lưu • Chờ xem lại",
+    "de": "Gespeichert • Prüfung ausstehend"
+  },
+  "✓ Correct": {
+    "vi": "✓ Chính xác",
+    "de": "✓ Richtig"
+  },
+  "↻ Needs practice": {
+    "vi": "↻ Cần luyện thêm",
+    "de": "↻ Weiter üben"
+  },
+  "✓ Remembered": {
+    "vi": "✓ Đã nhớ",
+    "de": "✓ Gewusst"
+  },
+  "Answer:": {
+    "vi": "Đáp án:",
+    "de": "Antwort:"
+  },
+  "Navigation width": {
+    "vi": "Độ rộng thanh điều hướng",
+    "de": "Navigationsbreite"
+  },
+  "Drag to resize · double-click to reset": {
+    "vi": "Kéo để đổi kích thước · nhấp đúp để đặt lại",
+    "de": "Ziehen zum Anpassen · Doppelklicken zum Zurücksetzen"
+  },
+  "Folde": {
+    "vi": "Thư mục",
+    "de": "Ordner",
+    "en": "Folder"
+  },
+  "My Flashcards": {
+    "vi": "Thẻ của tôi",
+    "de": "Meine Lernkarten"
+  },
+  "Level": {
+    "vi": "Trình độ",
+    "de": "Niveau"
+  },
+  "My": {
+    "vi": "Của tôi",
+    "de": "Meine"
+  },
+  "Flashcards": {
+    "vi": "Thẻ từ vựng",
+    "de": "Lernkarten"
+  },
+  "Flashcard": {
+    "vi": "Thẻ từ vựng",
+    "de": "Lernkarten"
+  },
+  "Grid view": {
+    "vi": "Dạng lưới",
+    "de": "Rasteransicht"
+  },
+  "List view": {
+    "vi": "Dạng danh sách",
+    "de": "Listenansicht"
+  },
+  "Study desk": {
+    "vi": "Góc học tập",
+    "de": "Lernplatz"
+  },
+  "On my desk": {
+    "vi": "Trên bàn học",
+    "de": "Auf meinem Schreibtisch"
+  },
+  "Learn in sets of 5": {
+    "vi": "Học theo nhóm 5 từ",
+    "de": "In Gruppen mit 5 Wörtern lernen"
+  },
+  "Recall words, write sentences, then check again.": {
+    "vi": "Nhớ lại từ, viết câu, rồi kiểm tra lại.",
+    "de": "Wörter abrufen, Sätze schreiben und erneut prüfen."
+  },
+  "Continue studying": {
+    "vi": "Tiếp tục học",
+    "de": "Weiterlernen"
+  },
+  "New card collection": {
+    "vi": "Bộ thẻ mới",
+    "de": "Neue Kartensammlung"
+  },
+  "New notebook section": {
+    "vi": "Mục sổ mới",
+    "de": "Neuer Heftabschnitt"
+  },
+  "Back to parent folder": {
+    "vi": "Về thư mục cha",
+    "de": "Zum übergeordneten Ordner"
+  },
+  "Search folders or decks": {
+    "vi": "Tìm thư mục hoặc bộ thẻ",
+    "de": "Ordner oder Kartensätze suchen"
+  },
+  "Add new": {
+    "vi": "Thêm mới",
+    "de": "Neu hinzufügen"
+  },
+  "Sort and manage": {
+    "vi": "Sắp xếp và quản lý",
+    "de": "Sortieren und verwalten"
+  },
+  "Continue session": {
+    "vi": "Tiếp tục phiên học",
+    "de": "Lerneinheit fortsetzen"
+  },
+  "Folde flashcard": {
+    "vi": "Thư mục thẻ",
+    "de": "Lernkartenordner",
+    "en": "Flashcard folder"
+  },
+  "Library options": {
+    "vi": "Tùy chọn thư viện",
+    "de": "Bibliotheksoptionen"
+  },
+  "Decks": {
+    "vi": "Bộ thẻ",
+    "de": "Kartensätze"
+  },
+  "Sort": {
+    "vi": "Sắp xếp",
+    "de": "Sortieren"
+  },
+  "Recently updated": {
+    "vi": "Mới cập nhật",
+    "de": "Zuletzt aktualisiert"
+  },
+  "Name A–Z": {
+    "vi": "Tên A–Z",
+    "de": "Name A–Z"
+  },
+  "Card count": {
+    "vi": "Số thẻ",
+    "de": "Kartenanzahl"
+  },
+  "Edit folder": {
+    "vi": "Sửa thư mục",
+    "de": "Ordner bearbeiten"
+  },
+  "Delete folder": {
+    "vi": "Xóa thư mục",
+    "de": "Ordner löschen"
+  },
+  "terms": {
+    "vi": "từ",
+    "de": "Begriffe"
+  },
+  "mastered": {
+    "vi": "đã nắm vững",
+    "de": "beherrscht"
+  },
+  "Content not found.": {
+    "vi": "Không tìm thấy nội dung.",
+    "de": "Inhalt nicht gefunden."
+  },
+  "No folders yet.": {
+    "vi": "Chưa có thư mục.",
+    "de": "Noch keine Ordner."
+  },
+  "This folder is empty.": {
+    "vi": "Thư mục này trống.",
+    "de": "Dieser Ordner ist leer."
+  },
+  "Create deck": {
+    "vi": "Tạo bộ thẻ",
+    "de": "Kartensatz erstellen"
+  },
+  "New folder": {
+    "vi": "Thư mục mới",
+    "de": "Neuer Ordner"
+  },
+  "Trong folde": {
+    "vi": "Trong thư mục",
+    "de": "Im Ordner",
+    "en": "In folder"
+  },
+  "Delete folder?": {
+    "vi": "Xóa thư mục?",
+    "de": "Ordner löschen?"
+  },
+  "Create cards": {
+    "vi": "Tạo thẻ",
+    "de": "Karten erstellen"
+  },
+  "Import": {
+    "vi": "Nhập",
+    "de": "Importieren"
+  },
+  "Add card": {
+    "vi": "Thêm thẻ",
+    "de": "Karte hinzufügen"
+  },
+  "View": {
+    "vi": "Xem",
+    "de": "Anzeigen"
+  },
+  "Terms": {
+    "vi": "Từ vựng",
+    "de": "Begriffe"
+  },
+  "Preview": {
+    "vi": "Xem trước",
+    "de": "Vorschau"
+  },
+  "Study →": {
+    "vi": "Học →",
+    "de": "Lernen →"
+  },
+  "More": {
+    "vi": "Thêm",
+    "de": "Mehr"
+  },
+  "Deck details": {
+    "vi": "Thông tin bộ thẻ",
+    "de": "Details zum Kartensatz"
+  },
+  "Export and manage": {
+    "vi": "Xuất và quản lý",
+    "de": "Exportieren und verwalten"
+  },
+  "Vocabulary notebook": {
+    "vi": "Sổ từ vựng",
+    "de": "Vokabelheft"
+  },
+  "Previous card": {
+    "vi": "Thẻ trước",
+    "de": "Vorherige Karte"
+  },
+  "Next card": {
+    "vi": "Thẻ tiếp theo",
+    "de": "Nächste Karte"
+  },
+  "Shuffle cards": {
+    "vi": "Trộn thẻ",
+    "de": "Karten mischen"
+  },
+  "Swap sides": {
+    "vi": "Đổi mặt",
+    "de": "Seiten tauschen"
+  },
+  "Nghe": {
+    "vi": "Nghe",
+    "de": "Anhören",
+    "en": "Listen"
+  },
+  "Ⅱ Stop": {
+    "vi": "Ⅱ Dừng",
+    "de": "Ⅱ Stoppen"
+  },
+  "▷ Autoplay": {
+    "vi": "▷ Tự phát",
+    "de": "▷ Automatisch abspielen"
+  },
+  "Add the first word to this deck": {
+    "vi": "Thêm từ đầu tiên vào bộ thẻ",
+    "de": "Das erste Wort hinzufügen"
+  },
+  "Add term": {
+    "vi": "Thêm từ",
+    "de": "Begriff hinzufügen"
+  },
+  "Study session": {
+    "vi": "Phiên học",
+    "de": "Lerneinheit"
+  },
+  "Study mode": {
+    "vi": "Chế độ học",
+    "de": "Lernmodus"
+  },
+  "Number of questions": {
+    "vi": "Số câu hỏi",
+    "de": "Anzahl der Fragen"
+  },
+  "Card scope": {
+    "vi": "Phạm vi thẻ",
+    "de": "Kartenauswahl"
+  },
+  "Start learning": {
+    "vi": "Bắt đầu học",
+    "de": "Lernen beginnen"
+  },
+  "Term": {
+    "vi": "Từ vựng",
+    "de": "Begriff"
+  },
+  "Search this deck": {
+    "vi": "Tìm trong bộ thẻ",
+    "de": "Diesen Kartensatz durchsuchen"
+  },
+  "Select cards": {
+    "vi": "Chọn thẻ",
+    "de": "Karten auswählen"
+  },
+  "Select all visible cards": {
+    "vi": "Chọn tất cả thẻ đang hiển thị",
+    "de": "Alle sichtbaren Karten auswählen"
+  },
+  "Select all": {
+    "vi": "Chọn tất cả",
+    "de": "Alle auswählen"
+  },
+  "selected": {
+    "vi": "đã chọn",
+    "de": "ausgewählt"
+  },
+  "Clear": {
+    "vi": "Bỏ chọn",
+    "de": "Auswahl aufheben"
+  },
+  "Export": {
+    "vi": "Xuất",
+    "de": "Exportieren"
+  },
+  "Delete selected": {
+    "vi": "Xóa mục đã chọn",
+    "de": "Auswahl löschen"
+  },
+  "Edit": {
+    "vi": "Sửa",
+    "de": "Bearbeiten"
+  },
+  "Delete": {
+    "vi": "Xóa",
+    "de": "Löschen"
+  },
+  "Manage decks": {
+    "vi": "Quản lý bộ thẻ",
+    "de": "Kartensätze verwalten"
+  },
+  "Delete deck": {
+    "vi": "Xóa bộ thẻ",
+    "de": "Kartensatz löschen"
+  },
+  "Edit deck": {
+    "vi": "Sửa bộ thẻ",
+    "de": "Kartensatz bearbeiten"
+  },
+  "Term position": {
+    "vi": "Vị trí từ",
+    "de": "Position des Begriffs"
+  },
+  "Edit term": {
+    "vi": "Sửa từ",
+    "de": "Begriff bearbeiten"
+  },
+  "Delete deck?": {
+    "vi": "Xóa bộ thẻ?",
+    "de": "Kartensatz löschen?"
+  },
+  "Delete this term?": {
+    "vi": "Xóa từ này?",
+    "de": "Diesen Begriff löschen?"
+  },
+  "Content and related progress will be deleted. This cannot be undone.": {
+    "vi": "Nội dung và tiến trình liên quan sẽ bị xóa. Không thể hoàn tác.",
+    "de": "Inhalt und zugehöriger Fortschritt werden unwiderruflich gelöscht."
+  },
+  "Import terms": {
+    "vi": "Nhập từ vựng",
+    "de": "Begriffe importieren"
+  },
+  "Import cards": {
+    "vi": "Nhập thẻ",
+    "de": "Karten importieren"
+  },
+  "Preview cards": {
+    "vi": "Xem trước thẻ",
+    "de": "Kartenvorschau"
+  },
+  "Edit imported content": {
+    "vi": "Sửa nội dung nhập",
+    "de": "Importierten Inhalt bearbeiten"
+  },
+  "Paste cards from AI, Quizlet or your spreadsheet": {
+    "vi": "Dán thẻ từ AI, Quizlet hoặc bảng tính",
+    "de": "Karten aus KI, Quizlet oder einer Tabelle einfügen"
+  },
+  "Paste the JSON from AI, or rows from Quizlet / a spreadsheet.": {
+    "vi": "Dán JSON từ AI hoặc các dòng từ Quizlet / bảng tính.",
+    "de": "JSON aus der KI oder Zeilen aus Quizlet / einer Tabelle einfügen."
+  },
+  "Separator (spreadsheet rows only)": {
+    "vi": "Dấu phân cách (chỉ cho dòng bảng tính)",
+    "de": "Trennzeichen (nur Tabellenzeilen)"
+  },
+  "Preview first. Nothing is added until you confirm the import.": {
+    "vi": "Xem trước trước khi nhập. Chỉ thêm dữ liệu khi bạn xác nhận.",
+    "de": "Zuerst Vorschau prüfen. Erst nach deiner Bestätigung werden Daten hinzugefügt."
+  },
+  "← Back to deck": {
+    "vi": "← Về bộ thẻ",
+    "de": "← Zum Kartensatz"
+  },
+  "FLASHCARDS": {
+    "vi": "THẺ TỪ VỰNG",
+    "de": "LERNKARTEN"
+  },
+  "LEARN": {
+    "vi": "HỌC",
+    "de": "LERNEN"
+  },
+  "TEST": {
+    "vi": "KIỂM TRA",
+    "de": "TEST"
+  },
+  "Complete all questions, then submit. Answers stay hidden until then.": {
+    "vi": "Hoàn thành mọi câu rồi nộp bài. Đáp án được ẩn cho đến khi nộp.",
+    "de": "Beantworte alle Fragen und gib dann ab. Bis dahin bleiben die Lösungen verborgen."
+  },
+  "Take your time. Try recalling the answer before revealing it.": {
+    "vi": "Cứ thong thả. Hãy cố nhớ đáp án trước khi xem.",
+    "de": "Nimm dir Zeit. Versuche dich vor dem Aufdecken an die Antwort zu erinnern."
+  },
+  "Session progress": {
+    "vi": "Tiến trình phiên học",
+    "de": "Fortschritt der Lerneinheit"
+  },
+  "Study session complete": {
+    "vi": "Đã hoàn thành phiên học",
+    "de": "Lerneinheit abgeschlossen"
+  },
+  "questions mastered": {
+    "vi": "câu đã nắm vững",
+    "de": "Fragen beherrscht"
+  },
+  "Practice missed words": {
+    "vi": "Luyện từ chưa nhớ",
+    "de": "Nicht gewusste Wörter üben"
+  },
+  "Your answer:": {
+    "vi": "Câu trả lời của bạn:",
+    "de": "Deine Antwort:"
+  },
+  "Answer revealed": {
+    "vi": "Đã hiện đáp án",
+    "de": "Antwort aufgedeckt"
+  },
+  "Remembered": {
+    "vi": "Đã nhớ",
+    "de": "Gewusst"
+  },
+  "Due for review": {
+    "vi": "Đến hạn ôn",
+    "de": "Zur Wiederholung fällig"
+  },
+  "QUESTION": {
+    "vi": "CÂU HỎI",
+    "de": "FRAGE"
+  },
+  "Continue": {
+    "vi": "Tiếp tục",
+    "de": "Weiter"
+  },
+  "correct answers": {
+    "vi": "câu trả lời đúng",
+    "de": "richtige Antworten"
+  },
+  "Submit all ·": {
+    "vi": "Nộp tất cả ·",
+    "de": "Alles abgeben ·"
+  },
+  "questions": {
+    "vi": "câu hỏi",
+    "de": "Fragen"
+  },
+  "Listen to word": {
+    "vi": "Nghe từ",
+    "de": "Wort anhören"
+  },
+  "Flip card": {
+    "vi": "Lật thẻ",
+    "de": "Karte umdrehen"
+  },
+  "↻ Review again": {
+    "vi": "↻ Ôn lại",
+    "de": "↻ Erneut üben"
+  },
+  "CHOOSE THE CORRECT MEANING": {
+    "vi": "CHỌN NGHĨA ĐÚNG",
+    "de": "RICHTIGE BEDEUTUNG WÄHLEN"
+  },
+  "WRITE THE MATCHING WORD": {
+    "vi": "VIẾT TỪ TƯƠNG ỨNG",
+    "de": "PASSENDES WORT SCHREIBEN"
+  },
+  "Check": {
+    "vi": "Kiểm tra",
+    "de": "Prüfen"
+  },
+  "View summary": {
+    "vi": "Xem tổng kết",
+    "de": "Zusammenfassung ansehen"
+  },
+  "Choose an answer": {
+    "vi": "Chọn đáp án",
+    "de": "Antwort wählen"
+  },
+  "Your answer": {
+    "vi": "Câu trả lời của bạn",
+    "de": "Deine Antwort"
+  },
+  "Games have been replaced": {
+    "vi": "Các trò chơi đã được thay thế",
+    "de": "Spiele wurden ersetzt"
+  },
+  "Open vocabulary notebook": {
+    "vi": "Mở sổ từ vựng",
+    "de": "Vokabelheft öffnen"
+  },
+  "← Decks": {
+    "vi": "← Bộ thẻ",
+    "de": "← Kartensätze"
+  },
+  "Practice": {
+    "vi": "Luyện tập",
+    "de": "Üben"
+  },
+  "Completed": {
+    "vi": "Hoàn thành",
+    "de": "Abgeschlossen"
+  },
+  "Listen and type what you hear": {
+    "vi": "Nghe và nhập nội dung nghe được",
+    "de": "Hören und das Gehörte eingeben"
+  },
+  "Listen to example": {
+    "vi": "Nghe ví dụ",
+    "de": "Beispiel anhören"
+  },
+  "Stop recording": {
+    "vi": "Dừng ghi âm",
+    "de": "Aufnahme stoppen"
+  },
+  "Record": {
+    "vi": "Ghi âm",
+    "de": "Aufnehmen"
+  },
+  "Practice complete": {
+    "vi": "Hoàn thành luyện tập",
+    "de": "Übung abgeschlossen"
+  },
+  "Answer": {
+    "vi": "Đáp án",
+    "de": "Antwort"
+  },
+  "correct pairs": {
+    "vi": "cặp đúng",
+    "de": "richtige Paare"
+  },
+  "Temporary recording, up to 60 seconds. Feedback evaluates the recognized content.": {
+    "vi": "Bản ghi tạm tối đa 60 giây. Phản hồi đánh giá nội dung nhận dạng được.",
+    "de": "Temporäre Aufnahme, maximal 60 Sekunden. Bewertet wird der erkannte Inhalt."
+  },
+  "■ Stop recording": {
+    "vi": "■ Dừng ghi âm",
+    "de": "■ Aufnahme stoppen"
+  },
+  "● Start recording": {
+    "vi": "● Bắt đầu ghi âm",
+    "de": "● Aufnahme starten"
+  },
+  "I agree to send my recording to the speech recognition service when I submit.": {
+    "vi": "Tôi đồng ý gửi bản ghi đến dịch vụ nhận dạng giọng nói khi nộp.",
+    "de": "Ich stimme zu, meine Aufnahme beim Abgeben an den Spracherkennungsdienst zu senden."
+  },
+  "Submit for checking": {
+    "vi": "Gửi kiểm tra",
+    "de": "Zur Prüfung senden"
+  },
+  "Loading deck…": {
+    "vi": "Đang tải bộ thẻ…",
+    "de": "Kartensatz wird geladen…"
+  },
+  "Study options": {
+    "vi": "Tùy chọn học",
+    "de": "Lernoptionen"
+  },
+  "Manage terms": {
+    "vi": "Quản lý từ",
+    "de": "Begriffe verwalten"
+  },
+  "Restart session": {
+    "vi": "Bắt đầu lại phiên học",
+    "de": "Lerneinheit neu starten"
+  },
+  "Print / Save PDF": {
+    "vi": "In / Lưu PDF",
+    "de": "Drucken / Als PDF speichern"
+  },
+  "Starred cards only (": {
+    "vi": "Chỉ thẻ có sao (",
+    "de": "Nur markierte Karten ("
+  },
+  "Shuffle randomly": {
+    "vi": "Trộn ngẫu nhiên",
+    "de": "Zufällig mischen"
+  },
+  "First side shown": {
+    "vi": "Mặt hiển thị đầu tiên",
+    "de": "Zuerst angezeigte Seite"
+  },
+  "Definition": {
+    "vi": "Nghĩa",
+    "de": "Bedeutung"
+  },
+  "Random for each card": {
+    "vi": "Ngẫu nhiên cho từng thẻ",
+    "de": "Für jede Karte zufällig"
+  },
+  "Play audio automatically": {
+    "vi": "Tự động phát âm thanh",
+    "de": "Audio automatisch abspielen"
+  },
+  "Answer with": {
+    "vi": "Trả lời bằng",
+    "de": "Antworten mit"
+  },
+  "Term · Show the definition first": {
+    "vi": "Từ · Hiện nghĩa trước",
+    "de": "Begriff · Bedeutung zuerst zeigen"
+  },
+  "Definition · Show the term first": {
+    "vi": "Nghĩa · Hiện từ trước",
+    "de": "Bedeutung · Begriff zuerst zeigen"
+  },
+  "Both · Random": {
+    "vi": "Cả hai · Ngẫu nhiên",
+    "de": "Beides · Zufällig"
+  },
+  "Question type": {
+    "vi": "Dạng câu hỏi",
+    "de": "Fragetyp"
+  },
+  "Learning goal": {
+    "vi": "Mục tiêu học",
+    "de": "Lernziel"
+  },
+  "Basic": {
+    "vi": "Cơ bản",
+    "de": "Grundlagen"
+  },
+  "Smart learning": {
+    "vi": "Học thông minh",
+    "de": "Intelligentes Lernen"
+  },
+  "Time target (minutes)": {
+    "vi": "Thời gian mục tiêu (phút)",
+    "de": "Zeitziel (Minuten)"
+  },
+  "Reset learning progress": {
+    "vi": "Đặt lại tiến trình học",
+    "de": "Lernfortschritt zurücksetzen"
+  },
+  "Read the term aloud after a correct answer": {
+    "vi": "Đọc từ sau khi trả lời đúng",
+    "de": "Begriff nach einer richtigen Antwort vorlesen"
+  },
+  "Ignore case": {
+    "vi": "Bỏ qua chữ hoa/thường",
+    "de": "Groß-/Kleinschreibung ignorieren"
+  },
+  "Ignore punctuation": {
+    "vi": "Bỏ qua dấu câu",
+    "de": "Satzzeichen ignorieren"
+  },
+  "Edit card": {
+    "vi": "Sửa thẻ",
+    "de": "Karte bearbeiten"
+  },
+  "All cards reviewed": {
+    "vi": "Đã ôn hết thẻ",
+    "de": "Alle Karten wiederholt"
+  },
+  "Review": {
+    "vi": "Ôn tập",
+    "de": "Wiederholen"
+  },
+  "Unstar": {
+    "vi": "Bỏ sao",
+    "de": "Markierung entfernen"
+  },
+  "Star": {
+    "vi": "Đánh sao",
+    "de": "Markieren"
+  },
+  "← Previous": {
+    "vi": "← Trước",
+    "de": "← Zurück"
+  },
+  "Next →": {
+    "vi": "Tiếp →",
+    "de": "Weiter →"
+  },
+  "Flip card · Space": {
+    "vi": "Lật thẻ · Phím cách",
+    "de": "Karte umdrehen · Leertaste"
+  },
+  "No matching cards.": {
+    "vi": "Không có thẻ phù hợp.",
+    "de": "Keine passenden Karten."
+  },
+  "Congratulations!": {
+    "vi": "Chúc mừng!",
+    "de": "Glückwunsch!"
+  },
+  "You have completed all cards in this session.": {
+    "vi": "Bạn đã hoàn thành mọi thẻ trong phiên này.",
+    "de": "Du hast alle Karten dieser Lerneinheit abgeschlossen."
+  },
+  "Study again": {
+    "vi": "Học lại",
+    "de": "Erneut lernen"
+  },
+  "Practiced today": {
+    "vi": "Đã luyện hôm nay",
+    "de": "Heute geübt"
+  },
+  "cards ·": {
+    "vi": "thẻ ·",
+    "de": "Karten ·"
+  },
+  "target minutes": {
+    "vi": "phút mục tiêu",
+    "de": "Zielminuten"
+  },
+  "minutes · Round": {
+    "vi": "phút · Vòng",
+    "de": "Minuten · Runde"
+  },
+  "End session": {
+    "vi": "Kết thúc phiên",
+    "de": "Lerneinheit beenden"
+  },
+  "Finish": {
+    "vi": "Hoàn tất",
+    "de": "Abschließen"
+  },
+  "Next question": {
+    "vi": "Câu tiếp theo",
+    "de": "Nächste Frage"
+  },
+  "Test": {
+    "vi": "Bài kiểm tra",
+    "de": "Test"
+  },
+  "Generate test": {
+    "vi": "Tạo bài kiểm tra",
+    "de": "Test erstellen"
+  },
+  "· Test": {
+    "vi": "· Kiểm tra",
+    "de": "· Test"
+  },
+  "Name: ____________________ Date: ____________": {
+    "vi": "Tên: ____________________ Ngày: ____________",
+    "de": "Name: ____________________ Datum: ____________"
+  },
+  "Question": {
+    "vi": "Câu hỏi",
+    "de": "Frage"
+  },
+  "Generate new test": {
+    "vi": "Tạo bài kiểm tra mới",
+    "de": "Neuen Test erstellen"
+  },
+  "Reset learning progress?": {
+    "vi": "Đặt lại tiến trình học?",
+    "de": "Lernfortschritt zurücksetzen?"
+  },
+  "All accuracy and mastery progress for this deck will be cleared. Stars and study preferences will be kept.": {
+    "vi": "Xóa toàn bộ tiến trình và độ chính xác của bộ thẻ. Sao và tùy chọn học được giữ lại.",
+    "de": "Genauigkeit und Lernfortschritt dieses Kartensatzes werden gelöscht. Markierungen und Lernoptionen bleiben erhalten."
+  },
+  "Suggested answer:": {
+    "vi": "Đáp án gợi ý:",
+    "de": "Antwortvorschlag:"
+  },
+  "Correct": {
+    "vi": "Đúng",
+    "de": "Richtig"
+  },
+  "Sai": {
+    "vi": "Sai",
+    "de": "Falsch",
+    "en": "Incorrect"
+  },
+  "Check answer": {
+    "vi": "Kiểm tra đáp án",
+    "de": "Antwort prüfen"
+  },
+  "Back": {
+    "vi": "Quay lại",
+    "de": "Zurück"
+  },
+  "Moving forward": {
+    "vi": "Tiếp tục tiến bộ",
+    "de": "Weiter vorankommen"
+  },
+  "Create flashcards with AI": {
+    "vi": "Tạo thẻ với AI",
+    "de": "Lernkarten mit KI erstellen"
+  },
+  "Copy the guide to your AI chat, choose a topic, then paste the response below.": {
+    "vi": "Chép hướng dẫn vào chat AI, chọn chủ đề rồi dán kết quả bên dưới.",
+    "de": "Kopiere die Anleitung in deinen KI-Chat, wähle ein Thema und füge die Antwort unten ein."
+  },
+  "Copy guide": {
+    "vi": "Sao chép hướng dẫn",
+    "de": "Anleitung kopieren"
+  },
+  "Download guide": {
+    "vi": "Tải hướng dẫn",
+    "de": "Anleitung herunterladen"
+  },
+  "Format & examples": {
+    "vi": "Định dạng và ví dụ",
+    "de": "Format und Beispiele"
+  },
+  "Flashcard AI instructions": {
+    "vi": "Hướng dẫn tạo thẻ",
+    "de": "Anleitung zur Kartenerstellung"
+  },
+  "Opening notebook…": {
+    "vi": "Đang mở sổ…",
+    "de": "Heft wird geöffnet…"
+  },
+  "Recall · create · reuse": {
+    "vi": "Nhớ lại · đặt câu · vận dụng",
+    "de": "Abrufen · formulieren · anwenden"
+  },
+  "Discard this set": {
+    "vi": "Bỏ nhóm từ này",
+    "de": "Diese Wortgruppe verwerfen"
+  },
+  "Reload saved step": {
+    "vi": "Tải lại bước đã lưu",
+    "de": "Gespeicherten Schritt laden"
+  },
+  "Set results": {
+    "vi": "Kết quả nhóm từ",
+    "de": "Ergebnis der Wortgruppe"
+  },
+  "word": {
+    "vi": "từ",
+    "de": "Wort"
+  },
+  "words": {
+    "vi": "từ",
+    "de": "Wörter"
+  },
+  "Your self-assessments track recall and sentence use separately.": {
+    "vi": "Theo dõi riêng khả năng nhớ từ và vận dụng trong câu.",
+    "de": "Wortabruf und Satzgebrauch werden getrennt erfasst."
+  },
+  "Deleted card": {
+    "vi": "Thẻ đã xóa",
+    "de": "Gelöschte Karte"
+  },
+  "Needs practice": {
+    "vi": "Cần luyện thêm",
+    "de": "Weiter üben"
+  },
+  "Recalled and used in a sentence": {
+    "vi": "Đã nhớ và vận dụng trong câu",
+    "de": "Abgerufen und im Satz verwendet"
+  },
+  "· Review on": {
+    "vi": "· Ôn vào",
+    "de": "· Wiederholen am"
+  },
+  "Your sentences": {
+    "vi": "Câu của bạn",
+    "de": "Deine Sätze"
+  },
+  "Prepare the whole set, recall each word, translate a sentence, write a new one, then recall the words again without answers.": {
+    "vi": "Chuẩn bị cả nhóm từ, nhớ lại từng từ, dịch câu, viết câu mới rồi nhớ lại từ mà không nhìn đáp án.",
+    "de": "Bereite die ganze Wortgruppe vor, rufe jedes Wort ab, übersetze einen Satz, schreibe einen neuen und rufe die Wörter ohne Lösungen erneut ab."
+  },
+  "Words per set": {
+    "vi": "Số từ mỗi nhóm",
+    "de": "Wörter pro Gruppe"
+  },
+  "Word selection": {
+    "vi": "Chọn từ",
+    "de": "Wortauswahl"
+  },
+  "Review words + new words": {
+    "vi": "Từ cần ôn + từ mới",
+    "de": "Wiederholungswörter + neue Wörter"
+  },
+  "Include early practice": {
+    "vi": "Bao gồm ôn sớm",
+    "de": "Vorzeitiges Üben einschließen"
+  },
+  "ready to review ·": {
+    "vi": "từ sẵn sàng ôn ·",
+    "de": "zur Wiederholung bereit ·"
+  },
+  "new. Try 5 words in about 15 minutes; there is no time limit.": {
+    "vi": "từ mới. Thử học 5 từ trong khoảng 15 phút; không giới hạn thời gian.",
+    "de": "neu. Versuche 5 Wörter in etwa 15 Minuten; es gibt kein Zeitlimit."
+  },
+  "Start set": {
+    "vi": "Bắt đầu nhóm từ",
+    "de": "Wortgruppe starten"
+  },
+  "This deck is empty.": {
+    "vi": "Bộ thẻ này trống.",
+    "de": "Dieser Kartensatz ist leer."
+  },
+  "Add words": {
+    "vi": "Thêm từ",
+    "de": "Wörter hinzufügen"
+  },
+  "How does the review plan work?": {
+    "vi": "Lịch ôn hoạt động thế nào?",
+    "de": "Wie funktioniert der Wiederholungsplan?"
+  },
+  "Successful scheduled reviews use intervals of 1, 3, 7 and 14 days. Difficult words return tomorrow. Early practice does not advance the schedule. You assess your sentences; grammar is not automatically graded.": {
+    "vi": "Ôn đúng lịch và nhớ được từ sẽ giãn khoảng ôn thành 1, 3, 7 và 14 ngày. Từ khó quay lại vào ngày mai. Ôn sớm không đẩy nhanh lịch. Bạn tự đánh giá câu; hệ thống không tự chấm ngữ pháp.",
+    "de": "Erfolgreiche geplante Wiederholungen erfolgen nach 1, 3, 7 und 14 Tagen. Schwierige Wörter kommen morgen wieder. Vorzeitiges Üben beschleunigt den Plan nicht. Du bewertest deine Sätze selbst; Grammatik wird nicht automatisch bewertet."
+  },
+  "Set steps": {
+    "vi": "Các bước học",
+    "de": "Lernschritte"
+  },
+  "A card in this set was deleted. Discard this set to choose words again.": {
+    "vi": "Một thẻ trong nhóm đã bị xóa. Bỏ nhóm này để chọn lại từ.",
+    "de": "Eine Karte dieser Gruppe wurde gelöscht. Verwirf die Gruppe, um Wörter neu auszuwählen."
+  },
+  "Completed steps are saved to your account. Unfinished drafts stay in this browser.": {
+    "vi": "Các bước hoàn thành được lưu vào tài khoản. Bản nháp chưa xong lưu trong trình duyệt này.",
+    "de": "Abgeschlossene Schritte werden im Konto gespeichert. Unfertige Entwürfe bleiben in diesem Browser."
+  },
+  "Discard this set?": {
+    "vi": "Bỏ nhóm từ này?",
+    "de": "Diese Wortgruppe verwerfen?"
+  },
+  "This unfinished set will be discarded. Review dates from completed sets are kept.": {
+    "vi": "Nhóm từ chưa hoàn thành sẽ bị bỏ. Lịch ôn của các nhóm đã hoàn thành được giữ lại.",
+    "de": "Diese unfertige Gruppe wird verworfen. Wiederholungstermine abgeschlossener Gruppen bleiben erhalten."
+  },
+  "Discard set": {
+    "vi": "Bỏ nhóm từ",
+    "de": "Gruppe verwerfen"
+  },
+  "Plural:": {
+    "vi": "Số nhiều:",
+    "de": "Plural:"
+  },
+  "Read to understand the expression and its use. Prepare all": {
+    "vi": "Đọc để hiểu từ và cách dùng. Chuẩn bị toàn bộ",
+    "de": "Lies, um den Ausdruck und seine Verwendung zu verstehen. Bereite alle"
+  },
+  "words before recalling them.": {
+    "vi": "từ trước khi luyện nhớ lại.",
+    "de": "Wörter vor dem Abrufen vor."
+  },
+  "Ready · Next": {
+    "vi": "Đã sẵn sàng · Tiếp",
+    "de": "Bereit · Weiter"
+  },
+  "Change the time, subject, place or situation. Create a sentence instead of copying the example.": {
+    "vi": "Thay thời gian, chủ ngữ, địa điểm hoặc tình huống. Tự đặt câu thay vì chép ví dụ.",
+    "de": "Ändere Zeit, Subjekt, Ort oder Situation. Schreibe einen eigenen Satz, statt das Beispiel zu kopieren."
+  },
+  "Your recalled expression": {
+    "vi": "Từ bạn nhớ được",
+    "de": "Dein abgerufener Ausdruck"
+  },
+  "Your sentence": {
+    "vi": "Câu của bạn",
+    "de": "Dein Satz"
+  },
+  "Compare and correct": {
+    "vi": "So sánh và sửa",
+    "de": "Vergleichen und korrigieren"
+  },
+  "Reference answer": {
+    "vi": "Đáp án tham khảo",
+    "de": "Referenzantwort"
+  },
+  "Not correct yet · Compare with the answer below.": {
+    "vi": "Chưa đúng · So sánh với đáp án bên dưới.",
+    "de": "Noch nicht richtig · Vergleiche mit der Antwort unten."
+  },
+  "The example is one possible answer. Check verb forms, prepositions/case, noun gender and word order. Other sentences can also be correct.": {
+    "vi": "Ví dụ chỉ là một đáp án. Kiểm tra dạng động từ, giới từ/cách, giống danh từ và trật tự từ. Các câu khác cũng có thể đúng.",
+    "de": "Das Beispiel ist eine mögliche Antwort. Prüfe Verbformen, Präpositionen/Kasus, Genus und Wortstellung. Auch andere Sätze können richtig sein."
+  },
+  "Correction / notes": {
+    "vi": "Bản sửa / ghi chú",
+    "de": "Korrektur / Notizen"
+  },
+  "Copy for chat feedback": {
+    "vi": "Sao chép để nhờ chat góp ý",
+    "de": "Für Chat-Rückmeldung kopieren"
+  },
+  "Retried · Review sooner": {
+    "vi": "Đã thử lại · Ôn sớm hơn",
+    "de": "Erneut versucht · Früher wiederholen"
+  },
+  "Recalled unaided": {
+    "vi": "Tự nhớ được",
+    "de": "Ohne Hilfe gewusst"
+  },
+  "Revised · Practise again": {
+    "vi": "Đã sửa · Luyện thêm",
+    "de": "Überarbeitet · Weiter üben"
+  },
+  "Self-check: I can use it": {
+    "vi": "Tự đánh giá: Tôi dùng được",
+    "de": "Selbsteinschätzung: Ich kann es anwenden"
+  },
+  "Hide and try again": {
+    "vi": "Ẩn và thử lại",
+    "de": "Verbergen und erneut versuchen"
+  },
+  "Rewrite without the example": {
+    "vi": "Viết lại không nhìn ví dụ",
+    "de": "Ohne Beispiel neu schreiben"
+  },
+  "Needs practice · Next": {
+    "vi": "Cần luyện thêm · Tiếp",
+    "de": "Weiter üben · Weiter"
+  },
+  "YOUR WAY": {
+    "vi": "THEO CÁCH CỦA BẠN",
+    "de": "AUF DEINE ART"
+  },
+  "Settings": {
+    "vi": "Cài đặt",
+    "de": "Einstellungen"
+  },
+  "A comfortable space to see, hear and learn.": {
+    "vi": "Không gian học thoải mái cho bạn.",
+    "de": "Eine angenehme Umgebung zum Sehen, Hören und Lernen."
+  },
+  "Settings group": {
+    "vi": "Nhóm cài đặt",
+    "de": "Einstellungsgruppe"
+  },
+  "Backgrounds": {
+    "vi": "Hình nền",
+    "de": "Hintergründe"
+  },
+  "Choose appearance": {
+    "vi": "Chọn giao diện",
+    "de": "Darstellung wählen"
+  },
+  "· In use": {
+    "vi": "· Đang dùng",
+    "de": "· Aktiv"
+  },
+  "Appearance": {
+    "vi": "Giao diện",
+    "de": "Darstellung"
+  },
+  "Text color": {
+    "vi": "Màu chữ",
+    "de": "Textfarbe"
+  },
+  "Auto · Automatic contrast": {
+    "vi": "Tự động · Tự chỉnh tương phản",
+    "de": "Automatisch · Automatischer Kontrast"
+  },
+  "Text weight": {
+    "vi": "Độ đậm chữ",
+    "de": "Schriftstärke"
+  },
+  "Text contrast": {
+    "vi": "Độ tương phản chữ",
+    "de": "Textkontrast"
+  },
+  "Reset navigation to 100%": {
+    "vi": "Đặt thanh điều hướng về 100%",
+    "de": "Navigation auf 100 % zurücksetzen"
+  },
+  "Interface text size": {
+    "vi": "Cỡ chữ giao diện",
+    "de": "Schriftgröße der Oberfläche"
+  },
+  "Card text size": {
+    "vi": "Cỡ chữ trên thẻ",
+    "de": "Schriftgröße der Karten"
+  },
+  "Glass transparency": {
+    "vi": "Độ trong suốt",
+    "de": "Glastransparenz"
+  },
+  "Audio": {
+    "vi": "Âm thanh",
+    "de": "Audio"
+  },
+  "Soft interaction sounds": {
+    "vi": "Âm thanh thao tác nhẹ",
+    "de": "Dezente Interaktionsklänge"
+  },
+  "Gentle background audio": {
+    "vi": "Âm nền nhẹ",
+    "de": "Sanfte Hintergrundmusik"
+  },
+  "Background melody": {
+    "vi": "Giai điệu nền",
+    "de": "Hintergrundmelodie"
+  },
+  "Choose from 20 tracks in the Wortify library. Enable background audio and click the page if playback is blocked. Audio pauses during listening exercises and when switching browser tabs.": {
+    "vi": "Chọn trong 20 bản nhạc của Wortify. Bật âm nền và nhấp vào trang nếu chưa phát được. Nhạc tạm dừng khi làm bài nghe hoặc chuyển thẻ trình duyệt.",
+    "de": "Wähle aus 20 Titeln der Wortify-Bibliothek. Aktiviere die Hintergrundmusik und klicke bei blockierter Wiedergabe auf die Seite. Bei Hörübungen und beim Tabwechsel pausiert die Musik."
+  },
+  "Volume": {
+    "vi": "Âm lượng",
+    "de": "Lautstärke"
+  },
+  "Study preferences": {
+    "vi": "Tùy chọn học tập",
+    "de": "Lerneinstellungen"
+  },
+  "Exercise typography": {
+    "vi": "Chữ trong bài tập",
+    "de": "Schrift in Übungen"
+  },
+  "Text size ·": {
+    "vi": "Cỡ chữ ·",
+    "de": "Schriftgröße ·"
+  },
+  "Exercise text size": {
+    "vi": "Cỡ chữ bài tập",
+    "de": "Schriftgröße der Übungen"
+  },
+  "Text weight ·": {
+    "vi": "Độ đậm ·",
+    "de": "Schriftstärke ·"
+  },
+  "Exercise text weight": {
+    "vi": "Độ đậm chữ bài tập",
+    "de": "Schriftstärke der Übungen"
+  },
+  "Choose the answer that completes the sentence.": {
+    "vi": "Chọn đáp án hoàn thành câu.",
+    "de": "Wähle die Antwort, die den Satz vervollständigt."
+  },
+  "Reset exercise typography": {
+    "vi": "Đặt lại chữ bài tập",
+    "de": "Übungsschrift zurücksetzen"
+  },
+  "Applies to exercise content across themes. Navigation and buttons keep their own size.": {
+    "vi": "Áp dụng cho nội dung bài tập ở mọi giao diện. Thanh điều hướng và nút giữ kích thước riêng.",
+    "de": "Gilt für Übungsinhalte in allen Designs. Navigation und Schaltflächen behalten ihre Größe."
+  },
+  "New cards per day": {
+    "vi": "Thẻ mới mỗi ngày",
+    "de": "Neue Karten pro Tag"
+  },
+  "Session duration (minutes)": {
+    "vi": "Thời lượng phiên (phút)",
+    "de": "Dauer der Lerneinheit (Minuten)"
+  },
+  "Backup & restore": {
+    "vi": "Sao lưu và khôi phục",
+    "de": "Sichern und wiederherstellen"
+  },
+  "Keep a portable copy of your data from both German and English workspaces: flashcards, exercises, learning history, settings and uploaded media.": {
+    "vi": "Lưu bản sao dữ liệu từ cả khu học tiếng Đức và tiếng Anh: thẻ, bài tập, lịch sử học, cài đặt và tệp đã tải lên.",
+    "de": "Sichere Daten aus beiden Lernbereichen: Karten, Übungen, Lernverlauf, Einstellungen und hochgeladene Medien."
+  },
+  "ZIP format · Up to 512 MB. Keep your backup somewhere private.": {
+    "vi": "Định dạng ZIP · Tối đa 512 MB. Cất bản sao lưu ở nơi riêng tư.",
+    "de": "ZIP-Format · Bis zu 512 MB. Bewahre die Sicherung geschützt auf."
+  },
+  "Export all my data": {
+    "vi": "Xuất toàn bộ dữ liệu của tôi",
+    "de": "Alle meine Daten exportieren"
+  },
+  "Restore a backup": {
+    "vi": "Khôi phục bản sao lưu",
+    "de": "Sicherung wiederherstellen"
+  },
+  "Content is added as private copies. Existing content stays in place. Importing the same backup again creates more copies.": {
+    "vi": "Nội dung được thêm dưới dạng bản sao riêng tư. Nội dung hiện có được giữ lại. Nhập lại cùng bản sao lưu sẽ tạo thêm bản sao.",
+    "de": "Inhalte werden als private Kopien hinzugefügt. Bestehende Inhalte bleiben erhalten. Erneutes Importieren erzeugt weitere Kopien."
+  },
+  "Passwords and account roles are excluded. Classes restore without members, with new invitation links. Memberships are included as reference only. History linked to content outside the backup may be skipped. Generated speech is recreated when needed.": {
+    "vi": "Không bao gồm mật khẩu và quyền tài khoản. Lớp được khôi phục không kèm thành viên và có liên kết mời mới. Danh sách thành viên chỉ để tham khảo. Lịch sử gắn với nội dung ngoài bản sao có thể bị bỏ qua. Âm thanh tạo tự động được tạo lại khi cần.",
+    "de": "Passwörter und Kontorollen sind ausgeschlossen. Klassen werden ohne Mitglieder und mit neuen Einladungslinks wiederhergestellt. Mitgliedschaften dienen nur als Referenz. Verlauf zu nicht gesicherten Inhalten kann entfallen. Sprachdateien werden bei Bedarf neu erstellt."
+  },
+  "Wortify ZIP backup": {
+    "vi": "Bản sao lưu ZIP Wortify",
+    "de": "Wortify-ZIP-Sicherung"
+  },
+  "Check backup": {
+    "vi": "Kiểm tra bản sao lưu",
+    "de": "Sicherung prüfen"
+  },
+  "Backup preview": {
+    "vi": "Xem trước bản sao lưu",
+    "de": "Sicherungsvorschau"
+  },
+  "Ready to restore": {
+    "vi": "Sẵn sàng khôi phục",
+    "de": "Bereit zur Wiederherstellung"
+  },
+  "Records": {
+    "vi": "Bản ghi",
+    "de": "Datensätze"
+  },
+  "Also replace my profile and study settings": {
+    "vi": "Thay cả hồ sơ và cài đặt học của tôi",
+    "de": "Auch Profil und Lerneinstellungen ersetzen"
+  },
+  "Restore as copies": {
+    "vi": "Khôi phục thành bản sao",
+    "de": "Als Kopien wiederherstellen"
+  },
+  "Restored": {
+    "vi": "Đã khôi phục",
+    "de": "Wiederhergestellt"
+  },
+  "records.": {
+    "vi": "bản ghi.",
+    "de": "Datensätze."
+  },
+  "Reload to view restored data": {
+    "vi": "Tải lại để xem dữ liệu đã khôi phục",
+    "de": "Neu laden, um wiederhergestellte Daten zu sehen"
+  },
+  "Pause": {
+    "vi": "Tạm dừng",
+    "de": "Pausieren"
+  },
+  "Play audio": {
+    "vi": "Phát âm thanh",
+    "de": "Audio abspielen"
+  },
+  "Playback position": {
+    "vi": "Vị trí phát",
+    "de": "Wiedergabeposition"
+  },
+  "Playback speed": {
+    "vi": "Tốc độ phát",
+    "de": "Wiedergabegeschwindigkeit"
+  },
+  "Select a word": {
+    "vi": "Chọn từ",
+    "de": "Wort wählen"
+  },
+  "Word bank": {
+    "vi": "Ngân hàng từ",
+    "de": "Wortbank"
+  },
+  "Tap extra words to cross them out.": {
+    "vi": "Nhấn vào từ thừa để gạch bỏ.",
+    "de": "Tippe auf überflüssige Wörter, um sie zu streichen."
+  },
+  "Tap a word, enter the correction, then apply it.": {
+    "vi": "Nhấn vào từ, nhập bản sửa rồi áp dụng.",
+    "de": "Tippe auf ein Wort, gib die Korrektur ein und wende sie an."
+  },
+  "Replacement word": {
+    "vi": "Từ thay thế",
+    "de": "Ersatzwort"
+  },
+  "Apply": {
+    "vi": "Áp dụng",
+    "de": "Anwenden"
+  },
+  "Your sentence:": {
+    "vi": "Câu của bạn:",
+    "de": "Dein Satz:"
+  },
+  "Complete the sentence": {
+    "vi": "Hoàn thành câu",
+    "de": "Satz vervollständigen"
+  },
+  "Choose an answer…": {
+    "vi": "Chọn đáp án…",
+    "de": "Antwort wählen…"
+  },
+  "True": {
+    "vi": "Đúng",
+    "de": "Richtig"
+  },
+  "False": {
+    "vi": "Sai",
+    "de": "Falsch"
+  },
+  "Not given": {
+    "vi": "Không có thông tin",
+    "de": "Nicht angegeben"
+  },
+  "Recognized speech": {
+    "vi": "Nội dung nhận dạng",
+    "de": "Erkannte Sprache"
+  },
+  "Exercise comment · shown after a correct answer or reveal": {
+    "vi": "Ghi chú bài tập · hiện sau đáp án đúng hoặc khi xem đáp án",
+    "de": "Übungskommentar · nach richtiger Antwort oder Aufdecken sichtbar"
+  },
+  "Exercise title": {
+    "vi": "Tên bài tập",
+    "de": "Übungstitel"
+  },
+  "Request": {
+    "vi": "Yêu cầu",
+    "de": "Aufgabenstellung"
+  },
+  "Fill method": {
+    "vi": "Cách điền",
+    "de": "Ausfüllmethode"
+  },
+  "Drag / select words": {
+    "vi": "Kéo / chọn từ",
+    "de": "Wörter ziehen / auswählen"
+  },
+  "Select within the sentence": {
+    "vi": "Chọn trong câu",
+    "de": "Im Satz auswählen"
+  },
+  "Separate choices for each question": {
+    "vi": "Lựa chọn riêng từng câu",
+    "de": "Eigene Auswahl pro Frage"
+  },
+  "Shared choices for the whole exercise": {
+    "vi": "Lựa chọn chung toàn bài",
+    "de": "Gemeinsame Auswahl für die Übung"
+  },
+  "Correct answers": {
+    "vi": "Đáp án đúng",
+    "de": "Richtige Antworten"
+  },
+  "Single answer": {
+    "vi": "Một đáp án",
+    "de": "Eine Antwort"
+  },
+  "Choose Single answer for this style": {
+    "vi": "Chọn Một đáp án cho kiểu này",
+    "de": "Für diesen Stil Eine Antwort wählen"
+  },
+  "Multiple answers": {
+    "vi": "Nhiều đáp án",
+    "de": "Mehrere Antworten"
+  },
+  "Categories": {
+    "vi": "Danh mục",
+    "de": "Kategorien"
+  },
+  "Group": {
+    "vi": "Nhóm",
+    "de": "Gruppe"
+  },
+  "Reading": {
+    "vi": "Đọc hiểu",
+    "de": "Lesen"
+  },
+  "Passage format": {
+    "vi": "Định dạng đoạn đọc",
+    "de": "Textformat"
+  },
+  "Lesson markup": {
+    "vi": "Định dạng bài học",
+    "de": "Lerntext-Auszeichnung"
+  },
+  "Safe HTML": {
+    "vi": "HTML an toàn",
+    "de": "Sicheres HTML"
+  },
+  "Ignore case and punctuation": {
+    "vi": "Bỏ qua hoa/thường và dấu câu",
+    "de": "Groß-/Kleinschreibung und Satzzeichen ignorieren"
+  },
+  "Pair": {
+    "vi": "Cặp",
+    "de": "Paar"
+  },
+  "Word": {
+    "vi": "Từ",
+    "de": "Wort"
+  },
+  "Explanation / comment · shown after this answer": {
+    "vi": "Giải thích / ghi chú · hiện sau đáp án này",
+    "de": "Erklärung / Kommentar · nach dieser Antwort sichtbar"
+  },
+  "Add pair": {
+    "vi": "Thêm cặp",
+    "de": "Paar hinzufügen"
+  },
+  "Add word": {
+    "vi": "Thêm từ",
+    "de": "Wort hinzufügen"
+  },
+  "Add question": {
+    "vi": "Thêm câu hỏi",
+    "de": "Frage hinzufügen"
+  },
+  "Column A": {
+    "vi": "Cột A",
+    "de": "Spalte A"
+  },
+  "Column B": {
+    "vi": "Cột B",
+    "de": "Spalte B"
+  },
+  "Word / phrase": {
+    "vi": "Từ / cụm từ",
+    "de": "Wort / Ausdruck"
+  },
+  "Category": {
+    "vi": "Danh mục",
+    "de": "Kategorie"
+  },
+  "Choose a category": {
+    "vi": "Chọn danh mục",
+    "de": "Kategorie wählen"
+  },
+  "Statement": {
+    "vi": "Nhận định",
+    "de": "Aussage"
+  },
+  "Prompt": {
+    "vi": "Đề bài",
+    "de": "Aufgabe"
+  },
+  "Audio title": {
+    "vi": "Tên âm thanh",
+    "de": "Audiotitel"
+  },
+  "Audio URL": {
+    "vi": "URL âm thanh",
+    "de": "Audio-URL"
+  },
+  "Download file": {
+    "vi": "Tải tệp",
+    "de": "Datei herunterladen"
+  },
+  "Answer choices": {
+    "vi": "Các lựa chọn đáp án",
+    "de": "Antwortmöglichkeiten"
+  },
+  "Select the letter beside the correct answer. Choices are shuffled during practice; correctness is saved by answer text.": {
+    "vi": "Chọn chữ cái bên đáp án đúng. Lựa chọn được trộn khi luyện tập; hệ thống lưu đáp án theo nội dung.",
+    "de": "Wähle den Buchstaben neben der richtigen Antwort. Die Auswahl wird beim Üben gemischt; gespeichert wird der Antworttext."
+  },
+  "Option": {
+    "vi": "Lựa chọn",
+    "de": "Option"
+  },
+  "Correct answer": {
+    "vi": "Đáp án đúng",
+    "de": "Richtige Antwort"
+  },
+  "Reference transcript": {
+    "vi": "Bản chép tham khảo",
+    "de": "Referenztranskript"
+  },
+  "Required answer · one alternative per line": {
+    "vi": "Đáp án bắt buộc · mỗi cách trả lời một dòng",
+    "de": "Erforderliche Antwort · eine Alternative pro Zeile"
+  },
+  "Accepted answers · one variation per line": {
+    "vi": "Đáp án được chấp nhận · mỗi biến thể một dòng",
+    "de": "Akzeptierte Antworten · eine Variante pro Zeile"
+  },
+  "Text": {
+    "vi": "Văn bản",
+    "de": "Text"
+  },
+  "Highlight words in the text": {
+    "vi": "Đánh dấu từ trong văn bản",
+    "de": "Wörter im Text markieren"
+  },
+  "Mark words": {
+    "vi": "Đánh dấu từ",
+    "de": "Wörter markieren"
+  },
+  "Create options": {
+    "vi": "Tạo lựa chọn",
+    "de": "Optionen erstellen"
+  },
+  "Create a gap": {
+    "vi": "Tạo chỗ trống",
+    "de": "Lücke erstellen"
+  },
+  "Word bank · separated by commas": {
+    "vi": "Ngân hàng từ · phân cách bằng dấu phẩy",
+    "de": "Wortbank · durch Kommas getrennt"
+  },
+  "Complete sentence": {
+    "vi": "Câu hoàn chỉnh",
+    "de": "Vollständiger Satz"
+  },
+  "Split into words": {
+    "vi": "Tách thành các từ",
+    "de": "In Wörter aufteilen"
+  },
+  "Hint / translation": {
+    "vi": "Gợi ý / bản dịch",
+    "de": "Hinweis / Übersetzung"
+  },
+  "Distractors": {
+    "vi": "Đáp án gây nhiễu",
+    "de": "Ablenkantworten"
+  },
+  "Add": {
+    "vi": "Thêm",
+    "de": "Hinzufügen"
+  },
+  "Edit exercise": {
+    "vi": "Sửa bài tập",
+    "de": "Übung bearbeiten"
+  },
+  "Create exercise": {
+    "vi": "Tạo bài tập",
+    "de": "Übung erstellen"
+  },
+  "Import file / choose template": {
+    "vi": "Nhập tệp / chọn mẫu",
+    "de": "Datei importieren / Vorlage wählen"
+  },
+  "Check and preview": {
+    "vi": "Kiểm tra và xem trước",
+    "de": "Prüfen und Vorschau"
+  },
+  "Media · MP3 and images": {
+    "vi": "Tệp · MP3 và ảnh",
+    "de": "Medien · MP3 und Bilder"
+  },
+  "Exercise draft": {
+    "vi": "Bản nháp bài tập",
+    "de": "Übungsentwurf"
+  },
+  "valid exercises ready to save.": {
+    "vi": "bài tập hợp lệ sẵn sàng lưu.",
+    "de": "gültige Übungen zum Speichern bereit."
+  },
+  "Save changes": {
+    "vi": "Lưu thay đổi",
+    "de": "Änderungen speichern"
+  },
+  "Import .txt exercises": {
+    "vi": "Nhập bài tập .txt",
+    "de": "TXT-Übungen importieren"
+  },
+  "Text format rules and templates ↗": {
+    "vi": "Quy tắc định dạng và mẫu ↗",
+    "de": "Formatregeln und Vorlagen ↗"
+  },
+  "Choose or drop a .txt file": {
+    "vi": "Chọn hoặc thả tệp .txt",
+    "de": "TXT-Datei auswählen oder ablegen"
+  },
+  "UTF-8 · max 2 MB · multiple files allowed": {
+    "vi": "UTF-8 · tối đa 2 MB · cho phép nhiều tệp",
+    "de": "UTF-8 · max. 2 MB · mehrere Dateien möglich"
+  },
+  "Choose a .txt file": {
+    "vi": "Chọn tệp .txt",
+    "de": "TXT-Datei wählen"
+  },
+  "Templates for": {
+    "vi": "Mẫu cho",
+    "de": "Vorlagen für"
+  },
+  "exercise types": {
+    "vi": "dạng bài tập",
+    "de": "Übungstypen"
+  },
+  "Sample exercise type": {
+    "vi": "Dạng bài mẫu",
+    "de": "Beispiel-Übungstyp"
+  },
+  "Available styles": {
+    "vi": "Kiểu có sẵn",
+    "de": "Verfügbare Stile"
+  },
+  "Download sample file": {
+    "vi": "Tải tệp mẫu",
+    "de": "Beispieldatei herunterladen"
+  },
+  "Open sample content": {
+    "vi": "Mở nội dung mẫu",
+    "de": "Beispielinhalt öffnen"
+  },
+  "Download draft": {
+    "vi": "Tải bản nháp",
+    "de": "Entwurf herunterladen"
+  },
+  "Exercise content": {
+    "vi": "Nội dung bài tập",
+    "de": "Übungsinhalt"
+  },
+  "Text draft": {
+    "vi": "Bản nháp văn bản",
+    "de": "Textentwurf"
+  },
+  "Paste the exercise text from your AI chat here, or import a .txt file. Use Check and preview before saving.": {
+    "vi": "Dán nội dung bài tập từ chat AI hoặc nhập tệp .txt. Kiểm tra và xem trước khi lưu.",
+    "de": "Füge den Übungstext aus deinem KI-Chat ein oder importiere eine TXT-Datei. Vor dem Speichern prüfen und Vorschau ansehen."
+  },
+  "Exercises": {
+    "vi": "Bài tập",
+    "de": "Übungen"
+  },
+  "Preview draft": {
+    "vi": "Xem trước bản nháp",
+    "de": "Entwurf ansehen"
+  },
+  "This exercise has no questions yet.": {
+    "vi": "Bài tập chưa có câu hỏi.",
+    "de": "Diese Übung enthält noch keine Fragen."
+  },
+  "Set reviewed": {
+    "vi": "Đã xem lại nhóm",
+    "de": "Gruppe wiederholt"
+  },
+  "Session complete": {
+    "vi": "Hoàn thành phiên học",
+    "de": "Lerneinheit abgeschlossen"
+  },
+  "Lesson progress": {
+    "vi": "Tiến trình bài học",
+    "de": "Lektionsfortschritt"
+  },
+  "Mute exercise audio": {
+    "vi": "Tắt âm bài tập",
+    "de": "Übungs-Audio stummschalten"
+  },
+  "Enable exercise audio": {
+    "vi": "Bật âm bài tập",
+    "de": "Übungs-Audio aktivieren"
+  },
+  "I have reviewed this set": {
+    "vi": "Tôi đã xem lại nhóm này",
+    "de": "Ich habe diese Gruppe wiederholt"
+  },
+  "You did it!": {
+    "vi": "Bạn làm được rồi!",
+    "de": "Geschafft!"
+  },
+  "Every completed question is progress. See you in the next exercise.": {
+    "vi": "Mỗi câu hoàn thành là một bước tiến. Hẹn bạn ở bài tiếp theo.",
+    "de": "Jede abgeschlossene Frage ist ein Fortschritt. Bis zur nächsten Übung."
+  },
+  "Practice again to reinforce learning": {
+    "vi": "Luyện lại để củng cố kiến thức",
+    "de": "Zum Festigen erneut üben"
+  },
+  "Select all correct answers.": {
+    "vi": "Chọn tất cả đáp án đúng.",
+    "de": "Wähle alle richtigen Antworten."
+  },
+  "Select one answer.": {
+    "vi": "Chọn một đáp án.",
+    "de": "Wähle eine Antwort."
+  },
+  "Show answer": {
+    "vi": "Xem đáp án",
+    "de": "Antwort anzeigen"
+  },
+  "Correct!": {
+    "vi": "Chính xác!",
+    "de": "Richtig!"
+  },
+  "Not quite. Try again.": {
+    "vi": "Chưa đúng. Thử lại nhé.",
+    "de": "Noch nicht ganz. Versuche es erneut."
+  },
+  "My Exercise Library": {
+    "vi": "Thư viện bài tập của tôi",
+    "de": "Meine Übungsbibliothek"
+  },
+  "Instructions and all templates": {
+    "vi": "Hướng dẫn và toàn bộ mẫu",
+    "de": "Anleitungen und alle Vorlagen"
+  },
+  "Create a lesson": {
+    "vi": "Tạo bài học",
+    "de": "Lektion erstellen"
+  },
+  "New draft": {
+    "vi": "Bản nháp mới",
+    "de": "Neuer Entwurf"
+  },
+  "Reference": {
+    "vi": "Tham khảo",
+    "de": "Referenz"
+  },
+  "Choose how learners answer": {
+    "vi": "Chọn cách người học trả lời",
+    "de": "Antwortmethode wählen"
+  },
+  "Use BANK_SCOPE: question for a separate word bank per question, or BANK_SCOPE: exercise for a shared bank across the exercise. Repeat words when more than one gap needs them.": {
+    "vi": "Dùng BANK_SCOPE: question cho ngân hàng từ riêng từng câu, hoặc BANK_SCOPE: exercise để dùng chung toàn bài. Lặp lại từ nếu nhiều chỗ trống cần cùng từ đó.",
+    "de": "Nutze BANK_SCOPE: question für eine Wortbank pro Frage oder BANK_SCOPE: exercise für die gesamte Übung. Wiederhole Wörter, wenn mehrere Lücken dasselbe Wort benötigen."
+  },
+  "For inline choices, STYLE: fall_away keeps the correct word and removes incorrect choices after a correct answer. Dialogue replies and Eliminate and decide support one correct answer.": {
+    "vi": "Với lựa chọn trong câu, STYLE: fall_away giữ từ đúng và bỏ lựa chọn sai sau khi trả lời đúng. Trả lời hội thoại và Loại trừ rồi chọn hỗ trợ một đáp án đúng.",
+    "de": "Bei Inline-Auswahl behält STYLE: fall_away nach richtiger Antwort das richtige Wort und entfernt falsche Optionen. Dialogantworten und Ausschließen und entscheiden unterstützen eine richtige Antwort."
+  },
+  "Add COMMENT: before the first QUESTION for a shared note. Add EXPLANATION: after each question or matching pair. Notes appear after a correct answer or an answer reveal; matching reveals each completed pair separately.": {
+    "vi": "Thêm COMMENT: trước QUESTION đầu tiên cho ghi chú chung. Thêm EXPLANATION: sau từng câu hoặc cặp ghép. Ghi chú hiện khi trả lời đúng hoặc xem đáp án; bài ghép hiện riêng từng cặp đã hoàn thành.",
+    "de": "Setze COMMENT: vor die erste QUESTION für einen gemeinsamen Hinweis und EXPLANATION: nach jede Frage oder jedes Paar. Hinweise erscheinen nach richtiger Antwort oder Aufdecken; beim Zuordnen für jedes gelöste Paar einzeln."
+  },
+  "Settings → Learning lets learners adjust exercise text size and weight. Use lesson markup for line breaks, tables and image placement; keep answers and word banks plain.": {
+    "vi": "Cài đặt → Học tập cho phép chỉnh cỡ và độ đậm chữ bài tập. Dùng định dạng bài học cho xuống dòng, bảng và ảnh; giữ đáp án và ngân hàng từ ở dạng văn bản thuần.",
+    "de": "Unter Einstellungen → Lernen lassen sich Schriftgröße und -stärke anpassen. Nutze Lerntext-Auszeichnung für Umbrüche, Tabellen und Bilder; Antworten und Wortbanken bleiben unformatiert."
+  },
+  "Theory supports Markdown + lesson markup, uploaded images and a preview. Keep uploaded images attached when embedding their URLs. HTML theory remains a separate sandboxed format.": {
+    "vi": "Lý thuyết hỗ trợ Markdown, định dạng bài học, ảnh tải lên và xem trước. Giữ ảnh đính kèm khi nhúng URL ảnh. HTML là định dạng riêng chạy trong vùng cách ly.",
+    "de": "Theorie unterstützt Markdown, Lerntext-Auszeichnung, hochgeladene Bilder und Vorschau. Eingebundene Bilder müssen angehängt bleiben. HTML-Theorie läuft getrennt in einer Sandbox."
+  },
+  "Template library": {
+    "vi": "Thư viện mẫu",
+    "de": "Vorlagenbibliothek"
+  },
+  "Download all instructions and templates": {
+    "vi": "Tải toàn bộ hướng dẫn và mẫu",
+    "de": "Alle Anleitungen und Vorlagen herunterladen"
+  },
+  "Content format": {
+    "vi": "Định dạng nội dung",
+    "de": "Inhaltsformat"
+  },
+  "Use in instructions, reading passages, explanations and questions. Keep answers and interactive words in plain text.": {
+    "vi": "Dùng trong hướng dẫn, đoạn đọc, giải thích và câu hỏi. Giữ đáp án và từ tương tác ở dạng văn bản thuần.",
+    "de": "Für Anweisungen, Lesetexte, Erklärungen und Fragen. Antworten und interaktive Wörter bleiben unformatiert."
+  },
+  "Copy syntax": {
+    "vi": "Sao chép cú pháp",
+    "de": "Syntax kopieren"
+  },
+  "20 text colors": {
+    "vi": "20 màu chữ",
+    "de": "20 Textfarben"
+  },
+  "Copy selected color": {
+    "vi": "Sao chép màu đã chọn",
+    "de": "Ausgewählte Farbe kopieren"
+  },
+  "End formatting before each gap. For correction exercises, keep questions in plain text so learners can edit words. Choose colors that contrast with the lesson background.": {
+    "vi": "Kết thúc định dạng trước mỗi chỗ trống. Với bài sửa lỗi, dùng văn bản thuần để người học sửa được từ. Chọn màu tương phản với nền bài học.",
+    "de": "Beende die Formatierung vor jeder Lücke. Nutze bei Korrekturübungen Klartext, damit Wörter bearbeitbar bleiben. Wähle Farben mit ausreichendem Kontrast."
+  },
+  "Rules & documentation": {
+    "vi": "Quy tắc và tài liệu",
+    "de": "Regeln und Dokumentation"
+  },
+  "Copy all instructions and templates": {
+    "vi": "Sao chép toàn bộ hướng dẫn và mẫu",
+    "de": "Alle Anleitungen und Vorlagen kopieren"
+  },
+  "Read the rules": {
+    "vi": "Đọc quy tắc",
+    "de": "Regeln lesen"
+  },
+  "Keywords and syntax are in English; content can use any language. Up to 100 exercises per import, 100 questions per exercise and 2 MB of text.": {
+    "vi": "Từ khóa và cú pháp dùng tiếng Anh; nội dung có thể dùng mọi ngôn ngữ. Tối đa 100 bài mỗi lần nhập, 100 câu mỗi bài và 2 MB văn bản.",
+    "de": "Schlüsselwörter und Syntax sind Englisch; Inhalte dürfen jede Sprache verwenden. Maximal 100 Übungen pro Import, 100 Fragen pro Übung und 2 MB Text."
+  },
+  "Images and MP3 files are optional, up to 200 MB per exercise. Attach them to the entire exercise or individual questions in Media; attachments are not included in .txt files.": {
+    "vi": "Ảnh và MP3 không bắt buộc, tối đa 200 MB mỗi bài. Đính kèm cho toàn bài hoặc từng câu trong Tệp; tệp đính kèm không nằm trong .txt.",
+    "de": "Bilder und MP3 sind optional, bis 200 MB pro Übung. Unter Medien der ganzen Übung oder einzelnen Fragen zuordnen; Anhänge sind nicht in TXT-Dateien enthalten."
+  },
+  "Exercise template": {
+    "vi": "Mẫu bài tập",
+    "de": "Übungsvorlage"
+  },
+  "Text format rules": {
+    "vi": "Quy tắc định dạng văn bản",
+    "de": "Textformatregeln"
+  },
+  "Full guide": {
+    "vi": "Hướng dẫn đầy đủ",
+    "de": "Vollständige Anleitung"
+  },
+  "Style": {
+    "vi": "Kiểu",
+    "de": "Stil"
+  },
+  "Copy content": {
+    "vi": "Sao chép nội dung",
+    "de": "Inhalt kopieren"
+  },
+  "Download .txt file": {
+    "vi": "Tải tệp .txt",
+    "de": "TXT-Datei herunterladen"
+  },
+  "Choose an exercise location": {
+    "vi": "Chọn vị trí bài tập",
+    "de": "Übungsort wählen"
+  },
+  "Folder contents": {
+    "vi": "Nội dung thư mục",
+    "de": "Ordnerinhalt"
+  },
+  "Selected item tools": {
+    "vi": "Công cụ cho mục đã chọn",
+    "de": "Werkzeuge für die Auswahl"
+  },
+  "Selected": {
+    "vi": "Đã chọn",
+    "de": "Ausgewählt"
+  },
+  "Move": {
+    "vi": "Di chuyển",
+    "de": "Verschieben"
+  },
+  "Move selected item": {
+    "vi": "Di chuyển mục đã chọn",
+    "de": "Ausgewählten Eintrag verschieben"
+  },
+  "Group into a folder": {
+    "vi": "Gom vào thư mục",
+    "de": "In einem Ordner zusammenfassen"
+  },
+  "Delete selected (": {
+    "vi": "Xóa mục đã chọn (",
+    "de": "Auswahl löschen ("
+  },
+  "Deselect": {
+    "vi": "Bỏ chọn",
+    "de": "Abwählen"
+  },
+  "Deselect all": {
+    "vi": "Bỏ chọn tất cả",
+    "de": "Alles abwählen"
+  },
+  "Undo": {
+    "vi": "Hoàn tác",
+    "de": "Rückgängig"
+  },
+  "Undo move": {
+    "vi": "Hoàn tác di chuyển",
+    "de": "Verschieben rückgängig machen"
+  },
+  "Selected folders and everything inside them will be deleted, including their learning progress. This cannot be undone.": {
+    "vi": "Xóa các thư mục đã chọn và toàn bộ nội dung bên trong, kể cả tiến trình học. Không thể hoàn tác.",
+    "de": "Ausgewählte Ordner samt Inhalt und Lernfortschritt werden unwiderruflich gelöscht."
+  },
+  "Selected item": {
+    "vi": "Mục đã chọn",
+    "de": "Ausgewählter Eintrag"
+  },
+  "Deleting…": {
+    "vi": "Đang xóa…",
+    "de": "Wird gelöscht…"
+  },
+  "Delete permanently": {
+    "vi": "Xóa vĩnh viễn",
+    "de": "Dauerhaft löschen"
+  },
+  "Folder name": {
+    "vi": "Tên thư mục",
+    "de": "Ordnername"
+  },
+  "Gom": {
+    "vi": "Gom nhóm",
+    "de": "Gruppieren",
+    "en": "Group"
+  },
+  "items": {
+    "vi": "mục",
+    "de": "Einträge"
+  },
+  "Rename": {
+    "vi": "Đổi tên",
+    "de": "Umbenennen"
+  },
+  "New name": {
+    "vi": "Tên mới",
+    "de": "Neuer Name"
+  },
+  "Save name": {
+    "vi": "Lưu tên",
+    "de": "Namen speichern"
+  },
+  "Share and delete": {
+    "vi": "Chia sẻ và xóa",
+    "de": "Teilen und löschen"
+  },
+  "Move earlier": {
+    "vi": "Chuyển lên",
+    "de": "Nach vorne verschieben"
+  },
+  "Move later": {
+    "vi": "Chuyển xuống",
+    "de": "Nach hinten verschieben"
+  },
+  "Reading content": {
+    "vi": "Nội dung đọc",
+    "de": "Leseinhalt"
+  },
+  "Options": {
+    "vi": "Tùy chọn",
+    "de": "Optionen"
+  },
+  "No matching exercises found.": {
+    "vi": "Không có bài tập phù hợp.",
+    "de": "Keine passenden Übungen gefunden."
+  },
+  "No content yet.": {
+    "vi": "Chưa có nội dung.",
+    "de": "Noch keine Inhalte."
+  },
+  "Theory content": {
+    "vi": "Nội dung lý thuyết",
+    "de": "Theorieinhalt"
+  },
+  "Find an exercise": {
+    "vi": "Tìm bài tập",
+    "de": "Übung suchen"
+  },
+  "Lesson list": {
+    "vi": "Danh sách bài học",
+    "de": "Lektionsliste"
+  },
+  "Add folders or lessons from Your exercise library to your workspace.": {
+    "vi": "Thêm thư mục hoặc bài học từ thư viện bài tập vào không gian học.",
+    "de": "Füge Ordner oder Lektionen aus deiner Übungsbibliothek zum Lernbereich hinzu."
+  },
+  "Continue learning": {
+    "vi": "Tiếp tục học",
+    "de": "Weiterlernen"
+  },
+  "← Folder cha": {
+    "vi": "← Thư mục cha",
+    "de": "← Übergeordneter Ordner",
+    "en": "← Parent folder"
+  },
+  "Remove from workspace": {
+    "vi": "Gỡ khỏi workspace",
+    "de": "Aus Arbeitsbereich entfernen"
+  },
+  "Add to workspace": {
+    "vi": "Thêm vào không gian học",
+    "de": "Zum Lernbereich hinzufügen"
+  },
+  "Preview content without changing your learning progress.": {
+    "vi": "Xem trước nội dung mà không thay đổi tiến trình học.",
+    "de": "Inhalte ansehen, ohne den Lernfortschritt zu ändern."
+  },
+  "No accessible content in this folder.": {
+    "vi": "Không có nội dung có thể truy cập trong thư mục.",
+    "de": "Keine zugänglichen Inhalte in diesem Ordner."
+  },
+  "Removing a root folder from the workspace does not delete its content or progress.": {
+    "vi": "Bỏ thư mục gốc khỏi không gian học không xóa nội dung hay tiến trình.",
+    "de": "Das Entfernen eines Stammordners aus dem Lernbereich löscht weder Inhalte noch Fortschritt."
+  },
+  "Add this content's root folder to your workspace.": {
+    "vi": "Thêm thư mục gốc của nội dung này vào không gian học.",
+    "de": "Füge den Stammordner dieses Inhalts zum Lernbereich hinzu."
+  },
+  "Opening your learning space…": {
+    "vi": "Đang mở không gian học…",
+    "de": "Lernbereich wird geöffnet…"
+  },
+  "Your exercise library": {
+    "vi": "Thư viện bài tập của bạn",
+    "de": "Deine Übungsbibliothek"
+  },
+  "Root folders containing exercises you can access. Open a card to preview it.": {
+    "vi": "Thư mục gốc chứa bài tập bạn có thể truy cập. Mở một mục để xem trước.",
+    "de": "Stammordner mit zugänglichen Übungen. Öffne einen Eintrag für die Vorschau."
+  },
+  "Search all content": {
+    "vi": "Tìm toàn bộ nội dung",
+    "de": "Alle Inhalte durchsuchen"
+  },
+  "Folder": {
+    "vi": "Thư mục",
+    "de": "Ordner"
+  },
+  "Folder pages": {
+    "vi": "Các trang thư mục",
+    "de": "Ordnerseiten"
+  },
+  "Previous": {
+    "vi": "Trước",
+    "de": "Zurück"
+  },
+  "Page": {
+    "vi": "Trang",
+    "de": "Seite"
+  },
+  "of": {
+    "vi": "trên",
+    "de": "von"
+  },
+  "Next": {
+    "vi": "Tiếp",
+    "de": "Weiter"
+  },
+  "No matching content.": {
+    "vi": "Không có nội dung phù hợp.",
+    "de": "Keine passenden Inhalte."
+  },
+  "A little practice every day.": {
+    "vi": "Luyện một chút mỗi ngày.",
+    "de": "Jeden Tag ein wenig üben."
+  },
+  "Choose a lesson in the sidebar to start. Work through each question at your own pace.": {
+    "vi": "Chọn bài ở thanh bên để bắt đầu. Làm từng câu theo nhịp độ của bạn.",
+    "de": "Wähle eine Lektion in der Seitenleiste. Bearbeite jede Frage in deinem Tempo."
+  },
+  "This lesson does not exist or you do not have access.": {
+    "vi": "Bài học không tồn tại hoặc bạn không có quyền truy cập.",
+    "de": "Diese Lektion existiert nicht oder du hast keinen Zugriff."
+  },
+  "Create tools": {
+    "vi": "Công cụ tạo nội dung",
+    "de": "Erstellungswerkzeuge"
+  },
+  "Instructions and .txt templates": {
+    "vi": "Hướng dẫn và mẫu .txt",
+    "de": "Anleitungen und TXT-Vorlagen"
+  },
+  "Not selected": {
+    "vi": "Chưa chọn",
+    "de": "Nicht ausgewählt"
+  },
+  "Close draft": {
+    "vi": "Đóng bản nháp",
+    "de": "Entwurf schließen"
+  },
+  "Folder position": {
+    "vi": "Vị trí thư mục",
+    "de": "Ordnerposition"
+  },
+  "Opening Create…": {
+    "vi": "Đang mở phần tạo nội dung…",
+    "de": "Erstellungsbereich wird geöffnet…"
+  },
+  "This content does not exist or is not owned by you.": {
+    "vi": "Nội dung không tồn tại hoặc không thuộc về bạn.",
+    "de": "Dieser Inhalt existiert nicht oder gehört dir nicht."
+  },
+  "Add an exercise or folder": {
+    "vi": "Thêm bài tập hoặc thư mục",
+    "de": "Übung oder Ordner hinzufügen"
+  },
+  "Folder options": {
+    "vi": "Tùy chọn thư mục",
+    "de": "Ordneroptionen"
+  },
+  "Search": {
+    "vi": "Tìm kiếm",
+    "de": "Suchen"
+  },
+  "Search this folder…": {
+    "vi": "Tìm trong thư mục này…",
+    "de": "Diesen Ordner durchsuchen…"
+  },
+  "Search folders…": {
+    "vi": "Tìm thư mục…",
+    "de": "Ordner suchen…"
+  },
+  "Format": {
+    "vi": "Định dạng",
+    "de": "Format"
+  },
+  "Markdown + lesson markup": {
+    "vi": "Markdown + định dạng bài học",
+    "de": "Markdown + Lerntext-Auszeichnung"
+  },
+  "Save content": {
+    "vi": "Lưu nội dung",
+    "de": "Inhalt speichern"
+  },
+  "Upload images / media": {
+    "vi": "Tải ảnh / tệp lên",
+    "de": "Bilder / Medien hochladen"
+  },
+  "Copy an image command into Theory content. Keep its attachment listed so readers can access it.": {
+    "vi": "Chép lệnh ảnh vào nội dung lý thuyết. Giữ ảnh trong danh sách đính kèm để người học truy cập được.",
+    "de": "Kopiere einen Bildbefehl in den Theorieinhalt. Der Anhang muss gelistet bleiben, damit Lernende ihn öffnen können."
+  },
+  "Preview theory": {
+    "vi": "Xem trước lý thuyết",
+    "de": "Theorie-Vorschau"
+  },
+  "Edit content": {
+    "vi": "Sửa nội dung",
+    "de": "Inhalt bearbeiten"
+  },
+  "Content options": {
+    "vi": "Tùy chọn nội dung",
+    "de": "Inhaltsoptionen"
+  },
+  "Manage MP3 and images": {
+    "vi": "Quản lý MP3 và ảnh",
+    "de": "MP3 und Bilder verwalten"
+  },
+  "Exercises from .txt": {
+    "vi": "Bài tập từ .txt",
+    "de": "Übungen aus TXT"
+  },
+  "Add to folder": {
+    "vi": "Thêm vào thư mục",
+    "de": "Zu Ordner hinzufügen"
+  },
+  "Choose a destination folder.": {
+    "vi": "Chọn thư mục đích.",
+    "de": "Zielordner wählen."
+  },
+  "Example: Present simple": {
+    "vi": "Ví dụ: Thì hiện tại đơn",
+    "de": "Beispiel: Präsens"
+  },
+  "Tags": {
+    "vi": "Nhãn",
+    "de": "Schlagwörter"
+  },
+  "grammar, present simple, A1": {
+    "vi": "ngữ pháp, hiện tại đơn, A1",
+    "de": "Grammatik, Präsens, A1"
+  },
+  "Up to 12 tags, separated by commas.": {
+    "vi": "Tối đa 12 nhãn, phân cách bằng dấu phẩy.",
+    "de": "Bis zu 12 Schlagwörter, durch Kommas getrennt."
+  },
+  "Create folder": {
+    "vi": "Tạo thư mục",
+    "de": "Ordner erstellen"
+  },
+  "Who can study?": {
+    "vi": "Ai có thể học?",
+    "de": "Wer darf lernen?"
+  },
+  "Private": {
+    "vi": "Riêng tư",
+    "de": "Privat"
+  },
+  "Public": {
+    "vi": "Công khai",
+    "de": "Öffentlich"
+  },
+  "folde": {
+    "vi": "thư mục",
+    "de": "Ordner",
+    "en": "folder"
+  },
+  "content": {
+    "vi": "nội dung",
+    "de": "Inhalt"
+  },
+  "Delete “": {
+    "vi": "Xóa “",
+    "de": "Löschen: „"
+  },
+  "and all its contents": {
+    "vi": "và toàn bộ nội dung",
+    "de": "und alle Inhalte"
+  },
+  "? This action cannot be undone.": {
+    "vi": "? Không thể hoàn tác thao tác này.",
+    "de": "? Diese Aktion kann nicht rückgängig gemacht werden."
+  },
+  "Confirm deletion": {
+    "vi": "Xác nhận xóa",
+    "de": "Löschen bestätigen"
+  },
+  "Up to 12 tags, 40 characters each. Separate with commas.": {
+    "vi": "Tối đa 12 nhãn, mỗi nhãn 40 ký tự. Phân cách bằng dấu phẩy.",
+    "de": "Bis zu 12 Schlagwörter mit je 40 Zeichen. Mit Kommas trennen."
+  },
+  "Save tags": {
+    "vi": "Lưu nhãn",
+    "de": "Schlagwörter speichern"
+  },
+  "Completed questions": {
+    "vi": "Câu đã hoàn thành",
+    "de": "Abgeschlossene Fragen"
+  },
+  "Collapse branch": {
+    "vi": "Thu gọn nhánh",
+    "de": "Zweig einklappen"
+  },
+  "Collapse": {
+    "vi": "Thu gọn",
+    "de": "Einklappen"
+  },
+  "Content tree": {
+    "vi": "Cây nội dung",
+    "de": "Inhaltsbaum"
+  },
+  "Word bank; drag a word here to remove it from the gap": {
+    "vi": "Ngân hàng từ; kéo từ vào đây để bỏ khỏi chỗ trống",
+    "de": "Wortbank; Wort hierher ziehen, um es aus der Lücke zu entfernen"
+  },
+  "Attachments": {
+    "vi": "Tệp đính kèm",
+    "de": "Anhänge"
+  },
+  "MP3 / images · optional · 200 MB total maximum": {
+    "vi": "MP3 / ảnh · không bắt buộc · tổng tối đa 200 MB",
+    "de": "MP3 / Bilder · optional · insgesamt maximal 200 MB"
+  },
+  "Add MP3 or images": {
+    "vi": "Thêm MP3 hoặc ảnh",
+    "de": "MP3 oder Bilder hinzufügen"
+  },
+  "Add files to": {
+    "vi": "Thêm tệp vào",
+    "de": "Dateien hinzufügen zu"
+  },
+  "Entire exercise": {
+    "vi": "Toàn bộ bài tập",
+    "de": "Gesamte Übung"
+  },
+  "Entire document": {
+    "vi": "Toàn bộ tài liệu",
+    "de": "Gesamtes Dokument"
+  },
+  "One question per file · selection order": {
+    "vi": "Mỗi tệp một câu · theo thứ tự chọn",
+    "de": "Eine Frage pro Datei · Auswahlreihenfolge"
+  },
+  "First file → question 1, next file → question 2. Review and change assignments after uploading.": {
+    "vi": "Tệp đầu → câu 1, tệp sau → câu 2. Có thể xem và đổi gán tệp sau khi tải lên.",
+    "de": "Erste Datei → Frage 1, nächste → Frage 2. Zuordnungen nach dem Hochladen prüfen und ändern."
+  },
+  "files ·": {
+    "vi": "tệp ·",
+    "de": "Dateien ·"
+  },
+  "Uploading files…": {
+    "vi": "Đang tải tệp lên…",
+    "de": "Dateien werden hochgeladen…"
+  },
+  "View file": {
+    "vi": "Xem tệp",
+    "de": "Datei ansehen"
+  },
+  "Remove file": {
+    "vi": "Bỏ tệp",
+    "de": "Datei entfernen"
+  },
+  "Save media": {
+    "vi": "Lưu tệp",
+    "de": "Medien speichern"
+  },
+  "Place words here": {
+    "vi": "Đặt từ vào đây",
+    "de": "Wörter hier ablegen"
+  },
+  "Word bank; drop a word here to remove it from the sentence": {
+    "vi": "Ngân hàng từ; thả từ vào đây để bỏ khỏi câu",
+    "de": "Wortbank; Wort hier ablegen, um es aus dem Satz zu entfernen"
+  },
+  "Not a match. Try again.": {
+    "vi": "Chưa khớp. Thử lại nhé.",
+    "de": "Passt nicht. Versuche es erneut."
+  },
+  "Your reply": {
+    "vi": "Câu trả lời của bạn",
+    "de": "Deine Antwort"
+  },
+  "Cross out options to compare the remaining choices, then select your answer. Crossing out is optional and is not graded.": {
+    "vi": "Gạch bỏ lựa chọn để so sánh phần còn lại rồi chọn đáp án. Gạch bỏ không bắt buộc và không được chấm điểm.",
+    "de": "Streiche Optionen, vergleiche die übrigen und wähle deine Antwort. Das Streichen ist freiwillig und wird nicht bewertet."
+  },
+  "Does the passage support this statement?": {
+    "vi": "Đoạn đọc có xác nhận nhận định này không?",
+    "de": "Wird diese Aussage durch den Text gestützt?"
+  },
+  "Restore": {
+    "vi": "Khôi phục",
+    "de": "Wiederherstellen"
+  },
+  "Rule out": {
+    "vi": "Loại trừ",
+    "de": "Ausschließen"
+  },
+  "Practice Hub sections": {
+    "vi": "Các mục luyện tập",
+    "de": "Übungsbereiche"
+  },
+  "Formatting guide · line breaks, tables and images": {
+    "vi": "Hướng dẫn định dạng · xuống dòng, bảng và ảnh",
+    "de": "Formatierungsanleitung · Umbrüche, Tabellen und Bilder"
+  },
+  "Download sample exercises": {
+    "vi": "Tải bài tập mẫu",
+    "de": "Beispielübungen herunterladen"
+  },
+  "Download sample theory": {
+    "vi": "Tải lý thuyết mẫu",
+    "de": "Beispieltheorie herunterladen"
+  },
+  "Lesson guide": {
+    "vi": "Hướng dẫn tạo bài",
+    "de": "Lektionsanleitung"
+  },
+  "Copy the guide, request a lesson in your chat, then paste the result into a new draft.": {
+    "vi": "Chép hướng dẫn, yêu cầu chat tạo bài rồi dán kết quả vào bản nháp mới.",
+    "de": "Kopiere die Anleitung, fordere im Chat eine Lektion an und füge das Ergebnis in einen neuen Entwurf ein."
+  },
+  "Lesson request (optional)": {
+    "vi": "Yêu cầu bài học (tùy chọn)",
+    "de": "Lektionswunsch (optional)"
+  },
+  "Topic, level and exercise preferences": {
+    "vi": "Chủ đề, trình độ và yêu cầu bài tập",
+    "de": "Thema, Niveau und Übungswünsche"
+  },
+  "For example: B1 travel vocabulary, 10 gap-fill questions, a shared word bank and explanations in English.": {
+    "vi": "Ví dụ: Từ vựng du lịch B1, 10 câu điền từ, ngân hàng từ chung và giải thích bằng tiếng Anh.",
+    "de": "Beispiel: B1-Reisewortschatz, 10 Lückentextfragen, gemeinsame Wortbank und Erklärungen auf Englisch."
+  },
+  "Guide ↗": {
+    "vi": "Hướng dẫn ↗",
+    "de": "Anleitung ↗"
+  },
+  "View instructions": {
+    "vi": "Xem hướng dẫn",
+    "de": "Anleitung ansehen"
+  },
+  "Complete instructions": {
+    "vi": "Hướng dẫn đầy đủ",
+    "de": "Vollständige Anleitung"
+  },
+  "Reading illustration": {
+    "vi": "Ảnh minh họa bài đọc",
+    "de": "Illustration zum Lesetext"
+  },
+  "Reading passage": {
+    "vi": "Đoạn đọc",
+    "de": "Lesetext"
+  },
+  "Reading questions": {
+    "vi": "Câu hỏi đọc hiểu",
+    "de": "Leseverständnisfragen"
+  },
+  "Questions": {
+    "vi": "Câu hỏi",
+    "de": "Fragen"
+  },
+  "Question mode": {
+    "vi": "Cách hiển thị câu hỏi",
+    "de": "Fragenansicht"
+  },
+  "One at a time": {
+    "vi": "Từng câu",
+    "de": "Einzeln"
+  },
+  "All questions": {
+    "vi": "Tất cả câu",
+    "de": "Alle Fragen"
+  },
+  "Review this answer": {
+    "vi": "Xem lại đáp án này",
+    "de": "Diese Antwort prüfen"
+  },
+  "correct": {
+    "vi": "đúng",
+    "de": "richtig"
+  },
+  "Check all": {
+    "vi": "Kiểm tra tất cả",
+    "de": "Alle prüfen"
+  },
+  "Check and show answer": {
+    "vi": "Kiểm tra và hiện đáp án",
+    "de": "Prüfen und Antwort anzeigen"
+  },
+  "Classes": {
+    "vi": "Lớp học",
+    "de": "Klassen"
+  },
+  "Learn together with Practice Hub exercises and folders.": {
+    "vi": "Cùng học với bài tập và thư mục trong khu luyện tập.",
+    "de": "Gemeinsam mit Übungen und Ordnern aus dem Übungsbereich lernen."
+  },
+  "Create class": {
+    "vi": "Tạo lớp",
+    "de": "Klasse erstellen"
+  },
+  "Tham gia": {
+    "vi": "Tham gia",
+    "de": "Beitreten",
+    "en": "Join"
+  },
+  "Delete class": {
+    "vi": "Xóa lớp",
+    "de": "Klasse löschen"
+  },
+  "Invite code:": {
+    "vi": "Mã mời:",
+    "de": "Einladungscode:"
+  },
+  "Copy invite code": {
+    "vi": "Sao chép mã mời",
+    "de": "Einladungscode kopieren"
+  },
+  "Members (": {
+    "vi": "Thành viên (",
+    "de": "Mitglieder ("
+  },
+  "Remove from class": {
+    "vi": "Xóa khỏi lớp",
+    "de": "Aus Klasse entfernen"
+  },
+  "Assigned content": {
+    "vi": "Nội dung được giao",
+    "de": "Zugewiesene Inhalte"
+  },
+  "Unassign": {
+    "vi": "Bỏ giao",
+    "de": "Zuweisung aufheben"
+  },
+  "No assigned content yet.": {
+    "vi": "Chưa có nội dung được giao.",
+    "de": "Noch keine Inhalte zugewiesen."
+  },
+  "Delete this class?": {
+    "vi": "Xóa lớp này?",
+    "de": "Diese Klasse löschen?"
+  },
+  "Assign content": {
+    "vi": "Giao nội dung",
+    "de": "Inhalt zuweisen"
+  },
+  "Exercise / theory / folder": {
+    "vi": "Bài tập / lý thuyết / thư mục",
+    "de": "Übung / Theorie / Ordner"
+  },
+  "Choose content": {
+    "vi": "Chọn nội dung",
+    "de": "Inhalt wählen"
+  },
+  "Due date (optional)": {
+    "vi": "Hạn nộp (tùy chọn)",
+    "de": "Abgabefrist (optional)"
+  },
+  "Assign to class": {
+    "vi": "Giao cho lớp",
+    "de": "Der Klasse zuweisen"
+  },
+  "Profile contents": {
+    "vi": "Các mục hồ sơ",
+    "de": "Profilbereiche"
+  },
+  "Overview": {
+    "vi": "Tổng quan",
+    "de": "Übersicht"
+  },
+  "Progress": {
+    "vi": "Tiến trình",
+    "de": "Fortschritt"
+  },
+  "History": {
+    "vi": "Lịch sử",
+    "de": "Verlauf"
+  },
+  "Edit profile": {
+    "vi": "Sửa hồ sơ",
+    "de": "Profil bearbeiten"
+  },
+  "Daily goal": {
+    "vi": "Mục tiêu mỗi ngày",
+    "de": "Tagesziel"
+  },
+  "Today": {
+    "vi": "Hôm nay",
+    "de": "Heute"
+  },
+  "Change daily goal": {
+    "vi": "Đổi mục tiêu mỗi ngày",
+    "de": "Tagesziel ändern"
+  },
+  "Change goal": {
+    "vi": "Đổi mục tiêu",
+    "de": "Ziel ändern"
+  },
+  "✓ Goal reached": {
+    "vi": "✓ Đã đạt mục tiêu",
+    "de": "✓ Ziel erreicht"
+  },
+  "Review due cards": {
+    "vi": "Ôn thẻ đến hạn",
+    "de": "Fällige Karten wiederholen"
+  },
+  "due cards": {
+    "vi": "thẻ đến hạn",
+    "de": "fällige Karten"
+  },
+  "Learning rhythm": {
+    "vi": "Nhịp học",
+    "de": "Lernrhythmus"
+  },
+  "days": {
+    "vi": "ngày",
+    "de": "Tage"
+  },
+  "Activity over four weeks, in Vietnam time": {
+    "vi": "Hoạt động trong bốn tuần theo giờ Việt Nam",
+    "de": "Aktivität der letzten vier Wochen, vietnamesische Zeit"
+  },
+  "Longest": {
+    "vi": "Dài nhất",
+    "de": "Längste Serie"
+  },
+  "Studied": {
+    "vi": "Đã học",
+    "de": "Gelernt"
+  },
+  "Learning progress": {
+    "vi": "Tiến trình học",
+    "de": "Lernfortschritt"
+  },
+  "Time range": {
+    "vi": "Khoảng thời gian",
+    "de": "Zeitraum"
+  },
+  "Open flashcard library": {
+    "vi": "Mở thư viện thẻ",
+    "de": "Lernkartenbibliothek öffnen"
+  },
+  "mastered cards": {
+    "vi": "thẻ đã nắm vững",
+    "de": "beherrschte Karten"
+  },
+  "Achieved": {
+    "vi": "Đã đạt",
+    "de": "Erreicht"
+  },
+  "Not yet mastered": {
+    "vi": "Chưa nắm vững",
+    "de": "Noch nicht beherrscht"
+  },
+  "No decks yet": {
+    "vi": "Chưa có bộ thẻ",
+    "de": "Noch keine Kartensätze"
+  },
+  "Practice Hub": {
+    "vi": "Luyện tập",
+    "de": "Übungsbereich"
+  },
+  "Learning history": {
+    "vi": "Lịch sử học",
+    "de": "Lernverlauf"
+  },
+  "Activity type": {
+    "vi": "Loại hoạt động",
+    "de": "Aktivitätstyp"
+  },
+  "Show more": {
+    "vi": "Xem thêm",
+    "de": "Mehr anzeigen"
+  },
+  "No completed exercises yet": {
+    "vi": "Chưa hoàn thành bài tập nào",
+    "de": "Noch keine Übungen abgeschlossen"
+  },
+  "Open Practice Hub": {
+    "vi": "Mở khu luyện tập",
+    "de": "Übungsbereich öffnen"
+  },
+  "Profile": {
+    "vi": "Hồ sơ",
+    "de": "Profil"
+  },
+  "Delete search": {
+    "vi": "Xóa tìm kiếm",
+    "de": "Suche löschen"
+  },
+  "Discover tools": {
+    "vi": "Công cụ khám phá",
+    "de": "Entdeckungswerkzeuge"
+  },
+  "Discover": {
+    "vi": "Khám phá",
+    "de": "Entdecken"
+  },
+  "Filters": {
+    "vi": "Bộ lọc",
+    "de": "Filter"
+  },
+  "Search history": {
+    "vi": "Lịch sử tìm kiếm",
+    "de": "Suchverlauf"
+  },
+  "Recent searches": {
+    "vi": "Tìm kiếm gần đây",
+    "de": "Letzte Suchanfragen"
+  },
+  "Recent": {
+    "vi": "Gần đây",
+    "de": "Zuletzt"
+  },
+  "Full history": {
+    "vi": "Toàn bộ lịch sử",
+    "de": "Gesamter Verlauf"
+  },
+  "Search trong folde…": {
+    "vi": "Tìm trong thư mục…",
+    "de": "Im Ordner suchen…",
+    "en": "Search in folder…"
+  },
+  "Search folders or topics…": {
+    "vi": "Tìm thư mục hoặc chủ đề…",
+    "de": "Ordner oder Themen suchen…"
+  },
+  "Search suggestions": {
+    "vi": "Gợi ý tìm kiếm",
+    "de": "Suchvorschläge"
+  },
+  "This folder is no longer public or accessible.": {
+    "vi": "Thư mục không còn công khai hoặc không thể truy cập.",
+    "de": "Dieser Ordner ist nicht mehr öffentlich oder zugänglich."
+  },
+  "· You": {
+    "vi": "· Bạn",
+    "de": "· Du"
+  },
+  "Open folder": {
+    "vi": "Mở thư mục",
+    "de": "Ordner öffnen"
+  },
+  "No matching results.": {
+    "vi": "Không có kết quả phù hợp.",
+    "de": "Keine passenden Ergebnisse."
+  },
+  "No public content yet.": {
+    "vi": "Chưa có nội dung công khai.",
+    "de": "Noch keine öffentlichen Inhalte."
+  },
+  "Show more results": {
+    "vi": "Xem thêm kết quả",
+    "de": "Weitere Ergebnisse anzeigen"
+  },
+  "Saved in this browser ·": {
+    "vi": "Đã lưu trong trình duyệt này ·",
+    "de": "In diesem Browser gespeichert ·"
+  },
+  "German": {
+    "vi": "Tiếng Đức",
+    "de": "Deutsch"
+  },
+  "English": {
+    "vi": "Tiếng Anh",
+    "de": "Englisch"
+  },
+  "Delete all": {
+    "vi": "Xóa tất cả",
+    "de": "Alles löschen"
+  },
+  "Clear search history": {
+    "vi": "Xóa lịch sử tìm kiếm",
+    "de": "Suchverlauf löschen"
+  },
+  "No recent searches.": {
+    "vi": "Chưa có tìm kiếm gần đây.",
+    "de": "Keine letzten Suchanfragen."
+  },
+  "Exercise type": {
+    "vi": "Dạng bài tập",
+    "de": "Übungstyp"
+  },
+  "All": {
+    "vi": "Tất cả",
+    "de": "Alle"
+  },
+  "Most relevant": {
+    "vi": "Phù hợp nhất",
+    "de": "Relevanteste"
+  },
+  "Reset filters": {
+    "vi": "Đặt lại bộ lọc",
+    "de": "Filter zurücksetzen"
+  },
+  "Xong": {
+    "vi": "Xong",
+    "de": "Fertig",
+    "en": "Done"
+  },
+  "Wortify system library": {
+    "vi": "Thư viện hệ thống Wortify",
+    "de": "Wortify-Systembibliothek"
+  },
+  "Official content packages. Add a package once to keep your own progress in Flashcards, Practice Hub and Reading.": {
+    "vi": "Các gói nội dung chính thức. Thêm một lần để có tiến trình riêng trong Thẻ, Luyện tập và Đọc hiểu.",
+    "de": "Offizielle Inhaltspakete. Einmal hinzufügen, um eigenen Fortschritt bei Lernkarten, Übungen und Lesen zu speichern."
+  },
+  "No packages yet.": {
+    "vi": "Chưa có gói nội dung.",
+    "de": "Noch keine Pakete."
+  },
+  "decks ·": {
+    "vi": "bộ thẻ ·",
+    "de": "Kartensätze ·"
+  },
+  "exercises ·": {
+    "vi": "bài tập ·",
+    "de": "Übungen ·"
+  },
+  "readings": {
+    "vi": "bài đọc",
+    "de": "Lesetexte"
+  },
+  "Added to your library": {
+    "vi": "Đã thêm vào thư viện",
+    "de": "Zur Bibliothek hinzugefügt"
+  },
+  "Adding...": {
+    "vi": "Đang thêm…",
+    "de": "Wird hinzugefügt…"
+  },
+  "Add package": {
+    "vi": "Thêm gói",
+    "de": "Paket hinzufügen"
+  },
+  "WORTIFY STUDIO · APPEARANCE": {
+    "vi": "WORTIFY STUDIO · GIAO DIỆN",
+    "de": "WORTIFY STUDIO · DARSTELLUNG"
+  },
+  "One shared background for all learners.": {
+    "vi": "Một hình nền chung cho mọi người học.",
+    "de": "Ein gemeinsamer Hintergrund für alle Lernenden."
+  },
+  "Administrator backgrounds are shared across Wortify.": {
+    "vi": "Hình nền quản trị được dùng chung toàn Wortify.",
+    "de": "Administrator-Hintergründe gelten für ganz Wortify."
+  },
+  "Loading admin data…": {
+    "vi": "Đang tải dữ liệu quản trị…",
+    "de": "Verwaltungsdaten werden geladen…"
+  },
+  "CURRENT BACKGROUND": {
+    "vi": "HÌNH NỀN HIỆN TẠI",
+    "de": "AKTUELLER HINTERGRUND"
+  },
+  "Using the shared background": {
+    "vi": "Đang dùng hình nền chung",
+    "de": "Gemeinsamer Hintergrund aktiv"
+  },
+  "Using the default background": {
+    "vi": "Đang dùng hình nền mặc định",
+    "de": "Standardhintergrund aktiv"
+  },
+  "Enabled": {
+    "vi": "Đã bật",
+    "de": "Aktiviert"
+  },
+  "Default": {
+    "vi": "Mặc định",
+    "de": "Standard"
+  },
+  "Choose a new image": {
+    "vi": "Chọn ảnh mới",
+    "de": "Neues Bild wählen"
+  },
+  "PNG, JPG or WebP · max 30 MB": {
+    "vi": "PNG, JPG hoặc WebP · tối đa 30 MB",
+    "de": "PNG, JPG oder WebP · max. 30 MB"
+  },
+  "Save background": {
+    "vi": "Lưu hình nền",
+    "de": "Hintergrund speichern"
+  },
+  "Restore default background": {
+    "vi": "Khôi phục hình nền mặc định",
+    "de": "Standardhintergrund wiederherstellen"
+  },
+  "Image suggestions": {
+    "vi": "Gợi ý hình ảnh",
+    "de": "Bildvorschläge"
+  },
+  "Choose a landscape image with few details to keep text readable.": {
+    "vi": "Chọn ảnh ngang ít chi tiết để chữ dễ đọc.",
+    "de": "Wähle ein ruhiges Querformatbild, damit Text lesbar bleibt."
+  },
+  "The image applies to all signed-in accounts.": {
+    "vi": "Ảnh áp dụng cho tất cả tài khoản đã đăng nhập.",
+    "de": "Das Bild gilt für alle angemeldeten Konten."
+  },
+  "Changes take effect the next time you sign in.": {
+    "vi": "Thay đổi có hiệu lực ở lần đăng nhập tiếp theo.",
+    "de": "Änderungen gelten bei der nächsten Anmeldung."
+  },
+  "Recently updated content": {
+    "vi": "Nội dung mới cập nhật",
+    "de": "Zuletzt aktualisierte Inhalte"
+  },
+  "Admin and staff activity history.": {
+    "vi": "Lịch sử hoạt động quản trị viên và nhân viên.",
+    "de": "Aktivitätsverlauf von Administratoren und Mitarbeitenden."
+  },
+  "Your activity history.": {
+    "vi": "Lịch sử hoạt động của bạn.",
+    "de": "Dein Aktivitätsverlauf."
+  },
+  "Search content or actor": {
+    "vi": "Tìm nội dung hoặc người thao tác",
+    "de": "Inhalt oder handelnde Person suchen"
+  },
+  "Refresh": {
+    "vi": "Làm mới",
+    "de": "Aktualisieren"
+  },
+  "Activity log": {
+    "vi": "Nhật ký hoạt động",
+    "de": "Aktivitätsprotokoll"
+  },
+  "/ CONTROL CENTER": {
+    "vi": "/ TRUNG TÂM ĐIỀU KHIỂN",
+    "de": "/ STEUERZENTRALE"
+  },
+  "Admin features": {
+    "vi": "Chức năng quản trị",
+    "de": "Verwaltungsfunktionen"
+  },
+  "Administrator": {
+    "vi": "Quản trị viên",
+    "de": "Administrator"
+  },
+  "Staff": {
+    "vi": "Nhân viên",
+    "de": "Mitarbeitende"
+  },
+  "Back to home": {
+    "vi": "Về trang chủ",
+    "de": "Zur Startseite"
+  },
+  "WORKSPACE / ADMINISTRATION": {
+    "vi": "KHÔNG GIAN / QUẢN TRỊ",
+    "de": "BEREICH / VERWALTUNG"
+  },
+  "Density": {
+    "vi": "Mật độ hiển thị",
+    "de": "Anzeigedichte"
+  },
+  "Comfortable": {
+    "vi": "Thoáng",
+    "de": "Weitläufig"
+  },
+  "Cozy": {
+    "vi": "Vừa phải",
+    "de": "Mittel"
+  },
+  "Compact": {
+    "vi": "Gọn",
+    "de": "Kompakt"
+  },
+  "Light mode": {
+    "vi": "Chế độ sáng",
+    "de": "Heller Modus"
+  },
+  "Dark mode": {
+    "vi": "Chế độ tối",
+    "de": "Dunkler Modus"
+  },
+  "Home ↗": {
+    "vi": "Trang chủ ↗",
+    "de": "Startseite ↗"
+  },
+  "Choose an item": {
+    "vi": "Chọn mục",
+    "de": "Eintrag wählen"
+  },
+  "Not linked": {
+    "vi": "Chưa liên kết",
+    "de": "Nicht verknüpft"
+  },
+  "Searching…": {
+    "vi": "Đang tìm…",
+    "de": "Suche läuft…"
+  },
+  "Add data": {
+    "vi": "Thêm dữ liệu",
+    "de": "Daten hinzufügen"
+  },
+  "Save": {
+    "vi": "Lưu",
+    "de": "Speichern"
+  },
+  "Back to users": {
+    "vi": "Về danh sách người dùng",
+    "de": "Zur Benutzerliste"
+  },
+  "Update": {
+    "vi": "Cập nhật",
+    "de": "Aktualisieren"
+  },
+  "Delete all data": {
+    "vi": "Xóa toàn bộ dữ liệu",
+    "de": "Alle Daten löschen"
+  },
+  "Data": {
+    "vi": "Dữ liệu",
+    "de": "Daten"
+  },
+  "Search by name": {
+    "vi": "Tìm theo tên",
+    "de": "Nach Namen suchen"
+  },
+  "View and edit": {
+    "vi": "Xem và sửa",
+    "de": "Ansehen und bearbeiten"
+  },
+  "No data yet.": {
+    "vi": "Chưa có dữ liệu.",
+    "de": "Noch keine Daten."
+  },
+  "Sau": {
+    "vi": "Sau",
+    "de": "Weiter",
+    "en": "Next"
+  },
+  "Dependent data may also be deleted. This cannot be undone.": {
+    "vi": "Dữ liệu phụ thuộc cũng có thể bị xóa. Không thể hoàn tác.",
+    "de": "Abhängige Daten können ebenfalls unwiderruflich gelöscht werden."
+  },
+  "Delete all owned folders, decks, exercises, progress, learning history, profile and classes in both languages. Keep the account and password; sign out existing sessions. This cannot be undone.": {
+    "vi": "Xóa mọi thư mục, bộ thẻ, bài tập, tiến trình, lịch sử, hồ sơ và lớp thuộc tài khoản ở cả hai ngôn ngữ. Giữ tài khoản và mật khẩu; đăng xuất các phiên hiện có. Không thể hoàn tác.",
+    "de": "Alle eigenen Ordner, Kartensätze, Übungen, Fortschritte, Verläufe, Profile und Klassen beider Sprachen löschen. Konto und Passwort bleiben; bestehende Sitzungen werden abgemeldet. Nicht rückgängig zu machen."
+  },
+  "Frontend → backend connection": {
+    "vi": "Kết nối frontend → backend",
+    "de": "Frontend-Backend-Verbindung"
+  },
+  "Errors only": {
+    "vi": "Chỉ lỗi",
+    "de": "Nur Fehler"
+  },
+  "Update log": {
+    "vi": "Cập nhật nhật ký",
+    "de": "Protokoll aktualisieren"
+  },
+  "The frontend server checks the backend every 10 minutes, independently of users. Logs are retained for 30 days.": {
+    "vi": "Máy chủ frontend kiểm tra backend mỗi 10 phút, độc lập với người dùng. Nhật ký giữ trong 30 ngày.",
+    "de": "Der Frontend-Server prüft das Backend alle 10 Minuten unabhängig von Benutzern. Protokolle werden 30 Tage gespeichert."
+  },
+  "Connected": {
+    "vi": "Đã kết nối",
+    "de": "Verbunden"
+  },
+  "Disconnected": {
+    "vi": "Mất kết nối",
+    "de": "Nicht verbunden"
+  },
+  "No matching logs.": {
+    "vi": "Không có nhật ký phù hợp.",
+    "de": "Keine passenden Protokolle."
+  },
+  "log": {
+    "vi": "nhật ký",
+    "de": "Protokoll"
+  },
+  "System": {
+    "vi": "Hệ thống",
+    "de": "System"
+  },
+  "Technical": {
+    "vi": "Kỹ thuật",
+    "de": "Technik"
+  },
+  "Database:": {
+    "vi": "Cơ sở dữ liệu:",
+    "de": "Datenbank:"
+  },
+  "· Connected": {
+    "vi": "· Đã kết nối",
+    "de": "· Verbunden"
+  },
+  "Development mode": {
+    "vi": "Chế độ phát triển",
+    "de": "Entwicklungsmodus"
+  },
+  "Production mode": {
+    "vi": "Chế độ triển khai",
+    "de": "Produktionsmodus"
+  },
+  "Data structure updated": {
+    "vi": "Cấu trúc dữ liệu đã cập nhật",
+    "de": "Datenstruktur aktualisiert"
+  },
+  "Checked at": {
+    "vi": "Kiểm tra lúc",
+    "de": "Geprüft am"
+  },
+  "Content": {
+    "vi": "Nội dung",
+    "de": "Inhalte"
+  },
+  "Admin activity": {
+    "vi": "Hoạt động quản trị",
+    "de": "Verwaltungsaktivität"
+  },
+  "No activity yet.": {
+    "vi": "Chưa có hoạt động.",
+    "de": "Noch keine Aktivität."
+  },
+  "results · Page": {
+    "vi": "kết quả · Trang",
+    "de": "Ergebnisse · Seite"
+  },
+  "Reason for action": {
+    "vi": "Lý do thao tác",
+    "de": "Grund der Aktion"
+  },
+  "← User list": {
+    "vi": "← Danh sách người dùng",
+    "de": "← Benutzerliste"
+  },
+  "User management": {
+    "vi": "Quản lý người dùng",
+    "de": "Benutzerverwaltung"
+  },
+  "Create account": {
+    "vi": "Tạo tài khoản",
+    "de": "Konto erstellen"
+  },
+  "Staff support regular users. Admins manage roles and admin/staff accounts.": {
+    "vi": "Nhân viên hỗ trợ người dùng thường. Quản trị viên quản lý quyền và tài khoản quản trị/nhân viên.",
+    "de": "Mitarbeitende unterstützen normale Benutzer. Administratoren verwalten Rollen sowie Verwaltungs- und Mitarbeiterkonten."
+  },
+  "Username or email": {
+    "vi": "Tên đăng nhập hoặc email",
+    "de": "Benutzername oder E-Mail"
+  },
+  "Accounts": {
+    "vi": "Tài khoản",
+    "de": "Konten"
+  },
+  "Filter role": {
+    "vi": "Lọc quyền",
+    "de": "Nach Rolle filtern"
+  },
+  "All roles": {
+    "vi": "Tất cả quyền",
+    "de": "Alle Rollen"
+  },
+  "User": {
+    "vi": "Người dùng",
+    "de": "Benutzer"
+  },
+  "Admin": {
+    "vi": "Quản trị viên",
+    "de": "Administrator"
+  },
+  "Filter status": {
+    "vi": "Lọc trạng thái",
+    "de": "Nach Status filtern"
+  },
+  "All statuses": {
+    "vi": "Tất cả trạng thái",
+    "de": "Alle Status"
+  },
+  "Active": {
+    "vi": "Hoạt động",
+    "de": "Aktiv"
+  },
+  "Locked": {
+    "vi": "Đã khóa",
+    "de": "Gesperrt"
+  },
+  "Account role": {
+    "vi": "Quyền tài khoản",
+    "de": "Kontorolle"
+  },
+  "Users — learn and create personal content": {
+    "vi": "Người dùng — học và tạo nội dung cá nhân",
+    "de": "Benutzer — lernen und eigene Inhalte erstellen"
+  },
+  "Staff — content and user support": {
+    "vi": "Nhân viên — hỗ trợ nội dung và người dùng",
+    "de": "Mitarbeitende — Inhalte und Benutzer betreuen"
+  },
+  "Admin — full system access": {
+    "vi": "Quản trị viên — toàn quyền hệ thống",
+    "de": "Administrator — voller Systemzugriff"
+  },
+  "Admins can assign roles, lock accounts and delete users. Grant this role only to system administrators.": {
+    "vi": "Quản trị viên có thể cấp quyền, khóa và xóa tài khoản. Chỉ cấp quyền này cho người quản trị hệ thống.",
+    "de": "Administratoren können Rollen vergeben, Konten sperren und Benutzer löschen. Nur Systemverantwortlichen zuweisen."
+  },
+  "The new password takes effect immediately. Other devices must sign in again.": {
+    "vi": "Mật khẩu mới có hiệu lực ngay. Thiết bị khác phải đăng nhập lại.",
+    "de": "Das neue Passwort gilt sofort. Andere Geräte müssen sich erneut anmelden."
+  },
+  "Permanently delete this account and its data in both languages. This cannot be undone.": {
+    "vi": "Xóa vĩnh viễn tài khoản và dữ liệu ở cả hai ngôn ngữ. Không thể hoàn tác.",
+    "de": "Konto und Daten beider Sprachen unwiderruflich löschen."
+  },
+  "Users will need to sign in again. Learning data is preserved.": {
+    "vi": "Người dùng cần đăng nhập lại. Dữ liệu học được giữ nguyên.",
+    "de": "Benutzer müssen sich erneut anmelden. Lerndaten bleiben erhalten."
+  },
+  "Update account access. Learning data is preserved.": {
+    "vi": "Cập nhật quyền truy cập. Dữ liệu học được giữ nguyên.",
+    "de": "Kontozugriff aktualisieren. Lerndaten bleiben erhalten."
+  },
+  "Confirm": {
+    "vi": "Xác nhận",
+    "de": "Bestätigen"
+  },
+  "New content is private. Publish it after reviewing.": {
+    "vi": "Nội dung mới mặc định riêng tư. Kiểm tra trước khi công khai.",
+    "de": "Neue Inhalte sind privat. Nach Prüfung veröffentlichen."
+  },
+  "Language": {
+    "vi": "Ngôn ngữ",
+    "de": "Sprache"
+  },
+  "Parent folder": {
+    "vi": "Thư mục cha",
+    "de": "Übergeordneter Ordner"
+  },
+  "Choose a folder (required)": {
+    "vi": "Chọn thư mục (bắt buộc)",
+    "de": "Ordner wählen (erforderlich)"
+  },
+  "None — root": {
+    "vi": "Không — thư mục gốc",
+    "de": "Keiner — Stammebene"
+  },
+  "Title": {
+    "vi": "Tiêu đề",
+    "de": "Titel"
+  },
+  "Search tags · separated by commas": {
+    "vi": "Nhãn tìm kiếm · phân cách bằng dấu phẩy",
+    "de": "Suchbegriffe · durch Kommas getrennt"
+  },
+  "Search tags apply only to root folders.": {
+    "vi": "Nhãn tìm kiếm chỉ áp dụng cho thư mục gốc.",
+    "de": "Suchbegriffe gelten nur für Stammordner."
+  },
+  "Close preview": {
+    "vi": "Đóng xem trước",
+    "de": "Vorschau schließen"
+  },
+  "Discard unsaved changes?": {
+    "vi": "Bỏ thay đổi chưa lưu?",
+    "de": "Ungespeicherte Änderungen verwerfen?"
+  },
+  "Changes in this editing session have not been saved.": {
+    "vi": "Thay đổi trong lần chỉnh sửa này chưa được lưu.",
+    "de": "Änderungen dieser Bearbeitung wurden noch nicht gespeichert."
+  },
+  "Discard changes": {
+    "vi": "Bỏ thay đổi",
+    "de": "Änderungen verwerfen"
+  },
+  "Open content": {
+    "vi": "Mở nội dung",
+    "de": "Inhalt öffnen"
+  },
+  "Content library": {
+    "vi": "Thư viện nội dung",
+    "de": "Inhaltsbibliothek"
+  },
+  "Edit lessons, preview content and manage publication.": {
+    "vi": "Sửa bài, xem trước nội dung và quản lý công khai.",
+    "de": "Lektionen bearbeiten, Inhalte prüfen und Veröffentlichung verwalten."
+  },
+  "Create content": {
+    "vi": "Tạo nội dung",
+    "de": "Inhalt erstellen"
+  },
+  "Title or owner": {
+    "vi": "Tiêu đề hoặc chủ sở hữu",
+    "de": "Titel oder Eigentümer"
+  },
+  "Source": {
+    "vi": "Nguồn",
+    "de": "Quelle"
+  },
+  "All sources": {
+    "vi": "Tất cả nguồn",
+    "de": "Alle Quellen"
+  },
+  "Admin / Staff": {
+    "vi": "Quản trị / Nhân viên",
+    "de": "Verwaltung / Mitarbeitende"
+  },
+  "Users": {
+    "vi": "Người dùng",
+    "de": "Benutzer"
+  },
+  "Mine": {
+    "vi": "Của tôi",
+    "de": "Meine"
+  },
+  "Type": {
+    "vi": "Loại",
+    "de": "Typ"
+  },
+  "All types": {
+    "vi": "Tất cả loại",
+    "de": "Alle Typen"
+  },
+  "All languages": {
+    "vi": "Tất cả ngôn ngữ",
+    "de": "Alle Sprachen"
+  },
+  "Visibility": {
+    "vi": "Quyền xem",
+    "de": "Sichtbarkeit"
+  },
+  "Any visibility": {
+    "vi": "Mọi quyền xem",
+    "de": "Jede Sichtbarkeit"
+  },
+  "Content will belong to your account. Create folders first to organize exercises.": {
+    "vi": "Nội dung thuộc tài khoản của bạn. Tạo thư mục trước để sắp xếp bài tập.",
+    "de": "Inhalte gehören deinem Konto. Erstelle zuerst Ordner zum Organisieren der Übungen."
+  },
+  "Theory": {
+    "vi": "Lý thuyết",
+    "de": "Theorie"
+  },
+  "Permanently delete this content, its children and related learning data. This cannot be undone.": {
+    "vi": "Xóa vĩnh viễn nội dung này, các mục con và dữ liệu học liên quan. Không thể hoàn tác.",
+    "de": "Inhalt, Unterelemente und zugehörige Lerndaten unwiderruflich löschen."
+  },
+  "Public content is accessible to learners. Unpublishing preserves access for its owner and assigned classes.": {
+    "vi": "Người học truy cập được nội dung công khai. Khi bỏ công khai, chủ sở hữu và lớp được giao vẫn truy cập được.",
+    "de": "Öffentliche Inhalte sind für Lernende zugänglich. Nach Rücknahme bleiben Eigentümer und zugewiesene Klassen zugriffsberechtigt."
+  },
+  "Apply to all content in the folder": {
+    "vi": "Áp dụng cho toàn bộ nội dung thư mục",
+    "de": "Auf alle Inhalte im Ordner anwenden"
+  },
+  "Copy": {
+    "vi": "Sao chép",
+    "de": "Kopieren"
+  },
+  "API documentation": {
+    "vi": "Tài liệu API",
+    "de": "API-Dokumentation"
+  },
+  "endpoints · Session & CSRF · For developers": {
+    "vi": "đường dẫn · Phiên & CSRF · Dành cho lập trình viên",
+    "de": "Endpunkte · Sitzung & CSRF · Für Entwickler"
+  },
+  "Download Postman collection": {
+    "vi": "Tải bộ Postman",
+    "de": "Postman-Sammlung herunterladen"
+  },
+  "Download Markdown guide": {
+    "vi": "Tải hướng dẫn Markdown",
+    "de": "Markdown-Anleitung herunterladen"
+  },
+  "Get started in Postman": {
+    "vi": "Bắt đầu với Postman",
+    "de": "Erste Schritte in Postman"
+  },
+  "Import the collection, set": {
+    "vi": "Nhập bộ lệnh, đặt",
+    "de": "Sammlung importieren und festlegen:"
+  },
+  "in your private environment.": {
+    "vi": "trong môi trường riêng.",
+    "de": "in deiner privaten Umgebung."
+  },
+  "00 · Start": {
+    "vi": "00 · Bắt đầu",
+    "de": "00 · Start"
+  },
+  ": get the CSRF cookie → sign in → verify the session.": {
+    "vi": ": lấy cookie CSRF → đăng nhập → kiểm tra phiên.",
+    "de": ": CSRF-Cookie abrufen → anmelden → Sitzung prüfen."
+  },
+  "Choose a request to test. Replace IDs and request bodies with data from your test environment.": {
+    "vi": "Chọn yêu cầu để thử. Thay ID và nội dung yêu cầu bằng dữ liệu môi trường thử nghiệm.",
+    "de": "Wähle eine Anfrage zum Testen. Ersetze IDs und Anfrageinhalte durch Testdaten."
+  },
+  "For managed content, read the details to get": {
+    "vi": "Với nội dung quản lý, đọc chi tiết để lấy",
+    "de": "Bei verwalteten Inhalten Details abrufen für"
+  },
+  "before saving changes.": {
+    "vi": "trước khi lưu thay đổi.",
+    "de": "vor dem Speichern von Änderungen."
+  },
+  "This page does not send API requests. The collection includes edit and delete requests; review and send them individually instead of running the entire collection.": {
+    "vi": "Trang này không gửi yêu cầu API. Bộ lệnh gồm cả sửa và xóa; xem kỹ và gửi từng yêu cầu thay vì chạy cả bộ.",
+    "de": "Diese Seite sendet keine API-Anfragen. Die Sammlung enthält Bearbeitungs- und Löschanfragen; einzeln prüfen und senden statt komplett ausführen."
+  },
+  "Integration guide": {
+    "vi": "Hướng dẫn tích hợp",
+    "de": "Integrationsanleitung"
+  },
+  "Workflow examples": {
+    "vi": "Ví dụ quy trình",
+    "de": "Ablaufbeispiele"
+  },
+  "Body · application/json": {
+    "vi": "Nội dung · application/json",
+    "de": "Inhalt · application/json"
+  },
+  "Endpoint catalog": {
+    "vi": "Danh mục đường dẫn API",
+    "de": "Endpunktverzeichnis"
+  },
+  "Search paths, features or permissions": {
+    "vi": "Tìm đường dẫn, chức năng hoặc quyền",
+    "de": "Pfade, Funktionen oder Berechtigungen suchen"
+  },
+  "Group API": {
+    "vi": "Nhóm API",
+    "de": "API-Gruppe"
+  },
+  "All groups": {
+    "vi": "Tất cả nhóm",
+    "de": "Alle Gruppen"
+  },
+  "HTTP method": {
+    "vi": "Phương thức HTTP",
+    "de": "HTTP-Methode"
+  },
+  "All methods": {
+    "vi": "Tất cả phương thức",
+    "de": "Alle Methoden"
+  },
+  "matching paths. Example IDs, names and responses are not real data.": {
+    "vi": "đường dẫn phù hợp. ID, tên và phản hồi mẫu không phải dữ liệu thật.",
+    "de": "passende Pfade. Beispiel-IDs, Namen und Antworten sind keine echten Daten."
+  },
+  "Path parameters:": {
+    "vi": "Tham số đường dẫn:",
+    "de": "Pfadparameter:"
+  },
+  ". Replace with real IDs; language=en/de, fmt=json/csv.": {
+    "vi": ". Thay bằng ID thật; language=en/de, fmt=json/csv.",
+    "de": ". Durch echte IDs ersetzen; language=en/de, fmt=json/csv."
+  },
+  "File — choose a file in Postman": {
+    "vi": "Tệp — chọn tệp trong Postman",
+    "de": "Datei — in Postman auswählen"
+  },
+  "Do not set Content-Type manually; Postman generates the multipart boundary.": {
+    "vi": "Không tự đặt Content-Type; Postman tạo ranh giới multipart.",
+    "de": "Content-Type nicht manuell setzen; Postman erzeugt die Multipart-Grenze."
+  },
+  "Example success response · not real data": {
+    "vi": "Phản hồi thành công mẫu · không phải dữ liệu thật",
+    "de": "Erfolgsantwort als Beispiel · keine echten Daten"
+  },
+  "Handled at": {
+    "vi": "Xử lý tại",
+    "de": "Verarbeitet unter"
+  },
+  ". Write requests use the session cookie and X-CSRFToken, except the monitor API which uses a server key.": {
+    "vi": ". Yêu cầu ghi dùng cookie phiên và X-CSRFToken, trừ API giám sát dùng khóa máy chủ.",
+    "de": ". Schreibanfragen verwenden Sitzungscookie und X-CSRFToken; die Monitoring-API verwendet einen Serverschlüssel."
+  },
+  "No endpoints match these filters.": {
+    "vi": "Không có đường dẫn API phù hợp bộ lọc.",
+    "de": "Keine Endpunkte passen zu diesen Filtern."
+  },
+  "Loading API documentation…": {
+    "vi": "Đang tải tài liệu API…",
+    "de": "API-Dokumentation wird geladen…"
+  },
+  "Export ZIP": {
+    "vi": "Xuất ZIP",
+    "de": "ZIP exportieren"
+  },
+  "Export account identities, roles, learning records and content from both languages. This is sensitive administrator data.": {
+    "vi": "Xuất danh tính, quyền, bản ghi học và nội dung ở cả hai ngôn ngữ. Đây là dữ liệu quản trị nhạy cảm.",
+    "de": "Kontodaten, Rollen, Lernaufzeichnungen und Inhalte beider Sprachen exportieren. Dies sind sensible Verwaltungsdaten."
+  },
+  "Export scope": {
+    "vi": "Phạm vi xuất",
+    "de": "Exportumfang"
+  },
+  "Selected accounts (": {
+    "vi": "Tài khoản đã chọn (",
+    "de": "Ausgewählte Konten ("
+  },
+  "All matching filters": {
+    "vi": "Tất cả khớp bộ lọc",
+    "de": "Alle passenden Treffer"
+  },
+  "All accounts": {
+    "vi": "Tất cả tài khoản",
+    "de": "Alle Konten"
+  },
+  "Role": {
+    "vi": "Quyền",
+    "de": "Rolle"
+  },
+  "Status": {
+    "vi": "Trạng thái",
+    "de": "Status"
+  },
+  "Any status": {
+    "vi": "Mọi trạng thái",
+    "de": "Jeder Status"
+  },
+  "Inactive": {
+    "vi": "Không hoạt động",
+    "de": "Inaktiv"
+  },
+  "selected ·": {
+    "vi": "đã chọn ·",
+    "de": "ausgewählt ·"
+  },
+  "matching accounts": {
+    "vi": "tài khoản phù hợp",
+    "de": "passende Konten"
+  },
+  "Select this page": {
+    "vi": "Chọn trang này",
+    "de": "Diese Seite auswählen"
+  },
+  "Clear selection": {
+    "vi": "Bỏ chọn",
+    "de": "Auswahl aufheben"
+  },
+  "Select": {
+    "vi": "Chọn",
+    "de": "Auswählen"
+  },
+  "Account": {
+    "vi": "Tài khoản",
+    "de": "Konto"
+  },
+  "Email": {
+    "vi": "Email",
+    "de": "E-Mail"
+  },
+  "No matching accounts.": {
+    "vi": "Không có tài khoản phù hợp.",
+    "de": "Keine passenden Konten."
+  },
+  "Archive contents": {
+    "vi": "Nội dung bản lưu",
+    "de": "Archivinhalt"
+  },
+  "Uploaded media and portable per-user ZIPs": {
+    "vi": "Tệp đã tải và ZIP riêng từng người dùng",
+    "de": "Hochgeladene Medien und ZIPs pro Benutzer"
+  },
+  "Related administrator audit history": {
+    "vi": "Nhật ký quản trị liên quan",
+    "de": "Zugehöriger Verwaltungsverlauf"
+  },
+  "Include password hashes for emergency account recovery": {
+    "vi": "Kèm mã băm mật khẩu để khôi phục khẩn cấp",
+    "de": "Passwort-Hashes für Notfallwiederherstellung einschließen"
+  },
+  "Anyone with this file can obtain password hashes. Store it encrypted and restrict access.": {
+    "vi": "Ai có tệp này đều có thể lấy mã băm mật khẩu. Hãy mã hóa và hạn chế truy cập.",
+    "de": "Wer diese Datei besitzt, erhält Passwort-Hashes. Verschlüsselt speichern und Zugriff beschränken."
+  },
+  "Sessions and server secrets are excluded. Maximum 2 GB per export; split large exports using filters. This does not replace a full database and server backup.": {
+    "vi": "Không gồm phiên đăng nhập và bí mật máy chủ. Tối đa 2 GB mỗi lần xuất; dùng bộ lọc để chia nhỏ. Không thay thế bản sao lưu đầy đủ cơ sở dữ liệu và máy chủ.",
+    "de": "Sitzungen und Servergeheimnisse sind ausgeschlossen. Maximal 2 GB pro Export; große Exporte mit Filtern aufteilen. Kein Ersatz für eine vollständige Datenbank- und Serversicherung."
+  },
+  "Review export": {
+    "vi": "Xem lại bản xuất",
+    "de": "Export prüfen"
+  },
+  "accounts will be exported": {
+    "vi": "tài khoản sẽ được xuất",
+    "de": "Konten werden exportiert"
+  },
+  "All accounts, regardless of filters.": {
+    "vi": "Mọi tài khoản, không phụ thuộc bộ lọc.",
+    "de": "Alle Konten, unabhängig von Filtern."
+  },
+  "All matching accounts across every page.": {
+    "vi": "Mọi tài khoản phù hợp trên tất cả trang.",
+    "de": "Alle passenden Konten auf sämtlichen Seiten."
+  },
+  "Only the selected accounts, including selections on other pages.": {
+    "vi": "Chỉ tài khoản đã chọn, kể cả ở trang khác.",
+    "de": "Nur ausgewählte Konten, einschließlich anderer Seiten."
+  },
+  "Existing data will not be changed.": {
+    "vi": "Dữ liệu hiện có không bị thay đổi.",
+    "de": "Bestehende Daten bleiben unverändert."
+  },
+  "Download emergency ZIP": {
+    "vi": "Tải ZIP khôi phục khẩn cấp",
+    "de": "Notfall-ZIP herunterladen"
+  },
+  "Preparing export. Keep this page open…": {
+    "vi": "Đang chuẩn bị xuất. Giữ trang này mở…",
+    "de": "Export wird vorbereitet. Seite geöffnet lassen…"
+  },
+  "Shift-click to sort by multiple columns": {
+    "vi": "Giữ Shift và nhấp để sắp xếp nhiều cột",
+    "de": "Umschalt-Klick zum Sortieren nach mehreren Spalten"
+  },
+  "Columns": {
+    "vi": "Cột",
+    "de": "Spalten"
+  },
+  "Download change log": {
+    "vi": "Tải lịch sử thay đổi",
+    "de": "Änderungsprotokoll herunterladen"
+  },
+  "Import ZIP": {
+    "vi": "Nhập ZIP",
+    "de": "ZIP importieren"
+  },
+  "Restore accounts, roles, permissions and private copies of learning data from an emergency export (up to 512 MB). Existing usernames are never overwritten.": {
+    "vi": "Khôi phục tài khoản, vai trò, quyền và bản sao riêng tư dữ liệu học từ bản xuất khẩn cấp (tối đa 512 MB). Không ghi đè tên đăng nhập hiện có.",
+    "de": "Konten, Rollen, Berechtigungen und private Lerndatenkopien aus Notfallexport wiederherstellen (bis 512 MB). Bestehende Benutzernamen werden nie überschrieben."
+  },
+  "Passwords are restored only when included in the export; otherwise an admin must set a new password. Class memberships, old audit logs and cross-account links are not restored.": {
+    "vi": "Chỉ khôi phục mật khẩu nếu bản xuất có chứa; nếu không quản trị viên phải đặt mật khẩu mới. Không khôi phục thành viên lớp, nhật ký cũ và liên kết giữa tài khoản.",
+    "de": "Passwörter werden nur wiederhergestellt, wenn enthalten; sonst muss ein Administrator neue setzen. Klassenmitgliedschaften, alte Protokolle und kontenübergreifende Verknüpfungen werden nicht wiederhergestellt."
+  },
+  "Emergency ZIP": {
+    "vi": "ZIP khôi phục khẩn cấp",
+    "de": "Notfall-ZIP"
+  },
+  "Preview import": {
+    "vi": "Xem trước dữ liệu nhập",
+    "de": "Importvorschau"
+  },
+  "accounts /": {
+    "vi": "tài khoản /",
+    "de": "Konten /"
+  },
+  "records": {
+    "vi": "bản ghi",
+    "de": "Datensätze"
+  },
+  "Password included": {
+    "vi": "Có mật khẩu",
+    "de": "Passwort enthalten"
+  },
+  "Password reset required": {
+    "vi": "Cần đặt lại mật khẩu",
+    "de": "Passwort muss zurückgesetzt werden"
+  },
+  "Usernames already exist:": {
+    "vi": "Tên đăng nhập đã tồn tại:",
+    "de": "Benutzernamen existieren bereits:"
+  },
+  ". Import a selection without these accounts.": {
+    "vi": ". Chọn nhập mà không gồm các tài khoản này.",
+    "de": ". Auswahl ohne diese Konten importieren."
+  },
+  "Restore accounts and permissions": {
+    "vi": "Khôi phục tài khoản và quyền",
+    "de": "Konten und Berechtigungen wiederherstellen"
+  },
+  "Processing ZIP...": {
+    "vi": "Đang xử lý ZIP…",
+    "de": "ZIP wird verarbeitet…"
+  },
+  "accounts and": {
+    "vi": "tài khoản và",
+    "de": "Konten und"
+  },
+  "records. Skipped": {
+    "vi": "bản ghi. Đã bỏ qua",
+    "de": "Datensätze. Übersprungen:"
+  },
+  "unavailable references.": {
+    "vi": "tham chiếu không khả dụng.",
+    "de": "nicht verfügbare Verweise."
+  },
+  "Import system content": {
+    "vi": "Nhập nội dung hệ thống",
+    "de": "Systeminhalte importieren"
+  },
+  "One JSON file for flashcard folders and decks, Practice Hub and Reading. Published as Wortify; the uploader name is not shown to learners.": {
+    "vi": "Một tệp JSON cho thư mục thẻ, bộ thẻ, Luyện tập và Đọc hiểu. Công bố dưới tên Wortify; người học không thấy người tải lên.",
+    "de": "Eine JSON-Datei für Kartenordner, Kartensätze, Übungen und Lesen. Veröffentlichung als Wortify; Lernende sehen den Hochladenden nicht."
+  },
+  "Up to 50 MB, 5,000 nodes, 100,000 cards and 10 folder levels. The whole file is validated before anything is saved. Upload the same package ID again safely without creating duplicates.": {
+    "vi": "Tối đa 50 MB, 5.000 mục, 100.000 thẻ và 10 cấp thư mục. Kiểm tra toàn bộ tệp trước khi lưu. Tải lại cùng ID gói không tạo bản trùng.",
+    "de": "Bis 50 MB, 5.000 Einträge, 100.000 Karten und 10 Ordnerebenen. Die gesamte Datei wird vor dem Speichern geprüft. Erneutes Hochladen derselben Paket-ID erzeugt keine Duplikate."
+  },
+  "Download complete example": {
+    "vi": "Tải ví dụ đầy đủ",
+    "de": "Vollständiges Beispiel herunterladen"
+  },
+  "Content package": {
+    "vi": "Gói nội dung",
+    "de": "Inhaltspaket"
+  },
+  "Preview file": {
+    "vi": "Xem trước tệp",
+    "de": "Dateivorschau"
+  },
+  "This package is already in the system library.": {
+    "vi": "Gói này đã có trong thư viện hệ thống.",
+    "de": "Dieses Paket ist bereits in der Systembibliothek."
+  },
+  "This package will be available in the system library to all learners.": {
+    "vi": "Gói này sẽ có trong thư viện hệ thống cho mọi người học.",
+    "de": "Dieses Paket wird allen Lernenden in der Systembibliothek bereitgestellt."
+  },
+  "Import and publish as Wortify": {
+    "vi": "Nhập và công bố dưới tên Wortify",
+    "de": "Als Wortify importieren und veröffentlichen"
+  },
+  "Validating and importing. Keep this page open...": {
+    "vi": "Đang kiểm tra và nhập. Giữ trang này mở…",
+    "de": "Prüfung und Import laufen. Seite geöffnet lassen…"
+  },
+  "Already imported; no duplicate content created.": {
+    "vi": "Đã nhập trước đó; không tạo nội dung trùng.",
+    "de": "Bereits importiert; keine Duplikate erstellt."
+  },
+  "Imported successfully.": {
+    "vi": "Nhập thành công.",
+    "de": "Erfolgreich importiert."
+  },
+  "Open Flashcards, Practice Hub or Reading to see the preserved folder tree.": {
+    "vi": "Mở Thẻ, Luyện tập hoặc Đọc hiểu để xem cây thư mục được giữ nguyên.",
+    "de": "Öffne Lernkarten, Übungen oder Lesen, um die erhaltene Ordnerstruktur zu sehen."
+  },
+  "Background library": {
+    "vi": "Thư viện hình nền",
+    "de": "Hintergrundbibliothek"
+  },
+  "Your backgrounds": {
+    "vi": "Hình nền của bạn",
+    "de": "Deine Hintergründe"
+  },
+  "Shared library · selection saved for this theme ·": {
+    "vi": "Thư viện chung · lựa chọn lưu riêng cho giao diện này ·",
+    "de": "Gemeinsame Bibliothek · Auswahl für dieses Design gespeichert ·"
+  },
+  "/10 images": {
+    "vi": "/10 ảnh",
+    "de": "/10 Bilder"
+  },
+  "Add image": {
+    "vi": "Thêm ảnh",
+    "de": "Bild hinzufügen"
+  },
+  "JPG, PNG, WebP · max 30 MB per image": {
+    "vi": "JPG, PNG, WebP · tối đa 30 MB mỗi ảnh",
+    "de": "JPG, PNG, WebP · max. 30 MB pro Bild"
+  },
+  "Gentle background motion": {
+    "vi": "Chuyển động nền nhẹ",
+    "de": "Sanfte Hintergrundbewegung"
+  },
+  "Default theme background": {
+    "vi": "Hình nền mặc định của giao diện",
+    "de": "Standardhintergrund des Designs"
+  },
+  "In use": {
+    "vi": "Đang dùng",
+    "de": "Aktiv"
+  },
+  "Delete this background?": {
+    "vi": "Xóa hình nền này?",
+    "de": "Diesen Hintergrund löschen?"
+  },
+  "If this image is active, the theme will return to its default background.": {
+    "vi": "Nếu ảnh đang được dùng, giao diện sẽ về hình nền mặc định.",
+    "de": "Wenn dieses Bild aktiv ist, wird der Standardhintergrund wiederhergestellt."
+  },
+  "Reading tools": {
+    "vi": "Công cụ đọc hiểu",
+    "de": "Lesewerkzeuge"
+  },
+  "My readings": {
+    "vi": "Bài đọc của tôi",
+    "de": "Meine Lesetexte"
+  },
+  "Create reading": {
+    "vi": "Tạo bài đọc",
+    "de": "Lesetext erstellen"
+  },
+  "Import and authoring tools": {
+    "vi": "Công cụ nhập và biên soạn",
+    "de": "Import- und Autorenwerkzeuge"
+  },
+  "Copy AI instructions": {
+    "vi": "Sao chép hướng dẫn",
+    "de": "Anleitung kopieren"
+  },
+  "Formatting & import guide": {
+    "vi": "Hướng dẫn định dạng và nhập",
+    "de": "Formatierungs- und Importanleitung"
+  },
+  "Import text file": {
+    "vi": "Nhập tệp văn bản",
+    "de": "Textdatei importieren"
+  },
+  "Insert sample": {
+    "vi": "Chèn mẫu",
+    "de": "Beispiel einfügen"
+  },
+  "Images and attachments": {
+    "vi": "Ảnh và tệp đính kèm",
+    "de": "Bilder und Anhänge"
+  },
+  "Editor actions": {
+    "vi": "Thao tác biên soạn",
+    "de": "Bearbeitungsaktionen"
+  },
+  "Edit source": {
+    "vi": "Sửa nguồn",
+    "de": "Quelle bearbeiten"
+  },
+  "Preview reading": {
+    "vi": "Xem trước bài đọc",
+    "de": "Lesetext-Vorschau"
+  },
+  "Save reading": {
+    "vi": "Lưu bài đọc",
+    "de": "Lesetext speichern"
+  },
+  "Open passage in new tab": {
+    "vi": "Mở đoạn đọc ở thẻ mới",
+    "de": "Lesetext in neuem Tab öffnen"
+  },
+  "Read lesson": {
+    "vi": "Đọc bài",
+    "de": "Lektion lesen"
+  },
+  "Edit reading": {
+    "vi": "Sửa bài đọc",
+    "de": "Lesetext bearbeiten"
+  },
+  "Delete reading": {
+    "vi": "Xóa bài đọc",
+    "de": "Lesetext löschen"
+  },
+  "Import reading text file": {
+    "vi": "Nhập tệp bài đọc",
+    "de": "Lesetextdatei importieren"
+  },
+  "Reading and questions": {
+    "vi": "Bài đọc và câu hỏi",
+    "de": "Lesetext und Fragen"
+  },
+  "Paste your reading here…": {
+    "vi": "Dán bài đọc vào đây…",
+    "de": "Lesetext hier einfügen…"
+  },
+  "Your passages and their questions, together in one place.": {
+    "vi": "Các bài đọc và câu hỏi của bạn ở cùng một nơi.",
+    "de": "Deine Lesetexte und Fragen an einem Ort."
+  },
+  "Create / import reading": {
+    "vi": "Tạo / nhập bài đọc",
+    "de": "Lesetext erstellen / importieren"
+  },
+  "Create your first reading": {
+    "vi": "Tạo bài đọc đầu tiên",
+    "de": "Ersten Lesetext erstellen"
+  },
+  "Reading folders": {
+    "vi": "Thư mục bài đọc",
+    "de": "Lesetextordner"
+  },
+  "All folders": {
+    "vi": "Tất cả thư mục",
+    "de": "Alle Ordner"
+  },
+  "Up": {
+    "vi": "Lên trên",
+    "de": "Nach oben"
+  },
+  "Read & answer →": {
+    "vi": "Đọc và trả lời →",
+    "de": "Lesen und antworten →"
+  },
+  "Complete authoring guide": {
+    "vi": "Hướng dẫn biên soạn đầy đủ",
+    "de": "Vollständige Autorenanleitung"
+  },
+  "Delete reading?": {
+    "vi": "Xóa bài đọc?",
+    "de": "Lesetext löschen?"
+  },
+  "This removes this reading and its questions.": {
+    "vi": "Xóa bài đọc này cùng các câu hỏi.",
+    "de": "Löscht diesen Lesetext und seine Fragen."
+  },
+  "Unable to connect": {
+    "vi": "Không thể kết nối",
+    "de": "Verbindung nicht möglich"
+  },
+  "Reconnect": {
+    "vi": "Kết nối lại",
+    "de": "Erneut verbinden"
+  },
+  "Loading…": {
+    "vi": "Đang tải…",
+    "de": "Wird geladen…"
+  },
+  "Preparing your workspace…": {
+    "vi": "Đang chuẩn bị không gian học…",
+    "de": "Lernbereich wird vorbereitet…"
+  },
+  "Opening administration…": {
+    "vi": "Đang mở quản trị…",
+    "de": "Verwaltung wird geöffnet…"
+  },
+  "Create admin account": {
+    "vi": "Tạo tài khoản quản trị",
+    "de": "Administratorkonto erstellen"
+  },
+  "Sign in": {
+    "vi": "Đăng nhập",
+    "de": "Anmelden"
+  },
+  "Checking paths…": {
+    "vi": "Đang kiểm tra đường dẫn…",
+    "de": "Pfade werden geprüft…"
+  },
+  "Username": {
+    "vi": "Tên đăng nhập",
+    "de": "Benutzername"
+  },
+  "Confirm password": {
+    "vi": "Xác nhận mật khẩu",
+    "de": "Passwort bestätigen"
+  },
+  "Password": {
+    "vi": "Mật khẩu",
+    "de": "Passwort"
+  },
+  "Already have an account?": {
+    "vi": "Đã có tài khoản?",
+    "de": "Bereits ein Konto?"
+  },
+  "No account yet?": {
+    "vi": "Chưa có tài khoản?",
+    "de": "Noch kein Konto?"
+  },
+  "Back to main page": {
+    "vi": "Về trang chính",
+    "de": "Zur Hauptseite"
+  },
+  "Skip to main content": {
+    "vi": "Đến nội dung chính",
+    "de": "Zum Hauptinhalt springen"
+  },
+  "Menu": {
+    "vi": "Menu",
+    "de": "Menü"
+  },
+  "Page tools": {
+    "vi": "Công cụ trang",
+    "de": "Seitenwerkzeuge"
+  },
+  "Close menu": {
+    "vi": "Đóng menu",
+    "de": "Menü schließen"
+  },
+  "Exit terminal": {
+    "vi": "Thoát bảng lệnh",
+    "de": "Terminal verlassen"
+  },
+  "Terminal": {
+    "vi": "Bảng lệnh",
+    "de": "Terminal"
+  },
+  "Study settings": {
+    "vi": "Cài đặt",
+    "de": "Einstellungen"
+  },
+  "Tools and contents": {
+    "vi": "Công cụ và nội dung",
+    "de": "Werkzeuge und Inhalte"
+  },
+  "WORTIFY / LEARNING SPACE": {
+    "vi": "WORTIFY / KHÔNG GIAN HỌC",
+    "de": "WORTIFY / LERNBEREICH"
+  },
+  "Change appearance in Settings": {
+    "vi": "Đổi giao diện trong Cài đặt",
+    "de": "Darstellung in Einstellungen ändern"
+  },
+  "Main navigation": {
+    "vi": "Điều hướng chính",
+    "de": "Hauptnavigation"
+  },
+  "Page not found": {
+    "vi": "Không tìm thấy trang",
+    "de": "Seite nicht gefunden"
+  },
+  "Back to library": {
+    "vi": "Về thư viện",
+    "de": "Zur Bibliothek"
+  },
+  "Loading workspace…": {
+    "vi": "Đang tải không gian học…",
+    "de": "Lernbereich wird geladen…"
+  },
+  "Choose a language": {
+    "vi": "Chọn ngôn ngữ học",
+    "de": "Lernsprache wählen"
+  },
+  "Continue your learning.": {
+    "vi": "Tiếp tục hành trình học.",
+    "de": "Setze dein Lernen fort."
+  },
+  "Open Admin center →": {
+    "vi": "Mở trung tâm quản trị →",
+    "de": "Verwaltung öffnen →"
+  },
+  "Content import API": {
+    "vi": "API nhập nội dung",
+    "de": "Inhaltsimport-API"
+  },
+  "Enable an import-only key for scripts or your authoring assistant. Practice Hub and Reading only; flashcards remain personal.": {
+    "vi": "Bật khóa chỉ dùng để nhập nội dung cho công cụ hoặc trợ lý biên soạn. Chỉ dành cho Luyện tập và Đọc hiểu; thẻ thuộc về cá nhân.",
+    "de": "Aktiviere einen Importschlüssel für Skripte oder deinen Autorenassistenten. Nur für Übungen und Lesen; Lernkarten bleiben persönlich."
+  },
+  "API enabled": {
+    "vi": "API đã bật",
+    "de": "API aktiviert"
+  },
+  "API disabled": {
+    "vi": "API đã tắt",
+    "de": "API deaktiviert"
+  },
+  "Enable API": {
+    "vi": "Bật API",
+    "de": "API aktivieren"
+  },
+  "Disable API": {
+    "vi": "Tắt API",
+    "de": "API deaktivieren"
+  },
+  "Rotate API key": {
+    "vi": "Đổi khóa API",
+    "de": "API-Schlüssel erneuern"
+  },
+  "Rotate API key?": {
+    "vi": "Đổi khóa API?",
+    "de": "API-Schlüssel erneuern?"
+  },
+  "Disable API?": {
+    "vi": "Tắt API?",
+    "de": "API deaktivieren?"
+  },
+  "Copy this key now. It is shown only once and is not stored in this browser.": {
+    "vi": "Hãy sao chép khóa ngay. Khóa chỉ hiện một lần và không được lưu trong trình duyệt.",
+    "de": "Kopiere den Schlüssel jetzt. Er wird nur einmal angezeigt und nicht im Browser gespeichert."
+  },
+  "New API key": {
+    "vi": "Khóa API mới",
+    "de": "Neuer API-Schlüssel"
+  },
+  "Copy key": {
+    "vi": "Sao chép khóa",
+    "de": "Schlüssel kopieren"
+  },
+  "Hide key": {
+    "vi": "Ẩn khóa",
+    "de": "Schlüssel verbergen"
+  },
+  "Select and copy the key manually.": {
+    "vi": "Hãy chọn và sao chép khóa thủ công.",
+    "de": "Markiere und kopiere den Schlüssel manuell."
+  },
+  "How to import": {
+    "vi": "Cách nhập nội dung",
+    "de": "Importanleitung"
+  },
+  "Download the example and create one UTF-8 JSON file containing practice and reading folders and lessons.": {
+    "vi": "Tải mẫu và tạo một tệp JSON UTF-8 chứa thư mục, bài tập và bài đọc.",
+    "de": "Lade das Beispiel herunter und erstelle eine UTF-8-JSON-Datei mit Ordnern, Übungen und Lesetexten."
+  },
+  "Replace YOUR_IMPORT_KEY with your key. Preview validates the entire package without saving.": {
+    "vi": "Thay YOUR_IMPORT_KEY bằng khóa của bạn. Xem trước kiểm tra toàn bộ gói mà không lưu.",
+    "de": "Ersetze YOUR_IMPORT_KEY durch deinen Schlüssel. Die Vorschau prüft das gesamte Paket ohne zu speichern."
+  },
+  "After a successful preview, send the same file with confirm=IMPORT. Content is published as Wortify.": {
+    "vi": "Sau khi xem trước hợp lệ, gửi lại cùng tệp với confirm=IMPORT. Nội dung được công bố dưới tên Wortify.",
+    "de": "Sende nach erfolgreicher Vorschau dieselbe Datei mit confirm=IMPORT. Inhalte werden als Wortify veröffentlicht."
+  },
+  "Keep the package UUID and file unchanged when retrying. A repeated import returns the existing result without duplicates.": {
+    "vi": "Giữ nguyên UUID và tệp khi thử lại. Nhập lại trả về kết quả đã có mà không tạo bản trùng.",
+    "de": "Behalte UUID und Datei bei Wiederholungen unverändert. Erneuter Import liefert das vorhandene Ergebnis ohne Duplikate."
+  },
+  "1. Preview": {
+    "vi": "1. Xem trước",
+    "de": "1. Vorschau"
+  },
+  "2. Publish": {
+    "vi": "2. Công bố",
+    "de": "2. Veröffentlichen"
+  },
+  "In PowerShell use curl.exe. In Postman use POST, Bearer Token, and form-data: file (File), preview=true or confirm=IMPORT. Do not set Content-Type manually.": {
+    "vi": "Trong PowerShell dùng curl.exe. Trong Postman dùng POST, Bearer Token và form-data: file (File), preview=true hoặc confirm=IMPORT. Không tự đặt Content-Type.",
+    "de": "In PowerShell curl.exe verwenden. In Postman POST, Bearer Token und form-data nutzen: file (File), preview=true oder confirm=IMPORT. Content-Type nicht manuell setzen."
+  },
+  "Responses: 200 preview or existing package; 201 newly published; 400 invalid content; 401 invalid or disabled key. Maximum file size: 50 MB.": {
+    "vi": "Phản hồi: 200 xem trước hoặc gói đã có; 201 công bố mới; 400 nội dung lỗi; 401 khóa sai hoặc đã tắt. Tệp tối đa 50 MB.",
+    "de": "Antworten: 200 Vorschau oder vorhandenes Paket; 201 neu veröffentlicht; 400 ungültiger Inhalt; 401 ungültiger oder deaktivierter Schlüssel. Dateigröße maximal 50 MB."
+  },
+  "This key cannot manage accounts, restore backups or access personal flashcards. Keep it out of shared files and chat guides.": {
+    "vi": "Khóa này không thể quản lý tài khoản, khôi phục sao lưu hay truy cập thẻ cá nhân. Không đưa khóa vào tệp chia sẻ hoặc hướng dẫn chat.",
+    "de": "Dieser Schlüssel kann keine Konten verwalten, Sicherungen wiederherstellen oder persönliche Lernkarten öffnen. Nicht in geteilte Dateien oder Chat-Anleitungen aufnehmen."
+  },
+  "The current key will stop working. Update scripts if you create a new key.": {
+    "vi": "Khóa hiện tại sẽ ngừng hoạt động. Cập nhật công cụ nếu bạn tạo khóa mới.",
+    "de": "Der aktuelle Schlüssel wird ungültig. Aktualisiere Skripte bei Erstellung eines neuen Schlüssels."
+  },
+  "One JSON file for Practice Hub and Reading. Published as Wortify; flashcards are personal.": {
+    "vi": "Một tệp JSON cho Luyện tập và Đọc hiểu. Công bố dưới tên Wortify; thẻ dành riêng cho cá nhân.",
+    "de": "Eine JSON-Datei für Übungen und Lesen. Veröffentlichung als Wortify; Lernkarten bleiben persönlich."
+  },
+  "Up to 50 MB, 5,000 nodes and 10 folder levels. Validation is atomic; retry the same package ID without duplicates.": {
+    "vi": "Tối đa 50 MB, 5.000 mục và 10 cấp thư mục. Kiểm tra toàn bộ trước khi lưu; thử lại cùng ID không tạo bản trùng.",
+    "de": "Bis 50 MB, 5.000 Einträge und 10 Ordnerebenen. Vollständige Prüfung vor dem Speichern; gleiche Paket-ID ohne Duplikate wiederholen."
+  },
+  "Open Practice Hub or Reading to see the preserved folder tree.": {
+    "vi": "Mở Luyện tập hoặc Đọc hiểu để xem cây thư mục được giữ nguyên.",
+    "de": "Öffne Übungen oder Lesen, um die erhaltene Ordnerstruktur zu sehen."
+  },
+  "Official Practice Hub and Reading packages. Add once to keep your own learning progress.": {
+    "vi": "Gói bài tập và bài đọc chính thức. Thêm một lần để lưu tiến trình riêng.",
+    "de": "Offizielle Übungs- und Lesepakete. Einmal hinzufügen, um eigenen Lernfortschritt zu speichern."
+  },
+  "Flashcards are personal. System packages accept only practice and reading.": {
+    "vi": "Thẻ dành cho cá nhân. Gói hệ thống chỉ nhận bài tập và bài đọc.",
+    "de": "Lernkarten sind persönlich. Systempakete akzeptieren nur Übungen und Lesetexte."
+  },
+  "Saving refreshes this test and clears its answers because choices may have changed.": {
+    "vi": "Lưu sẽ làm mới bài kiểm tra và xóa đáp án vì các lựa chọn có thể đã thay đổi.",
+    "de": "Speichern aktualisiert den Test und löscht Antworten, da sich Auswahlmöglichkeiten geändert haben können."
+  },
+  "Deck name": {
+    "vi": "Tên bộ thẻ",
+    "de": "Name des Kartensatzes"
+  },
+  "Description": {
+    "vi": "Mô tả",
+    "de": "Beschreibung"
+  },
+  "Topic": {
+    "vi": "Chủ đề",
+    "de": "Thema"
+  },
+  "Vocabulary": {
+    "vi": "Từ vựng",
+    "de": "Wortschatz"
+  },
+  "Vietnamese meaning": {
+    "vi": "Nghĩa tiếng Việt",
+    "de": "Vietnamesische Bedeutung"
+  },
+  "Example sentence": {
+    "vi": "Câu ví dụ",
+    "de": "Beispielsatz"
+  },
+  "Example sentence meaning": {
+    "vi": "Nghĩa câu ví dụ",
+    "de": "Bedeutung des Beispielsatzes"
+  },
+  "Part of speech": {
+    "vi": "Từ loại",
+    "de": "Wortart"
+  },
+  "Article": {
+    "vi": "Mạo từ",
+    "de": "Artikel"
+  },
+  "Plural": {
+    "vi": "Số nhiều",
+    "de": "Plural"
+  },
+  "Notes": {
+    "vi": "Ghi chú",
+    "de": "Notizen"
+  },
+  "Usage": {
+    "vi": "Cách dùng",
+    "de": "Verwendung"
+  },
+  "Alternative answers (one per line)": {
+    "vi": "Đáp án thay thế (mỗi dòng một đáp án)",
+    "de": "Alternative Antworten (eine pro Zeile)"
+  },
+  "Alternative example sentences (one per line)": {
+    "vi": "Câu ví dụ thay thế (mỗi dòng một câu)",
+    "de": "Alternative Beispielsätze (einer pro Zeile)"
+  },
+  "Learning journey": {
+    "vi": "Hành trình học",
+    "de": "Lernreise"
+  },
+  "Classes & sharing": {
+    "vi": "Lớp học và chia sẻ",
+    "de": "Klassen und Teilen"
+  },
+  "Learning": {
+    "vi": "Học tập",
+    "de": "Lernen"
+  },
+  "Card": {
+    "vi": "Thẻ",
+    "de": "Karte"
+  },
+  "Study": {
+    "vi": "Học",
+    "de": "Lernen"
+  },
+  "Notebook": {
+    "vi": "Sổ học tập",
+    "de": "Lernheft"
+  },
+  "Prepare": {
+    "vi": "Chuẩn bị",
+    "de": "Vorbereiten"
+  },
+  "Recall": {
+    "vi": "Nhớ lại",
+    "de": "Abrufen"
+  },
+  "Translate": {
+    "vi": "Dịch câu",
+    "de": "Übersetzen"
+  },
+  "New sentence": {
+    "vi": "Câu mới",
+    "de": "Neuer Satz"
+  },
+  "Multiple choice": {
+    "vi": "Trắc nghiệm",
+    "de": "Multiple Choice"
+  },
+  "Type your answer": {
+    "vi": "Nhập câu trả lời",
+    "de": "Antwort eingeben"
+  },
+  "Correct / Sai": {
+    "vi": "Đúng / Sai",
+    "de": "Richtig / Falsch"
+  },
+  "Matching": {
+    "vi": "Ghép cặp",
+    "de": "Zuordnen"
+  },
+  "Listen": {
+    "vi": "Nghe",
+    "de": "Anhören"
+  },
+  "Writing": {
+    "vi": "Viết",
+    "de": "Schreiben"
+  },
+  "Speaking": {
+    "vi": "Nói",
+    "de": "Sprechen"
+  },
+  "Import content": {
+    "vi": "Nhập nội dung",
+    "de": "Inhalte importieren"
+  },
+  "Change log": {
+    "vi": "Lịch sử phiên bản",
+    "de": "Änderungsprotokoll"
+  },
+  "Backup & import": {
+    "vi": "Sao lưu và nhập",
+    "de": "Sicherung und Import"
+  },
+  "Site appearance": {
+    "vi": "Giao diện hệ thống",
+    "de": "Systemdarstellung"
+  },
+  "Clear and refined. Your default learning space.": {
+    "vi": "Gọn gàng, tinh tế. Không gian học mặc định.",
+    "de": "Klar und übersichtlich. Dein Standard-Lernbereich."
+  },
+  "Dark glass, soft light and your background.": {
+    "vi": "Kính tối, ánh sáng dịu và hình nền của bạn.",
+    "de": "Dunkles Glas, sanftes Licht und dein Hintergrund."
+  },
+  "Familiar blues and classic windows.": {
+    "vi": "Tông xanh quen thuộc và cửa sổ cổ điển.",
+    "de": "Vertraute Blautöne und klassische Fenster."
+  },
+  "Pixels, warm paper and an arcade spirit.": {
+    "vi": "Điểm ảnh, nền giấy ấm và phong cách trò chơi cổ điển.",
+    "de": "Pixel, warmes Papier und Arcade-Flair."
+  },
+  "Graph paper, ink sketches and a personal study journal.": {
+    "vi": "Giấy ô ly, nét mực và sổ học cá nhân.",
+    "de": "Karopapier, Tintenskizzen und ein persönliches Lernheft."
+  },
+  "Green phosphor, command prompts and classic terminal panels.": {
+    "vi": "Chữ xanh lân quang, dòng lệnh và bảng điều khiển cổ điển.",
+    "de": "Grüner Phosphor, Eingabeaufforderungen und klassische Terminalfenster."
+  },
+  "Choose a response": {
+    "vi": "Chọn câu trả lời",
+    "de": "Antwort wählen"
+  },
+  "Read and judge": {
+    "vi": "Đọc và nhận định",
+    "de": "Lesen und beurteilen"
+  },
+  "Fill in the gap": {
+    "vi": "Điền chỗ trống",
+    "de": "Lücke füllen"
+  },
+  "Find and correct mistakes": {
+    "vi": "Tìm và sửa lỗi",
+    "de": "Fehler finden und korrigieren"
+  },
+  "Match answers": {
+    "vi": "Ghép đáp án",
+    "de": "Antworten zuordnen"
+  },
+  "Arrange sentence": {
+    "vi": "Sắp xếp câu",
+    "de": "Satz ordnen"
+  },
+  "Categorize": {
+    "vi": "Phân loại",
+    "de": "Kategorisieren"
+  },
+  "Inline multiple choice": {
+    "vi": "Trắc nghiệm trong câu",
+    "de": "Auswahl im Satz"
+  },
+  "Rewrite sentence": {
+    "vi": "Viết lại câu",
+    "de": "Satz umschreiben"
+  },
+  "Reading comprehension": {
+    "vi": "Đọc hiểu",
+    "de": "Leseverständnis"
+  },
+  "Read & answer": {
+    "vi": "Đọc và trả lời",
+    "de": "Lesen und antworten"
+  },
+  "Read the passage alongside its questions. Choose one or more answers.": {
+    "vi": "Đọc đoạn văn bên cạnh câu hỏi. Chọn một hoặc nhiều đáp án.",
+    "de": "Lies den Text neben den Fragen. Wähle eine oder mehrere Antworten."
+  },
+  "Dialogue replies": {
+    "vi": "Trả lời hội thoại",
+    "de": "Dialogantworten"
+  },
+  "Read the situation and choose your reply.": {
+    "vi": "Đọc tình huống và chọn câu trả lời.",
+    "de": "Lies die Situation und wähle deine Antwort."
+  },
+  "Eliminate and decide": {
+    "vi": "Loại trừ rồi chọn",
+    "de": "Ausschließen und entscheiden"
+  },
+  "Cross out distractors, then choose the best answer.": {
+    "vi": "Gạch đáp án gây nhiễu rồi chọn đáp án phù hợp nhất.",
+    "de": "Streiche Ablenkantworten und wähle die beste Antwort."
+  },
+  "Evidence desk": {
+    "vi": "Đối chiếu thông tin",
+    "de": "Belege prüfen"
+  },
+  "Read the passage and decide what it actually says.": {
+    "vi": "Đọc và xác định nội dung thực sự được nêu.",
+    "de": "Lies den Text und entscheide, was er tatsächlich aussagt."
+  },
+  "Drag words": {
+    "vi": "Kéo từ",
+    "de": "Wörter ziehen"
+  },
+  "Drag words into the gaps, or tap to fill them.": {
+    "vi": "Kéo từ vào chỗ trống hoặc nhấn để điền.",
+    "de": "Ziehe Wörter in die Lücken oder tippe zum Einfüllen."
+  },
+  "Tap to fill": {
+    "vi": "Nhấn để điền",
+    "de": "Antippen zum Füllen"
+  },
+  "Select a gap, then choose a word.": {
+    "vi": "Chọn chỗ trống rồi chọn từ.",
+    "de": "Wähle eine Lücke und dann ein Wort."
+  },
+  "Tap and edit": {
+    "vi": "Nhấn và sửa",
+    "de": "Antippen und bearbeiten"
+  },
+  "Tap the incorrect word and enter its correction.": {
+    "vi": "Nhấn từ sai và nhập bản sửa.",
+    "de": "Tippe auf das falsche Wort und gib die Korrektur ein."
+  },
+  "Cross out extra words": {
+    "vi": "Gạch từ thừa",
+    "de": "Überflüssige Wörter streichen"
+  },
+  "Tap an extra word to remove it; tap again to restore it.": {
+    "vi": "Nhấn từ thừa để bỏ; nhấn lại để khôi phục.",
+    "de": "Tippe zum Entfernen auf ein überflüssiges Wort; erneut tippen zum Wiederherstellen."
+  },
+  "Tap to match": {
+    "vi": "Nhấn để ghép",
+    "de": "Antippen zum Zuordnen"
+  },
+  "Select a card in each column to match them.": {
+    "vi": "Chọn một thẻ mỗi cột để ghép.",
+    "de": "Wähle in jeder Spalte eine Karte zum Zuordnen."
+  },
+  "Tap to build a sentence": {
+    "vi": "Nhấn để ghép câu",
+    "de": "Antippen zum Satzbau"
+  },
+  "Select words in order. You can undo your choices.": {
+    "vi": "Chọn từ theo thứ tự. Có thể hoàn tác lựa chọn.",
+    "de": "Wähle Wörter in Reihenfolge. Du kannst die Auswahl rückgängig machen."
+  },
+  "Category board": {
+    "vi": "Bảng phân loại",
+    "de": "Kategorientafel"
+  },
+  "Drag cards into a category, or select a card and tap the category name.": {
+    "vi": "Kéo thẻ vào danh mục hoặc chọn thẻ rồi nhấn tên danh mục.",
+    "de": "Ziehe Karten in eine Kategorie oder wähle eine Karte und tippe auf die Kategorie."
+  },
+  "Choice buttons": {
+    "vi": "Nút lựa chọn",
+    "de": "Auswahlschaltflächen"
+  },
+  "Choose an answer within the sentence.": {
+    "vi": "Chọn đáp án trong câu.",
+    "de": "Wähle eine Antwort im Satz."
+  },
+  "Dropdown": {
+    "vi": "Danh sách thả xuống",
+    "de": "Auswahlliste"
+  },
+  "Open the dropdown at each gap.": {
+    "vi": "Mở danh sách ở mỗi chỗ trống.",
+    "de": "Öffne die Auswahlliste an jeder Lücke."
+  },
+  "Choose and reveal": {
+    "vi": "Chọn và hiện",
+    "de": "Wählen und aufdecken"
+  },
+  "Choose a word in the sentence. Incorrect alternatives fall away after a correct answer.": {
+    "vi": "Chọn từ trong câu. Các lựa chọn sai biến mất khi trả lời đúng.",
+    "de": "Wähle ein Wort im Satz. Nach richtiger Antwort verschwinden falsche Alternativen."
+  },
+  "Complete the sentence using the given beginning.": {
+    "vi": "Hoàn thành câu từ phần mở đầu cho sẵn.",
+    "de": "Vervollständige den Satz mit dem vorgegebenen Anfang."
+  },
+  "Rewrite the sentence": {
+    "vi": "Viết lại câu",
+    "de": "Satz umschreiben"
+  },
+  "The writing area expands as you type.": {
+    "vi": "Vùng viết mở rộng khi bạn nhập.",
+    "de": "Das Schreibfeld wächst beim Tippen."
+  },
+  "Practice this exercise type.": {
+    "vi": "Luyện dạng bài này.",
+    "de": "Diesen Übungstyp üben."
+  },
+  "My practice": {
+    "vi": "Bài luyện của tôi",
+    "de": "Meine Übungen"
+  },
+  "Create": {
+    "vi": "Tạo nội dung",
+    "de": "Erstellen"
+  },
+  "Exercise note": {
+    "vi": "Ghi chú bài tập",
+    "de": "Übungshinweis"
+  },
+  "Class name": {
+    "vi": "Tên lớp",
+    "de": "Klassenname"
+  },
+  "Join a class": {
+    "vi": "Tham gia lớp",
+    "de": "Einer Klasse beitreten"
+  },
+  "Invite code": {
+    "vi": "Mã mời",
+    "de": "Einladungscode"
+  },
+  "Rename class": {
+    "vi": "Đổi tên lớp",
+    "de": "Klasse umbenennen"
+  },
+  "Questions per day": {
+    "vi": "Câu hỏi mỗi ngày",
+    "de": "Fragen pro Tag"
+  },
+  "Display name": {
+    "vi": "Tên hiển thị",
+    "de": "Anzeigename"
+  },
+  "Introduction": {
+    "vi": "Giới thiệu",
+    "de": "Vorstellung"
+  },
+  "Owner": {
+    "vi": "Chủ sở hữu",
+    "de": "Eigentümer"
+  },
+  "Updated": {
+    "vi": "Cập nhật",
+    "de": "Aktualisiert"
+  },
+  "Actor": {
+    "vi": "Người thao tác",
+    "de": "Handelnde Person"
+  },
+  "Target": {
+    "vi": "Đối tượng",
+    "de": "Ziel"
+  },
+  "Action": {
+    "vi": "Thao tác",
+    "de": "Aktion"
+  },
+  "Time": {
+    "vi": "Thời gian",
+    "de": "Zeit"
+  },
+  "Name": {
+    "vi": "Tên",
+    "de": "Name"
+  },
+  "Created": {
+    "vi": "Đã tạo",
+    "de": "Erstellt"
+  },
+  "Last sign-in": {
+    "vi": "Lần đăng nhập cuối",
+    "de": "Letzte Anmeldung"
+  },
+  "Actions": {
+    "vi": "Thao tác",
+    "de": "Aktionen"
+  },
+  "Edit details": {
+    "vi": "Sửa thông tin",
+    "de": "Details bearbeiten"
+  },
+  "Learning data": {
+    "vi": "Dữ liệu học",
+    "de": "Lerndaten"
+  },
+  "Sign out devices": {
+    "vi": "Đăng xuất thiết bị",
+    "de": "Geräte abmelden"
+  },
+  "Reset password": {
+    "vi": "Đặt lại mật khẩu",
+    "de": "Passwort zurücksetzen"
+  },
+  "Delete account": {
+    "vi": "Xóa tài khoản",
+    "de": "Konto löschen"
+  },
+  "New password": {
+    "vi": "Mật khẩu mới",
+    "de": "Neues Passwort"
+  },
+  "Last name": {
+    "vi": "Họ",
+    "de": "Nachname"
+  },
+  "Initial password": {
+    "vi": "Mật khẩu ban đầu",
+    "de": "Anfangspasswort"
+  },
+  "Edit & preview": {
+    "vi": "Sửa và xem trước",
+    "de": "Bearbeiten und Vorschau"
+  },
+  "Delete content": {
+    "vi": "Xóa nội dung",
+    "de": "Inhalt löschen"
+  },
+  "Position (starting at 0)": {
+    "vi": "Vị trí (bắt đầu từ 0)",
+    "de": "Position (ab 0)"
+  },
+  "Not signed in": {
+    "vi": "Chưa đăng nhập",
+    "de": "Nicht angemeldet"
+  },
+  "Write a sentence using “{v0}”": {
+    "vi": "Viết câu dùng “{v0}”",
+    "de": "Schreibe einen Satz mit „{v0}“"
+  },
+  "Use “{v0}” in a new sentence": {
+    "vi": "Dùng “{v0}” trong câu mới",
+    "de": "Verwende „{v0}“ in einem neuen Satz"
+  },
+  "Recall and write the {v0} expression before revealing the answer.": {
+    "vi": "Nhớ và viết từ {v0} trước khi xem đáp án.",
+    "de": "Rufe den Ausdruck auf {v0} ab und schreibe ihn vor dem Aufdecken auf."
+  },
+  "Write in {v0}; keep the example hidden.": {
+    "vi": "Viết bằng {v0}; giữ ví dụ ẩn.",
+    "de": "Schreibe auf {v0}; das Beispiel bleibt verborgen."
+  },
+  "Copied. Paste into your chat for feedback.": {
+    "vi": "Đã sao chép. Dán vào chat để nhận góp ý.",
+    "de": "Kopiert. Für Rückmeldung in den Chat einfügen."
+  },
+  "Could not copy. Select and copy your sentence manually.": {
+    "vi": "Không sao chép được. Hãy chọn và chép câu thủ công.",
+    "de": "Kopieren nicht möglich. Markiere und kopiere den Satz manuell."
+  },
+  "Please sign in first.": {
+    "vi": "Vui lòng đăng nhập trước.",
+    "de": "Bitte zuerst anmelden."
+  },
+  "Incorrect username or password.": {
+    "vi": "Tên đăng nhập hoặc mật khẩu không đúng.",
+    "de": "Benutzername oder Passwort falsch."
+  },
+  "This username is already taken.": {
+    "vi": "Tên đăng nhập đã được sử dụng.",
+    "de": "Dieser Benutzername ist bereits vergeben."
+  },
+  "You do not have administrative access.": {
+    "vi": "Bạn không có quyền quản trị.",
+    "de": "Du hast keinen Verwaltungszugriff."
+  },
+  "Choose English, Vietnamese or German.": {
+    "vi": "Chọn tiếng Anh, Việt hoặc Đức.",
+    "de": "Wähle Englisch, Vietnamesisch oder Deutsch."
+  },
+  "Toggle {v0} sidebar": {
+    "vi": "Ẩn/hiện thanh bên {v0}",
+    "de": "Seitenleiste {v0} umschalten"
+  },
+  "Minimize {v0}": {
+    "vi": "Thu nhỏ {v0}",
+    "de": "{v0} minimieren"
+  },
+  "Maximize or restore {v0}": {
+    "vi": "Phóng to hoặc khôi phục {v0}",
+    "de": "{v0} maximieren oder wiederherstellen"
+  },
+  "Close {v0}": {
+    "vi": "Đóng {v0}",
+    "de": "{v0} schließen"
+  },
+  "{v0} navigation": {
+    "vi": "Điều hướng {v0}",
+    "de": "Navigation {v0}"
+  },
+  "Resize {v0}": {
+    "vi": "Đổi kích thước {v0}",
+    "de": "Größe von {v0} ändern"
+  },
+  "Close {v0}?": {
+    "vi": "Đóng {v0}?",
+    "de": "{v0} schließen?"
+  },
+  "{v0} — drag to move; Enter to open": {
+    "vi": "{v0} — kéo để di chuyển; Enter để mở",
+    "de": "{v0} — ziehen zum Verschieben; Enter zum Öffnen"
+  },
+  "Resize {v0} navigation": {
+    "vi": "Đổi độ rộng điều hướng {v0}",
+    "de": "Navigation {v0} vergrößern"
+  },
+  "Exercise type: {v0}": {
+    "vi": "Dạng bài: {v0}",
+    "de": "Übungstyp: {v0}"
+  },
+  "Decks in “{v0}” will be kept.": {
+    "vi": "Bộ thẻ trong “{v0}” được giữ lại.",
+    "de": "Kartensätze in „{v0}“ bleiben erhalten."
+  },
+  "{v0} · {v1} TERM": {
+    "vi": "{v0} · {v1} TỪ",
+    "de": "{v0} · {v1} BEGRIFFE"
+  },
+  "Select {v0}": {
+    "vi": "Chọn {v0}",
+    "de": "{v0} auswählen"
+  },
+  "Move {v0}": {
+    "vi": "Di chuyển {v0}",
+    "de": "{v0} verschieben"
+  },
+  "Starred cards only · {v0}": {
+    "vi": "Chỉ thẻ có sao · {v0}",
+    "de": "Nur markierte Karten · {v0}"
+  },
+  "{v0}/{v1} correct answers": {
+    "vi": "{v0}/{v1} câu đúng",
+    "de": "{v0}/{v1} richtige Antworten"
+  },
+  "Back {v0}": {
+    "vi": "Về {v0}",
+    "de": "Zurück zu {v0}"
+  },
+  "Gap {v0}": {
+    "vi": "Chỗ trống {v0}",
+    "de": "Lücke {v0}"
+  },
+  "Gap {v0}{v1}": {
+    "vi": "Chỗ trống {v0}{v1}",
+    "de": "Lücke {v0}{v1}"
+  },
+  "Answer questions {v0}": {
+    "vi": "Trả lời câu hỏi {v0}",
+    "de": "Fragen {v0} beantworten"
+  },
+  "Statement {v0}": {
+    "vi": "Nhận định {v0}",
+    "de": "Aussage {v0}"
+  },
+  "Group {v0}": {
+    "vi": "Nhóm {v0}",
+    "de": "Gruppe {v0}"
+  },
+  "Delete group {v0}": {
+    "vi": "Xóa nhóm {v0}",
+    "de": "Gruppe {v0} löschen"
+  },
+  "Delete question {v0}": {
+    "vi": "Xóa câu hỏi {v0}",
+    "de": "Frage {v0} löschen"
+  },
+  "Set answer {v0} correct": {
+    "vi": "Đặt đáp án {v0} là đúng",
+    "de": "Antwort {v0} als richtig markieren"
+  },
+  "Option {v0}": {
+    "vi": "Lựa chọn {v0}",
+    "de": "Option {v0}"
+  },
+  "Delete option {v0}": {
+    "vi": "Xóa lựa chọn {v0}",
+    "de": "Option {v0} löschen"
+  },
+  "Remove gap {v0}": {
+    "vi": "Bỏ chỗ trống {v0}",
+    "de": "Lücke {v0} entfernen"
+  },
+  "Match {v0} with the next word": {
+    "vi": "Ghép {v0} với từ tiếp theo",
+    "de": "{v0} dem nächsten Wort zuordnen"
+  },
+  "Delete {v0} selected items?": {
+    "vi": "Xóa {v0} mục đã chọn?",
+    "de": "{v0} ausgewählte Einträge löschen?"
+  },
+  "Choose {v0}": {
+    "vi": "Chọn {v0}",
+    "de": "{v0} wählen"
+  },
+  "Preview {v0}": {
+    "vi": "Xem trước {v0}",
+    "de": "Vorschau für {v0}"
+  },
+  "Add to {v0}": {
+    "vi": "Thêm vào {v0}",
+    "de": "Zu {v0} hinzufügen"
+  },
+  "Edit {v0}": {
+    "vi": "Sửa {v0}",
+    "de": "{v0} bearbeiten"
+  },
+  "Options {v0}": {
+    "vi": "Tùy chọn {v0}",
+    "de": "Optionen für {v0}"
+  },
+  "{v0} {v1} {v2} workspace": {
+    "vi": "Không gian học {v0} {v1} {v2}",
+    "de": "Lernbereich {v0} {v1} {v2}"
+  },
+  "Edit · {v0}": {
+    "vi": "Sửa · {v0}",
+    "de": "Bearbeiten · {v0}"
+  },
+  "Options · {v0}": {
+    "vi": "Tùy chọn · {v0}",
+    "de": "Optionen · {v0}"
+  },
+  "View image {v0}": {
+    "vi": "Xem ảnh {v0}",
+    "de": "Bild {v0} ansehen"
+  },
+  "Attach {v0} into": {
+    "vi": "Đính kèm {v0} vào",
+    "de": "{v0} anhängen an"
+  },
+  "Remove {v0}": {
+    "vi": "Bỏ {v0}",
+    "de": "{v0} entfernen"
+  },
+  "Media · {v0}": {
+    "vi": "Tệp · {v0}",
+    "de": "Medien · {v0}"
+  },
+  "{v0}/{v1} questions today": {
+    "vi": "{v0}/{v1} câu hỏi hôm nay",
+    "de": "{v0}/{v1} Fragen heute"
+  },
+  "{v0} mastered, {v1} familiar, {v2} not studied": {
+    "vi": "{v0} đã nắm vững, {v1} đã quen, {v2} chưa học",
+    "de": "{v0} beherrscht, {v1} vertraut, {v2} ungelernt"
+  },
+  "Progress {v0}": {
+    "vi": "Tiến trình {v0}",
+    "de": "Fortschritt {v0}"
+  },
+  "Delete search {v0}": {
+    "vi": "Xóa tìm kiếm {v0}",
+    "de": "Suche {v0} löschen"
+  },
+  "Search {v0}": {
+    "vi": "Tìm {v0}",
+    "de": "{v0} suchen"
+  },
+  "Delete {v0}?": {
+    "vi": "Xóa {v0}?",
+    "de": "{v0} löschen?"
+  },
+  "Delete data · {v0}": {
+    "vi": "Xóa dữ liệu · {v0}",
+    "de": "Daten löschen · {v0}"
+  },
+  "Import {v0} to confirm": {
+    "vi": "Nhập {v0} để xác nhận",
+    "de": "{v0} zur Bestätigung eingeben"
+  },
+  "Enter “{v0}” to confirm": {
+    "vi": "Nhập “{v0}” để xác nhận",
+    "de": "Zur Bestätigung „{v0}“ eingeben"
+  },
+  "Role for {v0}": {
+    "vi": "Quyền của {v0}",
+    "de": "Rolle für {v0}"
+  },
+  "Status for {v0}": {
+    "vi": "Trạng thái của {v0}",
+    "de": "Status für {v0}"
+  },
+  "Actions for {v0}": {
+    "vi": "Thao tác với {v0}",
+    "de": "Aktionen für {v0}"
+  },
+  "Body {v0} · application/json": {
+    "vi": "Nội dung {v0} · application/json",
+    "de": "Inhalt {v0} · application/json"
+  },
+  "{v0}, scrollable table": {
+    "vi": "{v0}, bảng có thể cuộn",
+    "de": "{v0}, scrollbare Tabelle"
+  },
+  "Filter {v0}": {
+    "vi": "Lọc {v0}",
+    "de": "{v0} filtern"
+  },
+  "Double-click or press Enter to edit {v0}": {
+    "vi": "Nhấp đúp hoặc nhấn Enter để sửa {v0}",
+    "de": "Doppelklicken oder Enter drücken, um {v0} zu bearbeiten"
+  },
+  "Delete image {v0}": {
+    "vi": "Xóa ảnh {v0}",
+    "de": "Bild {v0} löschen"
+  },
+  "Please sign in.": {
+    "vi": "Vui lòng đăng nhập.",
+    "de": "Bitte anmelden."
+  },
+  "You cannot manage this item.": {
+    "vi": "Bạn không có quyền quản lý mục này.",
+    "de": "Du darfst diesen Eintrag nicht verwalten."
+  },
+  "Choose one JSON file up to 50 MB.": {
+    "vi": "Chọn một tệp JSON tối đa 50 MB.",
+    "de": "Wähle eine JSON-Datei bis 50 MB."
+  },
+  "Invalid JSON file.": {
+    "vi": "Tệp JSON không hợp lệ.",
+    "de": "Ungültige JSON-Datei."
+  },
+  "Invalid JSON.": {
+    "vi": "JSON không hợp lệ.",
+    "de": "Ungültiges JSON."
+  },
+  "Unknown package fields.": {
+    "vi": "Gói có trường không được hỗ trợ.",
+    "de": "Unbekannte Paketfelder."
+  },
+  "Use wortify-content version 1.": {
+    "vi": "Dùng định dạng wortify-content phiên bản 1.",
+    "de": "Verwende wortify-content Version 1."
+  },
+  "Package id must be a UUID. Keep it unchanged when retrying.": {
+    "vi": "ID gói phải là UUID. Giữ nguyên khi thử lại.",
+    "de": "Paket-ID muss eine UUID sein. Bei Wiederholung unverändert lassen."
+  },
+  "Language must be de or en.": {
+    "vi": "Ngôn ngữ học phải là de hoặc en.",
+    "de": "Lernsprache muss de oder en sein."
+  },
+  "Maximum 5000 content nodes.": {
+    "vi": "Tối đa 5.000 mục nội dung.",
+    "de": "Maximal 5.000 Inhaltseinträge."
+  },
+  "Maximum 10 folder levels.": {
+    "vi": "Tối đa 10 cấp thư mục.",
+    "de": "Maximal 10 Ordnerebenen."
+  },
+  "The package is empty.": {
+    "vi": "Gói nội dung trống.",
+    "de": "Das Paket ist leer."
+  },
+  "Invalid node structure.": {
+    "vi": "Cấu trúc mục không hợp lệ.",
+    "de": "Ungültige Eintragsstruktur."
+  },
+  "This package ID already has different content. Use a new UUID for a new package.": {
+    "vi": "ID gói đã có nội dung khác. Dùng UUID mới cho gói mới.",
+    "de": "Diese Paket-ID enthält bereits andere Inhalte. Für ein neues Paket eine neue UUID verwenden."
+  },
+  "Preview the package before importing.": {
+    "vi": "Xem trước gói trước khi nhập.",
+    "de": "Paket vor dem Import in der Vorschau prüfen."
+  },
+  "A valid content import API key is required.": {
+    "vi": "Cần khóa API nhập nội dung hợp lệ.",
+    "de": "Ein gültiger Inhaltsimport-API-Schlüssel ist erforderlich."
+  },
+  "This import key is invalid, disabled or no longer permitted.": {
+    "vi": "Khóa nhập không hợp lệ, đã tắt hoặc không còn quyền.",
+    "de": "Dieser Importschlüssel ist ungültig, deaktiviert oder nicht mehr berechtigt."
+  },
+  "Card collection": {
+    "vi": "Bộ sưu tập thẻ",
+    "de": "Kartensammlung"
+  },
+  "Quest board": {
+    "vi": "Bảng nhiệm vụ",
+    "de": "Aufgabentafel"
+  },
+  "Explore": {
+    "vi": "Khám phá",
+    "de": "Entdecken"
+  },
+  "World map": {
+    "vi": "Bản đồ",
+    "de": "Weltkarte"
+  },
+  "Workshop": {
+    "vi": "Góc biên soạn",
+    "de": "Werkstatt"
+  },
+  "Journey": {
+    "vi": "Hành trình",
+    "de": "Lernreise"
+  },
+  "Character journal": {
+    "vi": "Nhật ký cá nhân",
+    "de": "Persönliches Tagebuch"
+  },
+  "Party hall": {
+    "vi": "Không gian nhóm",
+    "de": "Gruppenraum"
+  },
+  "Game settings": {
+    "vi": "Cài đặt",
+    "de": "Einstellungen"
+  },
+  "Your security session has changed. Reload the page and try again.": {
+    "vi": "Phiên bảo mật đã thay đổi. Tải lại trang và thử lại.",
+    "de": "Deine Sicherheitssitzung hat sich geändert. Lade die Seite neu und versuche es erneut."
+  },
+  "The server returned an invalid response.": {
+    "vi": "Máy chủ trả về phản hồi không hợp lệ.",
+    "de": "Der Server hat eine ungültige Antwort geliefert."
+  },
+  "Unable to complete the request. Please try again.": {
+    "vi": "Không thể hoàn thành yêu cầu. Vui lòng thử lại.",
+    "de": "Die Anfrage konnte nicht abgeschlossen werden. Bitte erneut versuchen."
+  },
+  "This set changed in another tab. Reload the current step.": {
+    "vi": "Nhóm từ đã thay đổi ở thẻ khác. Tải lại bước hiện tại.",
+    "de": "Diese Wortgruppe wurde in einem anderen Tab geändert. Lade den aktuellen Schritt neu."
+  },
+  "practice_folders": {
+    "vi": "Thư mục bài tập",
+    "de": "Übungsordner"
+  },
+  "reading_folders": {
+    "vi": "Thư mục bài đọc",
+    "de": "Lesetextordner"
+  },
+  "exercise": {
+    "vi": "Bài tập",
+    "de": "Übungen"
+  },
+  "theory": {
+    "vi": "Lý thuyết",
+    "de": "Theorie"
+  },
+  "reading": {
+    "vi": "Bài đọc",
+    "de": "Lesetexte"
+  },
+  "nodes": {
+    "vi": "Tổng số mục",
+    "de": "Einträge insgesamt"
+  },
+  "Could not copy. Please try again.": {
+    "vi": "Không thể sao chép. Vui lòng thử lại.",
+    "de": "Kopieren fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "Clipboard access is unavailable. Select the instructions below to copy them.": {
+    "vi": "Không thể truy cập bộ nhớ tạm. Chọn hướng dẫn bên dưới để sao chép.",
+    "de": "Kein Zugriff auf die Zwischenablage. Wähle die Anleitung unten aus, um sie zu kopieren."
+  },
+  "Search readings": {
+    "vi": "Tìm bài đọc",
+    "de": "Lesetexte suchen"
+  },
+  "All levels": {
+    "vi": "Tất cả trình độ",
+    "de": "Alle Niveaus"
+  },
+  "All topics": {
+    "vi": "Tất cả chủ đề",
+    "de": "Alle Themen"
+  },
+  "Community": {
+    "vi": "Cộng đồng",
+    "de": "Community"
+  },
+  "{v0} readings": {
+    "vi": "{v0} bài đọc",
+    "de": "{v0} Lesetexte"
+  },
+  "Clear filters": {
+    "vi": "Xóa bộ lọc",
+    "de": "Filter zurücksetzen"
+  },
+  "No readings match these filters.": {
+    "vi": "Không có bài đọc phù hợp với bộ lọc.",
+    "de": "Keine Lesetexte für diese Filter gefunden."
+  },
+  "Level not specified": {
+    "vi": "Chưa có trình độ",
+    "de": "Niveau nicht angegeben"
+  },
+  "Practice here without saving progress.": {
+    "vi": "Làm thử tại đây không lưu tiến độ.",
+    "de": "Hier üben, ohne den Fortschritt zu speichern."
+  },
+  "Sharing & categories": {
+    "vi": "Chia sẻ và phân loại",
+    "de": "Freigabe und Einordnung"
+  },
+  "Public readings appear in Explore. Other learners can read and practice them.": {
+    "vi": "Bài công khai xuất hiện trong Khám phá. Người học khác có thể đọc và làm thử.",
+    "de": "Öffentliche Lesetexte erscheinen unter Entdecken. Andere können sie lesen und damit üben."
+  },
+  "Copy bot instructions": {
+    "vi": "Chép hướng dẫn cho bot",
+    "de": "Bot-Anleitung kopieren"
+  },
+  "Or paste content": {
+    "vi": "Hoặc dán nội dung",
+    "de": "Oder Inhalt einfügen"
+  },
+  "OpenAPI schema for bots": {
+    "vi": "Đặc tả OpenAPI cho bot",
+    "de": "OpenAPI-Schema für Bots"
+  },
+  "One text file for Practice Hub and Reading, published publicly as Wortify. Legacy JSON is also supported.": {
+    "vi": "Một file văn bản cho Luyện tập và Đọc hiểu, công khai dưới tên Wortify. Vẫn hỗ trợ JSON cũ.",
+    "de": "Eine Textdatei für Übungen und Lesetexte, öffentlich unter Wortify. Bisheriges JSON wird weiterhin unterstützt."
+  },
+  "Create one UTF-8 text file with practice and reading sections. Use the same lesson syntax as the editors.": {
+    "vi": "Tạo một file văn bản UTF-8 gồm phần luyện tập và đọc hiểu, dùng cú pháp bài học giống trình soạn thảo.",
+    "de": "Erstelle eine UTF-8-Textdatei mit Übungs- und Lesebereichen. Verwende dieselbe Syntax wie im Editor."
+  },
+  "After preview, send the unchanged file with confirm=IMPORT and the returned preview_token. Publication is public under Wortify.": {
+    "vi": "Sau khi kiểm tra, gửi nguyên file với confirm=IMPORT và preview_token nhận được. Nội dung được công khai dưới tên Wortify.",
+    "de": "Sende nach der Prüfung dieselbe Datei mit confirm=IMPORT und dem erhaltenen preview_token. Veröffentlichung erfolgt öffentlich unter Wortify."
+  },
+  "Bots can send JSON with text and preview=true, then the same text with confirm=IMPORT and preview_token. The content itself uses the compact text format.": {
+    "vi": "Bot có thể gửi JSON chứa text và preview=true, rồi gửi lại text với confirm=IMPORT và preview_token. Nội dung bài học vẫn dùng định dạng văn bản gọn.",
+    "de": "Bots senden JSON mit text und preview=true, danach denselben Text mit confirm=IMPORT und preview_token. Der Lerninhalt bleibt im kompakten Textformat."
+  },
+  "In PowerShell use curl.exe. In Postman use POST, Bearer Token, and form-data: file (File), preview=true, or confirm=IMPORT plus preview_token. Do not set Content-Type manually.": {
+    "vi": "Trong PowerShell dùng curl.exe. Với Postman: POST, Bearer Token, form-data gồm file (File), preview=true hoặc confirm=IMPORT kèm preview_token. Không tự đặt Content-Type.",
+    "de": "In PowerShell curl.exe verwenden. In Postman: POST, Bearer Token, form-data mit file (File), preview=true oder confirm=IMPORT und preview_token. Content-Type nicht manuell setzen."
+  },
+  "Import endpoint": {
+    "vi": "Địa chỉ API nhập nội dung",
+    "de": "Import-API-Adresse"
+  },
+  "Double-click to edit endpoint": {
+    "vi": "Nhấp đúp để sửa địa chỉ API",
+    "de": "Doppelklicken, um die API-Adresse zu ändern"
+  },
+  "Use current site": {
+    "vi": "Dùng địa chỉ web hiện tại",
+    "de": "Aktuelle Website verwenden"
+  },
+  "Enter an HTTP or HTTPS site URL or import endpoint, without query parameters.": {
+    "vi": "Nhập địa chỉ web hoặc API HTTP/HTTPS, không kèm tham số truy vấn.",
+    "de": "Gib eine HTTP-/HTTPS-Website oder Import-API-Adresse ohne Abfrageparameter ein."
+  },
+  "Study now": {
+    "vi": "Học ngay",
+    "de": "Jetzt lernen"
+  },
+  "Save to My readings": {
+    "vi": "Lưu vào bài đọc của tôi",
+    "de": "Zu meinen Lesetexten speichern"
+  },
+  "Saved to My readings": {
+    "vi": "Đã lưu vào bài đọc của tôi",
+    "de": "In meinen Lesetexten gespeichert"
+  },
+  "Saved to My readings. You can continue there anytime.": {
+    "vi": "Đã lưu vào Bài đọc của tôi. Bạn có thể học tiếp tại đó bất cứ lúc nào.",
+    "de": "In Meine Lesetexte gespeichert. Du kannst dort jederzeit weiterlernen."
+  },
+  "This is a preview. Study now saves a personal copy and your progress.": {
+    "vi": "Đây là bản xem trước. Học ngay sẽ lưu bản cá nhân và tiến độ của bạn.",
+    "de": "Dies ist eine Vorschau. Jetzt lernen speichert eine persönliche Kopie und deinen Fortschritt."
+  },
+  "Switch deck": {
+    "vi": "Chuyển bộ thẻ",
+    "de": "Kartenset wechseln"
+  },
+  "Switch reading": {
+    "vi": "Chuyển bài đọc",
+    "de": "Lesetext wechseln"
+  },
+  "Switch lesson": {
+    "vi": "Chuyển bài học",
+    "de": "Lektion wechseln"
+  },
+  "Leave this draft without saving?": {
+    "vi": "Rời bản nháp này mà không lưu?",
+    "de": "Diesen Entwurf ohne Speichern verlassen?"
+  },
+  "Select decks": {
+    "vi": "Chọn bộ thẻ",
+    "de": "Kartensätze auswählen"
+  },
+  "Select {title}": {
+    "vi": "Chọn {title}",
+    "de": "{title} auswählen"
+  },
+  "Actions for {title}": {
+    "vi": "Thao tác với {title}",
+    "de": "Aktionen für {title}"
+  },
+  "Move to folder": {
+    "vi": "Chuyển vào thư mục",
+    "de": "In Ordner verschieben"
+  },
+  "Delete selected decks?": {
+    "vi": "Xóa các bộ thẻ đã chọn?",
+    "de": "Ausgewählte Kartensätze löschen?"
+  },
+  "The selected decks, cards and learning progress will be permanently deleted.": {
+    "vi": "Các bộ thẻ đã chọn, thẻ và tiến độ học sẽ bị xóa vĩnh viễn.",
+    "de": "Die ausgewählten Kartensätze, Karten und Lernfortschritte werden dauerhaft gelöscht."
+  },
+  "Some decks could not be updated. Please retry.": {
+    "vi": "Một số bộ thẻ chưa được cập nhật. Vui lòng thử lại.",
+    "de": "Einige Kartensätze konnten nicht aktualisiert werden. Bitte erneut versuchen."
+  },
+  "Reset navigation size": {
+    "vi": "Đặt lại kích thước điều hướng",
+    "de": "Navigationsgröße zurücksetzen"
+  },
+  "Workspace options": {
+    "vi": "Tùy chọn workspace",
+    "de": "Arbeitsbereich-Optionen"
+  },
+  "Manage folder": {
+    "vi": "Quản lý thư mục",
+    "de": "Ordner verwalten"
+  },
+  "Choose a folder": {
+    "vi": "Chọn thư mục",
+    "de": "Ordner auswählen"
+  },
+  "Cancel selection": {
+    "vi": "Thoát chế độ chọn",
+    "de": "Auswahl beenden"
+  },
+  "{count} selected": {
+    "vi": "Đã chọn {count}",
+    "de": "{count} ausgewählt"
+  },
+  "Remove decks from your workspace without deleting cards or progress. You can restore them here anytime.": {
+    "vi": "Gỡ bộ thẻ khỏi workspace vẫn giữ nguyên thẻ và tiến độ học. Bạn có thể thêm lại tại đây bất cứ lúc nào.",
+    "de": "Entfernte Kartensätze behalten ihre Karten und Lernfortschritte. Du kannst sie hier jederzeit wiederherstellen."
+  },
+  "In workspace": {
+    "vi": "Trong workspace",
+    "de": "Im Arbeitsbereich"
+  },
+  "Removed from workspace": {
+    "vi": "Đã gỡ khỏi workspace",
+    "de": "Aus Arbeitsbereich entfernt"
+  },
+  "Restore to workspace": {
+    "vi": "Thêm lại vào workspace",
+    "de": "Im Arbeitsbereich wiederherstellen"
+  },
+  "Edit {title}": {
+    "vi": "Sửa {title}",
+    "de": "{title} bearbeiten"
+  },
+  "Search decks": {
+    "vi": "Tìm bộ thẻ",
+    "de": "Kartensätze suchen"
+  },
+  "Search folders": {
+    "vi": "Tìm thư mục",
+    "de": "Ordner suchen"
+  },
+  "Some folders could not be updated. Please retry.": {
+    "vi": "Không thể cập nhật một số thư mục. Vui lòng thử lại.",
+    "de": "Einige Ordner konnten nicht aktualisiert werden. Bitte erneut versuchen."
+  },
+  "Delete selected folders?": {
+    "vi": "Xóa các thư mục đã chọn?",
+    "de": "Ausgewählte Ordner löschen?"
+  },
+  "Selected folders and all their decks, cards and progress will be permanently deleted.": {
+    "vi": "Các thư mục đã chọn cùng toàn bộ bộ thẻ, thẻ và tiến độ bên trong sẽ bị xóa vĩnh viễn.",
+    "de": "Die ausgewählten Ordner und alle enthaltenen Kartensätze, Karten und Lernfortschritte werden dauerhaft gelöscht."
+  },
+  "No cards in this session": {
+    "vi": "Phiên học không còn thẻ",
+    "de": "Keine Karten in dieser Sitzung"
+  }
+}

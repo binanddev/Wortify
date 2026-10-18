@@ -30,18 +30,31 @@ def decks(request):
         deck = form_save(DeckForm({**body(request), 'language': request.language, 'level': body(request).get('level','A1')}, user=request.user, language=request.language), owner=request.user)
         return JsonResponse({'id': deck.pk}, status=201)
     qs = Deck.objects.filter(owner=request.user, language=request.language)
+    folders = list(Folder.objects.filter(owner=request.user, language=request.language).values('id','name','parent_id','archived'))
+    hidden = {f['id'] for f in folders if f['archived']}
+    while True:
+        expanded = hidden | {f['id'] for f in folders if f['parent_id'] in hidden}
+        if expanded == hidden:
+            break
+        hidden = expanded
+    if request.GET.get('include_archived') != 'true':
+        qs = qs.filter(archived=False).exclude(folder_id__in=hidden)
+        folders = [f for f in folders if f['id'] not in hidden]
     if request.GET.get('language') in ['de', 'en']:
         qs = qs.filter(language=request.GET['language'])
     if request.GET.get('q'):
         qs = qs.filter(title__icontains=request.GET['q'][:100])
-    rows = list(qs.annotate(count=Count('cards')).order_by('-updated_at').values('id','title','description','level','language','folder_id','count'))
+    rows = list(qs.annotate(count=Count('cards')).order_by('-updated_at').values('id','title','description','level','language','folder_id','count','archived'))
     progress = StudyProgress.objects.filter(user=request.user, card__deck__language=request.language)
     per_deck = {p['card__deck_id']: p for p in progress.values('card__deck_id').annotate(mastered=Count('id', filter=Q(state='mastered')), due=Count('id', filter=Q(due_at__lte=timezone.now())|Q(state='weak')))}
     for row in rows:
         counts = per_deck.get(row['id'], {})
         row.update(mastered=counts.get('mastered',0), due=counts.get('due',0))
-    recent = StudySession.objects.filter(user=request.user,language=request.language,completed_at__isnull=True).order_by('-created_at').first()
-    return JsonResponse({'decks':rows, 'folders':list(Folder.objects.filter(owner=request.user,language=request.language).values('id','name','parent_id')), 'due':progress.filter(due_at__lte=timezone.now()).count(), 'resume':str(recent.token) if recent else None})
+    candidates = list(StudySession.objects.filter(user=request.user,language=request.language,completed_at__isnull=True).order_by('-created_at'))
+    visible_decks = Deck.objects.filter(owner=request.user, language=request.language, archived=False).exclude(folder_id__in=hidden)
+    pending_tokens = set(str(token) for token in StudyAttempt.objects.filter(user=request.user, card__deck__in=visible_decks, completed_at__isnull=True, token__in=[token for session in candidates for token in session.tokens]).values_list('token', flat=True))
+    recent = next((session for session in candidates if any(token in pending_tokens for token in session.tokens)), None)
+    return JsonResponse({'decks':rows, 'folders':folders, 'due':progress.filter(due_at__lte=timezone.now()).count(), 'resume':str(recent.token) if recent else None})
 
 @endpoint
 @require_http_methods(['GET', 'PATCH', 'DELETE'])
@@ -51,9 +64,15 @@ def deck(request, pk):
         item.delete()
         return JsonResponse({'ok': True})
     if request.method == 'PATCH':
+        archived = body(request).get('archived', item.archived)
+        if not isinstance(archived, bool):
+            raise ValueError('archived must be a boolean.')
         if body(request).get('language', request.language) != request.language:
             raise ValueError('A deck cannot be moved to another language workspace.')
         item = form_save(DeckForm({**model_to_dict(item), **body(request), 'language': request.language}, instance=item, user=request.user, language=request.language))
+        if item.archived != archived:
+            item.archived = archived
+            item.save(update_fields=['archived', 'updated_at'])
     from cards.models import DeckLearningState, LearningEvent
     from .learning_sync import state_payload
     state,_=DeckLearningState.objects.get_or_create(user=request.user,deck=item)
@@ -88,12 +107,26 @@ def folder(request, pk=None):
     if request.method == 'DELETE':
         if not item:
             raise ValueError('No folder selected.')
-        item.delete()
+        if request.GET.get('delete_contents') == 'true':
+            tree = list(Folder.objects.filter(owner=request.user, language=request.language).values('id', 'parent_id'))
+            ids = {item.pk}
+            while True:
+                expanded = ids | {f['id'] for f in tree if f['parent_id'] in ids}
+                if expanded == ids:
+                    break
+                ids = expanded
+            Deck.objects.filter(owner=request.user, language=request.language, folder_id__in=ids).delete()
+            Folder.objects.filter(owner=request.user, language=request.language, pk__in=ids).delete()
+        else:
+            item.delete()
         return JsonResponse({'ok': True})
     data = {**(model_to_dict(item) if item else {}), **body(request)}
+    archived = data.get('archived', False)
+    if not isinstance(archived, bool):
+        raise ValueError('archived must be a boolean.')
     if Folder.objects.filter(owner=request.user, language=request.language, parent_id=data.get('parent') or None, name=data.get('name')).exclude(pk=pk).exists():
         raise ValueError('This folder already exists.')
-    item = form_save(FolderForm(data, instance=item, user=request.user, language=request.language), owner=request.user, language=request.language)
+    item = form_save(FolderForm(data, instance=item, user=request.user, language=request.language), owner=request.user, language=request.language, archived=archived)
     return JsonResponse({'id': item.pk})
 
 @endpoint

@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { treeWindow } from "../../components/navigation/tree-window.js";
 import { useState } from "react";
 import { ModalContent, ModalHeader, ModalBody } from "@heroui/react";
@@ -11,6 +12,7 @@ export function PracticeModal({
   pending = false,
   size = "3xl",
 }) {
+  useLocale();
   return (
     <Modal
       isOpen
@@ -40,9 +42,17 @@ export function PracticeTree({
   query = "",
   compact = true,
 }) {
+  useLocale();
   const [longBranches, setLongBranches] = useState({});
   const [expanded, setExpanded] = useState({});
   const [hover, setHover] = useState(null);
+  const byId = new Map(nodes.map(node => [node.id,node]));
+  const children = new Map();
+  for (const node of nodes) {
+    const parent = byId.has(node.parent) ? node.parent : null;
+    if (!children.has(parent)) children.set(parent, []);
+    children.get(parent).push(node);
+  }
   const needle = query.trim().toLocaleLowerCase();
   const matches = new Set(
     nodes
@@ -58,17 +68,12 @@ export function PracticeTree({
     while (parent != null && !seen.has(parent)) {
       seen.add(parent);
       ancestors.add(parent);
-      parent = nodes.find((n) => n.id === parent)?.parent;
+      parent = byId.get(parent)?.parent;
     }
   }
   const branch = (parent = null, depth = 0) => {
     if (depth > 10) return null;
-    const siblings = nodes
-      .filter((node) =>
-        parent === null
-          ? node.parent == null || !nodes.some((p) => p.id === node.parent)
-          : node.parent === parent,
-      )
+    const siblings = (children.get(parent) || [])
       .filter(
         (node) => !needle || matches.has(node.id) || ancestors.has(node.id),
       )
@@ -176,7 +181,7 @@ export function PracticeTree({
                   <button
                     type="button"
                     className="tree-icon tree-settings"
-                    aria-label={`Options ${node.title}`}
+                    aria-label={tr("Options {v0}", { v0: node.title })}
                     disabled={pending}
                     onClick={() => onSettings(node)}
                   >
@@ -184,7 +189,7 @@ export function PracticeTree({
                   </button>
                 ) : (
                   node.kind === "exercise" && (
-                    <small title="Completed questions">
+                    <small title={tr("Completed questions")}>
                       {node.progress?.completed?.length || 0}
                     </small>
                   )
@@ -201,12 +206,12 @@ export function PracticeTree({
               className="tree-overflow"
               title={
                 longBranches[parent]
-                  ? "Collapse branch"
+                  ? tr("Collapse branch")
                   : `Show more ${siblings.length - visible.length} items`
               }
               aria-label={
                 longBranches[parent]
-                  ? "Collapse branch"
+                  ? tr("Collapse branch")
                   : `Show more ${siblings.length - visible.length} items`
               }
               aria-expanded={Boolean(longBranches[parent])}
@@ -223,7 +228,7 @@ export function PracticeTree({
               />
               <span>
                 {longBranches[parent]
-                  ? "Collapse"
+                  ? tr("Collapse")
                   : `+${siblings.length - visible.length}`}
               </span>
             </button>
@@ -233,9 +238,9 @@ export function PracticeTree({
     );
   };
   return (
-    <nav className="practice-tree" aria-label="Content tree">
+    <nav className="practice-tree" aria-label={tr("Content tree")}>
       <ul>{branch()}</ul>
-      {!nodes.length && <p>No content yet.</p>}
+      {!nodes.length && <p>{tr("No content yet.")}</p>}
     </nav>
   );
 }

@@ -1,0 +1,8 @@
+---
+description: Keep all application UI concise and consistent with existing components.
+alwaysApply: true
+---
+
+- Do not add explanatory paragraphs, instructional slogans, or helper prose to application screens and modals unless explicitly requested by the user. Apply this across the entire system and all themes.
+- Use concise action labels, status indicators, errors and necessary destructive-action confirmations. Put detailed instructions in explicitly requested documentation, not in normal application flows.
+- Reuse the existing HeroUI components and shared UI wrappers; avoid custom restyling that diverges from the established interface.

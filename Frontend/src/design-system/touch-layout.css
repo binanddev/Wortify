@@ -1,0 +1,39 @@
+/* System fonts cover Vietnamese diacritics without decorative-font fallback. */
+:root:is([data-interface="studio"],[data-interface="notebook"]) { --font-sans: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
+:root:is([data-interface="studio"],[data-interface="notebook"]) body,
+:root:is([data-interface="studio"],[data-interface="notebook"]) body :is(h1,h2,h3,h4,button,input,textarea,select,.nav-link,.notebook-caption,.notebook-ink-action) {
+ @apply [font-family:var(--font-sans)]; @apply [letter-spacing:normal];
+}
+.flash-deck-item { @apply [min-width:0]; @apply [position:relative]; }
+.flash-deck-item > .deck-link { @apply [display:block]; @apply [height:100%]; }
+@media (max-width:760px) {
+ :root:is([data-interface="studio"],[data-interface="notebook"],[data-interface="rpg"]) body .page { @apply [padding:20px_14px]; @apply [min-width:0]; }
+ :root:is([data-interface="studio"],[data-interface="notebook"],[data-interface="rpg"]) body :is(.deck-grid,.reading-discover-grid,.study-layout,.notebook-desk,.grid.two) { @apply [grid-template-columns:minmax(0,1fr)]; }
+ :root:is([data-interface="studio"],[data-interface="notebook"],[data-interface="rpg"]) body :is(.flash-library-heading,.heading,.reading-workspace-header) { @apply [flex-wrap:wrap]; @apply [gap:12px]; }
+ :root:is([data-interface="studio"],[data-interface="notebook"],[data-interface="rpg"]) body h1 { @apply [font-size:clamp(24px,7vw,32px)]; @apply [overflow-wrap:anywhere]; }
+ :root:is([data-interface="studio"],[data-interface="notebook"],[data-interface="rpg"]) body :is(input,textarea,select) { @apply [font-size:16px]; }
+ :root:is([data-interface="studio"],[data-interface="notebook"],[data-interface="rpg"]) body :is(.toolbar,.flash-icon-row) { @apply [flex-wrap:wrap]; }
+ :root:is([data-interface="studio"],[data-interface="notebook"],[data-interface="rpg"]) body :is(.reading-document,.exercise-workspace,.notebook-sticky) { @apply [min-width:0]; @apply [max-width:100%]; @apply [overflow-wrap:anywhere]; }
+ .nav-flip { @apply [max-height:calc(100dvh_-_88px_-_env(safe-area-inset-top))]; }
+ .nav-face :is(.sidebar,.workspace-context) { @apply [overscroll-behavior-y:contain]; @apply [overflow-y:auto]; }
+}
+@media (pointer:coarse) {
+ .deck-link:hover { @apply [transform:none]; }
+}
+
+.flash-nav-selection { @apply grid gap-2 p-3 rounded-xl border border-(--line) bg-(--surface); }
+.flash-selection-summary { @apply flex items-center justify-between gap-2 text-sm; }
+.flash-nav-selection label { @apply flex items-center gap-2 min-h-11 text-sm cursor-pointer; }
+.flash-nav-selection input { @apply w-4 h-4 accent-(--accent); }
+.flash-library-grid .is-selected .deck-tile { @apply ring-2 ring-(--accent); }
+.deck-pick-mark { @apply absolute top-3 right-3 grid place-items-center w-7 h-7 rounded-full border border-(--line) bg-(--solid) text-(--ink); }
+.is-selected .deck-pick-mark { @apply bg-(--accent) text-white border-(--accent); }
+.flash-library-grid .selecting .tile-top { @apply pr-9; }
+
+.sidebar-tools-group .flash-selection-summary { @apply grid grid-cols-[minmax(0,1fr)_40px] items-center gap-2; }
+.sidebar-tools-group .flash-selection-summary > span { @apply whitespace-nowrap; }
+.sidebar-tools-group .flash-selection-summary > .btn { @apply w-10! min-w-10! max-w-10! h-10! p-0! m-0!; }
+.flash-nav-selection { @apply min-w-0; }
+.flash-deck-item.is-selected .deck-tile { @apply ring-2 ring-(--accent); }
+.flash-deck-item .deck-link[role="checkbox"] { @apply rounded-2xl; }
+.flash-deck-item .deck-link[role="checkbox"]:focus-visible { @apply outline-2 outline-offset-4 outline-(--accent); }

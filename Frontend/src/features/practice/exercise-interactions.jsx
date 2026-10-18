@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useChoiceOrder } from "./use-choice-order.js";
 import { ChoiceLab } from "./choice-lab.jsx";
 import { SentenceBuilder } from "./sentence-builder.jsx";
@@ -12,6 +13,7 @@ import { motion } from "framer-motion";
 import { shuffled } from "../../lib/core.js";
 import { modeOf } from "./exercise-types.js";
 export function AutoTextarea({ label, value = "", onChange, ...props }) {
+  useLocale();
   const ref = useRef();
   useEffect(() => {
     if (ref.current) {
@@ -34,6 +36,7 @@ export function AutoTextarea({ label, value = "", onChange, ...props }) {
   );
 }
 export function AudioPlayer({ src, initialSpeed = 1 }) {
+  useLocale();
   const ref = useRef(),
     [playing, setPlaying] = useState(false),
     [time, setTime] = useState(0),
@@ -67,7 +70,7 @@ export function AudioPlayer({ src, initialSpeed = 1 }) {
       <button
         type="button"
         className="audio-play"
-        aria-label={playing ? "Pause" : "Play audio"}
+        aria-label={playing ? tr("Pause") : tr("Play audio")}
         disabled={!src || !!error}
         onClick={async () => {
           try {
@@ -81,7 +84,7 @@ export function AudioPlayer({ src, initialSpeed = 1 }) {
       </button>
       <div className="audio-track">
         <input
-          aria-label="Playback position"
+          aria-label={tr("Playback position")}
           type="range"
           min="0"
           max={Number.isFinite(duration) ? duration : 0}
@@ -99,7 +102,7 @@ export function AudioPlayer({ src, initialSpeed = 1 }) {
       <button
         type="button"
         className="speed-toggle"
-        aria-label="Playback speed"
+        aria-label={tr("Playback speed")}
         onClick={() => {
           const v = speed === 1 ? 0.75 : 1;
           setSpeed(v);
@@ -121,6 +124,7 @@ function Chip({
   draggable = true,
   result,
 }) {
+  useLocale();
   return (
     <motion.button
       layout
@@ -138,6 +142,7 @@ function Chip({
   );
 }
 function InlineMenu({ value, options, onChange, disabled, label, invalid }) {
+  useLocale();
   const [open, setOpen] = useState(false);
   const inModal = useContext(ModalLayerContext);
   return (
@@ -162,7 +167,7 @@ function InlineMenu({ value, options, onChange, disabled, label, invalid }) {
         </button>
       </PopoverTrigger>
       <PopoverContent className="inline-menu">
-        <div role="group" aria-label="Select a word">
+        <div role="group" aria-label={tr("Select a word")}>
           {options.map((o, i) => (
             <button
               autoFocus={i === 0}
@@ -192,6 +197,7 @@ export function GapPassage({
   assets = {},
   uiStyle,
 }) {
+  useLocale();
   const pool = q.presentation?.word_bank || q.presentation?.distractors || [];
   const [chips, setChips] = useState(() =>
     shuffled(pool.map((text, i) => ({ id: String(i), text }))),
@@ -241,7 +247,7 @@ export function GapPassage({
                   <span
                     className={`inline-pills ${uiStyle === "fall_away" ? "fall-away-choices" : ""}`}
                     role="group"
-                    aria-label={`Gap ${n + 1}`}
+                    aria-label={tr("Gap {v0}", { v0: n + 1 })}
                   >
                     {(options[n] || []).map((option) => (
                       <button
@@ -258,7 +264,7 @@ export function GapPassage({
                   </span>
                 ) : (
                   <InlineMenu
-                    label={`Gap ${n + 1}`}
+                    label={tr("Gap {v0}", { v0: n + 1 })}
                     value={answers[key] || ""}
                     options={options[n] || q.options || []}
                     onChange={(v) => fill(key, v)}
@@ -270,7 +276,7 @@ export function GapPassage({
                   type="button"
                   className={`gap-drop ${answers[key] ? "filled" : ""} ${activeBlank === n ? "is-active" : ""}`}
                   disabled={disabled}
-                  aria-label={`Gap ${n + 1}${answers[key] ? ": " + answers[key] : ""}`}
+                  aria-label={tr("Gap {v0}{v1}", { v0: n + 1, v1: answers[key] ? ": " + answers[key] : "" })}
                   aria-pressed={activeBlank === n}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -290,7 +296,7 @@ export function GapPassage({
                 </button>
               ) : (
                 <input
-                  aria-label={`Gap ${n + 1}`}
+                  aria-label={tr("Gap {v0}", { v0: n + 1 })}
                   className="gap-input"
                   disabled={disabled}
                   value={answers[key] || ""}
@@ -302,7 +308,7 @@ export function GapPassage({
         }}>{q.prompt}</PracticeRichText>
       </div>
       {mode !== "inline_selection" && chips.length > 0 && (
-        <div className="word-bank" aria-label="Word bank">
+        <div className="word-bank" aria-label={tr("Word bank")}>
           {chips.map((c) => (
             <Chip
               key={c.id}
@@ -320,6 +326,7 @@ export function GapPassage({
   );
 }
 export function ErrorTokens({ q, value = [], onChange, disabled, uiStyle }) {
+  useLocale();
   const tokens = q.presentation?.tokens || [];
   const toggle = (id) =>
     onChange(
@@ -360,11 +367,12 @@ export function OptionCards({
   disabled,
   rows = [],
 }) {
+  useLocale();
   return (
     <div
       className="answer-cards"
       role={multiple ? "group" : "radiogroup"}
-      aria-label={`Answer questions ${q.position}`}
+      aria-label={tr("Answer questions {v0}", { v0: q.position })}
     >
       {q.options.map((text, i) => {
         const selected = multiple
@@ -405,6 +413,7 @@ export function Categories({
   exercise,
   rows = [],
 }) {
+  useLocale();
   const [picked, setPicked] = useState(null);
   const groups =
     exercise.presentation?.categories || questions[0]?.options || [];
@@ -483,6 +492,7 @@ export function Categories({
 }
 export { MatchPairs } from "./match-pairs.jsx";
 function CorrectSentence({ q, value, onChange, disabled, uiStyle, revealed }) {
+  useLocale();
   const original = q.prompt.split(/\s+/);
   const [words, setWords] = useState(() => original);
   const [active, setActive] = useState(null);
@@ -503,8 +513,8 @@ function CorrectSentence({ q, value, onChange, disabled, uiStyle, revealed }) {
     <div className="correction-work">
       <p className="exercise-instruction">
         {uiStyle === "cross_out"
-          ? "Tap extra words to cross them out."
-          : "Tap a word, enter the correction, then apply it."}
+          ? tr("Tap extra words to cross them out.")
+          : tr("Tap a word, enter the correction, then apply it.")}
       </p>
       <div className="clickable-passage">
         {original.map((word, i) => (
@@ -529,9 +539,7 @@ function CorrectSentence({ q, value, onChange, disabled, uiStyle, revealed }) {
       </div>
       {active !== null && (
         <div className="correction-editor">
-          <label>
-            Replacement word
-            <input
+          <label>{tr("Replacement word")}<input
               autoFocus
               value={draft}
               disabled={disabled}
@@ -549,17 +557,12 @@ function CorrectSentence({ q, value, onChange, disabled, uiStyle, revealed }) {
             type="button"
             disabled={disabled || !draft.trim()}
             onClick={() => apply(active, draft.trim())}
-          >
-            Apply
-          </button>
-          <button type="button" onClick={() => setActive(null)}>
-            Cancel
-          </button>
+          >{tr("Apply")}</button>
+          <button type="button" onClick={() => setActive(null)}>{tr("Cancel")}</button>
         </div>
       )}
       {value && !revealed && (
-        <p className="corrected-preview" aria-live="polite">
-          Your sentence: {value}
+        <p className="corrected-preview" aria-live="polite">{tr("Your sentence: ")}{value}
         </p>
       )}
     </div>
@@ -576,6 +579,7 @@ export function TypeQuestion({
   assets = {},
   uiStyle,
 }) {
+  useLocale();
   const mode = modeOf(exercise),
     key = String(q.id),
     value = answers[key];
@@ -600,7 +604,7 @@ export function TypeQuestion({
       <label className="partial-rewrite">
         <span>{prefix}</span>
         <input
-          aria-label="Complete the sentence"
+          aria-label={tr("Complete the sentence")}
           disabled={disabled}
           value={
             value?.startsWith(prefix)
@@ -649,18 +653,16 @@ export function TypeQuestion({
     if (uiStyle === "inline_select")
       return (
         <label className="inline-answer-select">
-          <span>Choose an answer</span>
+          <span>{tr("Choose an answer")}</span>
           <select
             value={value || ""}
             disabled={disabled}
             onChange={(event) => onAnswer(key, event.target.value)}
           >
-            <option value="" disabled>
-              Choose an answer…
-            </option>
-            <option value="TRUE">True</option>
-            <option value="FALSE">False</option>
-            <option value="NOT_GIVEN">Not given</option>
+            <option value="" disabled>{tr("Choose an answer…")}</option>
+            <option value="TRUE">{tr("True")}</option>
+            <option value="FALSE">{tr("False")}</option>
+            <option value="NOT_GIVEN">{tr("Not given")}</option>
           </select>
         </label>
       );
@@ -669,7 +671,7 @@ export function TypeQuestion({
       <div
         className="truth-controls"
         role="radiogroup"
-        aria-label={`Statement ${q.position}`}
+        aria-label={tr("Statement {v0}", { v0: q.position })}
       >
         {[
           ["TRUE", "True"],
@@ -693,15 +695,13 @@ export function TypeQuestion({
   if (mode === "multiple_choice" && uiStyle === "inline_select")
     return (
       <label className="inline-answer-select">
-        <span>Choose an answer</span>
+        <span>{tr("Choose an answer")}</span>
         <select
           value={value || ""}
           disabled={disabled}
           onChange={(event) => onAnswer(key, event.target.value)}
         >
-          <option value="" disabled>
-            Choose an answer…
-          </option>
+          <option value="" disabled>{tr("Choose an answer…")}</option>
           {q.options.map((option, index) => (
             <option key={`${option}-${index}`} value={option}>
               {option}
@@ -730,7 +730,7 @@ export function TypeQuestion({
       )}
       <AutoTextarea
         label={
-          mode === "audio_dictation" ? "Recognized speech" : "Answer"
+          mode === "audio_dictation" ? tr("Recognized speech") : tr("Answer")
         }
         value={value || ""}
         disabled={disabled}

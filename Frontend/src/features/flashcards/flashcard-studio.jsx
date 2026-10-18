@@ -1,16 +1,26 @@
-import { WordGames } from "./word-games.jsx";
-import { WORD_GAMES } from "./word-games.js";
+import ContentSwitcher from "../../components/navigation/content-switcher.jsx";
+import {cardFields} from "./card-fields.js";
+import {request} from "../../lib/core.js";
+import { t as tr, useLocale } from "../../i18n/index.js";
+import QuickCardEditor from "./quick-card-editor.jsx";
+import VocabularyNotebook from "./vocabulary-notebook.jsx";
 import { useWindowActive } from "../../lib/core.js";
 import { SkipButton, AnswerReveal } from "../learning/skip-controls.jsx";
 import { cardSolution } from "../learning/skip-learning.js";
-import SpacedReview from "./spaced-review.jsx";
 import { useAnswerClock } from "../learning/use-answer-clock.js";
 import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { useLearningSync, pendingLearning } from "../learning/learning-sync.js";
 import { useEffect, useRef, useState } from "react";
-import { endpoint, useResource, readPreference, savePreference } from "../../lib/core.js";
+import {
+  endpoint,
+  useResource,
+  useRoute,
+  readPreference,
+  savePreference,
+} from "../../lib/core.js";
 import {
   Btn,
+  Editor,
   Icon,
   Field,
   Select,
@@ -53,6 +63,7 @@ const defaults = {
   ignore_punctuation: true,
 };
 export default function FlashcardStudio({ lang, id, userId, sound }) {
+  useLocale();
   const resource = useResource(endpoint(lang, `decks/${id}/`));
   return resource.data ? (
     <Studio
@@ -61,12 +72,17 @@ export default function FlashcardStudio({ lang, id, userId, sound }) {
       data={resource.data}
     />
   ) : (
-    <Status error={resource.error}>Loading deck…</Status>
+    <Status error={resource.error}>{tr("Loading deck…")}</Status>
   );
 }
-function Studio({ lang, id, userId, sound, data }) {
-  const [game, setGame] = useState(null);
- const windowActive = useWindowActive();
+function Studio({ lang, id, userId, sound, data: initialData }) {
+  useLocale();
+  const [data, setData] = useState(initialData);
+  const [editingCard, setEditingCard] = useState(null);
+  const [addingCard,setAddingCard]=useState(false);
+  const route = useRoute();
+  const requestedMode = new URLSearchParams(route.split("?")[1]).get("mode");
+  const windowActive = useWindowActive();
   const sync = useLearningSync(userId, lang);
   const [{ initialStars, initialProgress, initialOptions }] = useState(() => {
     const waiting = pendingLearning(userId, lang).filter(
@@ -114,6 +130,12 @@ function Studio({ lang, id, userId, sound, data }) {
     transliteration: data.study_defaults?.transliteration ?? false,
     minutes: data.study_defaults?.session_minutes ?? defaults.minutes,
     ...initialOptions,
+    mode:
+      requestedMode === "notebook"
+        ? "notebook"
+        : ["flash", "learn", "test", "notebook"].includes(initialOptions.mode)
+          ? initialOptions.mode
+          : "flash",
     frontVoice:
       initialOptions.frontVoice || (lang === "de" ? "de-DE" : "en-US"),
   }));
@@ -141,6 +163,27 @@ function Studio({ lang, id, userId, sound, data }) {
     [error, setError] = useState(""),
     [sessionCards, setSessionCards] = useState([]),
     [resetLearning, setResetLearning] = useState(false);
+  function cardUpdated(updated) {
+    const cards = data.cards.map(c => c.id === updated.id ? updated : c);
+    setData(old => ({ ...old, cards }));
+    setOrder(old => old.map(c => c.id === updated.id ? updated : c));
+    setSessionCards(old => old.map(c => c.id === updated.id ? updated : c));
+    const refresh = q => makeQuestion(cards.find(c => c.id === q.card.id) || q.card, q.type, cards,
+      q.expected === q.card.german_text ? "term" : "definition");
+    if (question) {
+      setQuestion(refresh(question));
+      setValue("");
+      setFeedback(null);
+    }
+    if (test.length) {
+      // Distractors and matching groups can reference any card in the deck.
+      setTest(test.map(refresh));
+      setTestAnswers({});
+      setTestChecked({});
+      setTestSkipped({});
+      setTestResult(null);
+    }
+  }
   const questionTimers = useRef({});
   const audio = useSound(sound, lang),
     startSides = useRef({});
@@ -186,7 +229,7 @@ function Studio({ lang, id, userId, sound, data }) {
     );
   }, [active?.id, options.direction]);
   useEffect(() => {
-    if (!game && options.mode === "flash" && options.autoSpeak && active) {
+    if (options.mode === "flash" && options.autoSpeak && active) {
       speak(
         flipped ? active.vietnamese_meaning : active.german_text,
         flipped ? options.backVoice : options.frontVoice,
@@ -194,7 +237,6 @@ function Studio({ lang, id, userId, sound, data }) {
     }
     return () => window.speechSynthesis?.cancel();
   }, [
-    game,
     active?.id,
     flipped,
     options.autoSpeak,
@@ -221,7 +263,8 @@ function Studio({ lang, id, userId, sound, data }) {
   }, [elapsed, options.minutes, running, options.mode, feedback?.skipped]);
   useEffect(() => {
     const listener = (e) => {
-      if (!windowActive || game) return;
+      if (document.querySelector('[role="dialog"]')) return;
+      if (!windowActive) return;
       if (
         e.target.closest("input,textarea,select,button,a") ||
         options.mode !== "flash" ||
@@ -238,7 +281,14 @@ function Studio({ lang, id, userId, sound, data }) {
     };
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
-  }, [game, windowActive, index, order.length, options.mode, settingsOpen, resetLearning]);
+  }, [
+    windowActive,
+    index,
+    order.length,
+    options.mode,
+    settingsOpen,
+    resetLearning,
+  ]);
   const speak = (text, voice) => {
     if (!window.speechSynthesis) {
       setError("This browser does not support speech synthesis.");
@@ -249,7 +299,10 @@ function Studio({ lang, id, userId, sound, data }) {
     u.lang = voice;
     u.rate = 0.9;
     u.onerror = (event) => {
-      if (!["canceled", "interrupted"].includes(event.error)) setError("Could not play pronunciation. Check the voice selected in settings.");
+      if (!["canceled", "interrupted"].includes(event.error))
+        setError(
+          "Could not play pronunciation. Check the voice selected in settings.",
+        );
     };
     window.speechSynthesis.resume();
     window.speechSynthesis.speak(u);
@@ -475,75 +528,62 @@ function Studio({ lang, id, userId, sound, data }) {
     <Page className="flashcard-workspace">
       <Heading title={data.deck.title} />
       <SidebarTools>
+        <div className="flash-icon-row">
+          <Link className="btn flash-icon-link" to={`/${lang}/flashcard`} title={tr("My Flashcards")} aria-label={tr("My Flashcards")}><Icon name="home"/></Link>
+          <ContentSwitcher lang={lang} kind="decks" currentId={id}/>
+          <Btn icon="plus" onClick={()=>setAddingCard(true)}>{tr("Add card")}</Btn>
+          <Link className="btn flash-icon-link" title={tr("Manage terms")} aria-label={tr("Manage terms")} to={`/${lang}/flashcard/deck/${id}/edit`}><Icon name="edit"/></Link>
+        </div>
         <Status error={sync.error} />
-        <div className="flash-mode-picker" aria-label="Study mode">
+        <div className="flash-mode-picker" aria-label={tr("Study mode")}>
           {[
             ["flash", "cards", "Card"],
             ["learn", "spark", "Study"],
             ["test", "exercise", "Check"],
-            ["review", "history", "Due reviews"],
+            ["notebook", "book", "Notebook"],
           ].map(([mode, icon, label]) => (
             <button
               key={mode}
-              aria-pressed={!game && options.mode === mode}
-              onClick={() => { setGame(null); patch({ mode }); }}
+              aria-pressed={options.mode === mode}
+              onClick={() => {
+                setSettingsOpen(false);
+                setRunning(false);
+                patch({ mode });
+              }}
             >
               <Icon name={icon} />
-              <span>{label}</span>
+              <span>{tr(label)}</span>
             </button>
           ))}
         </div>
-        <h3 className="context-section-title">Games</h3>
-        <div className="flash-mode-picker" aria-label="Flashcard games">
-          {WORD_GAMES.map(([mode, label, description], index) => (
-            <button key={mode} type="button" aria-pressed={game === mode} title={description}
-              onClick={() => { setGame(mode); setError(""); setRunning(false); setSettingsOpen(false); }}>
-              <Icon name={["sentence", "pairs"][index]} />
-              <span>{label}</span>
-            </button>
-          ))}
-        </div>
-        {!game && options.mode !== "review" && (
+        {options.mode !== "notebook" && (
           <div className="flash-icon-row">
             <Btn
               icon="star"
               aria-pressed={options.starredOnly}
               onClick={() => patch({ starredOnly: !options.starredOnly })}
-            >{`Starred cards only · ${stars.length}`}</Btn>
+            >{tr("Starred cards only · {v0}", { v0: stars.length })}</Btn>
             <Btn
               icon="shuffle"
               aria-pressed={options.shuffle}
               onClick={() => patch({ shuffle: !options.shuffle })}
-            >
-              Shuffle cards
-            </Btn>
-            <Btn icon="settings" onClick={() => setSettingsOpen(true)}>
-              Study options
-            </Btn>
-            <Link
-              className="btn flash-icon-link"
-              title="Manage terms"
-              aria-label="Manage terms"
-              to={`/${lang}/flashcard/deck/${id}/edit`}
-            >
-              <Icon name="edit" />
-            </Link>
+            >{tr("Shuffle cards")}</Btn>
+            <Btn icon="settings" onClick={() => setSettingsOpen(true)}>{tr("Study options")}</Btn>
+
             {options.mode !== "flash" && (
               <Btn primary icon={running ? "refresh" : "play"} onClick={begin}>
-                {running ? "Restart session" : "Start learning"}
+                {running ? tr("Restart session") : tr("Start learning")}
               </Btn>
             )}
             {options.mode === "test" && test.length > 0 && (
-              <Btn icon="print" onClick={() => window.print()}>
-                Print / Save PDF
-              </Btn>
+              <Btn icon="print" onClick={() => window.print()}>{tr("Print / Save PDF")}</Btn>
             )}
           </div>
         )}
       </SidebarTools>
       {settingsOpen && (
         <PracticeModal
-          title="Study options"
+          title={tr("Study options")}
           size="lg"
           onClose={() => setSettingsOpen(false)}
         >
@@ -553,43 +593,38 @@ function Studio({ lang, id, userId, sound, data }) {
                 type="checkbox"
                 checked={options.starredOnly}
                 onChange={(e) => patch({ starredOnly: e.target.checked })}
-              />
-              Starred cards only ({stars.length})
+              />{tr("Starred cards only (")}{stars.length})
             </label>
             <label className="check-line">
               <input
                 type="checkbox"
                 checked={options.shuffle}
                 onChange={(e) => patch({ shuffle: e.target.checked })}
-              />
-              Shuffle randomly
-            </label>
+              />{tr("Shuffle randomly")}</label>
             {options.mode === "flash" ? (
               <>
                 <Select
-                  label="First side shown"
+                  label={tr("First side shown")}
                   value={options.direction}
                   onChange={(direction) => patch({ direction })}
                 >
-                  <option value="front">Term</option>
-                  <option value="back">Definition</option>
-                  <option value="random">Random for each card</option>
+                  <option value="front">{tr("Term")}</option>
+                  <option value="back">{tr("Definition")}</option>
+                  <option value="random">{tr("Random for each card")}</option>
                 </Select>
                 <label className="check-line">
                   <input
                     type="checkbox"
                     checked={options.autoSpeak}
                     onChange={(e) => patch({ autoSpeak: e.target.checked })}
-                  />
-                  Play audio automatically
-                </label>
+                  />{tr("Play audio automatically")}</label>
                 {[
                   ["frontVoice", "Term voice"],
                   ["backVoice", "Definition voice"],
                 ].map(([k, label]) => (
                   <Select
                     key={k}
-                    label={label}
+                    label={tr(label)}
                     value={options[k]}
                     onChange={(v) => patch({ [k]: v })}
                   >
@@ -608,20 +643,16 @@ function Studio({ lang, id, userId, sound, data }) {
             ) : (
               <>
                 <Select
-                  label="Answer with"
+                  label={tr("Answer with")}
                   value={options.answerWith}
                   onChange={(answerWith) => patch({ answerWith })}
                 >
-                  <option value="term">
-                    Term · Show the definition first
-                  </option>
-                  <option value="definition">
-                    Definition · Show the term first
-                  </option>
-                  <option value="random">Both · Random</option>
+                  <option value="term">{tr("Term · Show the definition first")}</option>
+                  <option value="definition">{tr("Definition · Show the term first")}</option>
+                  <option value="random">{tr("Both · Random")}</option>
                 </Select>
                 <fieldset>
-                  <legend>Question type</legend>
+                  <legend>{tr("Question type")}</legend>
                   {TYPES.filter(
                     ([t]) => options.mode === "test" || t !== "matching",
                   ).map(([type, title]) => (
@@ -637,22 +668,22 @@ function Studio({ lang, id, userId, sound, data }) {
                           })
                         }
                       />
-                      {title}
+                      {tr(title)}
                     </label>
                   ))}
                 </fieldset>
                 {options.mode === "learn" && (
                   <>
                     <Select
-                      label="Learning goal"
+                      label={tr("Learning goal")}
                       value={options.goal}
                       onChange={(goal) => patch({ goal })}
                     >
-                      <option value="quick">Basic</option>
-                      <option value="comprehensive">Smart learning</option>
+                      <option value="quick">{tr("Basic")}</option>
+                      <option value="comprehensive">{tr("Smart learning")}</option>
                     </Select>
                     <Field
-                      label="Time target (minutes)"
+                      label={tr("Time target (minutes)")}
                       type="number"
                       min="1"
                       max="180"
@@ -672,9 +703,7 @@ function Studio({ lang, id, userId, sound, data }) {
                         setSettingsOpen(false);
                         setResetLearning(true);
                       }}
-                    >
-                      Reset learning progress
-                    </Btn>
+                    >{tr("Reset learning progress")}</Btn>
                   </>
                 )}
                 {options.mode === "learn" && (
@@ -685,18 +714,14 @@ function Studio({ lang, id, userId, sound, data }) {
                       onChange={(e) =>
                         patch({ speakAfterCorrect: e.target.checked })
                       }
-                    />
-                    Read the term aloud after a correct answer
-                  </label>
+                    />{tr("Read the term aloud after a correct answer")}</label>
                 )}
                 <label className="check-line">
                   <input
                     type="checkbox"
                     checked={options.ignore_case}
                     onChange={(e) => patch({ ignore_case: e.target.checked })}
-                  />
-                  Ignore case
-                </label>
+                  />{tr("Ignore case")}</label>
                 <label className="check-line">
                   <input
                     type="checkbox"
@@ -704,23 +729,30 @@ function Studio({ lang, id, userId, sound, data }) {
                     onChange={(e) =>
                       patch({ ignore_punctuation: e.target.checked })
                     }
-                  />
-                  Ignore punctuation
-                </label>
+                  />{tr("Ignore punctuation")}</label>
               </>
             )}
           </div>
         </PracticeModal>
       )}
       <Status error={error} />
-      {game ? (
-        <WordGames key={game} pack={{cards: data.cards, grading: options}} lang={lang} deck={id} sound={sound} embedded selectedMode={game} />
-      ) : options.mode === "review" ? (
-        <SpacedReview lang={lang} id={id} userId={userId} />
+      {addingCard&&<Editor title={tr("Add card")} fields={cardFields} onClose={()=>setAddingCard(false)} onSave={async(values,signal)=>{
+        const result=await request(endpoint(lang,`decks/${id}/cards/`),'POST',values,signal);
+        const card={...values,id:result.id};
+        setData(old=>({...old,cards:[...old.cards,card]}));
+        if(!options.starredOnly)setOrder(old=>[...old,card]);
+      }}/>}
+      {editingCard && <QuickCardEditor card={editingCard} lang={lang} deckId={id}
+        notice={options.mode === "test" ? tr("Saving refreshes this test and clears its answers because choices may have changed.") : undefined}
+        onClose={() => setEditingCard(null)} onSaved={cardUpdated} />}
+      {options.mode === "flash" && active && !flashEnded && <Btn onClick={() => setEditingCard(active)}>{tr("Edit card")}</Btn>}
+      {options.mode === "learn" && question && <Btn onClick={() => setEditingCard(question.card)}>{tr("Edit card")}</Btn>}
+      {options.mode === "notebook" ? (
+        <VocabularyNotebook {...{ lang, id, userId }} onCardUpdated={cardUpdated} />
       ) : options.mode === "flash" ? (
         flashEnded ? (
           <section className="work-paper">
-            <h2>All cards reviewed</h2>
+            <h2>{tr("All cards reviewed")}</h2>
             <Btn
               icon="refresh"
               onClick={() => {
@@ -728,16 +760,14 @@ function Studio({ lang, id, userId, sound, data }) {
                 setIndex(0);
                 setFlashSkipped(false);
               }}
-            >
-              Review
-            </Btn>
+            >{tr("Review")}</Btn>
           </section>
         ) : active ? (
           <div className="studio-flash" ref={flashClock.root}>
             <Btn
               icon="star"
               className="star-button"
-              aria-label={stars.includes(active.id) ? "Unstar" : "Star"}
+              aria-label={stars.includes(active.id) ? tr("Unstar") : tr("Star")}
               aria-pressed={stars.includes(active.id)}
               onClick={() => star(active)}
             >
@@ -762,9 +792,7 @@ function Studio({ lang, id, userId, sound, data }) {
                     if (index === order.length - 1) setFlashEnded(true);
                     else step(1);
                   }}
-                >
-                  Continue
-                </Btn>
+                >{tr("Continue")}</Btn>
               ) : (
                 <SkipButton
                   onClick={() => {
@@ -796,9 +824,7 @@ function Studio({ lang, id, userId, sound, data }) {
                 icon="chevron_left"
                 isDisabled={index === 0}
                 onClick={() => step(-1)}
-              >
-                ← Previous
-              </Btn>
+              >{tr("← Previous")}</Btn>
               <span>
                 {index + 1}/{order.length}
               </span>
@@ -806,12 +832,8 @@ function Studio({ lang, id, userId, sound, data }) {
                 icon="chevron_right"
                 isDisabled={index === order.length - 1}
                 onClick={() => step(1)}
-              >
-                Next →
-              </Btn>
-              <Btn icon="flip" onClick={() => setFlipped((v) => !v)}>
-                Flip card · Space
-              </Btn>
+              >{tr("Next →")}</Btn>
+              <Btn icon="flip" onClick={() => setFlipped((v) => !v)}>{tr("Flip card · Space")}</Btn>
               <Btn
                 icon="sound"
                 onClick={() =>
@@ -820,13 +842,11 @@ function Studio({ lang, id, userId, sound, data }) {
                     flipped ? options.backVoice : options.frontVoice,
                   )
                 }
-              >
-                Nghe
-              </Btn>
+              >{tr("Nghe")}</Btn>
             </div>
           </div>
         ) : (
-          <p>No matching cards.</p>
+          <p>{tr("No matching cards.")}</p>
         )
       ) : options.mode === "learn" ? (
         <>
@@ -835,15 +855,12 @@ function Studio({ lang, id, userId, sound, data }) {
               <div className="learning-complete-icon" aria-hidden="true">
                 🎉
               </div>
-              <h2>Congratulations!</h2>
-              <p>You have completed all cards in this session.</p>
-              <Btn icon="refresh" primary onClick={begin}>
-                Study again
-              </Btn>
+              <h2>{tr("Congratulations!")}</h2>
+              <p>{tr("You have completed all cards in this session.")}</p>
+              <Btn icon="refresh" primary onClick={begin}>{tr("Study again")}</Btn>
             </section>
           ) : null}
-          <p>
-            Practiced today{" "}
+          <p>{tr("Practiced today")}{" "}
             {
               pool.filter(
                 (c) =>
@@ -851,8 +868,7 @@ function Studio({ lang, id, userId, sound, data }) {
                   new Date().toLocaleDateString("en-CA"),
               ).length
             }
-            /{pool.length} cards · {options.minutes} target minutes
-          </p>
+            /{pool.length}{tr(" cards · ")}{options.minutes}{tr(" target minutes")}</p>
           <div className="learn-stages">
             {[
               ["new", "Not studied"],
@@ -869,15 +885,12 @@ function Studio({ lang, id, userId, sound, data }) {
             <section className="work-paper">
               <p>
                 {Math.floor(elapsed / 60)}:
-                {String(elapsed % 60).padStart(2, "0")} / {options.minutes} minutes
-                · Round {turn + 1}
+                {String(elapsed % 60).padStart(2, "0")} / {options.minutes}{" "}{tr("minutes · Round ")}{turn + 1}
               </p>
               <Btn
                 icon="star"
                 className="star-button"
-                aria-label={
-                  stars.includes(question.id) ? "Unstar" : "Star"
-                }
+                aria-label={stars.includes(question.id) ? tr("Unstar") : tr("Star")}
                 aria-pressed={stars.includes(question.id)}
                 onClick={() => star(question.card)}
               >
@@ -909,15 +922,15 @@ function Studio({ lang, id, userId, sound, data }) {
                 <Btn
                   icon="close"
                   className="end-session"
-                  aria-label="End session"
-                  title="End session"
+                  aria-label={tr("End session")}
+                  title={tr("End session")}
                   onClick={() => {
                     setRunning(false);
                     sync.flush();
                   }}
                 >
                   <Icon name="close" />
-                  <span>Finish</span>
+                  <span>{tr("Finish")}</span>
                 </Btn>
                 <div className="flashcard-actions">
                   {!feedback?.correct && !feedback?.skipped && (
@@ -927,12 +940,12 @@ function Studio({ lang, id, userId, sound, data }) {
                     primary
                     icon="arrow"
                     className="next-question"
-                    aria-label="Next question"
-                    title="Next question"
+                    aria-label={tr("Next question")}
+                    title={tr("Next question")}
                     onClick={next}
                     isDisabled={!feedback?.correct && !feedback?.skipped}
                   >
-                    <span className="next-label">Continue</span>
+                    <span className="next-label">{tr("Continue")}</span>
                     <Icon name="arrow" />
                   </Btn>
                 </div>
@@ -944,18 +957,14 @@ function Studio({ lang, id, userId, sound, data }) {
         <>
           {!test.length ? (
             <section className="work-paper">
-              <h2>Test</h2>
+              <h2>{tr("Test")}</h2>
 
-              <Btn primary icon="play" onClick={begin}>
-                Generate test
-              </Btn>
+              <Btn primary icon="play" onClick={begin}>{tr("Generate test")}</Btn>
             </section>
           ) : (
             <div className="print-test">
-              <h2>{data.deck.title} · Test</h2>
-              <p className="print-only">
-                Name: ____________________ Date: ____________
-              </p>
+              <h2>{data.deck.title}{tr(" · Test")}</h2>
+              <p className="print-only">{tr("Name: ____________________ Date: ____________")}</p>
               {test.map((q, i) => (
                 <section
                   className="work-paper"
@@ -963,9 +972,9 @@ function Studio({ lang, id, userId, sound, data }) {
                   tabIndex={-1}
                   key={`${q.id}:${i}`}
                 >
-                  <h3>
-                    Question {i + 1} · {TYPES.find(([k]) => k === q.type)?.[1]}
+                  <h3>{tr("Question ")}{i + 1} · {tr(TYPES.find(([k]) => k === q.type)?.[1])}
                   </h3>
+                  <Btn onClick={() => setEditingCard(q.card)}>{tr("Edit card")}</Btn>
                   <QuestionUI
                     q={q}
                     onTimer={(read) => {
@@ -996,9 +1005,7 @@ function Studio({ lang, id, userId, sound, data }) {
                               )
                               ?.focus()
                           }
-                        >
-                          Continue
-                        </Btn>
+                        >{tr("Continue")}</Btn>
                       )
                     )}
                   </div>
@@ -1012,7 +1019,7 @@ function Studio({ lang, id, userId, sound, data }) {
                 >
                   <div
                     role="img"
-                    aria-label={`${testResult.filter(Boolean).length}/${test.length} correct answers`}
+                    aria-label={tr("{v0}/{v1} correct answers", { v0: testResult.filter(Boolean).length, v1: test.length })}
                     className="result-ring"
                     style={{
                       "--percent": `${(100 * testResult.filter(Boolean).length) / test.length}%`,
@@ -1026,12 +1033,9 @@ function Studio({ lang, id, userId, sound, data }) {
                     </strong>
                   </div>
                   <h2>
-                    {testResult.filter(Boolean).length}/{test.length} correct answers
-                  </h2>
+                    {testResult.filter(Boolean).length}/{test.length}{tr(" correct answers")}</h2>
 
-                  <Btn icon="refresh" onClick={begin}>
-                    Generate new test
-                  </Btn>
+                  <Btn icon="refresh" onClick={begin}>{tr("Generate new test")}</Btn>
                 </section>
               ) : null}
             </div>
@@ -1040,8 +1044,8 @@ function Studio({ lang, id, userId, sound, data }) {
       )}
       {resetLearning && (
         <Confirm
-          title="Reset learning progress?"
-          description="All accuracy and mastery progress for this deck will be cleared. Stars and study preferences will be kept."
+          title={tr("Reset learning progress?")}
+          description={tr("All accuracy and mastery progress for this deck will be cleared. Stars and study preferences will be kept.")}
           onClose={() => setResetLearning(false)}
           onConfirm={async () => reset()}
         />
@@ -1058,6 +1062,7 @@ function QuestionUI({
   onCommit,
   onTimer,
 }) {
+  useLocale();
   const clock = useAnswerClock(q.id, !disabled);
   useEffect(() => {
     onTimer?.(clock.read);
@@ -1087,8 +1092,7 @@ function QuestionUI({
         </div>
       ) : q.type === "truefalse" ? (
         <>
-          <p>
-            Suggested answer: <strong>{q.proposed}</strong>
+          <p>{tr("Suggested answer: ")}<strong>{q.proposed}</strong>
           </p>
           <div className="toolbar">
             <Btn
@@ -1096,17 +1100,13 @@ function QuestionUI({
               aria-pressed={value === true}
               isDisabled={disabled}
               onClick={() => onChange(true)}
-            >
-              Correct
-            </Btn>
+            >{tr("Correct")}</Btn>
             <Btn
               className={answerClass(false, q.truth === false)}
               aria-pressed={value === false}
               isDisabled={disabled}
               onClick={() => onChange(false)}
-            >
-              Sai
-            </Btn>
+            >{tr("Sai")}</Btn>
           </div>
         </>
       ) : q.type === "matching" ? (
@@ -1119,7 +1119,7 @@ function QuestionUI({
         />
       ) : (
         <Field
-          label="Answer"
+          label={tr("Answer")}
           value={value || ""}
           onChange={onChange}
           isDisabled={disabled}
@@ -1134,7 +1134,7 @@ function QuestionUI({
             <button
               className="answer-enter"
               disabled={disabled || !String(value || "").trim()}
-              aria-label="Check answer"
+              aria-label={tr("Check answer")}
               onClick={() => onCommit?.()}
             >
               <Icon name="enter" />

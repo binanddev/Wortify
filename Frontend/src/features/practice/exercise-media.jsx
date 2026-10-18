@@ -1,13 +1,15 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useState } from "react";
 import { Btn, Icon, Status, Select } from "../../components/ui/ui.jsx";
 import { PracticeModal } from "./practice-workspace.jsx";
 import { endpoint, request } from "../../lib/core.js";
 import { validateMediaSelection } from "./exercise-media-utils.js";
 export function ExerciseMedia({ items = [] }) {
+  useLocale();
   const [image, setImage] = useState(null);
   if (!items.length) return null;
   return (
-    <section className="grid w-full min-w-0 gap-3" aria-label="Attachments">
+    <section className="grid w-full min-w-0 gap-3" aria-label={tr("Attachments")}>
       <div className="flex flex-wrap gap-3">
         {items
           .filter((item) => item.type?.startsWith("image/"))
@@ -17,7 +19,7 @@ export function ExerciseMedia({ items = [] }) {
               type="button"
               className="overflow-hidden rounded-xl border border-(--line)"
               title={item.name}
-              aria-label={`View image ${item.name}`}
+              aria-label={tr("View image {v0}", { v0: item.name })}
               onClick={() => setImage(item)}
             >
               <img
@@ -69,6 +71,7 @@ export function MediaEditor({
   questions = [],
   uploadUrl,
 }) {
+  useLocale();
   const [scope, setScope] = useState("");
   const [preview, setPreview] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -117,18 +120,16 @@ export function MediaEditor({
   return (
     <div className="grid gap-3 rounded-xl border border-(--line) p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <span className="text-sm text-(--muted)">
-          MP3 / images · optional · 200 MB total maximum
-        </span>
+        <span className="text-sm text-(--muted)">{tr("MP3 / images · optional · 200 MB total maximum")}</span>
         <label
           className="studio-nav-icon cursor-pointer"
-          title="Add MP3 or images"
+          title={tr("Add MP3 or images")}
         >
           <Icon name="upload" />
           <input
             className="sr-only"
             type="file"
-            aria-label="Add MP3 or images"
+            aria-label={tr("Add MP3 or images")}
             accept=".mp3,.png,.jpg,.jpeg,.webp,.gif"
             multiple
             disabled={disabled || busy}
@@ -140,32 +141,29 @@ export function MediaEditor({
         </label>
       </div>
       <Select
-        label="Add files to"
+        label={tr("Add files to")}
         value={scope}
         disabled={busy || disabled}
         onChange={setScope}
       >
-        <option value="">{questions.length ? "Entire exercise" : "Entire document"}</option>
+        <option value="">{questions.length ? tr("Entire exercise") : tr("Entire document")}</option>
         {questions.length > 1 && (
-          <option value="sequence">One question per file · selection order</option>
+          <option value="sequence">{tr("One question per file · selection order")}</option>
         )}
         {questions.map((q, i) => (
-          <option key={q.id || i + 1} value={String(q.id || i + 1)}>
-            Question {i + 1} · {q.prompt.slice(0, 70)}
+          <option key={q.id || i + 1} value={String(q.id || i + 1)}>{tr("Question ")}{i + 1} · {q.prompt.slice(0, 70)}
           </option>
         ))}
       </Select>
       {scope === "sequence" && (
-        <p className="text-sm text-(--muted)">
-          First file → question 1, next file → question 2. Review and change assignments after uploading.
-        </p>
+        <p className="text-sm text-(--muted)">{tr("First file → question 1, next file → question 2. Review and change assignments after uploading.")}</p>
       )}
       <p className="text-sm text-(--muted)">
-        {items.length} files ·{" "}
+        {items.length}{tr(" files ·")}{" "}
         {(items.reduce((n, item) => n + item.size, 0) / 1024 / 1024).toFixed(1)}{" "}
         / 200 MB
       </p>
-      {busy && <p role="status">Uploading files…</p>}
+      {busy && <p role="status">{tr("Uploading files…")}</p>}
       <Status error={error} />
       {items.map((item) => (
         <div
@@ -177,7 +175,7 @@ export function MediaEditor({
             {item.name}
           </span>
           <Select
-            aria-label={`Attach ${item.name} into`}
+            aria-label={tr("Attach {v0} into", { v0: item.name })}
             value={item.question || ""}
             disabled={disabled || busy}
             onChange={(question) =>
@@ -188,21 +186,18 @@ export function MediaEditor({
               )
             }
           >
-            <option value="">{questions.length ? "Entire exercise" : "Entire document"}</option>
+            <option value="">{questions.length ? tr("Entire exercise") : tr("Entire document")}</option>
             {questions.map((q, i) => (
-              <option key={q.id || i + 1} value={String(q.id || i + 1)}>
-                Question {i + 1} · {q.prompt.slice(0, 50)}
+              <option key={q.id || i + 1} value={String(q.id || i + 1)}>{tr("Question ")}{i + 1} · {q.prompt.slice(0, 50)}
               </option>
             ))}
           </Select>
           {item.type?.startsWith("image/") && <input aria-label={"Image markup for "+item.name} readOnly value={"\\includegraphics[width=320px,align=center]{"+item.url+"}"} onFocus={e=>e.target.select()} />}
-          <Btn icon="eye" onClick={() => setPreview(item)}>
-            View file
-          </Btn>
+          <Btn icon="eye" onClick={() => setPreview(item)}>{tr("View file")}</Btn>
           <Btn
             isIconOnly
-            title="Remove file"
-            aria-label={`Remove ${item.name}`}
+            title={tr("Remove file")}
+            aria-label={tr("Remove {v0}", { v0: item.name })}
             isDisabled={disabled || busy}
             onClick={() => onChange(items.filter((row) => row.id !== item.id))}
           >
@@ -220,13 +215,14 @@ export function MediaEditor({
 }
 
 export function ExerciseMediaDialog({ node, lang, onClose, onSaved }) {
+  useLocale();
   const [items, setItems] = useState(node.payload.attachments || []);
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   return (
     <PracticeModal
-      title={`Media · ${node.title}`}
+      title={tr("Media · {v0}", { v0: node.title })}
       pending={busy || saving}
       onClose={onClose}
     >
@@ -262,9 +258,7 @@ export function ExerciseMediaDialog({ node, lang, onClose, onSaved }) {
               setSaving(false);
             }
           }}
-        >
-          Save media
-        </Btn>
+        >{tr("Save media")}</Btn>
       </div>
     </PracticeModal>
   );

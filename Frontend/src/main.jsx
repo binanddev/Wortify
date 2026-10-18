@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "./i18n/index.js";
 import { StrictMode, Component } from "react";
 import { createRoot } from "react-dom/client";
 import { HeroUIProvider } from "@heroui/react";
@@ -13,9 +14,9 @@ class Boundary extends Component {
   render() {
     return this.state.error ? (
       <main className="welcome">
-        <h1>This page could not be opened.</h1>
-        <p>Data already saved on the server is preserved.</p>
-        <button onClick={() => location.reload()}>Reload page</button>
+        <h1>{tr("This page could not be opened.")}</h1>
+        <p>{tr("Data already saved on the server is preserved.")}</p>
+        <button onClick={() => location.reload()}>{tr("Reload page")}</button>
       </main>
     ) : (
       this.props.children

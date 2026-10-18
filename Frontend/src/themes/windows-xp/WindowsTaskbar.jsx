@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { useEffect, useRef, useState } from "react";
 import { ThemeProvider, StyleSheetManager } from "styled-components";
 import { Button, Frame, Toolbar } from "react95";
@@ -27,6 +28,7 @@ export default function WindowsTaskbar({
   canManage,
   onLogout,
 }) {
+  useLocale();
   const [open, setOpen] = useState(false);
   const root = useRef(null),
     trigger = useRef(null);
@@ -56,7 +58,7 @@ export default function WindowsTaskbar({
           {open && (
             <Frame className="windows-start-menu">
               <strong>Wortify · Windows</strong>
-              <nav id="windows-start-navigation" aria-label="Start menu">
+              <nav id="windows-start-navigation" aria-label={tr("Start menu")}>
                 {[
                   ["flashcard", "cards", "Decks"],
                   ["practice", "book", "Exercises"],
@@ -75,7 +77,7 @@ export default function WindowsTaskbar({
                     }}
                   >
                     <Icon name={icon} />
-                    {label}
+                    {tr(label)}
                   </Button>
                 ))}
               </nav>
@@ -86,9 +88,7 @@ export default function WindowsTaskbar({
                     setOpen(false);
                     onLaunch?.(`/${lang}/admin`);
                   }}
-                >
-                  Administration
-                </Button>
+                >{tr("Administration")}</Button>
               )}
               <Button
                 fullWidth
@@ -96,13 +96,9 @@ export default function WindowsTaskbar({
                   setOpen(false);
                   navigate("/");
                 }}
-              >
-                Home
-              </Button>
+              >{tr("Home")}</Button>
               {onLogout && (
-                <Button fullWidth onClick={onLogout}>
-                  Sign out
-                </Button>
+                <Button fullWidth onClick={onLogout}>{tr("Sign out")}</Button>
               )}
             </Frame>
           )}
@@ -116,9 +112,7 @@ export default function WindowsTaskbar({
             >
               <span className="windows-start-mark" aria-hidden="true">
                 ▦
-              </span>{" "}
-              Start
-            </Button>
+              </span>{" "}{tr("Start")}</Button>
             {windows ? (
               windows.map((win) => (
                 <Button

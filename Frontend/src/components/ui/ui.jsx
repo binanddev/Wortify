@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { THEME_ICONS } from "../../themes/icons.js";
 import { ICON_PATHS } from "./icon-paths.js";
 import { createPortal } from "react-dom";
@@ -15,6 +16,7 @@ import { Modal } from "../modal/modal.jsx";
 import { motion } from "framer-motion";
 import { useNavigate, WindowContext, useAction } from "../../lib/core.js";
 export function Icon({ name = "cards", size = 26 }) {
+  useLocale();
   const pixels = Math.max(22, Number(size) || 26);
   return (
     <svg
@@ -44,6 +46,7 @@ export function Icon({ name = "cards", size = 26 }) {
   );
 }
 export function Btn({ children, primary = false, onClick, icon, ...props }) {
+  useLocale();
   return (
     <Button
       className={primary ? "btn primary" : "btn"}
@@ -64,6 +67,7 @@ export function Btn({ children, primary = false, onClick, icon, ...props }) {
   );
 }
 export function Link({ to, children, className = "", onClick, ...props }) {
+  useLocale();
   const navigate = useNavigate();
   return (
     <a
@@ -84,6 +88,7 @@ export function Link({ to, children, className = "", onClick, ...props }) {
   );
 }
 export function Glass({ children, className = "", ...props }) {
+  useLocale();
   return (
     <Card isBlurred shadow="none" className={`glass ${className}`} {...props}>
       <CardBody className="glass-body">{children}</CardBody>
@@ -91,6 +96,7 @@ export function Glass({ children, className = "", ...props }) {
   );
 }
 export function Page({ children, className = "" }) {
+  useLocale();
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -109,6 +115,7 @@ export function Heading({
   contentDescription = false,
   actions,
 }) {
+  useLocale();
   return (
     <div className="heading">
       <div>
@@ -123,9 +130,10 @@ export function Heading({
   );
 }
 export function Status({ error, children }) {
+  useLocale();
   return error ? (
     <div className="feedback error" role="alert">
-      {error}
+      {tr(error)}
     </div>
   ) : children ? (
     <div className="feedback" role="status">
@@ -134,12 +142,13 @@ export function Status({ error, children }) {
   ) : null;
 }
 export function ExerciseTypeBadge({ type, label }) {
+  useLocale();
   return (
     <span
       className="pill exercise-type"
-      aria-label={`Exercise type: ${label || type}`}
+      aria-label={tr("Exercise type: {v0}", { v0: tr(label || type) })}
     >
-      {label || type}
+      {tr(label || type)}
     </span>
   );
 }
@@ -148,25 +157,25 @@ export function Loading({
   children,
   label = "Opening your learning space…",
 }) {
+  useLocale();
   if (resource.loading)
     return (
       <div className="loading" role="status">
         <span className="loader" />
-        {label}
+        {tr(label)}
       </div>
     );
   if (resource.error)
     return (
       <Glass>
         <Status error={resource.error} />
-        <Btn icon="refresh" onClick={resource.reload}>
-          Retry
-        </Btn>
+        <Btn icon="refresh" onClick={resource.reload}>{tr("Retry")}</Btn>
       </Glass>
     );
   return children(resource.data);
 }
 export function SidebarTools({ children, navOnly = false }) {
+  useLocale();
   const scope = useContext(WindowContext);
   const [target, setTarget] = useState(null);
   useEffect(() => {
@@ -196,13 +205,14 @@ export function Field({
   className = "",
   ...props
 }) {
+  useLocale();
   const id = useId();
   const Component = multiline ? "textarea" : "input";
   return (
     <label className={`field native-field ${className}`} htmlFor={id}>
       {label && (
         <span className="field-label">
-          {label}
+          {tr(label)}
           {isRequired ? " *" : ""}
         </span>
       )}
@@ -231,9 +241,10 @@ export function Field({
   );
 }
 export function Select({ label, value, onChange, children, ...props }) {
+  useLocale();
   return (
     <label className="select-field">
-      <span>{label}</span>
+      <span>{tr(label)}</span>
       <select
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
@@ -253,6 +264,7 @@ export function Editor({
   onClose,
   children,
 }) {
+  useLocale();
   const [values, set] = useState(initial),
     action = useAction();
   const input = (field) => (
@@ -290,7 +302,7 @@ export function Editor({
             {fields.filter((f) => !f.advanced).map(input)}
             {fields.some((f) => f.advanced) && (
               <details>
-                <summary>Additional details</summary>
+                <summary>{tr("Additional details")}</summary>
                 {fields.filter((f) => f.advanced).map(input)}
               </details>
             )}
@@ -299,16 +311,14 @@ export function Editor({
           </form>
         </ModalBody>
         <ModalFooter>
-          <Btn onClick={onClose} isDisabled={action.pending}>
-            Cancel
-          </Btn>
+          <Btn onClick={onClose} isDisabled={action.pending}>{tr("Cancel")}</Btn>
           <Btn
             primary
             type="submit"
             form="editor-form"
             isLoading={action.pending}
           >
-            {submitLabel}
+            {tr(submitLabel)}
           </Btn>
         </ModalFooter>
       </ModalContent>
@@ -322,6 +332,7 @@ export function Confirm({
   onClose,
   confirmLabel = "Confirm deletion",
 }) {
+  useLocale();
   const action = useAction();
   return (
     <Modal isOpen onClose={onClose} classNames={{ base: "glass dialog" }}>
@@ -332,7 +343,7 @@ export function Confirm({
           <Status error={action.error} />
         </ModalBody>
         <ModalFooter>
-          <Btn onClick={onClose}>Keep</Btn>
+          <Btn onClick={onClose}>{tr("Keep")}</Btn>
           <Btn
             primary
             isLoading={action.pending}
@@ -343,7 +354,7 @@ export function Confirm({
               })
             }
           >
-            {confirmLabel}
+            {tr(confirmLabel)}
           </Btn>
         </ModalFooter>
       </ModalContent>
@@ -446,21 +457,22 @@ export function useSound(enabled, language) {
   };
 }
 export function FlipCard({ front, back, example, flipped, setFlipped }) {
+  useLocale();
   return (
     <button
       type="button"
       className="flip-stage"
       onClick={() => setFlipped(!flipped)}
-      aria-label={flipped ? "Flip back to the term" : "Flip card to see the meaning"}
+      aria-label={flipped ? tr("Flip back to the term") : tr("Flip card to see the meaning")}
       aria-pressed={flipped}
     >
       <span className={`flip-inner ${flipped ? "flipped" : ""}`}>
         <span className="flip-face" aria-hidden={flipped}>
-          <span className="eyebrow">VOCABULARY</span>
+          <span className="eyebrow">{tr("VOCABULARY")}</span>
           <strong>{front}</strong>
         </span>
         <span className="flip-face flip-back" aria-hidden={!flipped}>
-          <span className="eyebrow">MEANING</span>
+          <span className="eyebrow">{tr("MEANING")}</span>
           <strong>{back}</strong>
           {example && <span className="example">{example}</span>}
         </span>
@@ -478,10 +490,11 @@ export function Choice({
   graded = false,
   correctAnswer,
 }) {
+  useLocale();
   const group = useId();
   return (
     <fieldset className="choices" disabled={disabled}>
-      <legend className="sr-only">{label}</legend>
+      <legend className="sr-only">{tr(label)}</legend>
       {options.map((text, i) => (
         <label
           className={`choice ${(multiple ? value?.includes(text) : value === text) ? "selected" : ""} ${graded ? (text === correctAnswer ? "answer-correct" : value === text ? "answer-wrong" : "") : ""}`}
@@ -509,9 +522,10 @@ export function Choice({
   );
 }
 export function WordOrder({ items, value = [], onChange, disabled }) {
+  useLocale();
   return (
     <div>
-      <div className="word-answer" aria-label="Assembled sentence">
+      <div className="word-answer" aria-label={tr("Assembled sentence")}>
         {value.length ? (
           value.map((id, i) => (
             <Btn
@@ -524,7 +538,7 @@ export function WordOrder({ items, value = [], onChange, disabled }) {
             </Btn>
           ))
         ) : (
-          <span>Select the words below in order…</span>
+          <span>{tr("Select the words below in order…")}</span>
         )}
       </div>
       <div className="toolbar">
@@ -544,6 +558,7 @@ export function WordOrder({ items, value = [], onChange, disabled }) {
   );
 }
 export function Matching({ left, right, value = {}, onChange, disabled }) {
+  useLocale();
   const [selected, set] = useState(null);
   return (
     <div className="matching">
@@ -588,6 +603,7 @@ export function Matching({ left, right, value = {}, onChange, disabled }) {
   );
 }
 export function Feedback({ row }) {
+  useLocale();
   const correct = row?.is_correct ?? row?.correct;
   return row ? (
     <motion.div
@@ -598,16 +614,16 @@ export function Feedback({ row }) {
       role="status"
     >
       {row.skipped
-        ? "Answer revealed · Review again"
+        ? tr("Answer revealed · Review again")
         : row.is_correct === undefined
           ? row.correct === null
-            ? "Saved • Awaiting review"
+            ? tr("Saved • Awaiting review")
             : row.correct
-              ? "✓ Correct"
-              : "↻ Needs practice"
+              ? tr("✓ Correct")
+              : tr("↻ Needs practice")
           : row.is_correct
-            ? "✓ Remembered"
-            : "↻ Needs practice"}
+            ? tr("✓ Remembered")
+            : tr("↻ Needs practice")}
       {row.target && (
         <>
           <br />
@@ -616,8 +632,7 @@ export function Feedback({ row }) {
       )}
       {row.expected?.length > 0 && (
         <>
-          <br />
-          Answer: {row.expected.join(" / ")}
+          <br />{tr("Answer: ")}{row.expected.join(" / ")}
         </>
       )}
     </motion.div>

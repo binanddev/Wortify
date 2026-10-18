@@ -1,4 +1,6 @@
 from copy import deepcopy
+from unittest.mock import patch
+from django.utils.dateparse import parse_datetime
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from api.practice_hub import validate_payload
@@ -35,7 +37,8 @@ class ReadingTests(TestCase):
         self.assertEqual(self.client.post(url,{'revision':created['revision'],'completed':['1']},content_type='application/json').status_code,200)
         self.assertEqual(self.client.get(url).json()['progress']['completed'],['1'])
         self.assertEqual(self.client.post(url,{'revision':created['revision'],'completed':['999']},content_type='application/json').status_code,400)
-        edited=self.client.patch(url,{'revision':created['revision'],'payload':self.payload,'title':'New title'},content_type='application/json')
+        with patch('django.utils.timezone.now',return_value=parse_datetime(created['revision'])):
+            edited=self.client.patch(url,{'revision':created['revision'],'payload':self.payload,'title':'New title'},content_type='application/json')
         self.assertEqual(edited.status_code,200)
         self.assertEqual(edited.json()['progress']['completed'],[])
         self.assertEqual(self.client.post(url,{'revision':created['revision'],'completed':['1']},content_type='application/json').status_code,409)

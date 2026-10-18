@@ -14,9 +14,12 @@ def owned(request, token):
     return get_object_or_404(StudySession, token=token, user=request.user, language=request.language)
 
 def attempts(session):
-    rows = {str(a.token): a for a in StudyAttempt.objects.filter(token__in=session.tokens).select_related('card')}
-    if any(token not in rows for token in session.tokens): raise ValueError('Session content has changed. Create a new study session.')
-    return [rows[token] for token in session.tokens]
+    rows = {str(a.token): a for a in StudyAttempt.objects.filter(token__in=session.tokens, user=session.user, card__deck__owner=session.user, card__deck__language=session.language).select_related('card')}
+    tokens = [token for token in session.tokens if token in rows]
+    if tokens != session.tokens:
+        session.tokens = tokens
+        session.save(update_fields=['tokens'])
+    return [rows[token] for token in tokens]
 
 def public_question(attempt):
     q = attempt.question
@@ -28,6 +31,9 @@ def payload(session):
     if session.result: return {'token':str(session.token),'kind':session.kind,'deck':session.deck_id,'total':session.result['total'],'completed':session.result['total'],'result':session.result}
     rows = attempts(session)
     completed = sum(a.completed_at is not None for a in rows)
+    if completed == len(rows):
+        summarize(session)
+        return payload(session)
     data = {'token': str(session.token), 'kind': session.kind, 'deck': session.deck_id, 'total': len(rows), 'completed': completed, 'result': session.result or None}
     if session.result: return data
     data['questions'] = [public_question(a) for a in rows]
@@ -120,12 +126,13 @@ def answer(request, token):
 def finish_test(request, token):
     session = owned(request, token)
     if session.result: return JsonResponse(payload(session))
+    rows = attempts(session)
     data = body(request)
     values = data.get('answers', {})
     timings = data.get('timings', {})
     if not isinstance(timings,dict):raise ValueError('Invalid timestamp.')
     if not isinstance(values, dict) or set(values) != set(session.tokens): raise ValueError('Answer all questions before submitting.')
-    graded = [(a, calculate(a, values[str(a.token)])) for a in attempts(session)]
+    graded = [(a, calculate(a, values[str(a.token)])) for a in rows]
     for a, result in graded:
         if not a.completed_at: finish(a, values[str(a.token)], result, timings.get(str(a.token)), use_fsrs=str(a.token) in timings)
     summarize(session)

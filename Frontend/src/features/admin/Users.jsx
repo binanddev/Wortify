@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import RowActions from "./RowActions.jsx";
 import DataGrid from "./DataGrid.jsx";
 import InlineSelect from "./InlineSelect.jsx";
@@ -9,6 +10,7 @@ import UserData from "./UserData.jsx";
 import { ActionDialog, Pagination, roleName, dateText } from "./shared.jsx";
 
 export default function Users({ user }) {
+  useLocale();
   const [query, setQuery] = useState(""),
     [search, setSearch] = useState(""),
     [role, setRole] = useState(""),
@@ -33,7 +35,7 @@ export default function Users({ user }) {
   if (target)
     return (
       <>
-        <Btn onClick={() => setTarget(null)}>← User list</Btn>
+        <Btn onClick={() => setTarget(null)}>{tr("← User list")}</Btn>
         <UserData
           key={target.id}
           user={target}
@@ -44,9 +46,9 @@ export default function Users({ user }) {
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-bold">User management</h2>
+        <h2 className="text-xl font-bold">{tr("User management")}</h2>
         <div className="flex gap-2">
-          <Btn onClick={resource.reload}>Refresh</Btn>
+          <Btn onClick={resource.reload}>{tr("Refresh")}</Btn>
           <Btn
             primary
             onClick={() =>
@@ -59,15 +61,11 @@ export default function Users({ user }) {
                 last_name: "",
               })
             }
-          >
-            Create account
-          </Btn>
+          >{tr("Create account")}</Btn>
         </div>
       </div>
       {!user.superuser && (
-        <p className="mb-4 text-sm text-(--muted)">
-          Staff support regular users. Admins manage roles and admin/staff accounts.
-        </p>
+        <p className="mb-4 text-sm text-(--muted)">{tr("Staff support regular users. Admins manage roles and admin/staff accounts.")}</p>
       )}
       <form
         className="mb-3 flex flex-wrap items-end gap-2"
@@ -78,28 +76,26 @@ export default function Users({ user }) {
         }}
       >
         <Field
-          label="Username or email"
+          label={tr("Username or email")}
           value={query}
           onChange={setQuery}
         />
-        <Btn primary type="submit">
-          Search
-        </Btn>
+        <Btn primary type="submit">{tr("Search")}</Btn>
       </form>
       <Status>{notice}</Status>
-      <Loading label="Loading admin data…" resource={resource}>
+      <Loading label={tr("Loading admin data…")} resource={resource}>
         {(d) => (
           <>
-            <DataGrid id="users" label="Accounts" rows={d.users} sort={sort} onSort={next=>{setSort(next);setPage(1);}} columns={[
- {key:'username',label:'Username',required:true,render:u=><strong>{u.username}{u.id===user.id?' · You':''}</strong>},
+            <DataGrid id="users" label={tr("Accounts")} rows={d.users} sort={sort} onSort={next=>{setSort(next);setPage(1);}} columns={[
+ {key:'username',label:'Username',required:true,render:u=><strong>{u.username}{u.id===user.id?tr(" · You"):''}</strong>},
  {key:'email',label:'Email'},
  {key:'name',label:'Name',sortable:false,render:u=>[u.first_name,u.last_name].filter(Boolean).join(' ')||'—'},
- {key:'role',label:'Role',filtered:!!role,filter:<Select label="Filter role" value={role} onChange={filter(setRole)}><option value="">All roles</option><option value="user">User</option><option value="staff">Staff</option><option value="superuser">Admin</option></Select>,render:u=><InlineSelect label={`Role for ${u.username}`} value={u.is_superuser?'superuser':u.is_staff?'staff':'user'} options={[["user","User"],["staff","Staff"],["superuser","Admin"]]} disabled={!user.superuser||u.id===user.id} onSave={async role=>{await request(`/api/manage/users/${u.id}/`,'PATCH',{role});reload('Role updated. Existing sessions were signed out.');}}/>},
- {key:'is_active',label:'Status',filtered:!!status,filter:<Select label="Filter status" value={status} onChange={filter(setStatus)}><option value="">All statuses</option><option value="active">Active</option><option value="inactive">Locked</option></Select>,render:u=><InlineSelect label={`Status for ${u.username}`} value={u.is_active?'active':'inactive'} options={[["active","Active"],["inactive","Locked"]]} disabled={u.id===user.id} onSave={async status=>{await request(`/api/manage/users/${u.id}/`,'PATCH',{is_active:status==='active'});reload('Status updated.');}}/>},
+ {key:'role',label:'Role',filtered:!!role,filter:<Select label={tr("Filter role")} value={role} onChange={filter(setRole)}><option value="">{tr("All roles")}</option><option value="user">{tr("User")}</option><option value="staff">{tr("Staff")}</option><option value="superuser">{tr("Admin")}</option></Select>,render:u=><InlineSelect label={tr("Role for {v0}", { v0: u.username })} value={u.is_superuser?'superuser':u.is_staff?'staff':'user'} options={[["user","User"],["staff","Staff"],["superuser","Admin"]]} disabled={!user.superuser||u.id===user.id} onSave={async role=>{await request(`/api/manage/users/${u.id}/`,'PATCH',{role});reload('Role updated. Existing sessions were signed out.');}}/>},
+ {key:'is_active',label:'Status',filtered:!!status,filter:<Select label={tr("Filter status")} value={status} onChange={filter(setStatus)}><option value="">{tr("All statuses")}</option><option value="active">{tr("Active")}</option><option value="inactive">{tr("Locked")}</option></Select>,render:u=><InlineSelect label={tr("Status for {v0}", { v0: u.username })} value={u.is_active?'active':'inactive'} options={[["active","Active"],["inactive","Locked"]]} disabled={u.id===user.id} onSave={async status=>{await request(`/api/manage/users/${u.id}/`,'PATCH',{is_active:status==='active'});reload('Status updated.');}}/>},
  {key:'date_joined',label:'Created',numeric:true,render:u=>dateText(u.date_joined)},
  {key:'last_login',label:'Last sign-in',numeric:true,render:u=>dateText(u.last_login)},
  {key:'id',label:'ID',numeric:true},
- {key:'actions',label:'Actions',sortable:false,required:true,render:u=><RowActions label={`Actions for ${u.username}`} items={[
+ {key:'actions',label:'Actions',sortable:false,required:true,render:u=><RowActions label={tr("Actions for {v0}", { v0: u.username })} items={[
  {key:'edit',label:'Edit details',run:()=>setEdit({...u})},
  {key:'learning',label:'Learning data',run:()=>setTarget(u)},
  {key:'sessions',label:'Sign out devices',disabled:u.id===user.id,run:()=>setOperation({u,kind:'sessions'})},
@@ -124,7 +120,7 @@ export default function Users({ user }) {
               : edit.reset
                 ? `Reset password · ${edit.username}`
                 : edit.create
-                  ? "Create account"
+                  ? tr("Create account")
                   : `Details · ${edit.username}`
           }
           initial={edit}
@@ -196,29 +192,19 @@ export default function Users({ user }) {
               {(edit.permissions || (edit.create && user.superuser)) && (
                 <>
                   <Select
-                    label="Account role"
+                    label={tr("Account role")}
                     value={v.role}
                     onChange={(role) => set({ ...v, role })}
                   >
-                    <option value="user">
-                      Users — learn and create personal content
-                    </option>
-                    <option value="staff">
-                      Staff — content and user support
-                    </option>
-                    <option value="superuser">
-                      Admin — full system access
-                    </option>
+                    <option value="user">{tr("Users — learn and create personal content")}</option>
+                    <option value="staff">{tr("Staff — content and user support")}</option>
+                    <option value="superuser">{tr("Admin — full system access")}</option>
                   </Select>
-                  <p className="my-3 text-sm text-(--muted)">
-                    Admins can assign roles, lock accounts and delete users. Grant this role only to system administrators.
-                  </p>
+                  <p className="my-3 text-sm text-(--muted)">{tr("Admins can assign roles, lock accounts and delete users. Grant this role only to system administrators.")}</p>
                 </>
               )}
               {edit.reset && (
-                <p className="mt-3 text-sm">
-                  The new password takes effect immediately. Other devices must sign in again.
-                </p>
+                <p className="mt-3 text-sm">{tr("The new password takes effect immediately. Other devices must sign in again.")}</p>
               )}
             </>
           )}
@@ -229,15 +215,15 @@ export default function Users({ user }) {
           title={`${operation.kind === "delete" ? "Delete account" : operation.kind === "sessions" ? "Sign out all devices" : operation.u.is_active ? "Lock account" : "Unlock"} · ${operation.u.username}`}
           description={
             operation.kind === "delete"
-              ? "Permanently delete this account and its data in both languages. This cannot be undone."
+              ? tr("Permanently delete this account and its data in both languages. This cannot be undone.")
               : operation.kind === "sessions"
-                ? "Users will need to sign in again. Learning data is preserved."
-                : "Update account access. Learning data is preserved."
+                ? tr("Users will need to sign in again. Learning data is preserved.")
+                : tr("Update account access. Learning data is preserved.")
           }
           confirmText={
             operation.kind === "delete" ? operation.u.username : undefined
           }
-          label={operation.kind === "delete" ? "Delete permanently" : "Confirm"}
+          label={operation.kind === "delete" ? tr("Delete permanently") : tr("Confirm")}
           onClose={() => setOperation(null)}
           onConfirm={async (values, signal) => {
             await request(

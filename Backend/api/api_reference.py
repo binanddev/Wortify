@@ -11,8 +11,8 @@ from .management import management
 
 GUIDE = [
     {'title': '1. Choose the API address', 'text': 'Local default: http://127.0.0.1:8000. With the frontend proxy: http://127.0.0.1:5173. Production uses HTTPS, for example https://learn.example.com. baseUrl excludes a trailing slash and /api. Use the same origin throughout the session; localhost and 127.0.0.1 are different hosts. This page displays documentation without sending test requests.'},
-    {'title': '2. Authenticate with a session cookie', 'text': 'The API uses Django sessions, with no user Bearer token or API key. Select No Auth and enable the Postman cookie jar. GET /api/session/ obtains csrftoken; POST /api/session/ with username/password signs in. Postman stores sessionid automatically. Sign-in rotates the CSRF token, so retrieve the new csrftoken from its response. Never commit session cookies or passwords to Git or shared collections.'},
-    {'title': '3. CSRF cho request ghi', 'text': 'POST, PATCH and DELETE require X-CSRFToken matching the csrftoken cookie, plus sessionid after sign-in. The collection reads CSRF from Set-Cookie after each response and sets the next request header. Origin is {{baseUrl}}; HTTPS Referer is {{baseUrl}}/. Production must allow the hostname in DJANGO_ALLOWED_HOSTS and the frontend origin in DJANGO_CSRF_TRUSTED_ORIGINS. POST /api/monitor/ is exempt from CSRF and uses a separate server key.'},
+    {'title': '2. Authenticate with a session cookie', 'text': 'Most APIs use Django sessions. The separate /api/import/content/ endpoint accepts only a staff-generated Bearer import key. Select No Auth and enable the Postman cookie jar. GET /api/session/ obtains csrftoken; POST /api/session/ with username/password signs in. Postman stores sessionid automatically. Sign-in rotates the CSRF token, so retrieve the new csrftoken from its response. Never commit session cookies or passwords to Git or shared collections.'},
+    {'title': '3. CSRF cho request ghi', 'text': 'POST, PATCH and DELETE require X-CSRFToken matching the csrftoken cookie, plus sessionid after sign-in. The collection reads CSRF from Set-Cookie after each response and sets the next request header. Origin is {{baseUrl}}; HTTPS Referer is {{baseUrl}}/. Production must allow the hostname in DJANGO_ALLOWED_HOSTS and the frontend origin in DJANGO_CSRF_TRUSTED_ORIGINS. POST /api/monitor/ and /api/import/content/ are CSRF-exempt and require their respective server/import keys.'},
     {'title': '4. Import and use Postman', 'text': 'Download the v2.1 collection and import it into Postman. Create a private environment with baseUrl, username and password; keep passwords in local values or Vault. Run folder 00 in order: obtain CSRF, sign in, verify session. Send requests individually and replace pk/deck_id/token/item_id with real IDs. Default numeric ID 1 is only an example. Do not run the entire collection automatically: it includes role changes and deletion. No real credentials are included. Do not create environment variables named csrfToken/contentVersion/contentTitle, as they would shadow automatically updated collection values. Each eventToken needs a new UUID, reused on retries; checkedAt must be a current ISO8601 timestamp with a timezone, for example 2026-10-05T10:00:00Z.'},
     {'title': '5. Test the flashcard workflow', 'text': 'POST /api/en/decks/ with title and level=A1; use the returned id as deck_id and pk. POST /api/en/decks/{deck_id}/cards/ with german_text and vietnamese_meaning. GET /api/en/decks/{pk}/ to verify the card, and PATCH the same URL to rename the deck. Learning endpoints access only data owned by the signed-in account, including admins.'},
     {'title': '6. Edit and publish content', 'text': 'Use a Staff/Admin account. POST /api/manage/content/ creates a private folder, then theory/exercise with a parent sharing its owner and language. GET /api/manage/content/{pk}/ retrieves the current version before PATCH/DELETE. Publishing/unpublishing requires visibility and reason; cascade=true applies to a folder tree. On HTTP 409, reload and merge changes rather than overwriting. DELETE requires version, confirm matching the title, and reason.'},
@@ -23,6 +23,7 @@ GUIDE = [
 
 # Examples are deliberately inert: placeholders and illustrative IDs, no secrets.
 EXAMPLES = {
+    'users.views.interface_language': {'PATCH': {'language': 'vi'}},
     'api.admin_backups.emergency': {'POST': {'scope':'selected','ids':[1],'include_media':True,'include_audit':True,'include_credentials':False,'preview':True}, 'response':{'count':1,'accounts':[{'id':1,'username':'example'}]}},
     'api.backups.export': {'POST':{'workspace':{'de':[],'en':[]}}},
     'users.views.session': {'POST': {'username':'{{username}}','password':'{{password}}'}, 'response': {'user':{'id':1,'username':'example','staff':False,'superuser':False,'preferences':{},'appearance_session':'opaque-session-value'}}},
@@ -32,7 +33,6 @@ EXAMPLES = {
     'api.views.card': {'POST':{'german_text':'hello','vietnamese_meaning':'xin chào'}, 'PATCH':{'vietnamese_meaning':'chào bạn'}},
     'api.views.folder': {'POST':{'name':'Vocabulary','parent':None},'PATCH':{'name':'Vocabulary A1'}},
     'api.views.preferences': {'PATCH':{'new_cards_per_day':20,'session_minutes':15}},
-    'api.spaced_review.review_queue': {'PATCH':{'retention':0.9,'new_limit':20,'review_limit':100,'adapt_time':True}},
     'api.views.import_cards': {'POST':{'text':'hello,xin chào\nbook,quyển sách','separator':','}},
     'api.views.reorder_cards': {'POST':{'ids':[1,2]}},
     'api.community.profile': {'PATCH':{'display_name':'Learner','bio':'Introduction','daily_goal':20}},
@@ -64,7 +64,18 @@ EXAMPLES = {
 }
 
 NOTES = {
-    'api.content_packages.upload': 'Staff/Admin only. Multipart file: wortify-content JSON version 1. preview=true validates without writes; confirm=IMPORT publishes an immutable Wortify system package and creates private copies for the importer. Maximum 50 MB, 5000 nodes, 100000 cards, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.',
+    'api.reading_discovery.save': 'Authenticated POST {key} saves a private independent reading and copies immutable media ownership records. Repeated source/user/language returns the same reading ID. 201 saved, 200 already saved. Start learning on the returned private ID to persist progress.',
+    'api.content_import_docs.guide': 'Public GET of complete Wortify Text authoring rules and examples. Returns UTF-8 plain text, no account data.',
+    'api.content_import_docs.openapi': 'Public GET of the OpenAPI 3.1 schema for import bots. Contains only placeholders, never secrets.',
+    'api.reading_discovery.library': 'Authenticated public reading catalogue for language. Filters: q (title/topic), level A1-C2, topic, source system/community, page. 24 results per page; includes topics and total. Private lessons are excluded.',
+    'api.reading_discovery.detail': 'Authenticated GET with key from discovery: community:<id> or system:<package UUID>:<node path>. Returns only public title/payload. No personal progress; private or revoked entries return 404.',
+    'api.reading.sharing': 'Owner-only PATCH visibility private/public, level blank/A1-C2 and topic up to 80 characters. Public lessons appear in discovery. Content revision and progress stay unchanged. Public attachment access follows visibility.',
+
+    'users.views.interface_language': 'Signed-in PATCH with language=en/vi/de saves the account-wide interface language. Does not change learning content or workspace language.',
+    'api.content_import_api.settings': 'Staff/Admin session API. GET returns enabled status and key prefix, never the secret. POST enables or rotates the import key and reveals it once. DELETE revokes it. CSRF required for writes.',
+    'api.content_import_api.upload': 'Import-only Bearer key, no session or CSRF. Multipart .txt/legacy JSON file (maximum 50 MB), raw text or JSON {text, preview:true} (maximum 8 MB). Preview returns preview_token; publish unchanged content with confirm=IMPORT and that token. Text format is Wortify Text 1; guides at /api/import/guide/ and /api/import/openapi/. Only practice and reading sections. Keep UUID unchanged on retries. 200 preview/retry, 201 created, 400 invalid document, 401 invalid/revoked key or non-staff account.',
+    'api.vocabulary_notebook.notebook': 'Owner/language scoped vocabulary notebook. GET returns cards, notebook revision, current set and review dates. POST requires token UUID, revision and action: start (size 3-8, selection ready/all), step (answer, correction, remembered boolean), or discard. Steps are prepare, recall, sentence, variation, check. Sentences are self-assessed, not automatically graded. Repeated token is idempotent; stale revision returns 409. Successful scheduled sets advance 1/3/7/14 days; difficult words return tomorrow.',
+    'api.content_packages.upload': 'Staff/Admin only. Multipart Wortify Text 1 or legacy JSON v1. preview=true validates without writes and returns preview_token; confirm=IMPORT plus this token publishes an immutable Wortify system package and creates private copies for the importer. Practice Hub and Reading only; flashcards are personal and the flashcards field is rejected. Maximum 50 MB, 5000 nodes, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.',
     'api.content_packages.library': 'Authenticated GET lists system packages for the current language, with counts, publisher=Wortify and imported status. No uploader identity is returned.',
     'api.content_packages.copy': 'Authenticated POST copies the package tree into the current account, scoped to the URL language. Send an empty JSON object. Repeating the request returns the existing receipt without duplicate content.',
     'api.admin_restore.restore': 'SUPERUSER ONLY. Multipart file=emergency ZIP; preview=true validates accounts and roles. confirm=RESTORE restores new accounts, permissions and private learning content. Existing usernames cause the entire import to fail. Maximum 512 MB and 1000 accounts. Password hashes are restored only when present in the export; sessions and cross-account memberships are not restored.',
@@ -84,7 +95,6 @@ NOTES = {
     'api.management.public_appearance': 'GET shared background information; sign-in is required. Returns background_image and background_url when available.',
     'api.management.site_appearance_image': 'GET shared background binary; sign-in required. This endpoint cannot modify the image.',
     'api.community.profile': 'GET profile and learning statistics by language. PATCH display_name (up to 100 characters), bio (2000 characters), daily_goal (integer 1–500). Cannot change roles or passwords.',
-    'api.spaced_review.review_queue': 'GET review queue, config, due, new, reviewed_today, next_due, forecast, cards and difficult. PATCH retention=0.8–0.97, new_limit/review_limit=0–500 and adapt_time boolean. Deck owner only.',
     'api.learning_sync.deck_state': 'GET synced learning state for an owned deck. Send changes through /learning/sync/ rather than PATCH to this endpoint.',
     'api.views.preferences': 'GET/PATCH study settings by language: autoplay,ignore_case,ignore_punctuation,transliteration,new_cards_per_day,session_minutes. Boolean values must be JSON booleans.',
     'api.sessions.detail': 'GET a study session by UUID token scoped to the account and language. Do not use a numeric ID. Unsubmitted tests do not expose answers.',
@@ -148,6 +158,7 @@ NOTES = {
 }
 
 MULTIPART = {
+    'api.content_import_api.upload': [('file','file',''),('preview','text','true')],
     'api.content_packages.upload': [('file','file',''),('preview','text','true')],
     'api.admin_restore.restore': [('file','file',''),('preview','text','true')],
     'api.backups.restore': [('file','file',''),('preview','text','true')],
@@ -201,14 +212,16 @@ def reference_data():
             item = '<int:pk>' in route or '<str:item_id>' in route
             methods = (['GET','PATCH','DELETE'] if item else ['GET','POST']) if key.endswith('.records') else (['PATCH','DELETE'] if item else ['POST'])
         path = '/' + re.sub(r'<\w+:(\w+)>', r'{\1}', route)
-        public = key in ('config.urls.health','api.monitoring.probe','users.views.session','users.views.superuser_registration')
+        public = key in ('config.urls.health','api.monitoring.probe','users.views.session','users.views.superuser_registration','api.content_import_docs.guide','api.content_import_docs.openapi')
         role = 'Public / session' if public else 'Signed-in users'
         group = 'Learning & content'
         if '/manage/' in path:
             group = 'Administration'
             role = 'Admin' if key in ('api.management_data.overview','api.monitoring.logs','api.management.site_appearance','api.api_reference.reference','api.admin_backups.emergency','api.admin_restore.restore') else 'Admin / Staff'
         elif key.startswith('api.themes.') or '/me/' in path or '/site/' in path: group = 'Appearance & media'
+        elif key.startswith('api.content_import_docs.'): group, role = 'System content import', 'Public'
         elif public: group = 'Session & health'
+        elif key == 'api.content_import_api.upload': group, role = 'System content import', 'Import key'
         elif key == 'api.monitoring.report': group, role = 'Server monitoring', 'Monitor key'
         examples = EXAMPLES.get(key, {})
         rows.append({'path':path, 'methods':methods, 'group':group, 'role':role,
@@ -225,7 +238,9 @@ def postman_collection(data):
         url = '{{baseUrl}}' + re.sub(r'{(\w+)}', r'{{\1}}', row['path'])
         headers = [{'key':'Accept','value':'application/json'}]
         if method not in ('GET','HEAD'):
-            if row['role'] == 'Monitor key':
+            if row['role'] == 'Import key':
+                headers.append({'key':'Authorization','value':'Bearer {{importKey}}'})
+            elif row['role'] == 'Monitor key':
                 headers.append({'key':'X-Wortify-Monitor-Key','value':'{{monitorKey}}'})
             else:
                 headers.extend([{'key':'X-CSRFToken','value':'{{csrfToken}}'}, {'key':'Origin','value':'{{baseUrl}}'}, {'key':'Referer','value':'{{baseUrl}}/'}])
@@ -247,7 +262,7 @@ def postman_collection(data):
     folders.append({'name':'01 · Workflow examples — send requests individually', 'item':recipes})
     for group in dict.fromkeys(row['group'] for row in data['endpoints']):
         folders.append({'name':group,'item':[item(row,method) for row in data['endpoints'] if row['group']==group for method in row['methods']]})
-    variables={'baseUrl':'http://127.0.0.1:8000','username':'','password':'','newPassword':'','csrfToken':'','language':'en','pk':'1','deck_id':'1','item_id':'1','kind':'decks','fmt':'json','token':'','questionToken':'','eventToken':'','checkedAt':'','setup_key':'','monitorKey':'','contentVersion':'','contentTitle':'','targetUsername':''}
+    variables={'baseUrl':'http://127.0.0.1:8000','username':'','password':'','newPassword':'','csrfToken':'','language':'en','pk':'1','deck_id':'1','item_id':'1','kind':'decks','fmt':'json','token':'','questionToken':'','eventToken':'','checkedAt':'','setup_key':'','monitorKey':'','importKey':'','contentVersion':'','contentTitle':'','targetUsername':''}
     return {'info':{'name':'Wortify API · Developer reference','schema':'https://schema.getpostman.com/json/collection/v2.1.0/collection.json','description':'\n\n'.join(g['title']+'\n'+g['text'] for g in GUIDE)},
             'auth':{'type':'noauth'},'variable':[{'key':k,'value':v,'type':'string'} for k,v in variables.items()], 'item':folders,
             'event':[{'listen':'test','script':{'type':'text/javascript','exec':[

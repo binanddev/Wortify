@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import SystemLibrary from "./SystemLibrary.jsx";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@heroui/react";
@@ -35,6 +36,7 @@ import { PracticeActivity } from "../practice/practice-activity.jsx";
 import { TheoryActivity } from "../practice/practice-theory.jsx";
 
 function ExplorePreview({ lang, node, onClose }) {
+  useLocale();
   const resource = useResource(
     endpoint(lang, `practice-hub/nodes/${node.id}/`),
   );
@@ -50,8 +52,8 @@ function ExplorePreview({ lang, node, onClose }) {
             <div className="flex justify-end">
               <Link
                 className="studio-nav-icon"
-                title="Start learning"
-                aria-label="Start learning"
+                title={tr("Start learning")}
+                aria-label={tr("Start learning")}
                 to={`${practiceRoutes(lang).learn}/${node.id}`}
               >
                 <Icon name="play" />
@@ -74,6 +76,7 @@ function ExplorePreview({ lang, node, onClose }) {
 }
 
 export function Explore({ lang, userId }) {
+  useLocale();
   const route = useRoute();
   return (
     <ExploreContent
@@ -84,6 +87,7 @@ export function Explore({ lang, userId }) {
   );
 }
 function ExploreContent({ lang, userId }) {
+  useLocale();
   const navigate = useNavigate();
   const routes = practiceRoutes(lang);
   const params = new URLSearchParams(useRoute().split("?")[1]);
@@ -252,8 +256,8 @@ function ExploreContent({ lang, userId }) {
           <button
             type="button"
             className="tree-icon"
-            title="Delete search"
-            aria-label={`Delete search ${row.query}`}
+            title={tr("Delete search")}
+            aria-label={tr("Delete search {v0}", { v0: row.query })}
             onClick={() => removeHistory(row.query)}
           >
             <Icon name="close" size={15} />
@@ -329,20 +333,20 @@ function ExploreContent({ lang, userId }) {
       <SystemLibrary lang={lang}/>
       <SidebarTools navOnly>
         <div className="explore-nav">
-          <nav className="studio-nav-shortcuts" aria-label="Discover tools">
+          <nav className="studio-nav-shortcuts" aria-label={tr("Discover tools")}>
             <Link
               className={`studio-nav-icon ${!parent ? "active" : ""}`}
               to={routes.explore}
               onClick={() => setPage(1)}
-              title="Discover"
-              aria-label="Discover"
+              title={tr("Discover")}
+              aria-label={tr("Discover")}
             >
               <Icon name="home" size={23} />
             </Link>
             <Btn
               isIconOnly
-              title="Filters"
-              aria-label="Filters"
+              title={tr("Filters")}
+              aria-label={tr("Filters")}
               aria-pressed={Boolean(mode || sort !== "relevance")}
               onClick={() => setFilters(true)}
             >
@@ -350,8 +354,8 @@ function ExploreContent({ lang, userId }) {
             </Btn>
             <Btn
               isIconOnly
-              title="Search history"
-              aria-label="Search history"
+              title={tr("Search history")}
+              aria-label={tr("Search history")}
               onClick={() => setHistoryOpen(true)}
             >
               <Icon name="history" />
@@ -366,14 +370,14 @@ function ExploreContent({ lang, userId }) {
             </div>
           )}
           {history.length > 0 && (
-            <section className="explore-recent" aria-label="Recent searches">
+            <section className="explore-recent" aria-label={tr("Recent searches")}>
               <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-semibold">Recent</span>
+                <span className="text-sm font-semibold">{tr("Recent")}</span>
                 <button
                   type="button"
                   className="tree-icon"
-                  title="Full history"
-                  aria-label="Full history"
+                  title={tr("Full history")}
+                  aria-label={tr("Full history")}
                   onClick={() => setHistoryOpen(true)}
                 >
                   <Icon name="more" />
@@ -388,13 +392,13 @@ function ExploreContent({ lang, userId }) {
         {current && (
           <nav
             className="flex min-w-0 items-center gap-2 overflow-hidden text-sm"
-            aria-label="Folder position"
+            aria-label={tr("Folder position")}
           >
             <Link
               to={routes.explore}
               onClick={() => setPage(1)}
-              title="Discover"
-              aria-label="Discover"
+              title={tr("Discover")}
+              aria-label={tr("Discover")}
             >
               <Icon name="home" />
             </Link>
@@ -414,7 +418,7 @@ function ExploreContent({ lang, userId }) {
           </nav>
         )}
         <header className="flex flex-wrap items-center justify-between gap-3">
-          <Heading title={current?.title || "Discover"} />
+          <Heading title={current?.title || tr("Discover")} />
           <div className="flex gap-2">
             {[
               ["grid", "Grid view"],
@@ -475,9 +479,9 @@ function ExploreContent({ lang, userId }) {
           >
             <div className="min-w-0 flex-1">
               <Field
-                aria-label="Search"
+                aria-label={tr("Search")}
                 placeholder={
-                  current ? "Search trong folde…" : "Search folders or topics…"
+                  current ? tr("Search trong folde…") : tr("Search folders or topics…")
                 }
                 value={draft}
                 onChange={(value) => {
@@ -495,15 +499,15 @@ function ExploreContent({ lang, userId }) {
             <Btn
               type="submit"
               isIconOnly
-              title="Search"
-              aria-label="Search"
+              title={tr("Search")}
+              aria-label={tr("Search")}
             >
               <Icon name="search" />
             </Btn>
             <Btn
               isIconOnly
-              title="Filters"
-              aria-label="Filters"
+              title={tr("Filters")}
+              aria-label={tr("Filters")}
               aria-pressed={Boolean(mode || sort !== "relevance")}
               onClick={() => setFilters(true)}
             >
@@ -514,17 +518,15 @@ function ExploreContent({ lang, userId }) {
             <section
               id="explore-search-suggestions"
               className="explore-suggestions"
-              aria-label="Recent searches"
+              aria-label={tr("Recent searches")}
             >
-              <span className="px-2 text-sm text-(--muted)">
-                Recent searches
-              </span>
+              <span className="px-2 text-sm text-(--muted)">{tr("Recent searches")}</span>
               {recentRows(suggestions)}
             </section>
           )}
         </div>
         {!query && !parent && results.suggestions?.length > 0 && (
-          <div className="flex flex-wrap gap-2" aria-label="Search suggestions">
+          <div className="flex flex-wrap gap-2" aria-label={tr("Search suggestions")}>
             {results.suggestions.map((tag) => (
               <button
                 key={tag}
@@ -548,14 +550,10 @@ function ExploreContent({ lang, userId }) {
             onClick={() => {
               setRetry((value) => value + 1);
             }}
-          >
-            Retry
-          </Btn>
+          >{tr("Retry")}</Btn>
         )}
         {!loading && parent && !current ? (
-          <Status>
-            This folder is no longer public or accessible.
-          </Status>
+          <Status>{tr("This folder is no longer public or accessible.")}</Status>
         ) : (
           <div className={`hub-grid library-view-${view}`} aria-busy={loading}>
             {loading
@@ -607,11 +605,11 @@ function ExploreContent({ lang, userId }) {
                           ? `${node.child_count || 0} content`
                           : node.kind === "exercise"
                             ? `${info?.question_count || 0} questions`
-                            : "Reading content"}
+                            : tr("Reading content")}
                         {author
                           ? ` · ${author}`
                           : node.can_edit
-                            ? " · You"
+                            ? tr(" · You")
                             : ""}
                       </small>
                       {node.tags?.length > 0 && (
@@ -630,7 +628,7 @@ function ExploreContent({ lang, userId }) {
                       <div className="library-card-actions">
                         <Btn
                           isIconOnly
-                          title={folder ? "Open folder" : "Preview"}
+                          title={folder ? tr("Open folder") : tr("Preview")}
                           aria-label={`${folder ? "Open" : "Preview"} ${node.title}`}
                           onClick={() =>
                             folder ? openFolder(node.id) : showPreview(node)
@@ -667,8 +665,8 @@ function ExploreContent({ lang, userId }) {
             <Icon name="search" />
             <p className="mt-3">
               {query || mode
-                ? "No matching results."
-                : "No public content yet."}
+                ? tr("No matching results.")
+                : tr("No public content yet.")}
             </p>
           </div>
         )}
@@ -681,27 +679,24 @@ function ExploreContent({ lang, userId }) {
               onClick={() =>
                 error ? setRetry((v) => v + 1) : setPage((v) => v + 1)
               }
-            >
-              Show more results
-            </Btn>
+            >{tr("Show more results")}</Btn>
           </div>
         )}
       </section>
       {historyOpen && (
         <PracticeModal
-          title="Search history"
+          title={tr("Search history")}
           size="lg"
           onClose={() => setHistoryOpen(false)}
         >
           <div className="flex items-center justify-between gap-3">
-            <span className="text-sm text-(--muted)">
-              Saved in this browser ·{" "}
-              {lang === "de" ? "German" : "English"}
+            <span className="text-sm text-(--muted)">{tr("Saved in this browser ·")}{" "}
+              {lang === "de" ? tr("German") : tr("English")}
             </span>
             <Btn
               isIconOnly
-              title="Delete all"
-              aria-label="Clear search history"
+              title={tr("Delete all")}
+              aria-label={tr("Clear search history")}
               isDisabled={!history.length}
               onClick={() => updateHistory(() => [])}
             >
@@ -711,22 +706,22 @@ function ExploreContent({ lang, userId }) {
           {history.length ? (
             recentRows(history, true)
           ) : (
-            <p className="text-sm text-(--muted)">No recent searches.</p>
+            <p className="text-sm text-(--muted)">{tr("No recent searches.")}</p>
           )}
         </PracticeModal>
       )}
       {filters && (
         <PracticeModal
-          title="Filters"
+          title={tr("Filters")}
           size="sm"
           onClose={() => setFilters(false)}
         >
           <Select
-            label="Exercise type"
+            label={tr("Exercise type")}
             value={mode}
             onChange={(value) => search({ mode: value })}
           >
-            <option value="">All</option>
+            <option value="">{tr("All")}</option>
             {EXERCISE_TYPES.map(([key, title]) => (
               <option key={key} value={key}>
                 {title}
@@ -734,20 +729,16 @@ function ExploreContent({ lang, userId }) {
             ))}
           </Select>
           <Select
-            label="Sort"
+            label={tr("Sort")}
             value={sort}
             onChange={(value) => search({ sort: value })}
           >
-            <option value="relevance">Most relevant</option>
-            <option value="newest">Recently updated</option>
+            <option value="relevance">{tr("Most relevant")}</option>
+            <option value="newest">{tr("Recently updated")}</option>
           </Select>
           <div className="flex justify-end gap-2">
-            <Btn icon="refresh" onClick={() => search({ mode: "", sort: "" })}>
-              Reset filters
-            </Btn>
-            <Btn icon="check" onClick={() => setFilters(false)}>
-              Xong
-            </Btn>
+            <Btn icon="refresh" onClick={() => search({ mode: "", sort: "" })}>{tr("Reset filters")}</Btn>
+            <Btn icon="check" onClick={() => setFilters(false)}>{tr("Xong")}</Btn>
           </div>
         </PracticeModal>
       )}

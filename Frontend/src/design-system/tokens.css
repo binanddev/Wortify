@@ -65,7 +65,7 @@
 :root,
 :root[data-background="paper"] {
   --glass-alpha: 0.75;
-  --ui-font: 18px;
+  --ui-font: 16px;
   --glass-rgb: 250 253 255;
   --ink: #152740;
   --muted: #455970;

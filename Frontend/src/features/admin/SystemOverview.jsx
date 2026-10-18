@@ -1,17 +1,17 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import BackendLogs from "./BackendLogs.jsx";
 import { useResource } from "../../lib/core.js";
 import { Btn, Loading, Glass } from "../../components/ui/ui.jsx";
 export default function SystemOverview() {
+  useLocale();
   const resource = useResource("/api/manage/overview/");
   return (
     <>
       <div className="mb-5 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">System</h1>
-        <Btn icon="refresh" onClick={resource.reload}>
-          Update
-        </Btn>
+        <h1 className="text-3xl font-bold">{tr("System")}</h1>
+        <Btn icon="refresh" onClick={resource.reload}>{tr("Update")}</Btn>
       </div>
-      <Loading label="Loading admin data…" resource={resource}>
+      <Loading label={tr("Loading admin data…")} resource={resource}>
         {(d) => (
           <>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -31,25 +31,24 @@ export default function SystemOverview() {
             </div>
             <section className="my-6 grid gap-4 lg:grid-cols-2">
               <Glass>
-                <h2 className="text-xl font-bold">Technical</h2>
-                <p>Database: {d.system.database} · Connected</p>
+                <h2 className="text-xl font-bold">{tr("Technical")}</h2>
+                <p>{tr("Database: ")}{d.system.database}{tr(" · Connected")}</p>
                 <p>
                   Django {d.system.django} · Python {d.system.python}
                 </p>
                 <p>
-                  {d.system.debug ? "Development mode" : "Production mode"}
+                  {d.system.debug ? tr("Development mode") : tr("Production mode")}
                 </p>
                 <p>
                   {d.system.pending_migrations
                     ? `${d.system.pending_migrations} pending migrations`
-                    : "Data structure updated"}
+                    : tr("Data structure updated")}
                 </p>
-                <small>
-                  Checked at {new Date(d.checked_at).toLocaleString("en-GB")}
+                <small>{tr("Checked at ")}{new Date(d.checked_at).toLocaleString("en-GB")}
                 </small>
               </Glass>
               <Glass>
-                <h2 className="text-xl font-bold">Content</h2>
+                <h2 className="text-xl font-bold">{tr("Content")}</h2>
                 {Object.entries({
                   "Decks": d.content.decks,
                   Card: d.content.cards,
@@ -64,7 +63,7 @@ export default function SystemOverview() {
               </Glass>
             </section>
             <BackendLogs />
-            <h2 className="mb-3 text-xl font-bold">Admin activity</h2>
+            <h2 className="mb-3 text-xl font-bold">{tr("Admin activity")}</h2>
             <div className="grid gap-2">
               {d.logs.map((l, i) => (
                 <div key={i} className="rounded-xl border border-(--line) p-4">
@@ -75,7 +74,7 @@ export default function SystemOverview() {
                   <small>{new Date(l.at).toLocaleString("en-GB")}</small>
                 </div>
               ))}
-              {!d.logs.length && <p>No activity yet.</p>}
+              {!d.logs.length && <p>{tr("No activity yet.")}</p>}
             </div>
           </>
         )}

@@ -1,3 +1,4 @@
+import { t as tr, useLocale, dateLocale } from "../../i18n/index.js";
 import { useEffect, useState } from "react";
 import { endpoint, request, useResource } from "../../lib/core.js";
 import {
@@ -12,6 +13,7 @@ import {
 } from "../../components/ui/ui.jsx";
 
 export default function LearningProfile({ lang }) {
+  useLocale();
   const resource = useResource(endpoint(lang, "profile/"), true);
   useEffect(() => {
     let timer;
@@ -35,6 +37,7 @@ export default function LearningProfile({ lang }) {
 }
 
 function ProfileContent({ initial, lang }) {
+  useLocale();
   const [data, setData] = useState(initial),
     [period, setPeriod] = useState("7"),
     [filter, setFilter] = useState("all"),
@@ -64,17 +67,15 @@ function ProfileContent({ initial, lang }) {
     <Page>
       <div className="learner-profile">
         <SidebarTools>
-          <nav className="profile-index" aria-label="Profile contents">
-            <a href="#profile-overview">Overview</a>
-            <a href="#profile-progress">Progress</a>
-            <a href="#profile-history">History</a>
+          <nav className="profile-index" aria-label={tr("Profile contents")}>
+            <a href="#profile-overview">{tr("Overview")}</a>
+            <a href="#profile-progress">{tr("Progress")}</a>
+            <a href="#profile-history">{tr("History")}</a>
           </nav>
           <Btn onClick={() => setEdit("identity")}>
-            <Icon name="user" /> Edit profile
-          </Btn>
+            <Icon name="user" />{tr(" Edit profile")}</Btn>
           <Btn onClick={editGoal}>
-            <Icon name="settings" /> Daily goal
-          </Btn>
+            <Icon name="settings" />{tr(" Daily goal")}</Btn>
         </SidebarTools>
         <header className="profile-identity" id="profile-overview">
           <div className="profile-avatar" aria-hidden="true">
@@ -90,8 +91,8 @@ function ProfileContent({ initial, lang }) {
           <button
             className="profile-edit"
             onClick={() => setEdit("identity")}
-            aria-label="Edit profile"
-            title="Edit profile"
+            aria-label={tr("Edit profile")}
+            title={tr("Edit profile")}
           >
             <Icon name="user" />
           </button>
@@ -102,11 +103,11 @@ function ProfileContent({ initial, lang }) {
             aria-labelledby="goal-title"
           >
             <div className="profile-section-title">
-              <h2 id="goal-title">Today</h2>
+              <h2 id="goal-title">{tr("Today")}</h2>
               <button
                 onClick={editGoal}
-                aria-label="Change daily goal"
-                title="Change goal"
+                aria-label={tr("Change daily goal")}
+                title={tr("Change goal")}
               >
                 <Icon name="settings" size={19} />
               </button>
@@ -116,29 +117,29 @@ function ProfileContent({ initial, lang }) {
                 className="profile-goal-ring"
                 style={{ "--goal": `${goalRatio}%` }}
                 role="img"
-                aria-label={`${data.today_questions}/${data.daily_goal} questions today`}
+                aria-label={tr("{v0}/{v1} questions today", { v0: data.today_questions, v1: data.daily_goal })}
               >
                 <strong>{data.today_questions}</strong>
-                <span>/ {data.daily_goal} questions</span>
+                <span>/ {data.daily_goal}{tr(" questions")}</span>
               </div>
               <div>
                 <span
                   className={`profile-goal-state ${goalRatio >= 100 ? "complete" : ""}`}
                 >
                   {goalRatio >= 100
-                    ? "✓ Goal reached"
+                    ? tr("✓ Goal reached")
                     : `${Math.max(0, data.daily_goal - data.today_questions)} questions remaining`}
                 </span>
                 <Link className="btn primary profile-continue" to={next}>
                   {data.resume
-                    ? "Continue session"
+                    ? tr("Continue session")
                     : cards.due
-                      ? "Review due cards"
-                      : "Continue learning"}
+                      ? tr("Review due cards")
+                      : tr("Continue learning")}
                   <Icon name="arrow" />
                 </Link>
                 {cards.due > 0 && (
-                  <span className="profile-due">{cards.due} due cards</span>
+                  <span className="profile-due">{cards.due}{tr(" due cards")}</span>
                 )}
               </div>
             </div>
@@ -148,7 +149,7 @@ function ProfileContent({ initial, lang }) {
             aria-labelledby="calendar-title"
           >
             <div className="profile-section-title">
-              <h2 id="calendar-title">Learning rhythm</h2>
+              <h2 id="calendar-title">{tr("Learning rhythm")}</h2>
               <span className="profile-streak">
                 <svg
                   aria-hidden="true"
@@ -159,8 +160,7 @@ function ProfileContent({ initial, lang }) {
                 >
                   <path d="M11 1c2 6-4 7-1 12 1-2 3-3 3-6 8 8 5 16-3 16S-1 15 4 9c-1 6 2 7 3 6C4 8 11 7 11 1Z" />
                 </svg>
-                {data.streak} days
-              </span>
+                {data.streak}{tr(" days")}</span>
             </div>
             <div className="profile-week-labels" aria-hidden="true">
               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
@@ -170,7 +170,7 @@ function ProfileContent({ initial, lang }) {
             <div
               className="profile-calendar-grid"
               role="group"
-              aria-label="Activity over four weeks, in Vietnam time"
+              aria-label={tr("Activity over four weeks, in Vietnam time")}
             >
               {data.calendar.map((day) => (
                 <span
@@ -184,22 +184,20 @@ function ProfileContent({ initial, lang }) {
               ))}
             </div>
             <div className="profile-calendar-foot">
-              <span>
-                Longest <strong>{data.longest_streak} days</strong>
+              <span>{tr("Longest ")}<strong>{data.longest_streak}{tr(" days")}</strong>
               </span>
               <span>
-                <i /> Studied
-              </span>
+                <i />{tr(" Studied")}</span>
             </div>
           </section>
         </div>
         <section className="profile-overview" id="profile-progress">
           <div className="profile-section-title">
-            <h2>Learning progress</h2>
+            <h2>{tr("Learning progress")}</h2>
             <div
               className="profile-periods"
               role="group"
-              aria-label="Time range"
+              aria-label={tr("Time range")}
             >
               {["7", "30", "90"].map((value) => (
                 <button
@@ -207,8 +205,7 @@ function ProfileContent({ initial, lang }) {
                   aria-pressed={period === value}
                   onClick={() => setPeriod(value)}
                 >
-                  {value} days
-                </button>
+                  {value}{tr(" days")}</button>
               ))}
             </div>
           </div>
@@ -223,10 +220,10 @@ function ProfileContent({ initial, lang }) {
               ],
               [stats.completed, "Completed exercises", "book"],
             ].map(([value, label, icon]) => (
-              <div className="profile-panel profile-metric" key={label}>
+              <div className="profile-panel profile-metric" key={tr(label)}>
                 <Icon name={icon === "calendar" ? "class" : icon} />
                 <strong>{value}</strong>
-                <span>{label}</span>
+                <span>{tr(label)}</span>
               </div>
             ))}
           </div>
@@ -234,19 +231,19 @@ function ProfileContent({ initial, lang }) {
         <div className="profile-detail-grid">
           <section className="profile-panel" aria-labelledby="vocabulary-title">
             <div className="profile-section-title">
-              <h2 id="vocabulary-title">Flashcards</h2>
-              <Link to={`/${lang}/flashcard`} aria-label="Open flashcard library">
+              <h2 id="vocabulary-title">{tr("Flashcards")}</h2>
+              <Link to={`/${lang}/flashcard`} aria-label={tr("Open flashcard library")}>
                 <Icon name="arrow" />
               </Link>
             </div>
             <div className="profile-mastery-number">
               <strong>{cards.mastered}</strong>
-              <span>/ {cards.total} mastered cards</span>
+              <span>/ {cards.total}{tr(" mastered cards")}</span>
             </div>
             <div
               className="profile-mastery-bar"
               role="img"
-              aria-label={`${cards.mastered} mastered, ${cards.familiar} familiar, ${cards.new} not studied`}
+              aria-label={tr("{v0} mastered, {v1} familiar, {v2} not studied", { v0: cards.mastered, v1: cards.familiar, v2: cards.new })}
             >
               {["mastered", "familiar", "new"].map((stage) => (
                 <span
@@ -266,7 +263,7 @@ function ProfileContent({ initial, lang }) {
               ].map(([stage, label]) => (
                 <span key={stage}>
                   <i className={stage} />
-                  {label}
+                  {tr(label)}
                   <b>{cards[stage]}</b>
                 </span>
               ))}
@@ -276,7 +273,7 @@ function ProfileContent({ initial, lang }) {
                 <span
                   key={m.label}
                   className={m.earned ? "earned" : ""}
-                  title={m.earned ? "Achieved" : "Not yet mastered"}
+                  title={m.earned ? tr("Achieved") : tr("Not yet mastered")}
                 >
                   <Icon name={m.earned ? "check" : "spark"} size={16} />
                   {m.label}
@@ -286,7 +283,7 @@ function ProfileContent({ initial, lang }) {
           </section>
           <section className="profile-panel" aria-labelledby="continue-title">
             <div className="profile-section-title">
-              <h2 id="continue-title">Continue learning</h2>
+              <h2 id="continue-title">{tr("Continue learning")}</h2>
               <Icon name="cards" />
             </div>
             {data.decks.length ? (
@@ -302,13 +299,12 @@ function ProfileContent({ initial, lang }) {
                   <div>
                     <strong>{deck.title}</strong>
                     <span>
-                      {deck.mastered}/{deck.total} mastered cards
-                      {deck.due ? ` · ${deck.due} due` : ""}
+                      {deck.mastered}/{deck.total}{tr(" mastered cards")}{deck.due ? ` · ${deck.due} due` : ""}
                     </span>
                     <progress
                       value={deck.mastered}
                       max={deck.total}
-                      aria-label={`Progress ${deck.title}`}
+                      aria-label={tr("Progress {v0}", { v0: deck.title })}
                     />
                   </div>
                   <Icon name="arrow" size={18} />
@@ -317,24 +313,22 @@ function ProfileContent({ initial, lang }) {
             ) : (
               <div className="profile-empty">
                 <Icon name="cards" size={30} />
-                <p>No decks yet</p>
-                <Link className="btn" to={`/${lang}/flashcard`}>
-                  Create deck
-                </Link>
+                <p>{tr("No decks yet")}</p>
+                <Link className="btn" to={`/${lang}/flashcard`}>{tr("Create deck")}</Link>
               </div>
             )}
             <Link className="profile-practice-link" to={`/${lang}/practice`}>
-              <Icon name="book" /> Practice Hub <Icon name="arrow" size={18} />
+              <Icon name="book" />{tr(" Practice Hub ")}<Icon name="arrow" size={18} />
             </Link>
           </section>
         </div>
         <section className="profile-panel profile-history" id="profile-history">
           <div className="profile-section-title">
-            <h2>Learning history</h2>
+            <h2>{tr("Learning history")}</h2>
             <div
               className="profile-periods"
               role="group"
-              aria-label="Activity type"
+              aria-label={tr("Activity type")}
             >
               {[
                 ["all", "All"],
@@ -349,7 +343,7 @@ function ProfileContent({ initial, lang }) {
                     setLimit(8);
                   }}
                 >
-                  {label}
+                  {tr(label)}
                 </button>
               ))}
             </div>
@@ -369,12 +363,12 @@ function ProfileContent({ initial, lang }) {
                         <strong>{row.title}</strong>
                         <span>
                           {row.kind === "practice"
-                            ? "Exercises"
+                            ? tr("Exercises")
                             : row.kind === "test"
-                              ? "Check"
-                              : "Review"}{" "}
+                              ? tr("Check")
+                              : tr("Review")}{" "}
                           ·{" "}
-                          {new Date(row.date).toLocaleString("en-GB", {
+                          {new Date(row.date).toLocaleString(dateLocale(), {
                             timeZone: "Asia/Ho_Chi_Minh",
                             day: "2-digit",
                             month: "2-digit",
@@ -407,24 +401,20 @@ function ProfileContent({ initial, lang }) {
                 })}
               </div>
               {timeline.length > limit && (
-                <Btn icon="more" onClick={() => setLimit((v) => v + 8)}>
-                  Show more
-                </Btn>
+                <Btn icon="more" onClick={() => setLimit((v) => v + 8)}>{tr("Show more")}</Btn>
               )}
             </>
           ) : (
             <div className="profile-empty">
               <Icon name="book" size={30} />
-              <p>No completed exercises yet</p>
-              <Link className="btn" to={`/${lang}/practice`}>
-                Open Practice Hub
-              </Link>
+              <p>{tr("No completed exercises yet")}</p>
+              <Link className="btn" to={`/${lang}/practice`}>{tr("Open Practice Hub")}</Link>
             </div>
           )}
         </section>
         {edit && (
           <Editor
-            title={edit === "goal" ? "Daily goal" : "Profile"}
+            title={edit === "goal" ? tr("Daily goal") : tr("Profile")}
             fields={
               edit === "goal"
                 ? [
@@ -476,7 +466,7 @@ function ProfileContent({ initial, lang }) {
   );
 }
 function dateLabel(date) {
-  return new Date(`${date}T12:00:00`).toLocaleDateString("en-GB", {
+  return new Date(`${date}T12:00:00`).toLocaleDateString(dateLocale(), {
     day: "numeric",
     month: "numeric",
     year: "numeric",

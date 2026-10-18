@@ -1,3 +1,5 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
+import LanguageSettings from "../../i18n/LanguageSettings.jsx";
 import BackupSettings from "./BackupSettings.jsx";
 import { INTERFACE_CHOICES } from "../../themes/registry.js";
 import { AMBIENT_TRACKS } from "../audio/ambient-recordings.js";
@@ -27,6 +29,7 @@ export function Settings({
   staff,
   appearance,
 }) {
+  useLocale();
   const resource = useResource(endpoint(lang, "settings/"));
   return (
     <Loading resource={resource}>
@@ -58,6 +61,7 @@ function SettingsContent({
   staff,
   appearance,
 }) {
+  useLocale();
   const [tab, setTab] = useState("appearance");
   const tabs = [
     ["appearance", "Appearance"],
@@ -82,14 +86,15 @@ function SettingsContent({
   return (
     <Page>
       <Heading
-        eyebrow="YOUR WAY"
-        title="Settings"
-        description="A comfortable space to see, hear and learn."
+        eyebrow={tr("YOUR WAY")}
+        title={tr("Settings")}
+        description={tr("A comfortable space to see, hear and learn.")}
       />
+      <LanguageSettings />
       <SidebarTools navOnly>
         <div
           role="tablist"
-          aria-label="Settings group"
+          aria-label={tr("Settings group")}
           className="settings-tabs settings-nav"
           aria-orientation="vertical"
         >
@@ -123,7 +128,7 @@ function SettingsContent({
                 }
               }}
             >
-              {label}
+              {tr(label)}
             </button>
           ))}
         </div>
@@ -136,14 +141,14 @@ function SettingsContent({
         {tab === "backup" && <BackupSettings userId={userId} />}
         {tab === "background" && (
           <Glass>
-            <h2>Backgrounds</h2>
+            <h2>{tr("Backgrounds")}</h2>
             <BackgroundLibrary key={prefs.interface} interfaceName={prefs.interface} />
             <Status error={appearance?.warning} />
           </Glass>
         )}
         {tab === "appearance" && (
           <>
-            <section className="interface-picker" aria-label="Choose appearance">
+            <section className="interface-picker" aria-label={tr("Choose appearance")}>
               {INTERFACE_CHOICES.map(([id, name, description]) => (
                 <button
                   key={id}
@@ -158,21 +163,21 @@ function SettingsContent({
                     <span />
                   </span>
                   <strong>
-                    {name}
-                    {prefs.interface === id ? " · In use" : ""}
+                    {tr(name)}
+                    {prefs.interface === id ? tr(" · In use") : ""}
                   </strong>
-                  <span>{description}</span>
+                  <span>{tr(description)}</span>
                 </button>
               ))}
             </section>
             <Glass>
-              <h2>Appearance</h2>
+              <h2>{tr("Appearance")}</h2>
               <Status error={appearance?.warning} />
               {prefs.interface !== "glass" && (
                 <>
                   <div className="flex items-center gap-3">
                     <Field
-                      label="Text color"
+                      label={tr("Text color")}
                       type="color"
                       value={
                         prefs.textColor === "auto"
@@ -197,12 +202,9 @@ function SettingsContent({
                           textContrast: 80,
                         })
                       }
-                    >
-                      Auto · Automatic contrast
-                    </Btn>
+                    >{tr("Auto · Automatic contrast")}</Btn>
                   </div>
-                  <label className="range-label">
-                    Text weight <strong>{prefs.textWeight}</strong>
+                  <label className="range-label">{tr("Text weight ")}<strong>{prefs.textWeight}</strong>
                     <input
                       type="range"
                       min="400"
@@ -217,8 +219,7 @@ function SettingsContent({
                       }
                     />
                   </label>
-                  <label className="range-label">
-                    Text contrast <strong>{prefs.textContrast}%</strong>
+                  <label className="range-label">{tr("Text contrast ")}<strong>{prefs.textContrast}%</strong>
                     <input
                       type="range"
                       min="0"
@@ -232,8 +233,7 @@ function SettingsContent({
                       }
                     />
                   </label>
-                  <label className="range-label">
-                    Navigation width{" "}
+                  <label className="range-label">{tr("Navigation width")}{" "}
                     <strong>{prefs.navScale}%</strong>
                     <input
                       type="range"
@@ -246,11 +246,8 @@ function SettingsContent({
                       }
                     />
                   </label>
-                  <Btn onClick={() => setPrefs({ ...prefs, navScale: 100 })}>
-                    Reset navigation to 100%
-                  </Btn>
-                  <label className="range-label">
-                    Interface text size <strong>{prefs.textSize}px</strong>
+                  <Btn onClick={() => setPrefs({ ...prefs, navScale: 70 })}>{tr("Reset navigation size")}</Btn>
+                  <label className="range-label">{tr("Interface text size ")}<strong>{prefs.textSize}px</strong>
                     <input
                       type="range"
                       min="16"
@@ -261,8 +258,7 @@ function SettingsContent({
                       }
                     />
                   </label>
-                  <label className="range-label">
-                    Card text size <strong>{prefs.font}px</strong>
+                  <label className="range-label">{tr("Card text size ")}<strong>{prefs.font}px</strong>
                     <input
                       type="range"
                       min="24"
@@ -282,8 +278,7 @@ function SettingsContent({
               {prefs.interface === "glass" && (
                 <>
                   {" "}
-                  <label className="range-label">
-                    Glass transparency{" "}
+                  <label className="range-label">{tr("Glass transparency")}{" "}
                     <strong>{prefs.transparency}%</strong>
                     <input
                       type="range"
@@ -307,7 +302,7 @@ function SettingsContent({
         )}
         {tab === "sound" && (
           <Glass>
-            <h2>Audio</h2>
+            <h2>{tr("Audio")}</h2>
             <label className="check-line">
               <input
                 type="checkbox"
@@ -315,9 +310,7 @@ function SettingsContent({
                 onChange={(e) =>
                   setPrefs({ ...prefs, sound: e.target.checked })
                 }
-              />
-              Soft interaction sounds
-            </label>
+              />{tr("Soft interaction sounds")}</label>
             <label className="check-line">
               <input
                 type="checkbox"
@@ -325,11 +318,9 @@ function SettingsContent({
                 onChange={(e) =>
                   setPrefs({ ...prefs, ambient: e.target.checked })
                 }
-              />
-              Gentle background audio
-            </label>
+              />{tr("Gentle background audio")}</label>
             <Select
-              label="Background melody"
+              label={tr("Background melody")}
               value={prefs.ambientTrack}
               onChange={(ambientTrack) => setPrefs({ ...prefs, ambientTrack })}
             >
@@ -339,11 +330,8 @@ function SettingsContent({
                 </option>
               ))}
             </Select>
-            <p className="text-sm text-(--muted)">
-              Choose from 20 tracks in the Wortify library. Enable background audio and click the page if playback is blocked. Audio pauses during listening exercises and when switching browser tabs.
-            </p>
-            <label className="range-label">
-              Volume <strong>{Math.round(prefs.volume * 100)}%</strong>
+            <p className="text-sm text-(--muted)">{tr("Choose from 20 tracks in the Wortify library. Enable background audio and click the page if playback is blocked. Audio pauses during listening exercises and when switching browser tabs.")}</p>
+            <label className="range-label">{tr("Volume ")}<strong>{Math.round(prefs.volume * 100)}%</strong>
               <input
                 type="range"
                 min="0"
@@ -359,18 +347,18 @@ function SettingsContent({
         )}
         {tab === "study" && (
           <Glass>
-            <h2>Study preferences</h2>
+            <h2>{tr("Study preferences")}</h2>
             <fieldset className="grid gap-3 my-4">
-              <legend>Exercise typography</legend>
-              <label>Text size · {prefs.exerciseTextSize || 22}px
-                <input aria-label="Exercise text size" type="range" min="16" max="36" step="1" value={prefs.exerciseTextSize || 22} onChange={e=>setPrefs({...prefs,exerciseTextSize:Number(e.target.value)})}/>
+              <legend>{tr("Exercise typography")}</legend>
+              <label>{tr("Text size · ")}{prefs.exerciseTextSize || 22}px
+                <input aria-label={tr("Exercise text size")} type="range" min="16" max="36" step="1" value={prefs.exerciseTextSize || 22} onChange={e=>setPrefs({...prefs,exerciseTextSize:Number(e.target.value)})}/>
               </label>
-              <label>Text weight · {prefs.exerciseTextWeight || 500}
-                <input aria-label="Exercise text weight" type="range" min="400" max="700" step="100" value={prefs.exerciseTextWeight || 500} onChange={e=>setPrefs({...prefs,exerciseTextWeight:Number(e.target.value)})}/>
+              <label>{tr("Text weight · ")}{prefs.exerciseTextWeight || 500}
+                <input aria-label={tr("Exercise text weight")} type="range" min="400" max="700" step="100" value={prefs.exerciseTextWeight || 500} onChange={e=>setPrefs({...prefs,exerciseTextWeight:Number(e.target.value)})}/>
               </label>
-              <p className="exercise-type-preview">Choose the answer that completes the sentence.</p>
-              <Btn onClick={()=>setPrefs({...prefs,exerciseTextSize:22,exerciseTextWeight:500})}>Reset exercise typography</Btn>
-              <p className="text-sm">Applies to exercise content across themes. Navigation and buttons keep their own size.</p>
+              <p className="exercise-type-preview">{tr("Choose the answer that completes the sentence.")}</p>
+              <Btn onClick={()=>setPrefs({...prefs,exerciseTextSize:22,exerciseTextWeight:500})}>{tr("Reset exercise typography")}</Btn>
+              <p className="text-sm">{tr("Applies to exercise content across themes. Navigation and buttons keep their own size.")}</p>
             </fieldset>
             <div>
               {Object.entries({
@@ -389,11 +377,11 @@ function SettingsContent({
                       change({ [key]: e.target.checked });
                     }}
                   />
-                  {label}
+                  {tr(label)}
                 </label>
               ))}
               <Field
-                label="New cards per day"
+                label={tr("New cards per day")}
                 type="number"
                 min="0"
                 max="200"
@@ -408,7 +396,7 @@ function SettingsContent({
                 }}
               />
               <Field
-                label="Session duration (minutes)"
+                label={tr("Session duration (minutes)")}
                 type="number"
                 min="1"
                 max="120"

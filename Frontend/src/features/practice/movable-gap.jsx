@@ -1,3 +1,4 @@
+import { t as tr, useLocale } from "../../i18n/index.js";
 import { ModalLayerContext, modalRoot } from "../../components/modal/modal.jsx";
 import { PracticeRichText } from "./practice-rich-text.jsx";
 import { useRef, useState, useEffect, useContext } from "react";
@@ -13,6 +14,7 @@ export function MovableGap({
   rows,
   uiStyle,
 }) {
+  useLocale();
   const inModal = useContext(ModalLayerContext);
   const root = useRef(null);
   const gesture = useRef(null);
@@ -138,7 +140,7 @@ export function MovableGap({
                   data-gap-index={index}
                   disabled={disabled}
                   className={`gap-drop ${token && !held ? "filled" : ""} ${active === index ? "is-active" : ""}`}
-                  aria-label={`Gap ${index + 1}${token ? `: ${token.text}. Click to return the word to the bank` : ""}`}
+                  aria-label={tr("Gap {v0}{v1}", { v0: index + 1, v1: token ? `: ${token.text}. Click to return the word to the bank` : "" })}
                   onPointerDown={(event) => token && start(event, token)}
                   onClick={(event) => {
                     if (event.detail === 0 || !token)
@@ -154,7 +156,7 @@ export function MovableGap({
         <div
           className="word-bank"
           data-gap-bank
-          aria-label="Word bank; drag a word here to remove it from the gap"
+          aria-label={tr("Word bank; drag a word here to remove it from the gap")}
         >
           {bank
             .filter(
