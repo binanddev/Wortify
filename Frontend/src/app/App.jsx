@@ -530,10 +530,10 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
             <button
               id="mobile-nav-toggle"
               aria-controls="app-navigation"
-              aria-expanded={navOpen}
+              aria-expanded={navOpen && !navBack}
               onClick={() => {
                 setNavBack(false);
-                setNavOpen((open) => !open);
+                setNavOpen((open) => navBack || !open);
               }}
             >
               <Icon name="menu" />{tr(" Menu")}</button>
@@ -542,7 +542,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
               aria-expanded={navOpen && navBack}
               onClick={() => {
                 setNavBack(true);
-                setNavOpen(true);
+                setNavOpen((open) => !navBack || !open);
               }}
             >{tr("Page tools")}</button>
           </div>

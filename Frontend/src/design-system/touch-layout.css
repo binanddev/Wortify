@@ -37,3 +37,22 @@
 .flash-deck-item.is-selected .deck-tile { @apply ring-2 ring-(--accent); }
 .flash-deck-item .deck-link[role="checkbox"] { @apply rounded-2xl; }
 .flash-deck-item .deck-link[role="checkbox"]:focus-visible { @apply outline-2 outline-offset-4 outline-(--accent); }
+
+/* Mobile navigation is a two-panel drawer, not a 3D card. Safari can flatten
+   transformed faces when themes add filters, masks or scroll containers. */
+@media (max-width:1024px) {
+ :root[data-interface] body .nav-flip { @apply [perspective:none]!; }
+ :root[data-interface] body .nav-flip-inner,
+ :root[data-interface] body .nav-flip-inner.is-flipped { @apply transform-none! [transform-style:flat]! [transition:none]!; }
+ :root[data-interface] body .nav-flip .nav-face { @apply transform-none! [backface-visibility:visible]! [-webkit-backface-visibility:visible]! [transition:none]!; }
+ :root[data-interface] body .nav-flip .nav-face:not(.is-active) { @apply hidden!; }
+ :root[data-interface] body .nav-flip .nav-face.is-active { @apply block!; }
+ :root[data-interface] body .nav-face > .sidebar,
+ :root[data-interface] body .nav-face > .workspace-context { @apply left-0! right-0! top-[68px]! bottom-0! min-w-0 overflow-x-hidden! overflow-y-auto!; }
+ :root[data-interface] body .nav-static { @apply h-[68px]! flex items-center gap-2 px-3; }
+ :root[data-interface] body .nav-static .brand { @apply min-w-0 flex-1 text-xl; }
+ :root[data-interface] body .nav-static :is(.nav-rotate,.mobile-nav-close) { @apply flex-none w-11! min-w-11! h-11! p-2!; }
+ :root[data-interface] body .mobile-nav-bar button { @apply inline-flex items-center justify-center gap-2 text-base min-h-11; }
+ :root[data-interface] body .workspace-context .sidebar-tools-group .btn:is([data-icon-only=true],[aria-label]) { @apply w-11 min-w-11 max-w-11 p-2; }
+ :root[data-interface] body .workspace-context :is(.flash-icon-row,.reading-nav-tools,.toolbar) { @apply flex flex-wrap items-center gap-2; }
+}

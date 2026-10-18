@@ -472,8 +472,8 @@
     "sha256": "9f2ca4eb8d877c3439d0047c56b7e54820ed36806164c5d9dcf182a381f7c18b"
   },
   "alignment": {
-    "count": 398,
-    "sha256": "d0e577823c66f3a60863113c5f7e03dd0074c0986a6402da84327631ee572a44"
+    "count": 402,
+    "sha256": "c2fc7af0be0bba97657023b75f9f097f4c3c20bce187aac22ce3c09e8f654330"
   },
   "animation": {
     "count": 42,
@@ -492,8 +492,8 @@
     "sha256": "9e7a582b69c25777d9b4bb1983c13ed7fc4e00a315f7cf689d2f790bf37dd49f"
   },
   "backface": {
-    "count": 4,
-    "sha256": "c3f0881f14d0a5e01c295b5f433fd612cec1ae09019cecda6c8440cd49f19cd7"
+    "count": 6,
+    "sha256": "be172c4706ca3ca9b89162915d028165c1debae68212453b18e45b6d1c1a9076"
   },
   "background": {
     "count": 921,
@@ -536,8 +536,8 @@
     "sha256": "edc43de3fd18d262bf80f261ed99f97494302d0b0f12ed928e1bb149e2cadaef"
   },
   "display": {
-    "count": 632,
-    "sha256": "d101ea2cda3c4be5b99624be1e849b8874a8ba23a2524b11a22d83ba3bd313f0"
+    "count": 637,
+    "sha256": "a61a947a4e04e64a5e09b1668eb94596a74a314eb5c851db52350112e5faf806"
   },
   "fill": {
     "count": 1,
@@ -548,28 +548,28 @@
     "sha256": "e3608a7f92a4114c2b2969a3b3ca039d2debe54c389f849519811867eb070f99"
   },
   "flex": {
-    "count": 223,
-    "sha256": "a31a2823397e5e7a2672e1454267cb23343f6bb217b47e3abfa39846292b9566"
+    "count": 226,
+    "sha256": "c8f7801a2bbc9e58c48fa7d40d55025c6fd7041e2ad1554dc9ea3f1ce3dfbbca"
   },
   "float": {
     "count": 3,
     "sha256": "b6c3cbb00525689a2701b0c1da85ed57e9d31844afece0c1271f30b823f4dd12"
   },
   "font": {
-    "count": 1287,
-    "sha256": "1e9c03e246fb047387ae75ec2146312ee72015e10d7cf410f6de4f15fde36b29"
+    "count": 1291,
+    "sha256": "d7dcd487d356289bc5efea003df0e8bc5c95ef465fdd71faa06f8de180949d2d"
   },
   "gap": {
-    "count": 444,
-    "sha256": "8e5481a88a9a10d40040f54dbdb276afbaaa0a2f4f7cee083f4a9ad24d6e74e3"
+    "count": 447,
+    "sha256": "101d06aa959a43fbcae57c34f638a72ed5c2476c7490187fac17cb200233b9bc"
   },
   "grid": {
     "count": 147,
     "sha256": "ecd5fa9eefbc1d2bf1ac9c19f2d3982b612023db1133530a94fe2bd92e6c67cf"
   },
   "height": {
-    "count": 201,
-    "sha256": "e0948583bf9036ed7d333f921832b41d199d87d508d90ba9d1238816940f865f"
+    "count": 203,
+    "sha256": "3d3879ec298250afad560481c0da853a5bbccb9cb9a6932d1c553a0fdf1f1006"
   },
   "image": {
     "count": 1,
@@ -636,12 +636,12 @@
     "sha256": "4a88fb51745efd864f4f4da192296cfdb508f9b4a96b33fb8ee3c508df668155"
   },
   "max": {
-    "count": 116,
-    "sha256": "6e3b953a79ee5417697808d897115cfdb6f7562f15f1f0f6524fbd2f61ba5274"
+    "count": 117,
+    "sha256": "e65620d502be1df7a38a6b90e0be30663c1a221a40815a97a6bbdcc7b8bd0a72"
   },
   "min": {
-    "count": 305,
-    "sha256": "5a5772236fcb41d3f2369ce44998b325c1a24a0a90bb667cbf1c62d35b185079"
+    "count": 310,
+    "sha256": "6f863aae4c06c7ed2e903b5336504d4c4242c6e863975da6489af05126ab239b"
   },
   "object": {
     "count": 4,
@@ -664,20 +664,20 @@
     "sha256": "b5a62a853b662ad77984a89a04cc9a16840705444a1f3a774f70b1ed6e10078d"
   },
   "overflow": {
-    "count": 117,
-    "sha256": "a31c1349c7a2a9ac7c6f01304c9419479f1e85b297f4aeb84f794e2af8d90097"
+    "count": 119,
+    "sha256": "ac917c35060721b42b1345af125615dd1fb32a6d0c04ee78cf2e51d50b08d606"
   },
   "overscroll": {
     "count": 2,
     "sha256": "266a2f1bf68950fc7123bb53a7620940ab01e37b8a81c74dae526847d7858190"
   },
   "padding": {
-    "count": 647,
-    "sha256": "94bf0b6a104f209b794500ed196f286c4d63c3a7d5b7aa3f37d394583263e1ce"
+    "count": 650,
+    "sha256": "827a1d61cea6c63a0bfcfce770187cddcba440ca4803f04face00935f8be026d"
   },
   "perspective": {
-    "count": 2,
-    "sha256": "d248fc4b367443a5d7ed7632507239860fcaed70fd9eb94eac5fcb150cc7c97d"
+    "count": 3,
+    "sha256": "4b4d9910cdb5b60fd578946985e999063b6a349418853cc762385ea630bae59e"
   },
   "pointer": {
     "count": 20,
@@ -688,8 +688,8 @@
     "sha256": "8d349239b3c684e14b9c347a23715bc4196e7cea6620d3fdebd2ccb3bd98b074"
   },
   "position-offset": {
-    "count": 195,
-    "sha256": "3538fc6232fad2111921ce6450d999521cb7716dba1e0d7162798a24620fd494"
+    "count": 199,
+    "sha256": "080d88871f88a1cd89ad94b15ea932e0f5b7878d3c2d04176d4b46ff29b04dce"
   },
   "resize": {
     "count": 6,
@@ -740,12 +740,12 @@
     "sha256": "b047fc5b26227420e89a1124b341bae46d1d495ba4c201f2ab10740bb43c60e2"
   },
   "transform": {
-    "count": 54,
-    "sha256": "7def52e647082ccaad8e7734d77dd54bc4996d30a5ebcd123d34d56f94496d90"
+    "count": 57,
+    "sha256": "95642c0853c93961d0dfe08200be088b4fc0678b01205eeb5797aa3e5fc44776"
   },
   "transition": {
-    "count": 99,
-    "sha256": "7762fd320fd18c915235cf84830f04c82eda95cbc75416bd97412852a3c8f607"
+    "count": 101,
+    "sha256": "31dfe017981b715c248413c1b3e07b1a96374ebcd1959873cf1b10cadd04c3d4"
   },
   "translate": {
     "count": 10,
@@ -772,8 +772,8 @@
     "sha256": "c4e70935e0a8fb7364d7240bba5f742a600f632e0d5f8d990cc3d31248a26882"
   },
   "width": {
-    "count": 266,
-    "sha256": "bd978bee19a8209ff4ad34c819035ded914120d88e2d175655eb9ea29b6ed8cd"
+    "count": 268,
+    "sha256": "4e246ebc977813c93b4338288bc88b0cfecb8d90ef86212d7d4f6015313f33c0"
   },
   "word": {
     "count": 3,

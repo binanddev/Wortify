@@ -1,5 +1,12 @@
 # Change Log
 
+### [v1.3.1] - 2026-10-18 | Mobile navigation repair
+
+- Replaced the mobile 3D navigation flip with a single visible drawer panel to prevent mirrored, overlapping menus on iOS/Safari. Desktop navigation keeps its existing animation.
+- Corrected Menu/Page tools toggling and expanded states; constrained mobile header controls and icon actions, with independent vertical navigation scrolling.
+
+---
+
 ### [v1.3.0] - 2026-10-18 | Learning workflows, languages and workspace management
 
 - Added manually maintained English, Vietnamese and German application languages, independent of the learning language.
