@@ -35,3 +35,11 @@ def copy(request,pk):
     deck=Deck.objects.create(owner=request.user,language=source.language,title=source.title,description=source.description,level=source.level,topic=source.topic,source_deck=source)
     Card.objects.bulk_create([Card(deck=deck,**model_to_dict(c,exclude=['id','deck'])) for c in source.cards.all()])
     return JsonResponse({'id':deck.pk},status=201)
+
+
+@endpoint
+@require_GET
+def detail(request,pk):
+    deck=get_object_or_404(Deck,pk=pk,language=request.language,visibility='public',owner__is_active=True)
+    cards=list(deck.cards.order_by('position','pk').values('german_text','vietnamese_meaning','example_german','example_vietnamese')[:10])
+    return JsonResponse({'id':deck.pk,'description':deck.description,'cards':cards,'count':deck.cards.count()})

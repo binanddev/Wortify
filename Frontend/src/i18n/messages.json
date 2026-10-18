@@ -5322,5 +5322,9 @@
   "This key can only import content. Keep it out of shared files and chat guides.": {
     "vi": "Khóa chỉ dùng để nhập nội dung. Không đưa khóa vào file chia sẻ hoặc hướng dẫn chat.",
     "de": "Dieser Schlüssel dient nur zum Inhaltsimport. Nicht in geteilte Dateien oder Chat-Anleitungen aufnehmen."
+  },
+  "This feature is unavailable on the current backend version.": {
+    "vi": "Phiên bản backend hiện tại chưa có tính năng này.",
+    "de": "Diese Funktion ist in der aktuellen Backend-Version nicht verfügbar."
   }
 }

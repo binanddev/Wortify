@@ -173,3 +173,12 @@ without adding a permanent generator or seeding command. The local
 content-library/v1.2.3/ directory contains exports and an import report, not
 runtime assets. Preserve a database backup when moving or removing those files.
 Account CSV files contain initial credentials and should stay outside Git.
+
+
+### Khi frontend mới nhưng API báo không tìm thấy đường dẫn
+
+`render.yaml` chỉ cấu hình service được quản lý bằng Blueprint; nó không tự cập nhật một Web Service đã tạo thủ công. Với service `wortify.onrender.com`, vào Settings và kiểm tra Repository `binanddev/Wortify`, Branch `minhtien`, Root Directory `Backend`, runtime Python và Build/Start Command ở trên. Đặt Auto-Deploy thành On Commit, rồi Manual Deploy → Deploy latest commit. Nếu deploy thất bại, Render có thể vẫn phục vụ bản Live cũ; kiểm tra log migration/build thay vì chỉ nhìn trạng thái Live.
+
+Sau deploy, `/api/health/` phải trả `version`, `revision` và `features`. `revision` phải khớp commit mới trên GitHub. Kiểm tra cùng đường dẫn qua Netlify: hai phản hồi phải có cùng revision. Nếu khác nhau, kiểm tra `BACKEND_ORIGIN=https://wortify.onrender.com` trên Netlify rồi build/deploy lại frontend (proxy được tạo lúc build).
+
+Khi chưa đăng nhập, `/api/de/flashcard/discover/` và `/api/manage/import-api/` phải trả 401, không phải 404. `/api/import/openapi/` phải trả 200. Không sửa quyền tài khoản để xử lý lỗi route 404.

@@ -1,5 +1,15 @@
 # Change Log
 
+### [v1.4.1] - 2026-10-18 | Flashcard discovery layout and deployment diagnostics
+
+- Moved Flashcard Explore search, filter and refresh controls into navigation; added an apply/reset filter modal and compact responsive deck tiles using shared components.
+- Added a read-only preview modal with up to ten cards and independent-copy actions. Preview access follows public visibility, language and active-owner permissions.
+- Added backend version, deployed commit and feature identifiers to the uncached health endpoint; explicitly pinned the Render Blueprint branch to minhtien.
+- Documented how to verify manually created Render services, failed deploys retaining old code and Netlify proxy targets. Added route-presence and preview-access regression tests.
+- Live deployment testing is pending user confirmation; no local web/server was started.
+
+---
+
 ### [v1.4.0] - 2026-10-18 | Public content, discovery and import controls
 
 - Added a shared publishing policy for staff and administrators: publish all existing and future learning content, or let users choose public/private. Switching back to user choice preserves current visibility. Enforced the policy for normal edits, imports and bulk writes across flashcards, practice and reading.

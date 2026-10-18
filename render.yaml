@@ -2,6 +2,7 @@
 services:
   - type: web
     name: wortify-api
+    branch: minhtien
     runtime: python
     plan: free
     region: singapore

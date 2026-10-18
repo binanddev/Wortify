@@ -16,7 +16,10 @@ def health(request):
     import hashlib
     from django.conf import settings
     identity=hashlib.sha256(str(settings.BASE_DIR).lower().encode()).hexdigest()[:16]
-    return JsonResponse({'app':'Wortify','workspace':identity})
+    import os
+    response = JsonResponse({'app':'Wortify','workspace':identity,'version':'1.4.1','revision':os.environ.get('RENDER_GIT_COMMIT',''),'features':['flashcard-discovery','content-import','content-policy']})
+    response['Cache-Control']='no-store'
+    return response
 urlpatterns=[path("api/site/content-policy/",content_policy.current),path("api/manage/content-policy/",content_policy.settings),path("api/import/guide/",content_import_docs.guide),path("api/import/openapi/",content_import_docs.openapi),path("api/manage/import-api/",content_import_api.settings),path("api/import/content/",content_import_api.upload),path('api/me/language/',interface_language),path('api/superuser-registration/<slug:setup_key>/',superuser_registration),path('api/health/',health),path('api/session/',session),
  path('api/health/check/',monitoring.probe),
  path('api/monitor/',monitoring.report),
@@ -58,7 +61,7 @@ for pattern,view in [
  ('learning/sync/',learning_sync.sync),('decks/<int:pk>/learning/',learning_sync.deck_state),
  ('settings/',views.preferences),('decks/',views.decks),('decks/<int:pk>/',views.deck),('study-pack/',views.study_pack),
  ('decks/<int:pk>/reorder/',views.reorder_cards),('decks/<int:pk>/import/',views.import_cards),('decks/<int:deck_id>/cards/',views.card),('decks/<int:deck_id>/cards/<int:pk>/',views.card),('folders/',views.folder),('folders/<int:pk>/',views.folder),
- ('flashcard/discover/',flashcard_discovery.discover),('flashcard/discover/<int:pk>/copy/',flashcard_discovery.copy),('sessions/',sessions.create),('sessions/<uuid:token>/',sessions.detail),('sessions/<uuid:token>/answer/',sessions.answer),('sessions/<uuid:token>/finish/',sessions.finish_test),
+ ('flashcard/discover/',flashcard_discovery.discover),('flashcard/discover/<int:pk>/',flashcard_discovery.detail),('flashcard/discover/<int:pk>/copy/',flashcard_discovery.copy),('sessions/',sessions.create),('sessions/<uuid:token>/',sessions.detail),('sessions/<uuid:token>/answer/',sessions.answer),('sessions/<uuid:token>/finish/',sessions.finish_test),
 ]:route(pattern,view)
 for pattern, view in [
  ('decks/<int:pk>/export/<str:fmt>/',cards.export_deck),('next/',cards.next_question),('question/<uuid:token>/',cards.resume_question),

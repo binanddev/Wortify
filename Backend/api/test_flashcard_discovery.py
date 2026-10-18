@@ -38,3 +38,28 @@ class FlashcardDiscoveryTests(TestCase):
         self.author.is_active=False;self.author.save()
         self.assertEqual(self.client.post(self.url,{},content_type='application/json').status_code,404)
         self.assertEqual(self.client.get('/api/de/flashcard/discover/').json()['total'],0)
+
+    def test_preview_is_bounded_read_only_and_private_content_is_hidden(self):
+        for i in range(12): Card.objects.create(deck=self.source,german_text=str(i),vietnamese_meaning=str(i))
+        url=f'/api/de/flashcard/discover/{self.source.pk}/'
+        response=self.client.get(url)
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(len(response.json()['cards']),10)
+        self.assertEqual(response.json()['count'],13)
+        self.assertEqual(Deck.objects.filter(owner=self.user).count(),0)
+        self.assertEqual(self.client.get(url.replace('/de/','/en/')).status_code,404)
+        self.source.visibility='private';self.source.save()
+        self.assertEqual(self.client.get(url).status_code,404)
+
+    def test_deployment_api_routes_are_present_without_authentication(self):
+        self.client.logout()
+        for path in ['/api/de/flashcard/discover/','/api/manage/import-api/']:
+            self.assertEqual(self.client.get(path).status_code,401,path)
+        self.assertEqual(self.client.get('/api/import/openapi/').status_code,200)
+        from unittest.mock import patch
+        with patch.dict('os.environ', {'RENDER_GIT_COMMIT':'test-revision'}):
+            response=self.client.get('/api/health/')
+        self.assertEqual(response.json()['revision'],'test-revision')
+        self.assertIn('flashcard-discovery',response.json()['features'])
+        self.assertIn('content-import',response.json()['features'])
+        self.assertIn('no-store',response['Cache-Control'])
