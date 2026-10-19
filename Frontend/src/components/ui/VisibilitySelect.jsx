@@ -5,11 +5,14 @@ export default function VisibilitySelect({
   value,
   onChange,
   disabled,
+  isNew = false,
   ...props
 }) {
   useLocale();
   const policy = useResource("/api/site/content-policy/");
-  const publicOnly = policy.data?.mode === "public";
+  const publicOnly =
+    policy.data?.mode === "public" ||
+    (isNew && policy.data?.mode === "new_public");
   return (
     <Select
       {...props}

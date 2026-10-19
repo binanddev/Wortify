@@ -21,7 +21,7 @@ def settings(request):
     if request.method == 'GET':
         return current(request)
     mode = body(request).get('mode')
-    if mode not in ('choice', 'public'):
+    if mode not in ('choice', 'public', 'new_public'):
         raise ValueError('Invalid publishing mode.')
     with sharing_mode():
         policy = ContentPolicy.objects.get(pk=1)

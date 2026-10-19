@@ -60,7 +60,7 @@ function DeckOptions({ values, set, folders }) {
           </option>
         ))}
       </Select>
-      <VisibilitySelect value={values.visibility || "private"} onChange={visibility=>set({...values,visibility})} />
+      <VisibilitySelect isNew={!values.id} value={values.visibility || "private"} onChange={visibility=>set({...values,visibility})} />
       <Select
         label={tr("Level")}
         value={values.level || "A1"}

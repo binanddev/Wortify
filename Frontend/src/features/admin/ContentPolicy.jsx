@@ -31,6 +31,7 @@ export default function ContentPolicy() {
             disabled={busy}
           >
             <option value="public">{tr("All content public")}</option>
+            <option value="new_public">{tr("Only new content public")}</option>
             <option value="choice">
               {tr("Users choose public or private")}
             </option>

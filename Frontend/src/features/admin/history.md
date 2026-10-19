@@ -1,5 +1,14 @@
 # Change Log
 
+### [v1.4.2] - 2026-10-19 | New-content publishing option
+
+- Removed the duplicate My Flashcards icon from Explore navigation; the shared navigation home action remains.
+- Added Only new content public for staff/admin. Newly created and imported flashcards, practice and readings are public; existing content keeps its visibility when the mode is enabled or edited.
+- Retained the existing all-public and user-choice modes, updated translations and creation controls, and added regression coverage for old-content preservation and bulk imports.
+- Deployment: apply content migration 0005 before using the new publishing mode. No local web/server was started.
+
+---
+
 ### [v1.4.1] - 2026-10-18 | Flashcard discovery layout and deployment diagnostics
 
 - Moved Flashcard Explore search, filter and refresh controls into navigation; added an apply/reset filter modal and compact responsive deck tiles using shared components.

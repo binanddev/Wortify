@@ -11,8 +11,6 @@ import {
   Page,
   Heading,
   SidebarTools,
-  Link,
-  Icon,
   Field,
   Select,
   Btn,
@@ -97,14 +95,6 @@ export default function FlashcardDiscover({ lang }) {
       <SidebarTools>
         <div className="flash-nav">
           <div className="flash-icon-row">
-            <Link
-              className="btn flash-icon-link"
-              to={`/${lang}/flashcard`}
-              title={tr("My Flashcards")}
-              aria-label={tr("My Flashcards")}
-            >
-              <Icon name="home" />
-            </Link>
             <Btn
               icon="settings"
               aria-pressed={filtered}

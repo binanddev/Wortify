@@ -5326,5 +5326,9 @@
   "This feature is unavailable on the current backend version.": {
     "vi": "Phiên bản backend hiện tại chưa có tính năng này.",
     "de": "Diese Funktion ist in der aktuellen Backend-Version nicht verfügbar."
+  },
+  "Only new content public": {
+    "vi": "Chỉ nội dung mới công khai",
+    "de": "Nur neue Inhalte öffentlich"
   }
 }

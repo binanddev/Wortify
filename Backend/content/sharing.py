@@ -22,7 +22,7 @@ class SharedContentQuerySet(models.QuerySet):
     def bulk_create(self, objs, *args, **kwargs):
         objs = list(objs)
         with sharing_mode(self.db) as mode:
-            if mode == 'public':
+            if mode in ('public', 'new_public'):
                 for obj in objs:
                     obj.visibility = 'public'
             return super().bulk_create(objs, *args, **kwargs)
@@ -36,7 +36,7 @@ class SharedContent(models.Model):
     def save(self, *args, **kwargs):
         using = kwargs.get('using') or self._state.db or 'default'
         with sharing_mode(using) as mode:
-            if mode == 'public':
+            if mode == 'public' or (mode == 'new_public' and self._state.adding):
                 self.visibility = 'public'
                 if kwargs.get('update_fields') is not None:
                     kwargs['update_fields'] = set(kwargs['update_fields']) | {'visibility'}

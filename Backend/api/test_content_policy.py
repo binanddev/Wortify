@@ -63,3 +63,30 @@ class ContentPolicyTests(TestCase):
         self.assertEqual(Deck.objects.get(pk=pk).visibility,'public')
         rows=self.client.get('/api/de/decks/').json()['decks']
         self.assertEqual(next(row for row in rows if row['id']==pk)['visibility'],'public')
+
+    def test_new_public_preserves_existing_and_publishes_creates(self):
+        self.client.force_login(self.staff)
+        result=self.change('new_public')
+        self.assertEqual(result.status_code,200,result.content)
+        self.assertEqual(result.json()['changed'],{})
+        for item in [self.deck,self.practice,self.reading]:
+            item.refresh_from_db();self.assertEqual(item.visibility,'private')
+            item.title='Edited old content';item.save()
+            item.refresh_from_db();self.assertEqual(item.visibility,'private')
+            type(item).objects.filter(pk=item.pk).update(title='Bulk edit')
+            item.refresh_from_db();self.assertEqual(item.visibility,'private')
+        deck=Deck.objects.create(owner=self.user,language='de',title='New deck')
+        practice=PracticeNode.objects.create(owner=self.user,language='de',kind='folder',title='New practice')
+        reading=ReadingLesson.objects.create(owner=self.user,language='de',title='New reading')
+        for item in [deck,practice,reading]: self.assertEqual(item.visibility,'public')
+        imported=Deck(owner=self.user,language='de',title='Bulk import')
+        Deck.objects.bulk_create([imported])
+        imported.refresh_from_db();self.assertEqual(imported.visibility,'public')
+        self.change('choice')
+        private=Deck.objects.create(owner=self.user,language='de',title='Private again')
+        self.assertEqual(private.visibility,'private')
+
+    def test_new_public_does_not_revert_previously_public_content(self):
+        self.client.force_login(self.staff)
+        self.change('public');self.change('new_public')
+        self.deck.refresh_from_db();self.assertEqual(self.deck.visibility,'public')

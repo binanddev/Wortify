@@ -18,7 +18,7 @@ Tạo file không cần đăng nhập. Chỉ nhập/xuất bản khi người d�
 
 ## Chế độ công khai
 
-Staff và superuser chọn chính sách chung trong Manage → Chế độ công khai. “Tất cả công khai” chuyển cả nội dung học hiện có sang công khai và áp dụng cho tạo/sửa/import sau đó. “Cho phép chọn công khai / riêng tư” cho phép người dùng tự đặt quyền; không tự đổi các nội dung đã công khai về riêng tư. Chính sách không công khai tài khoản, thông tin đăng nhập hay tiến độ học. Import của staff vẫn xuất bản dưới tên Wortify.
+Staff và superuser chọn chính sách chung trong Manage → Chế độ công khai. “Tất cả công khai” chuyển cả nội dung học hiện có sang công khai và áp dụng cho tạo/sửa/import sau đó. “Chỉ nội dung mới công khai” áp dụng khi tạo hoặc import nội dung mới; không đổi quyền của nội dung đã có, kể cả khi sửa nội dung cũ. “Cho phép chọn công khai / riêng tư” cho phép người dùng tự đặt quyền; không tự đổi các nội dung đã công khai về riêng tư. Chính sách không công khai tài khoản, thông tin đăng nhập hay tiến độ học. Import của staff vẫn xuất bản dưới tên Wortify.
 
 ## Mặc định biên soạn
 
