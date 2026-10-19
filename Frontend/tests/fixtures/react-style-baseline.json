@@ -497,11 +497,11 @@
   },
   "background": {
     "count": 921,
-    "sha256": "8bfebfc36a448239fc31cc6a6ec2b226cb9af941bdb000e1f5be2369930cc5c3"
+    "sha256": "b709a2b0f8500219431450bef18fd2aaf52989dbdcf4a108d080075d8327f183"
   },
   "border": {
     "count": 1504,
-    "sha256": "f023c9d912710bc1a633300bf73ab21f7cc7ad857ab6a117cedb883d095ec356"
+    "sha256": "7bf6527c5498e268234324a4815742deefc36a268acf4e17853d690bbde5d259"
   },
   "box": {
     "count": 337,
@@ -536,8 +536,8 @@
     "sha256": "4145850a721251ef2293d2a2583551b15935c95a296fc3087a9e2f2bfb87b734"
   },
   "display": {
-    "count": 637,
-    "sha256": "9bfae4d3fca955906ccd0f2b0eb41d5f9b6f4dd2bd0cb524608e896b230257b1"
+    "count": 638,
+    "sha256": "8b49a410549a2524b917f5e94e8209718e12989d48630ee5a7e91a7d0f8a5e3e"
   },
   "fill": {
     "count": 1,
@@ -560,12 +560,12 @@
     "sha256": "2a56317425d8573a61cc76e19841a2eb11ce53b5e8ac9b87faab5dbce09dab32"
   },
   "gap": {
-    "count": 447,
-    "sha256": "65269c674c4727ffd3c1848a205b2b4d3c1d5ca17e0b5ac5e3b4cdb24b7f458f"
+    "count": 448,
+    "sha256": "d2702132b4ce8a0688da80ca864dccd3b47b6e97367a61ef86b597709a5a5560"
   },
   "grid": {
-    "count": 147,
-    "sha256": "ac02b4f31bd4bdb2d66c0114c5f12e252f7823549037c0282ff8efa260847559"
+    "count": 148,
+    "sha256": "f917699371755c57329a5582da0b7322fcb485543bc7bd84a9160f1c47bf1075"
   },
   "height": {
     "count": 203,
@@ -640,8 +640,8 @@
     "sha256": "cff97eb6d9c93da16460cde5b61a59b9da45d435d7d3e4e0838574818df2901e"
   },
   "min": {
-    "count": 310,
-    "sha256": "56b517fcc9a550a2ad2ec9fd17e68cca53238de65b05562ab9bb6aad0d7056ce"
+    "count": 311,
+    "sha256": "ba1d30e20d8a321d5363b82d67cb22c0949dbc031a9b7fa2578ded59c7c1f2d5"
   },
   "object": {
     "count": 4,
@@ -672,8 +672,8 @@
     "sha256": "266a2f1bf68950fc7123bb53a7620940ab01e37b8a81c74dae526847d7858190"
   },
   "padding": {
-    "count": 650,
-    "sha256": "c6bbf5fbad9d3b78e5bf47a5b4b131f809c1114b170ac5c3a3c75bcab0ed8145"
+    "count": 651,
+    "sha256": "4491528219e8ae9983ef0563847cc8a8ddbaac3fdefb3211d6c673f57e09bd8b"
   },
   "perspective": {
     "count": 3,
@@ -768,12 +768,12 @@
     "sha256": "44305f4ab4ce898c0ed72acab4276858d88f47ba3ce245d5aa6ef39d4c7073e5"
   },
   "white": {
-    "count": 59,
-    "sha256": "c4e70935e0a8fb7364d7240bba5f742a600f632e0d5f8d990cc3d31248a26882"
+    "count": 60,
+    "sha256": "45fe8748e857f8a84d3e4d2a64d9312ed13dd0c1d19682c80b52e5436c97ff8f"
   },
   "width": {
-    "count": 268,
-    "sha256": "a7d1607e811e6c7c62536db528f456ec4a8bda66056ee117b344e5a025cd3835"
+    "count": 269,
+    "sha256": "691eff944ee4614aaaf46a42de3ebf3207099ab1cc5774944324a6fa6f9ce748"
   },
   "word": {
     "count": 3,

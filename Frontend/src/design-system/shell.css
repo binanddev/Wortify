@@ -55,8 +55,14 @@
 .account {
   @apply [border-top:1px_solid_var(--line)] pt-[18px] mt-[17px] flex items-center gap-[3px];
 }
-.account .btn {
+.account:not(.guest-account) .btn {
   @apply min-w-[32px] w-[32px] [padding:0] [background:transparent] [border:0];
+}
+.account.guest-account {
+  @apply grid grid-cols-1 gap-2;
+}
+.guest-account .btn {
+  @apply w-full min-h-11 whitespace-nowrap px-4;
 }
 .account-name {
   @apply flex items-center gap-[9px] [min-width:0] flex-1 text-[12px] wrap-anywhere;

@@ -1,5 +1,13 @@
 # Change Log
 
+### [v1.5.2] - 2026-10-19 | Guest account buttons
+
+- Fixed guest registration and sign-in buttons inheriting the 32px logout icon sizing.
+- Reused the shared HeroUI button component with full-width stacked actions, a primary registration button and bordered sign-in button. Theme styling remains shared.
+- No local web/server was started.
+
+---
+
 ### [v1.5.1] - 2026-10-19 | Shared workspace for guests
 
 - Removed the separate guest page and header. Guests now use the existing workspace shell, navigation, themes, Explore and Reading components.

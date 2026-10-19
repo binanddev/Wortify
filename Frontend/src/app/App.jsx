@@ -656,8 +656,11 @@ function Workspace({ user, setUser, lang, parts, route, appearance, onRequireAcc
                       to={`/${lang}/settings`}
                     >
                       <Icon name="settings" />{tr("Study settings")}</Link>
-                    <div className="account">
-                      {user.guest ? <><Btn onClick={()=>navigate("/login")}>{tr("Sign in")}</Btn><Btn primary onClick={()=>navigate("/register")}>{tr("Create account")}</Btn></> : <>
+                    <div className={user.guest ? "account guest-account" : "account"}>
+                      {user.guest ? <>
+                        <Btn primary fullWidth onClick={()=>navigate("/register")}>{tr("Create account")}</Btn>
+                        <Btn fullWidth variant="bordered" onClick={()=>navigate("/login")}>{tr("Sign in")}</Btn>
+                      </> : <>
                       <Link to={`/${lang}/profile`} className="account-name">
                         <span className="avatar">
                           {user.username[0].toUpperCase()}
