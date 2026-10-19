@@ -53,7 +53,8 @@ class FlashcardDiscoveryTests(TestCase):
 
     def test_deployment_api_routes_are_present_without_authentication(self):
         self.client.logout()
-        for path in ['/api/de/flashcard/discover/','/api/manage/import-api/']:
+        self.assertEqual(self.client.get('/api/de/flashcard/discover/').status_code,200)
+        for path in ['/api/manage/import-api/']:
             self.assertEqual(self.client.get(path).status_code,401,path)
         self.assertEqual(self.client.get('/api/import/openapi/').status_code,200)
         from unittest.mock import patch

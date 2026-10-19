@@ -1,3 +1,4 @@
+from .common import public_endpoint
 from django.db import transaction
 from django.db.models import Q, Count
 from django.forms.models import model_to_dict
@@ -8,7 +9,7 @@ from django.views.decorators.http import require_GET,require_POST
 from cards.models import Deck,Card
 from .common import endpoint
 
-@endpoint
+@public_endpoint
 @require_GET
 def discover(request):
     qs=Deck.objects.filter(language=request.language,visibility='public',owner__is_active=True).select_related('owner').annotate(count=Count('cards'))
@@ -17,7 +18,7 @@ def discover(request):
     if request.GET.get('level'):qs=qs.filter(level=request.GET['level'])
     if request.GET.get('topic'):qs=qs.filter(topic__icontains=request.GET['topic'][:100])
     total=qs.count();pages=max(1,(total+23)//24);page=min(pages,max(1,int(request.GET.get('page',1))))
-    saved=dict(Deck.objects.filter(owner=request.user,archived=False,source_deck__isnull=False).values_list('source_deck_id','id'))
+    saved=dict(Deck.objects.filter(owner=request.user,archived=False,source_deck__isnull=False).values_list('source_deck_id','id')) if request.user.is_authenticated else {}
     rows=[dict(id=d.pk,title=d.title,level=d.level,topic=d.topic,count=d.count,author='Wortify' if d.owner.is_staff else d.owner.get_username(),saved_id=d.pk if d.owner_id==request.user.pk and not d.archived else saved.get(d.pk)) for d in qs.order_by('-updated_at','-pk')[(page-1)*24:page*24]]
     return JsonResponse({'results':rows,'page':page,'pages':pages,'total':total})
 
@@ -37,9 +38,11 @@ def copy(request,pk):
     return JsonResponse({'id':deck.pk},status=201)
 
 
-@endpoint
+@public_endpoint
 @require_GET
 def detail(request,pk):
     deck=get_object_or_404(Deck,pk=pk,language=request.language,visibility='public',owner__is_active=True)
-    cards=list(deck.cards.order_by('position','pk').values('german_text','vietnamese_meaning','example_german','example_vietnamese')[:10])
-    return JsonResponse({'id':deck.pk,'description':deck.description,'cards':cards,'count':deck.cards.count()})
+    page=max(1,int(request.GET.get('page','1')))
+    size=30 if request.GET.get('study')=='true' else 10
+    cards=list(deck.cards.order_by('position','pk').values('german_text','vietnamese_meaning','example_german','example_vietnamese')[(page-1)*size:page*size])
+    return JsonResponse({'id':deck.pk,'title':deck.title,'page':page,'page_size':size,'description':deck.description,'cards':cards,'count':deck.cards.count()})

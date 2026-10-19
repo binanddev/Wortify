@@ -190,7 +190,7 @@ class ExploreTests(TestCase):
         self.assertEqual(self.search(mode='unknown').status_code,400)
         self.assertEqual(self.search(page='invalid').status_code,400)
         self.client.logout()
-        self.assertEqual(self.search().status_code,401)
+        self.assertEqual(self.search().status_code,200)
 
 
 class PracticeHubTests(TestCase):

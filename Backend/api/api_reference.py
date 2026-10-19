@@ -64,10 +64,11 @@ EXAMPLES = {
 }
 
 NOTES = {
+    'api.practice_hub.public_detail': 'Anonymous read-only public exercise/theory/folder; only public children and active owners. No progress or personal data.',
     'api.flashcard_discovery.detail': 'Read-only preview of up to ten cards from an active public deck in the selected language.',
     'api.content_policy.current': 'Authenticated read of publishing mode: choice or public.',
     'api.content_policy.settings': 'Staff/Admin GET or PATCH mode=choice/public/new_public. new_public publishes new content only, preserving existing visibility. Public publishes all existing decks, practice and readings. Choice preserves visibility and restores individual controls.',
-    'api.flashcard_discovery.discover': 'Public decks, q/level/topic filters, page of 24. Includes the owned copy ID when saved.',
+    'api.flashcard_discovery.discover': 'Anonymous GET. Public decks, q/level/topic filters, page of 24. Includes the owned copy ID when saved.',
     'api.flashcard_discovery.copy': 'POST creates an independent owned copy, without learning state. Retrying returns the existing copy.',
 
     'api.reading_discovery.save': 'Authenticated POST {key} saves a private independent reading and copies immutable media ownership records. Repeated source/user/language returns the same reading ID. 201 saved, 200 already saved. Start learning on the returned private ID to persist progress.',

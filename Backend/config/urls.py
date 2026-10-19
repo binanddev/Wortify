@@ -17,7 +17,7 @@ def health(request):
     from django.conf import settings
     identity=hashlib.sha256(str(settings.BASE_DIR).lower().encode()).hexdigest()[:16]
     import os
-    response = JsonResponse({'app':'Wortify','workspace':identity,'version':'1.4.2','revision':os.environ.get('RENDER_GIT_COMMIT',''),'features':['flashcard-discovery','content-import','content-policy']})
+    response = JsonResponse({'app':'Wortify','workspace':identity,'version':'1.5.0','revision':os.environ.get('RENDER_GIT_COMMIT',''),'features':['guest-learning','flashcard-discovery','content-import','content-policy']})
     response['Cache-Control']='no-store'
     return response
 urlpatterns=[path("api/site/content-policy/",content_policy.current),path("api/manage/content-policy/",content_policy.settings),path("api/import/guide/",content_import_docs.guide),path("api/import/openapi/",content_import_docs.openapi),path("api/manage/import-api/",content_import_api.settings),path("api/import/content/",content_import_api.upload),path('api/me/language/',interface_language),path('api/superuser-registration/<slug:setup_key>/',superuser_registration),path('api/health/',health),path('api/session/',session),
@@ -57,7 +57,7 @@ for pattern,view in [
  ('practice-hub/nodes/<int:pk>/copy/',practice_copy.copy_collection),
  ('decks/<int:pk>/notebook/',vocabulary_notebook.notebook),
  ('practice-hub/media/',practice_media.upload),('practice-hub/media/<uuid:pk>/',practice_media.content),
- ('practice-hub/explore/',practice_hub.explore),('practice-hub/nodes/',practice_hub.nodes),('practice-hub/nodes/<int:pk>/',practice_hub.node),('practice-hub/import/',practice_hub.import_nodes),('practice-hub/organize/',practice_hub.organize),
+ ('practice-hub/public/<int:pk>/',practice_hub.public_detail),('practice-hub/explore/',practice_hub.explore),('practice-hub/nodes/',practice_hub.nodes),('practice-hub/nodes/<int:pk>/',practice_hub.node),('practice-hub/import/',practice_hub.import_nodes),('practice-hub/organize/',practice_hub.organize),
  ('learning/sync/',learning_sync.sync),('decks/<int:pk>/learning/',learning_sync.deck_state),
  ('settings/',views.preferences),('decks/',views.decks),('decks/<int:pk>/',views.deck),('study-pack/',views.study_pack),
  ('decks/<int:pk>/reorder/',views.reorder_cards),('decks/<int:pk>/import/',views.import_cards),('decks/<int:deck_id>/cards/',views.card),('decks/<int:deck_id>/cards/<int:pk>/',views.card),('folders/',views.folder),('folders/<int:pk>/',views.folder),

@@ -1,4 +1,5 @@
 """Practice Hub API: folder trees and folder-based practice/theory, automatic grading and batch persistence."""
+from .common import public_endpoint
 from django.db import transaction
 from django.db.models import Q, Prefetch
 from django.http import JsonResponse
@@ -12,6 +13,8 @@ from copy import deepcopy
 import re
 
 def visible(request):
+    if not request.user.is_authenticated:
+        return PracticeNode.objects.filter(language=request.language,visibility='public',owner__is_active=True)
     access=Q(owner=request.user)|Q(visibility='public')
     for prefix in ('parent__'*depth for depth in range(11)):
         access |= Q(**{prefix+'class_assignments__classroom__members':request.user})
@@ -230,7 +233,7 @@ def search_text(value):
     return ''.join(c for c in unicodedata.normalize('NFD', str(value).casefold().replace('đ', 'd')) if unicodedata.category(c) != 'Mn')
 
 
-@endpoint
+@public_endpoint
 @require_http_methods(['GET'])
 def explore(request):
     if request.GET.get('browse')=='1':
@@ -250,7 +253,7 @@ def explore(request):
     alternatives = [terms]
     for vietnamese, english in aliases:
         if search_text(query) in (vietnamese, english): alternatives = [vietnamese.split(), english.split()]
-    qs = PracticeNode.objects.filter(language=request.language, visibility='public').select_related('owner')
+    qs = PracticeNode.objects.filter(language=request.language, visibility='public', owner__is_active=True).select_related('owner')
     if kind: qs = qs.filter(kind=kind)
     results = []
     for node in qs.iterator(chunk_size=200):
@@ -276,3 +279,11 @@ def explore(request):
     pages = max(1, (total + 17) // 18)
     page = min(page, pages)
     return JsonResponse({'results':[item[3] for item in results[(page-1)*18:page*18]], 'total':total, 'page':page, 'pages':pages})
+
+
+@public_endpoint
+@require_http_methods(['GET'])
+def public_detail(request,pk):
+    node=get_object_or_404(PracticeNode,pk=pk,language=request.language,visibility='public',owner__is_active=True)
+    children=list(node.children.filter(visibility='public',owner__is_active=True).values('id','title','kind')) if node.kind=='folder' else []
+    return JsonResponse({'id':node.pk,'title':node.title,'kind':node.kind,'payload':node.payload,'children':children})

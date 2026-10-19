@@ -22,10 +22,10 @@ def body(request):
         raise ValueError('JSON must be an object.')
     return data
 
-def endpoint(view):
+def endpoint(view, *, public=False):
     @wraps(view)
     def wrapped(request, *args, **kwargs):
-        if not request.user.is_authenticated:
+        if not request.user.is_authenticated and not (public and request.method in ('GET','HEAD')):
             return JsonResponse({'error': 'Please sign in.'}, status=401)
         try:
             return view(request, *args, **kwargs)
@@ -34,6 +34,9 @@ def endpoint(view):
         except (ValueError, TypeError, ValidationError) as exc:
             return JsonResponse({'error': '; '.join(exc.messages) if isinstance(exc, ValidationError) else str(exc)}, status=400)
     return wrapped
+
+def public_endpoint(view):
+    return endpoint(view, public=True)
 
 def legacy_json(view):
     @endpoint

@@ -5330,5 +5330,21 @@
   "Only new content public": {
     "vi": "Chỉ nội dung mới công khai",
     "de": "Nur neue Inhalte öffentlich"
+  },
+  "Sign in to continue": {
+    "vi": "Đăng nhập để tiếp tục",
+    "de": "Zum Fortfahren anmelden"
+  },
+  "Save to my library": {
+    "vi": "Lưu vào thư viện của tôi",
+    "de": "In meiner Bibliothek speichern"
+  },
+  "Save progress": {
+    "vi": "Lưu tiến độ",
+    "de": "Fortschritt speichern"
+  },
+  "Open": {
+    "vi": "Mở",
+    "de": "Öffnen"
   }
 }

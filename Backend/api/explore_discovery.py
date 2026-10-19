@@ -41,11 +41,11 @@ def browse(request):
     interests = request.GET.get('interests', '')[:600]
     # Check cheap metadata on every request, including private ancestors. Never
     # reuse visibility/path state solely on a TTL or a public-row count.
-    metadata = tuple(PracticeNode.objects.filter(language=request.language).order_by('pk').values_list('pk','parent_id','visibility','updated_at','owner_id','title','position','owner__username','owner__first_name','owner__last_name','owner__is_staff','owner__is_superuser'))
+    metadata = tuple(PracticeNode.objects.filter(language=request.language,owner__is_active=True).order_by('pk').values_list('pk','parent_id','visibility','updated_at','owner_id','title','position','owner__username','owner__first_name','owner__last_name','owner__is_staff','owner__is_superuser'))
     with _lock:
         cached = _snapshots.get(request.language)
         if cached is None or cached[0] != metadata:
-            all_rows = list(PracticeNode.objects.filter(language=request.language,visibility='public').select_related('owner'))
+            all_rows = list(PracticeNode.objects.filter(language=request.language,visibility='public',owner__is_active=True).select_related('owner'))
             by_id = {n.pk:n for n in all_rows}
             paths = {}
             def path(node):
@@ -67,7 +67,7 @@ def browse(request):
             _snapshots[request.language] = cached
     _,rows,paths,texts,vocabulary,child_counts = cached
     if parent:
-        current = get_object_or_404(PracticeNode, pk=parent, language=request.language, visibility='public', kind='folder')
+        current = get_object_or_404(PracticeNode, pk=parent, language=request.language, visibility='public', owner__is_active=True, kind='folder')
         if not paths.get(current.pk):
             from django.http import Http404
             raise Http404

@@ -1,4 +1,5 @@
 """Public reading catalogue. Private lessons never enter the result set."""
+from .common import public_endpoint
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_GET, require_POST
@@ -22,7 +23,7 @@ def summary(key, title, level, topic, source):
     return dict(key=key, title=title, level=level, topic=topic, source=source)
 
 
-@endpoint
+@public_endpoint
 @require_GET
 def library(request):
     query = request.GET.get('q', '').strip().casefold()[:200]
@@ -41,8 +42,8 @@ def library(request):
         rows.append(summary(f"community:{lesson['id']}", lesson['title'], lesson['level'], lesson['topic'], 'system' if lesson['owner__is_staff'] or lesson['owner__is_superuser'] else 'community'))
     topics = sorted(set(row['topic'] for row in rows if row['topic']), key=str.casefold)
     rows = [r for r in rows if (not query or query in (r['title']+' '+r['topic']).casefold()) and (not level or r['level'] == level) and (not topic or r['topic'].casefold() == topic) and (not source or r['source'] == source)]
-    saved = dict(ReadingLesson.objects.filter(owner=request.user, language=request.language).exclude(source_key='').values_list('source_key','id'))
-    own = set(ReadingLesson.objects.filter(owner=request.user,language=request.language).values_list('id',flat=True))
+    saved = dict(ReadingLesson.objects.filter(owner=request.user, language=request.language).exclude(source_key='').values_list('source_key','id')) if request.user.is_authenticated else {}
+    own = set(ReadingLesson.objects.filter(owner=request.user,language=request.language).values_list('id',flat=True)) if request.user.is_authenticated else set()
     for row in rows:
         row['saved_id'] = saved.get(row['key'])
         if row['key'].startswith('community:') and int(row['key'].split(':')[1]) in own:
@@ -50,7 +51,7 @@ def library(request):
     return JsonResponse({'lessons': rows[(page-1)*24:page*24], 'total': len(rows), 'page': page, 'topics': topics})
 
 
-@endpoint
+@public_endpoint
 @require_GET
 def detail(request):
     key = request.GET.get('key', '')

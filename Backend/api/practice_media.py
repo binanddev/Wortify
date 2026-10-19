@@ -1,4 +1,5 @@
 """Private exercise assets, authorized using the same visibility rules as exercises."""
+from .common import public_endpoint
 import re
 import uuid
 import av
@@ -66,13 +67,13 @@ def upload(request):
         raise
     return JsonResponse({'media':media_data(item)},status=201)
 
-@endpoint
+@public_endpoint
 @require_http_methods(['GET','HEAD'])
 def content(request,pk):
     from .practice_hub import visible
     item=get_object_or_404(PracticeMedia,pk=pk,language=request.language)
     manager = request.user.is_active and (request.user.is_staff or request.user.is_superuser)
-    if item.owner_id!=request.user.pk and not manager and not visible(request).filter(attachments=item).exists() and not item.readings.filter(language=request.language, visibility='public').exists():
+    if item.owner_id!=request.user.pk and not manager and not visible(request).filter(attachments=item).exists() and not item.readings.filter(language=request.language, visibility='public',owner__is_active=True).exists():
         from django.http import Http404
         raise Http404
     start,end=0,item.size-1

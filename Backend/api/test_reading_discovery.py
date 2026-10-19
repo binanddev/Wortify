@@ -80,7 +80,7 @@ class ReadingDiscoveryTests(TestCase):
         self.assertEqual(len(result['lessons']),24)
         self.assertEqual(len(self.client.get(self.catalog+'?page=2').json()['lessons']),1)
         self.client.logout()
-        self.assertEqual(self.client.get(self.catalog).status_code,401)
+        self.assertEqual(self.client.get(self.catalog).status_code,200)
 
     def test_save_personal_copy_progress_and_retry(self):
         self.publish()

@@ -1,12 +1,12 @@
 import { t as tr, useLocale } from "../i18n/index.js";
 import { Link, Status } from "../components/ui/ui.jsx";
 import { request, useAction } from "../lib/core.js";
-export default function Home({ user, setUser, children }) {
+export default function Home({ user, setUser, children, embedded = false }) {
   useLocale();
   const action = useAction();
   return (
     <div id="wortify-home" className="home-simple">
-      <header>
+      {!embedded && <header>
         <Link to="/" className="home-brand">
           wortify<span>.</span>
         </Link>
@@ -20,7 +20,7 @@ export default function Home({ user, setUser, children }) {
             }
           >{tr("Sign out")}</button>
         )}
-      </header>
+      </header>}
       <main>
         {children || (
           <section className="home-choice">

@@ -1,5 +1,15 @@
 # Change Log
 
+### [v1.5.0] - 2026-10-19 | Browse and learn before signing in
+
+- Opened public Flashcard, Practice Hub and Reading catalogues to guests with language navigation, search and public previews. Added public direct-study routes, paginated flashcard study and exercise/reading practice without account progress writes.
+- Added sign-in and registration dialogs at account actions. Requested library saves continue after authentication; retries after a successful registration do not register the account again.
+- Kept private content, account data, editing, imports, progress sync and administration authenticated. Public media access requires an attachment to active public learning content; public folder previews exclude private children.
+- Reused shared study, modal and UI components and added guest route, public/private access, media revocation and write-permission regression coverage.
+- No local web/server was started. Live deployment checks remain pending user confirmation.
+
+---
+
 ### [v1.4.2] - 2026-10-19 | New-content publishing option
 
 - Removed the duplicate My Flashcards icon from Explore navigation; the shared navigation home action remains.

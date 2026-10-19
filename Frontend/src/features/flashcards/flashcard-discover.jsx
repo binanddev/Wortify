@@ -1,3 +1,4 @@
+import PublicDeckStudy from "./public-deck-study.jsx";
 import { useState } from "react";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import {
@@ -63,7 +64,11 @@ function Preview({ lang, deck, onClose, onSave, pending, error }) {
   );
 }
 
-export default function FlashcardDiscover({ lang }) {
+export default function FlashcardDiscover({
+  lang,
+  onRequireAccount,
+  initialDeckId,
+}) {
   useLocale();
   const navigate = useNavigate(),
     action = useAction();
@@ -75,8 +80,15 @@ export default function FlashcardDiscover({ lang }) {
     endpoint(lang, `flashcard/discover/?${new URLSearchParams(filters)}`),
     true,
   );
+  const [studying, setStudying] = useState(
+    initialDeckId ? { id: initialDeckId, title: tr("Flashcard") } : null,
+  );
   const filtered = !!(filters.level || filters.topic);
   function save(deck) {
+    if (onRequireAccount) {
+      onRequireAccount({ kind: "flashcard", id: deck.id });
+      return;
+    }
     action.run(async (signal) => {
       const result = deck.saved_id
         ? { id: deck.saved_id }
@@ -162,6 +174,11 @@ export default function FlashcardDiscover({ lang }) {
                     {deck.topic && ` · ${deck.topic}`}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-auto pt-3">
+                    {onRequireAccount && (
+                      <Btn onClick={() => setStudying(deck)}>
+                        {tr("Study now")}
+                      </Btn>
+                    )}
                     <Btn icon="eye" onClick={() => setOpened(deck)}>
                       {tr("Preview")}
                     </Btn>
@@ -261,6 +278,16 @@ export default function FlashcardDiscover({ lang }) {
           onSave={save}
           pending={action.pending}
           error={action.error}
+        />
+      )}
+      {studying && (
+        <PublicDeckStudy
+          lang={lang}
+          deck={studying}
+          onClose={() => setStudying(null)}
+          onRequireAccount={() =>
+            onRequireAccount({ kind: "flashcard", id: studying.id })
+          }
         />
       )}
     </Page>

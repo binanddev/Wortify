@@ -1,3 +1,5 @@
+import {guestRoute} from "./guest-route.js";
+import GuestWorkspace from "./guest-workspace.jsx";
 import FlashcardDiscover from "../features/flashcards/flashcard-discover.jsx";
 import { t as tr, setLanguage, useLocale } from "../i18n/index.js";
 import { ReadingWorkspace, Explore, ExerciseStudio, PracticeGuide, FlashcardStudio, PracticeHub, Admin } from "./workspace-pages.js";
@@ -73,7 +75,7 @@ export default function App() {
   useLayoutEffect(() => {
     if (!isWorkspace || !user) {
       applyAppearance();
-      document.documentElement.dataset.interface = "home";
+      document.documentElement.dataset.interface = user ? "home" : "studio";
       document.documentElement.style.setProperty("--site-bg-image", "none");
     }
   }, [isWorkspace, user]);
@@ -183,14 +185,27 @@ export default function App() {
         }}
       />
     );
-  if (!user)
-    return !lang && !setupKey ? (
-      <Home>
-        <Login key="normal-login" onLogin={setUser} />
-      </Home>
-    ) : (
-      <Login key="normal-login" onLogin={setUser} />
-    );
+  if (!user) return <GuestWorkspace lang={lang} route={route} renderLogin={(register,intent)=> <Login key={register?"guest-register":"guest-login"} initialRegister={register} compact onLogin={async created=>{
+    const destination=guestRoute(route);
+    try {
+      if(intent?.kind==='flashcard') {
+        const saved=await request(`/api/${destination.lang}/flashcard/discover/${intent.id}/copy/`,'POST',{});
+        navigate(`/${destination.lang}/flashcard/deck/${saved.id}`);
+      } else if(intent?.kind==='practice') {
+        const saved=await request(`/api/${destination.lang}/practice-hub/nodes/${intent.id}/copy/`,'POST',{});
+        navigate(`/${destination.lang}/practice/${saved.id}`);
+      } else if(intent?.kind==='reading') {
+        const saved=await request(`/api/${destination.lang}/reading/discover/save/`,'POST',{key:intent.key});
+        navigate(`/${destination.lang}/reading/${saved.id}`);
+      } else if(destination.id && destination.kind==='flashcard') navigate(`/${destination.lang}/flashcard/discover`);
+      else if(destination.id && destination.kind==='reading') navigate(`/${destination.lang}/reading/discover`);
+      else if(route.startsWith('/login'))navigate('/');
+      setUser(created);
+    } catch(error) {
+      // The session is valid; retain the login form so the user can retry the requested save.
+      throw error;
+    }
+  }}/>}/>;
   if (appearance.key !== appearanceKey)
     return (
       <div className="welcome">
@@ -209,9 +224,9 @@ export default function App() {
     />
   );
 }
-function Login({ onLogin, setupKey }) {
+function Login({ onLogin, setupKey, initialRegister = false, compact = false }) {
   useLocale();
-  const [register, setRegister] = useState(Boolean(setupKey)),
+  const [register, setRegister] = useState(Boolean(setupKey || initialRegister)),
     [values, setValues] = useState({
       username: "",
       password: "",
@@ -219,6 +234,7 @@ function Login({ onLogin, setupKey }) {
       password2: "",
     }),
     action = useAction();
+  const [authenticated,setAuthenticated]=useState(null);
   const [setupState, setSetupState] = useState(setupKey ? "loading" : "ready");
   const [setupError, setSetupError] = useState("");
   const authEndpoint = setupKey
@@ -239,7 +255,7 @@ function Login({ onLogin, setupKey }) {
     return () => controller.abort();
   }, [setupKey, authEndpoint]);
   return (
-    <div className="auth-layout">
+    <div className={compact ? "auth-layout min-h-0! p-0!" : "auth-layout"}>
       <Glass className="auth-card">
         <span className="eyebrow">WORTIFY</span>
         <h2>
@@ -256,6 +272,7 @@ function Login({ onLogin, setupKey }) {
             onSubmit={(e) => {
               e.preventDefault();
               action.run(async (s) => {
+                if(authenticated){await onLogin(authenticated);return;}
                 const d = await request(
                   authEndpoint,
                   "POST",
@@ -269,7 +286,8 @@ function Login({ onLogin, setupKey }) {
                     : { username: values.username, password: values.password },
                   s,
                 );
-                onLogin(d.user);
+                setAuthenticated(d.user);
+                await onLogin(d.user);
               });
             }}
           >
@@ -300,12 +318,12 @@ function Login({ onLogin, setupKey }) {
               className="btn primary full"
               isLoading={action.pending}
             >
-              {register ? tr("Create account") : tr("Sign in")}
+              {authenticated ? tr("Retry") : register ? tr("Create account") : tr("Sign in")}
               <Icon name="arrow" />
             </Btn>
           </form>
         )}
-        {!setupKey && (
+        {!setupKey && !authenticated && (
           <div className="auth-switch">
             {register ? tr("Already have an account?") : tr("No account yet?")}
             <Btn

@@ -181,4 +181,9 @@ Account CSV files contain initial credentials and should stay outside Git.
 
 Sau deploy, `/api/health/` phải trả `version`, `revision` và `features`. `revision` phải khớp commit mới trên GitHub. Kiểm tra cùng đường dẫn qua Netlify: hai phản hồi phải có cùng revision. Nếu khác nhau, kiểm tra `BACKEND_ORIGIN=https://wortify.onrender.com` trên Netlify rồi build/deploy lại frontend (proxy được tạo lúc build).
 
-Khi chưa đăng nhập, `/api/de/flashcard/discover/` và `/api/manage/import-api/` phải trả 401, không phải 404. `/api/import/openapi/` phải trả 200. Không sửa quyền tài khoản để xử lý lỗi route 404.
+Khi chưa đăng nhập, `/api/de/flashcard/discover/` phải trả 200 (danh sách công khai), còn `/api/manage/import-api/` phải trả 401; cả hai không được trả 404. `/api/import/openapi/` phải trả 200. Không sửa quyền tài khoản để xử lý lỗi route 404.
+
+
+### Khách chưa đăng nhập
+
+Khách được đọc catalogue Flashcard, Practice Hub và Reading công khai, xem bài/đính kèm công khai và học thử. Chỉ GET/HEAD của các endpoint public được phép; tạo/sửa/xóa, sao chép vào thư viện cá nhân, đồng bộ tiến độ và quản trị vẫn yêu cầu phiên đăng nhập. Chủ sở hữu bị vô hiệu hóa và tài nguyên riêng tư không được đưa vào các endpoint công khai. Bài tập thử được chấm trong trình duyệt, không tạo bản ghi tiến độ.

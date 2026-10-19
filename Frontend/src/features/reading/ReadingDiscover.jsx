@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import { request, useResource, useNavigate } from "../../lib/core.js";
 import { Btn, Field, Select, Loading, Status, Glass } from "../../components/ui/ui.jsx";
@@ -6,11 +6,19 @@ import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { PracticeActivity } from "../practice/practice-activity.jsx";
 import { previewData } from "../practice/exercise-types.js";
 
-export default function ReadingDiscover({lang, userId}) {
+export default function ReadingDiscover({lang, userId, onRequireAccount, initialReadingId}) {
   useLocale();
   const navigate=useNavigate(), flight=useRef(false);
   const [saved,setSaved]=useState({}),[notice,setNotice]=useState("");
   async function saveReading(item, start=false) {
+    if(onRequireAccount){
+      if(!start){onRequireAccount({kind:'reading',key:item.key});return;}
+      if(flight.current)return;
+      flight.current=true;setBusy(true);setError('');
+      try {setOpened({...await request(`/api/${lang}/reading/discover/open/?key=${encodeURIComponent(item.key)}`),key:item.key});}
+      catch(e){setError(e.message);}finally{flight.current=false;setBusy(false);}
+      return;
+    }
     if(flight.current)return;
     const known=saved[item.key]||item.saved_id;
     if(known){if(start)navigate(`/${lang}/reading/${known}`);return;}
@@ -32,6 +40,13 @@ export default function ReadingDiscover({lang, userId}) {
   const [search,setSearch]=useState("");
   const [filters,setFilters]=useState({q:"",level:"",topic:"",source:"",page:1});
   const [opened,setOpened]=useState(null),[busy,setBusy]=useState(false),[error,setError]=useState("");
+  useEffect(()=>{
+    if(!initialReadingId)return;
+    const controller=new AbortController();
+    const key=`community:${initialReadingId}`;
+    request(`/api/${lang}/reading/discover/open/?key=${key}`,'GET',undefined,controller.signal).then(data=>setOpened({...data,key})).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
+    return ()=>controller.abort();
+  },[initialReadingId,lang]);
   const resource=useResource(`/api/${lang}/reading/discover/?${new URLSearchParams(filters)}`);
   const change=(key,value)=>setFilters(f=>({...f,[key]:value,page:1}));
   return <section className="space-y-4">
@@ -57,8 +72,7 @@ export default function ReadingDiscover({lang, userId}) {
       {data.total>24 && <div className="flex items-center gap-3"><Btn isDisabled={filters.page===1} onClick={()=>setFilters(f=>({...f,page:f.page-1}))}>{tr("Previous")}</Btn><span>{filters.page} / {Math.ceil(data.total/24)}</span><Btn isDisabled={filters.page*24>=data.total} onClick={()=>setFilters(f=>({...f,page:f.page+1}))}>{tr("Next")}</Btn></div>}
     </>}</Loading><Status error={error}/>{notice&&<p role="status">{tr(notice)}</p>}
     {opened && <PracticeModal title={opened.title} onClose={()=>setOpened(null)} size="5xl">
-      {actions(opened)}
-      <p className="text-sm text-(--muted)">{tr("This is a preview. Study now saves a personal copy and your progress.")}</p>
+      {onRequireAccount?<Btn primary onClick={()=>onRequireAccount({kind:"reading",key:opened.key})}>{tr("Save to My readings")}</Btn>:actions(opened)}
       <PracticeActivity key={opened.key} preview data={previewData(opened.payload)} id={`discover-${opened.key}`} userId={userId} lang={lang}/>
     </PracticeModal>}
   </section>;
