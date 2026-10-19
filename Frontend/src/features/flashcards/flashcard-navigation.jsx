@@ -105,9 +105,9 @@ function FolderBranch({ f, folders, decks, lang, selected, onSelect, depth }) {
     </div>
   );
 }
-export default function FlashcardNavigation({ lang, route }) {
+export default function FlashcardNavigation({ lang, route, guest = false }) {
   useLocale();
-  const resource = useResource(endpoint(lang, "decks/"));
+  const resource = useResource(guest ? null : endpoint(lang, "decks/"));
   const { data } = resource;
   const lastRoute = useRef(route);
   useEffect(() => {

@@ -34,12 +34,12 @@ import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { PracticeActivity } from "../practice/practice-activity.jsx";
 import { TheoryActivity } from "../practice/practice-theory.jsx";
 
-function ExplorePreview({ lang, node, onClose }) {
+function ExplorePreview({ lang, node, onClose, guest }) {
   useLocale();
   const resource = useResource(
-    endpoint(lang, `practice-hub/nodes/${node.id}/`),
+    endpoint(lang, `practice-hub/${guest ? "public" : "nodes"}/${node.id}/`),
   );
-  const content = resource.data?.node;
+  const content = guest ? resource.data : resource.data?.node;
   return (
     <PracticeModal title={node.title} onClose={onClose}>
       <Status error={resource.error} />
@@ -74,7 +74,7 @@ function ExplorePreview({ lang, node, onClose }) {
   );
 }
 
-export function Explore({ lang, userId }) {
+export function Explore({ lang, userId, onRequireAccount }) {
   useLocale();
   const route = useRoute();
   return (
@@ -82,10 +82,11 @@ export function Explore({ lang, userId }) {
       key={`${userId}:${lang}:${route}`}
       lang={lang}
       userId={userId}
+      onRequireAccount={onRequireAccount}
     />
   );
 }
-function ExploreContent({ lang, userId }) {
+function ExploreContent({ lang, userId, onRequireAccount }) {
   useLocale();
   const navigate = useNavigate();
   const routes = practiceRoutes(lang);
@@ -279,6 +280,7 @@ function ExploreContent({ lang, userId }) {
   };
   const isPinned = (node) => pinned.includes(node.root_id || node.id);
   const toggle = async (node) => {
+    if(onRequireAccount){onRequireAccount();return;}
     if (!node.can_edit) {
       if (copying) return;
       if (copied[node.id]) {
@@ -742,6 +744,7 @@ function ExploreContent({ lang, userId }) {
       )}
       {preview && (
         <ExplorePreview
+          guest={!!onRequireAccount}
           key={preview.id}
           lang={lang}
           node={preview}

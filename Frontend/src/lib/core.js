@@ -12,6 +12,7 @@ export function useResource(path, keepDataOnReload = false) {
   const [state, set] = useState({ data: null, error: "", loading: true });
   const [version, bump] = useState(0);
   useEffect(() => {
+    if (!path) { set({data:null,error:"",loading:false}); return; }
     const c = new AbortController();
     set((prev) =>
       keepDataOnReload && prev.path === path && prev.data

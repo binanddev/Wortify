@@ -1,5 +1,14 @@
 # Change Log
 
+### [v1.5.1] - 2026-10-19 | Shared workspace for guests
+
+- Removed the separate guest page and header. Guests now use the existing workspace shell, navigation, themes, Explore and Reading components.
+- Account actions open a compact modal with registration and sign-in buttons. Registration and sign-in use the existing authentication page.
+- Skip personal navigation queries, background requests and learning sync for guests; public learning remains available and private actions stay protected.
+- Validation: 126 frontend tests passed and production build passed. No local server was started; live deployment checks remain pending user confirmation.
+
+---
+
 ### [v1.5.0] - 2026-10-19 | Browse and learn before signing in
 
 - Opened public Flashcard, Practice Hub and Reading catalogues to guests with language navigation, search and public previews. Added public direct-study routes, paginated flashcard study and exercise/reading practice without account progress writes.

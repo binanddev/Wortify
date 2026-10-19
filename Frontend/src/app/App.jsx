@@ -1,5 +1,6 @@
 import {guestRoute} from "./guest-route.js";
-import GuestWorkspace from "./guest-workspace.jsx";
+import { PublicPracticeLesson } from "./public-practice-lesson.jsx";
+import { PracticeModal } from "../features/practice/practice-workspace.jsx";
 import FlashcardDiscover from "../features/flashcards/flashcard-discover.jsx";
 import { t as tr, setLanguage, useLocale } from "../i18n/index.js";
 import { ReadingWorkspace, Explore, ExerciseStudio, PracticeGuide, FlashcardStudio, PracticeHub, Admin } from "./workspace-pages.js";
@@ -63,6 +64,8 @@ export default function App() {
     [user, setUser] = useState(undefined),
     [appearance, setAppearance] = useState({ background_url: "" }),
     [error, setError] = useState("");
+  const [accountPrompt,setAccountPrompt]=useState(false);
+  const requireAccount=()=>setAccountPrompt(true);
   useLayoutEffect(() => {
     if (user) setLanguage(user.preferences?.uiLanguage || "en");
   }, [user?.id, user?.preferences?.uiLanguage]);
@@ -73,9 +76,9 @@ export default function App() {
   }, []);
   const isWorkspace = /^\/(en|de|manage)(\/|\?|$)/.test(route);
   useLayoutEffect(() => {
-    if (!isWorkspace || !user) {
+    if (!isWorkspace) {
       applyAppearance();
-      document.documentElement.dataset.interface = user ? "home" : "studio";
+      document.documentElement.dataset.interface = "home";
       document.documentElement.style.setProperty("--site-bg-image", "none");
     }
   }, [isWorkspace, user]);
@@ -185,27 +188,17 @@ export default function App() {
         }}
       />
     );
-  if (!user) return <GuestWorkspace lang={lang} route={route} renderLogin={(register,intent)=> <Login key={register?"guest-register":"guest-login"} initialRegister={register} compact onLogin={async created=>{
-    const destination=guestRoute(route);
-    try {
-      if(intent?.kind==='flashcard') {
-        const saved=await request(`/api/${destination.lang}/flashcard/discover/${intent.id}/copy/`,'POST',{});
-        navigate(`/${destination.lang}/flashcard/deck/${saved.id}`);
-      } else if(intent?.kind==='practice') {
-        const saved=await request(`/api/${destination.lang}/practice-hub/nodes/${intent.id}/copy/`,'POST',{});
-        navigate(`/${destination.lang}/practice/${saved.id}`);
-      } else if(intent?.kind==='reading') {
-        const saved=await request(`/api/${destination.lang}/reading/discover/save/`,'POST',{key:intent.key});
-        navigate(`/${destination.lang}/reading/${saved.id}`);
-      } else if(destination.id && destination.kind==='flashcard') navigate(`/${destination.lang}/flashcard/discover`);
-      else if(destination.id && destination.kind==='reading') navigate(`/${destination.lang}/reading/discover`);
-      else if(route.startsWith('/login'))navigate('/');
-      setUser(created);
-    } catch(error) {
-      // The session is valid; retain the login form so the user can retry the requested save.
-      throw error;
-    }
-  }}/>}/>;
+  if (!user && /^\/(login|register)(?:\?|$)/.test(route)) return <Login key={route.split('?')[0]} initialRegister={route.startsWith('/register')} onLogin={created=>{setUser(created);setAccountPrompt(false);navigate(`/${activeLanguage}/flashcard/discover`);}}/>;
+  if (!user) {
+    if (!lang && parts[0] !== 'manage') return <Home />;
+    const guestLang=lang || 'de';
+    const guest={id:null,username:tr('Guest'),guest:true,preferences:{}};
+    return <><Workspace key={`guest:${guestLang}`} user={guest} setUser={setUser} lang={guestLang} parts={parts} route={route} appearance={{data:{}}} onRequireAccount={requireAccount}/>
+      {accountPrompt && <PracticeModal title={tr('Sign in to continue')} onClose={()=>setAccountPrompt(false)}>
+        <div className="flex gap-3"><Btn primary onClick={()=>{setAccountPrompt(false);navigate('/register');}}>{tr('Create account')}</Btn><Btn onClick={()=>{setAccountPrompt(false);navigate('/login');}}>{tr('Sign in')}</Btn></div>
+      </PracticeModal>}
+    </>;
+  }
   if (appearance.key !== appearanceKey)
     return (
       <div className="welcome">
@@ -356,7 +349,7 @@ function Brand() {
     </Link>
   );
 }
-function Workspace({ user, setUser, lang, parts, route, appearance }) {
+function Workspace({ user, setUser, lang, parts, route, appearance, onRequireAccount }) {
   useLocale();
   const sync = useLearningSync(user.id, lang);
   const prefKey = `wortify:${user.id}:appearance`,
@@ -459,6 +452,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       `wortify:${user.id}:${user.appearance_session}:${lang}:live-display`,
       v,
     );
+    if(user.guest) return;
     setUser((u) => ({ ...u, preferences: v }));
     sync.enqueue(
       "preferences",
@@ -491,10 +485,18 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
       window.dispatchEvent(new PopStateEvent("popstate"));
     }
   }, [legacyDestination]);
+  useEffect(()=>{if(user.guest && guestRoute(route).needsAccount) onRequireAccount();},[route,user.guest]);
   const contextItems = getContextItems(lang, section, parts);
   return (
     <div
       className="app-shell"
+      onClickCapture={event=>{
+        if(!user.guest)return;
+        const link=event.target.closest('a[href]');
+        if(!link)return;
+        const url=new URL(link.href,location.origin);
+        if(url.origin===location.origin && guestRoute(url.pathname+url.search).needsAccount){event.preventDefault();event.stopPropagation();onRequireAccount();}
+      }}
       style={{
         "--nav-width": `${navWidth}px`,
 
@@ -523,13 +525,14 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                 <FlashcardNavigation
                   lang={lang}
                   userId={user.id}
+                  guest={user.guest}
                   route={windowRoute}
                 />
               ) : null
             }
             renderContent={(windowRoute) => (
               <WorkspaceContent
-                {...{ lang, user, prefs, setPrefs, appearance }}
+                {...{ lang, user, prefs, setPrefs, appearance, onRequireAccount }}
                 route={windowRoute}
               />
             )}
@@ -654,6 +657,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                     >
                       <Icon name="settings" />{tr("Study settings")}</Link>
                     <div className="account">
+                      {user.guest ? <><Btn onClick={()=>navigate("/login")}>{tr("Sign in")}</Btn><Btn primary onClick={()=>navigate("/register")}>{tr("Create account")}</Btn></> : <>
                       <Link to={`/${lang}/profile`} className="account-name">
                         <span className="avatar">
                           {user.username[0].toUpperCase()}
@@ -682,7 +686,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                       >
                         <Icon name="logout" size={18} />
                       </Btn>
-                    </div>
+                    </>} </div>
                     <Status error={action.error || sync.error} />
                   </div>
                   </>}
@@ -710,6 +714,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
                       key={`${user.id}:${lang}`}
                       lang={lang}
                       userId={user.id}
+                      guest={user.guest}
                       route={route}
                     />
                   )}
@@ -740,7 +745,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance }) {
           )}
           <main id="main-content" tabIndex={-1}>
             <WorkspaceContent
-              {...{ route, lang, user, prefs, setPrefs, appearance }}
+              {...{ route, lang, user, prefs, setPrefs, appearance, onRequireAccount }}
             />
           </main>
         </div>
@@ -789,12 +794,18 @@ function getContextItems(lang, section, parts) {
   };
 }
 
-function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance }) {
+function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance, onRequireAccount }) {
   useLocale();
   const parts = route.split("?")[0].split("/").filter(Boolean);
   const section = parts[0] === "manage" ? "admin" : parts[1] || "flashcard";
   const legacyDestination = legacyPracticeDestination(lang, section, parts[2]);
   let content;
+  if(user.guest) {
+    const destination=guestRoute(route);
+    if(section==='reading') return <Suspense fallback={<Status>{tr("Loading workspace…")}</Status>}><ReadingWorkspace key={route} route={`/${lang}/reading/discover`} lang={lang} initialReadingId={destination.id} onRequireAccount={onRequireAccount}/></Suspense>;
+    if(practiceArea(section) && !destination.needsAccount) return <Suspense fallback={<Status>{tr('Loading workspace…')}</Status>}><PracticeArea lang={lang} section={section}><Explore lang={lang} userId={null} onRequireAccount={onRequireAccount}/>{destination.id && <PublicPracticeLesson lang={lang} id={destination.id} onClose={()=>navigate(`/${lang}/explore`)} onOpen={id=>navigate(`/${lang}/practice/${id}`)} onRequireAccount={onRequireAccount}/>}</PracticeArea></Suspense>;
+    return <FlashcardDiscover key={route} lang={lang} initialDeckId={destination.kind==='flashcard'?destination.id:undefined} onRequireAccount={onRequireAccount}/>;
+  }
   if (section === "flashcard") {
     content =
       parts[2] === "discover" ? <FlashcardDiscover lang={lang}/> : parts[2] === "deck" ? (

@@ -5346,5 +5346,9 @@
   "Open": {
     "vi": "Mở",
     "de": "Öffnen"
+  },
+  "Guest": {
+    "vi": "Khách",
+    "de": "Gast"
   }
 }

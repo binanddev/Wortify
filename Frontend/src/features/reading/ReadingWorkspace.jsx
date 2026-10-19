@@ -28,10 +28,10 @@ Images must be real URLs supplied by the author; do not invent image URLs. Image
 COMPLETE EXAMPLE
 ${textTemplate("reading")}`;
 
-export default function ReadingWorkspace({ lang, route, userId, sound }) {
+export default function ReadingWorkspace({ lang, route, userId, sound, onRequireAccount, initialReadingId }) {
   useLocale();
   const nav = useNavigate(), parts = route.split("?")[0].split("/").filter(Boolean);
-  const discovering = parts[2] === "discover";
+  const discovering = !!onRequireAccount || parts[2] === "discover";
   const creating = parts[2] === "create", id = creating || discovering ? null : parts[2], editing = parts[3] === "edit", authoring = creating || editing;
   const passageOnly = parts[3] === "passage";
   const fileInput = useRef(null);
@@ -110,7 +110,7 @@ export default function ReadingWorkspace({ lang, route, userId, sound }) {
   </nav></SidebarTools>
   <h1>{discovering ? tr("Explore") : authoring ? editing ? tr("Edit reading") : tr("Create reading") : lesson?.title || tr("Reading")}</h1>
   {message && <p role="status">{message}</p>}
-  {discovering ? <ReadingDiscover lang={lang} userId={userId}/> : authoring ? <div className="reading-author">
+  {discovering ? <ReadingDiscover lang={lang} userId={userId} onRequireAccount={onRequireAccount} initialReadingId={initialReadingId}/> : authoring ? <div className="reading-author">
     <input ref={fileInput} type="file" hidden aria-label={tr("Import reading text file")} accept=".txt,text/plain" disabled={busy} onChange={e=>{const file=e.target.files[0];e.target.value="";if(!file)return;act(async()=>{if(file.size>2000000)throw new Error("Use a file smaller than 2 MB.");setText(await file.text());setDraft(null);setPreview(false);});}}/>
     {!preview && <textarea className="reading-source-editor" aria-label={tr("Reading and questions")} spellCheck={false} rows={22} value={text} placeholder={tr("Paste your reading here…")} onChange={e=>{setText(e.target.value);setDraft(null);}}/>}
     {preview && draft?.map((node,i)=><section key={i}><h2>{node.title}</h2><PracticeActivity preview id={`reading-preview-${i}`} userId={userId} lang={lang} data={previewData(node.payload)}/></section>)}

@@ -6,6 +6,7 @@ export function useThemeBackground(theme, userId) {
  useEffect(()=>{
   const controller=new AbortController(),root=document.documentElement;
   root.dataset.hasBackground='false';root.style.setProperty('--site-bg-image','none');
+  if(!userId)return;
   request(`/api/me/backgrounds/?interface=${theme}`,'GET',undefined,controller.signal).then(data=>{
    if(controller.signal.aborted)return;
    const url=data.images.find(image=>image.id===data.selected)?.url;

@@ -138,6 +138,7 @@ export async function flushLearning(user, lang) {
 export function useLearningSync(user, lang) {
   const [queue, setQueue] = useState(() => pendingLearning(user, lang));
   useEffect(() => {
+    if(!user)return;
     const refresh = () => setQueue(pendingLearning(user, lang));
     const flush = () => flushLearning(user, lang);
     const hidden = () => {
