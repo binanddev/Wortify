@@ -39,6 +39,8 @@ export function makeQuestion(
   answerWith = "term",
   random = Math.random,
 ) {
+  if (isExample(card)) answerWith = card.exampleDirection === "back" ? "term" : "definition";
+  cards = cards.filter(c=>isExample(c)===isExample(card));
   const selectedAnswerWith =
       answerWith === "random"
         ? random() < 0.5
@@ -126,7 +128,13 @@ export function advanceProgress(previous, correct, type, turn, goal) {
   p.due = turn + (correct ? Math.min(8, p.streak * 2 + 1) : 1);
   return p;
 }
-export function nextLearningCard(cards, progress, turn, lastId) {
+export function nextLearningCard(cards, progress, turn, lastId, options = {}) {
+  if(options.includeExamples && options.exampleOrder !== 'mixed') {
+    const example=cards.find(c=>isExample(c) && c.sourceCardId === lastId);
+    if(example)return example;
+    cards=cards.filter(c=>!isExample(c));
+  }
+
   return [...cards].sort((a, b) => {
     const priority = (c) => {
       const p = progress[c.id] || {};
@@ -146,11 +154,32 @@ export function createTest(
   types,
   answerWith,
   random = Math.random,
+  options,
 ) {
   if (!types.length) throw new Error("Choose at least one question type.");
-  return mix(cards, random)
-    .slice(0, Math.min(cards.length, Math.max(1, count)))
+  const queue = options ? studyCards(cards, options, random) : mix(cards, random);
+  return queue
+    .slice(0, Math.max(1, count))
     .map((c, i) =>
-      makeQuestion(c, types[i % types.length], cards, answerWith, random),
+      makeQuestion(c, types[i % types.length], queue, answerWith, random),
     );
+}
+
+// Example items exist only in the study queue; sourceCardId always points to a real term.
+export const sourceCardId = card => card.sourceCardId ?? card.id;
+export const isExample = card => card.sourceCardId != null;
+export function studyCards(cards, options = {}, random = Math.random) {
+  const terms = options.shuffle ? mix(cards, random) : [...cards];
+  if (!options.includeExamples) return terms;
+  const result = terms.flatMap(card => {
+    if (!card.example_german?.trim() || !card.example_vietnamese?.trim()) return [card];
+    return [card, {...card, id:`example:${card.id}`, sourceCardId:card.id,
+      german_text:card.example_german, vietnamese_meaning:card.example_vietnamese,
+      example_german:'', example_vietnamese:'', accepted_answers:[],
+      exampleDirection:options.exampleDirection || 'front'}];
+  });
+  return options.exampleOrder === 'mixed' ? mix(result, random) : result;
+}
+export function termProgress(progress) {
+  return Object.fromEntries(Object.entries(progress).filter(([id])=>!id.startsWith('example:')));
 }

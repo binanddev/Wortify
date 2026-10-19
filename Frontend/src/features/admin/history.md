@@ -1,5 +1,15 @@
 # Change Log
 
+### [v1.6.0] - 2026-10-19 | Study example sentences
+
+- Added optional example-sentence study to Cards, Learn and Test using each term's existing sentence and translation. These are temporary study items, not new flashcards.
+- Added sentence ordering (after its term or mixed) and independent sentence/translation first-side settings. Incomplete sentence pairs are skipped; sentence answers do not persist learning progress or change term mastery.
+- Quick editing and starring sentence items target their original term. Removed the duplicate home button from deck navigation.
+- Removed the Vocabulary Notebook study mode, entry points, API and dedicated implementation. The Notebook visual theme and compatibility with older backups remain intact.
+- Validation: 132 frontend tests, 19 targeted backend tests and production build passed. No local web/server was started; live checks remain pending deployment confirmation.
+
+---
+
 ### [v1.5.2] - 2026-10-19 | Guest account buttons
 
 - Fixed guest registration and sign-in buttons inheriting the 32px logout icon sizing.

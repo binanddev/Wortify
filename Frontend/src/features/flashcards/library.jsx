@@ -583,12 +583,6 @@ function DeckContent({ lang, id, data, reload, sound }) {
           </details>
         </div>
       </SidebarTools>
-      <div className="my-4 flex flex-wrap items-center gap-3">
-        <Link
-          className="btn"
-          to={"/" + lang + "/flashcard/deck/" + id + "?mode=notebook"}
-        >{tr("Vocabulary notebook")}</Link>
-      </div>
       <div className="study-layout">
         {view === "cards" && (
           <div>

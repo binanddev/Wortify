@@ -516,8 +516,8 @@ export function ExtraStudy({ lang, params, sound, userId }) {
       <Page>
         <h1>{tr("Games have been replaced")}</h1>
         <Link
-          to={`/${lang}/flashcard${params.get("deck") ? `/deck/${params.get("deck")}?mode=notebook` : ""}`}
-        >{tr("Open vocabulary notebook")}</Link>
+          to={`/${lang}/flashcard${params.get("deck") ? `/deck/${params.get("deck")}` : ""}`}
+        >{tr("Start learning")}</Link>
       </Page>
     );
   return <ExtraStudyContent {...{ lang, params, sound, userId }} />;

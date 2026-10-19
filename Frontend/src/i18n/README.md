@@ -9,4 +9,4 @@
 - `/api/me/language/` saves `uiLanguage` in the account profile; workspace `de`/`en` remains the learning language. The browser remembers the last display language for the sign-in screen; the signed-in account preference takes precedence.
 - Technical export guides and API examples retain their original schema keywords. Changing UI language must never rewrite saved content or exported answers.
 
-Server-free checks: `npm test`, `npm run build`, `node scripts/verify-vocabulary-notebook.mjs`, `node scripts/verify-import-api.mjs`. The last two compile isolated fixtures and open local HTML files in headless Chrome; they do not launch Django or Vite servers.
+Server-free checks: `npm test`, `npm run build`, `node scripts/verify-import-api.mjs`. The last command compiles isolated fixtures and opens local HTML files in headless Chrome; they do not launch Django or Vite servers.

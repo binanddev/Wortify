@@ -1,9 +1,9 @@
+import { studyCards, sourceCardId, isExample, termProgress } from "./flashcard-engine.js";
 import ContentSwitcher from "../../components/navigation/content-switcher.jsx";
 import {cardFields} from "./card-fields.js";
 import {request} from "../../lib/core.js";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import QuickCardEditor from "./quick-card-editor.jsx";
-import VocabularyNotebook from "./vocabulary-notebook.jsx";
 import { useWindowActive } from "../../lib/core.js";
 import { SkipButton, AnswerReveal } from "../learning/skip-controls.jsx";
 import { cardSolution } from "../learning/skip-learning.js";
@@ -37,8 +37,6 @@ import {
 } from "../../components/ui/ui.jsx";
 import {
   TYPES,
-  mix,
-  sides,
   makeQuestion,
   checkQuestion,
   advanceProgress,
@@ -48,6 +46,9 @@ import {
 const defaults = {
   mode: "flash",
   shuffle: false,
+  includeExamples: false,
+  exampleOrder: "after",
+  exampleDirection: "front",
   direction: "front",
   autoSpeak: false,
   speakAfterCorrect: false,
@@ -130,19 +131,14 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     transliteration: data.study_defaults?.transliteration ?? false,
     minutes: data.study_defaults?.session_minutes ?? defaults.minutes,
     ...initialOptions,
-    mode:
-      requestedMode === "notebook"
-        ? "notebook"
-        : ["flash", "learn", "test", "notebook"].includes(initialOptions.mode)
-          ? initialOptions.mode
-          : "flash",
+    mode: ["flash","learn","test"].includes(requestedMode) ? requestedMode : ["flash","learn","test"].includes(initialOptions.mode) ? initialOptions.mode : "flash",
     frontVoice:
       initialOptions.frontVoice || (lang === "de" ? "de-DE" : "en-US"),
   }));
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [stars, setStars] = useState(() => [...initialStars]),
     [progress, setProgress] = useState(() => initialProgress);
-  const [order, setOrder] = useState(() => data.cards),
+  const [order, setOrder] = useState(() => studyCards(data.cards, options)),
     [index, setIndex] = useState(0),
     [flipped, setFlipped] = useState(false);
   const [question, setQuestion] = useState(null),
@@ -166,18 +162,21 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
   function cardUpdated(updated) {
     const cards = data.cards.map(c => c.id === updated.id ? updated : c);
     setData(old => ({ ...old, cards }));
-    setOrder(old => old.map(c => c.id === updated.id ? updated : c));
-    setSessionCards(old => old.map(c => c.id === updated.id ? updated : c));
-    const refresh = q => makeQuestion(cards.find(c => c.id === q.card.id) || q.card, q.type, cards,
+    const queue = studyCards(cards, options);
+    setOrder(queue);
+    setSessionCards(queue);
+    const refresh = q => makeQuestion(queue.find(c => c.id === q.card.id) || q.card, q.type, queue,
       q.expected === q.card.german_text ? "term" : "definition");
     if (question) {
-      setQuestion(refresh(question));
+      const stillPresent=queue.some(c=>c.id===question.id);
+      setQuestion(stillPresent?refresh(question):null);
+      if(!stillPresent)setRunning(false);
       setValue("");
       setFeedback(null);
     }
     if (test.length) {
       // Distractors and matching groups can reference any card in the deck.
-      setTest(test.map(refresh));
+      setTest(test.filter(q=>queue.some(c=>c.id===q.id)).map(refresh));
       setTestAnswers({});
       setTestChecked({});
       setTestSkipped({});
@@ -188,7 +187,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
   const audio = useSound(sound, lang),
     startSides = useRef({});
   const pool = data.cards.filter(
-    (c) => !options.starredOnly || stars.includes(c.id),
+    (c) => !options.starredOnly || stars.includes(sourceCardId(c)),
   );
   const active = order[index];
   const flashClock = useAnswerClock(
@@ -196,38 +195,25 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     options.mode === "flash" && !flashSkipped,
   );
   useEffect(() => setFlashSkipped(false), [active?.id]);
-  useEffect(() => {
-    if (!options.starredOnly) return;
-    setOrder((previous) => {
-      const remaining = previous.filter((c) => stars.includes(c.id));
-      const added = data.cards.filter(
-        (c) => stars.includes(c.id) && !remaining.some((p) => p.id === c.id),
-      );
-      const next = [...remaining, ...added];
-      const kept = next.findIndex((c) => c.id === active?.id);
-      setIndex(
-        kept >= 0 ? kept : Math.min(index, Math.max(0, next.length - 1)),
-      );
-      return next;
-    });
-  }, [stars]);
   useEffect(() => savePreference(`${key}:options`, options), [options, key]);
   useEffect(() => savePreference(`${key}:stars`, stars), [stars, key]);
-  useEffect(() => savePreference(`${key}:progress`, progress), [progress, key]);
+  useEffect(() => savePreference(`${key}:progress`, termProgress(progress)), [progress, key]);
   useEffect(() => {
     if (options.mode !== "flash") return;
-    setOrder(options.shuffle ? mix(pool) : pool);
+    setOrder(studyCards(pool, options));
+    setFlashEnded(false);
     setIndex(0);
     startSides.current = {};
-  }, [options.shuffle, options.starredOnly, options.mode]);
+  }, [options.shuffle, options.starredOnly, options.mode, options.includeExamples, options.exampleOrder, options.exampleDirection, options.starredOnly ? stars : null, data.cards]);
   useEffect(() => {
     if (!active) return;
     startSides.current[active.id] ??= Math.random() > 0.5;
+    const direction=isExample(active)?options.exampleDirection:options.direction;
     setFlipped(
-      options.direction === "back" ||
-        (options.direction === "random" && startSides.current[active.id]),
+      direction === "back" ||
+        (direction === "random" && startSides.current[active.id]),
     );
-  }, [active?.id, options.direction]);
+  }, [active?.id, options.direction, options.exampleDirection]);
   useEffect(() => {
     if (options.mode === "flash" && options.autoSpeak && active) {
       speak(
@@ -317,7 +303,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       options: { ...options, ...v },
     });
     setOptions((o) => ({ ...o, ...v }));
-    if (v.mode || v.types || v.answerWith || v.goal) {
+    if (v.mode || v.types || v.answerWith || v.goal || "includeExamples" in v || v.exampleOrder || v.exampleDirection || "shuffle" in v || "starredOnly" in v) {
       setFlashEnded(false);
       setFlashSkipped(false);
       setStarted(0);
@@ -332,7 +318,8 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       setError("");
     }
   };
-  const star = (card) => {
+  const star = (item) => {
+    const card={id:sourceCardId(item)};
     sync.enqueue("star", {
       deck: Number(id),
       card: card.id,
@@ -379,7 +366,8 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       setError("Choose at least one question type.");
       return;
     }
-    const cards = options.shuffle ? mix(pool) : pool;
+    const cards = studyCards(pool, options);
+    setProgress(previous=>termProgress(previous));
     setSessionCards(cards);
     setTurn(0);
     setFeedback(null);
@@ -389,13 +377,13 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     setRunning(true);
     setCompleted(false);
     if (options.mode === "test") {
-      setTest(createTest(pool, pool.length, options.types, options.answerWith));
+      setTest(createTest(pool, cards.length, options.types, options.answerWith, Math.random, options));
       setTestSkipped({});
       setTestAnswers({});
       setTestChecked({});
       setTestResult(null);
     } else {
-      const card = nextLearningCard(cards, progress, 0);
+      const card = nextLearningCard(cards, termProgress(progress), 0, undefined, options);
       setQuestion(
         makeQuestion(
           card,
@@ -421,7 +409,8 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
         ),
       };
     records[question.id].lastStudied = new Date().toLocaleDateString("en-CA");
-    sync.enqueue("review", {
+    if(isExample(question.card)) records[question.id].stage="mastered";
+    if(!isExample(question.card)) sync.enqueue("review", {
       deck: Number(id),
       card: question.id,
       correct,
@@ -453,13 +442,13 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     setFeedback(null);
     setValue("");
     const nextProgress = progress;
-    if (sessionCards.every((c) => nextProgress[c.id]?.stage === "mastered")) {
+    if (sessionCards.every((c) => nextProgress[c.id]?.stage === "mastered") && !(options.includeExamples && options.exampleOrder === "after" && !isExample(question.card) && sessionCards.some(c=>c.sourceCardId===question.id))) {
       setRunning(false);
       setCompleted(true);
       audio.applause();
       return;
     }
-    const c = nextLearningCard(sessionCards, progress, t, question?.id);
+    const c = nextLearningCard(sessionCards, progress, t, question?.id, options);
     setQuestion(
       makeQuestion(
         c,
@@ -495,7 +484,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                 q.right.find((row) => row.id === item.id)?.text,
           }))
         : [{ id: q.id, correct }];
-    observed.forEach((item) =>
+    observed.filter(item=>Number.isFinite(Number(item.id))).forEach((item) =>
       sync.enqueue("review", {
         deck: Number(id),
         card: item.id,
@@ -513,7 +502,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     if (Object.keys(checked).length === test.length) {
       const results = test.map((_, j) => checked[j]);
       setTestResult(results);
-      sync.enqueue("test", { deck: Number(id), results });
+      sync.enqueue("test", { deck: Number(id), results:results.filter((_,i)=>!isExample(test[i].card)) });
       sync.flush();
     }
   };
@@ -529,7 +518,6 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       <Heading title={data.deck.title} />
       <SidebarTools>
         <div className="flash-icon-row">
-          <Link className="btn flash-icon-link" to={`/${lang}/flashcard`} title={tr("My Flashcards")} aria-label={tr("My Flashcards")}><Icon name="home"/></Link>
           <ContentSwitcher lang={lang} kind="decks" currentId={id}/>
           <Btn icon="plus" onClick={()=>setAddingCard(true)}>{tr("Add card")}</Btn>
           <Link className="btn flash-icon-link" title={tr("Manage terms")} aria-label={tr("Manage terms")} to={`/${lang}/flashcard/deck/${id}/edit`}><Icon name="edit"/></Link>
@@ -540,7 +528,6 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
             ["flash", "cards", "Card"],
             ["learn", "spark", "Study"],
             ["test", "exercise", "Check"],
-            ["notebook", "book", "Notebook"],
           ].map(([mode, icon, label]) => (
             <button
               key={mode}
@@ -556,7 +543,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
             </button>
           ))}
         </div>
-        {options.mode !== "notebook" && (
+        {(
           <div className="flash-icon-row">
             <Btn
               icon="star"
@@ -588,6 +575,15 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
           onClose={() => setSettingsOpen(false)}
         >
           <div className="flash-settings">
+            <label className="check-line"><input type="checkbox" checked={options.includeExamples} onChange={e=>patch({includeExamples:e.target.checked})}/>{tr("Study example sentences")}</label>
+            {options.includeExamples && <>
+              <Select label={tr("Example order")} value={options.exampleOrder} onChange={exampleOrder=>patch({exampleOrder})}>
+                <option value="after">{tr("After its term")}</option><option value="mixed">{tr("Mixed with terms")}</option>
+              </Select>
+              <Select label={tr("Example first side")} value={options.exampleDirection} onChange={exampleDirection=>patch({exampleDirection})}>
+                <option value="front">{tr("Example sentence")}</option><option value="back">{tr("Sentence translation")}</option>
+              </Select>
+            </>}
             <label className="check-line">
               <input
                 type="checkbox"
@@ -745,11 +741,9 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       {editingCard && <QuickCardEditor card={editingCard} lang={lang} deckId={id}
         notice={options.mode === "test" ? tr("Saving refreshes this test and clears its answers because choices may have changed.") : undefined}
         onClose={() => setEditingCard(null)} onSaved={cardUpdated} />}
-      {options.mode === "flash" && active && !flashEnded && <Btn onClick={() => setEditingCard(active)}>{tr("Edit card")}</Btn>}
-      {options.mode === "learn" && question && <Btn onClick={() => setEditingCard(question.card)}>{tr("Edit card")}</Btn>}
-      {options.mode === "notebook" ? (
-        <VocabularyNotebook {...{ lang, id, userId }} onCardUpdated={cardUpdated} />
-      ) : options.mode === "flash" ? (
+      {options.mode === "flash" && active && !flashEnded && <Btn onClick={() => setEditingCard(data.cards.find(c=>c.id===sourceCardId(active)))}>{tr("Edit card")}</Btn>}
+      {options.mode === "learn" && question && <Btn onClick={() => setEditingCard(data.cards.find(c=>c.id===sourceCardId(question.card)))}>{tr("Edit card")}</Btn>}
+      {options.mode === "flash" ? (
         flashEnded ? (
           <section className="work-paper">
             <h2>{tr("All cards reviewed")}</h2>
@@ -767,11 +761,11 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
             <Btn
               icon="star"
               className="star-button"
-              aria-label={stars.includes(active.id) ? tr("Unstar") : tr("Star")}
-              aria-pressed={stars.includes(active.id)}
+              aria-label={stars.includes(sourceCardId(active)) ? tr("Unstar") : tr("Star")}
+              aria-pressed={stars.includes(sourceCardId(active))}
               onClick={() => star(active)}
             >
-              {stars.includes(active.id) ? "★" : "☆"}
+              {stars.includes(sourceCardId(active)) ? "★" : "☆"}
             </Btn>
             <FlipCard
               front={active.german_text}
@@ -798,7 +792,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                   onClick={() => {
                     setFlashSkipped(true);
                     setFlipped(true);
-                    sync.enqueue("review", {
+                    if(!isExample(active)) sync.enqueue("review", {
                       deck: Number(id),
                       card: active.id,
                       correct: false,
@@ -807,7 +801,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                       response_ms: flashClock.read(),
                       goal: learningGoal,
                     });
-                    setProgress((previous) => ({
+                    if(!isExample(active)) setProgress((previous) => ({
                       ...previous,
                       [active.id]: advanceProgress(
                         previous[active.id],
@@ -890,11 +884,11 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
               <Btn
                 icon="star"
                 className="star-button"
-                aria-label={stars.includes(question.id) ? tr("Unstar") : tr("Star")}
-                aria-pressed={stars.includes(question.id)}
+                aria-label={stars.includes(sourceCardId(question.card)) ? tr("Unstar") : tr("Star")}
+                aria-pressed={stars.includes(sourceCardId(question.card))}
                 onClick={() => star(question.card)}
               >
-                {stars.includes(question.id) ? "★" : "☆"}
+                {stars.includes(sourceCardId(question.card)) ? "★" : "☆"}
               </Btn>
               <QuestionUI
                 key={`${turn}:${question.id}`}
@@ -974,7 +968,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                 >
                   <h3>{tr("Question ")}{i + 1} · {tr(TYPES.find(([k]) => k === q.type)?.[1])}
                   </h3>
-                  <Btn onClick={() => setEditingCard(q.card)}>{tr("Edit card")}</Btn>
+                  <Btn onClick={() => setEditingCard(data.cards.find(c=>c.id===sourceCardId(q.card)))}>{tr("Edit card")}</Btn>
                   <QuestionUI
                     q={q}
                     onTimer={(read) => {

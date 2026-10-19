@@ -5350,5 +5350,29 @@
   "Guest": {
     "vi": "Khách",
     "de": "Gast"
+  },
+  "Study example sentences": {
+    "vi": "Học thêm câu ví dụ",
+    "de": "Beispielsätze mitlernen"
+  },
+  "Example order": {
+    "vi": "Vị trí câu ví dụ",
+    "de": "Reihenfolge der Beispielsätze"
+  },
+  "After its term": {
+    "vi": "Ngay sau thuật ngữ",
+    "de": "Direkt nach dem Begriff"
+  },
+  "Mixed with terms": {
+    "vi": "Trộn cùng các thẻ",
+    "de": "Mit Begriffen mischen"
+  },
+  "Example first side": {
+    "vi": "Mặt trước của câu ví dụ",
+    "de": "Vorderseite der Beispielsätze"
+  },
+  "Sentence translation": {
+    "vi": "Nghĩa của câu",
+    "de": "Satzübersetzung"
   }
 }
