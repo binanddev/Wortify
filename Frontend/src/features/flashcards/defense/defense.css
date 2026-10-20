@@ -1,4 +1,5 @@
-:host {
+html,
+body {
   all: initial;
   position: fixed;
   inset: 0;
@@ -720,4 +721,133 @@ input[type="checkbox"] {
   .fd-touch-keyboard {
     display: inline-flex;
   }
+}
+.fd-live-answer {
+  display: block;
+  min-height: 28px;
+  max-height: 70px;
+  overflow: auto;
+  font:
+    600 18px/1.4 system-ui,
+    sans-serif;
+  color: #b4ffe0;
+  overflow-wrap: anywhere;
+}
+.fd-help {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #020811dc;
+}
+.fd-help > div {
+  width: min(520px, 100%);
+  max-height: 85dvh;
+  overflow: auto;
+  background: #102039;
+  border: 1px solid #4d839a;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 20px 80px #0009;
+}
+.fd-help h2 {
+  margin: 0 0 20px;
+  font-size: 22px;
+}
+.fd-help ol {
+  padding-left: 22px;
+}
+.fd-help li {
+  margin: 14px 0;
+  color: #dae8f7;
+}
+.fd-help p {
+  color: #93abc5;
+  font-size: 13px;
+}
+@media (max-width: 650px) {
+  .fd-header {
+    height: auto;
+    min-height: 76px;
+    flex-wrap: wrap;
+  }
+  .fd-top-actions {
+    margin-left: auto;
+  }
+  .fd-top-actions .fd-button {
+    padding: 7px 10px;
+  }
+}
+.fd-shell[data-phase="play"] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.fd-shell[data-phase="play"] .fd-header {
+  flex-shrink: 0;
+}
+.fd-shell[data-phase="play"] .fd-play {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}
+.fd-shell[data-phase="play"] .fd-stage-wrap {
+  min-height: 100px;
+}
+.fd-shell[data-compact="true"] .fd-brand {
+  display: none;
+}
+.fd-shell[data-compact="true"] .fd-header {
+  min-height: 42px;
+  padding: 4px 12px;
+}
+.fd-flight-preview .fd-preview-rock,
+.fd-flight-preview .fd-beam {
+  display: none;
+}
+.fd-flight-preview {
+  background: radial-gradient(circle at 70% 35%, #ffcd6f22, transparent 35%);
+}
+.fd-flight-preview::before,
+.fd-flight-preview::after {
+  content: "";
+  position: absolute;
+  right: 15%;
+  width: 28px;
+  height: 32%;
+  border: 2px solid #75e5de;
+  border-radius: 8px;
+  background: repeating-linear-gradient(
+    35deg,
+    #1a3e50 0px,
+    #1a3e50 12px,
+    #254a60 13px,
+    #254a60 15px
+  );
+}
+.fd-flight-preview::before {
+  top: 0;
+}
+.fd-flight-preview::after {
+  bottom: 0;
+}
+.fd-flight-preview .fd-turret {
+  left: 30%;
+  bottom: 40%;
+  transform: rotate(-12deg);
+  border-radius: 50%;
+  color: #08213b;
+  background: #7ce7fa;
+  box-shadow: 0 0 30px #5ddaff66;
+}
+
+html,
+body,
+#game-root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }

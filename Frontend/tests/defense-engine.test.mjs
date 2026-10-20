@@ -19,7 +19,7 @@ const step = (game, seconds) => {
   for (let i = 0; i < Math.ceil(seconds * 10); i++) game.tick(0.1);
 };
 const game = (options = {}, cards = [card("1")], random = () => 0.5) =>
-  createDefense(cards, options, random);
+  createDefense(cards, { targeting: "free", ...options }, random);
 test("multi-deck preparation filters incomplete cards, deduplicates answers and reads difficult SRS cards", () => {
   const decks = [
     {
@@ -173,4 +173,24 @@ test("repeated mistakes promote words to bosses only inside the current game", (
   step(g, 4);
   assert.equal(g.state.rocks[0].kind, "boss");
   assert.equal(game().state.missed.size, 0);
+});
+
+test("guided targeting highlights one stable target and switches explicitly", () => {
+  const g = game({ targeting: "guided", difficulty: "hard" }, [
+    card("1", "Katze"),
+    card("2", "Karte"),
+  ]);
+  step(g, 4);
+  const first = g.state.target;
+  assert.ok(first);
+  g.input("Ka");
+  g.tick(0.1);
+  assert.equal(g.state.target, first);
+  g.nextTarget();
+  assert.notEqual(g.state.target, first);
+  assert.ok(g.state.rocks.every((r) => r.typed === ""));
+  const target = g.state.rocks.find((r) => r.id === g.state.target);
+  g.input(target.card.answer);
+  g.tick(0.1);
+  assert.equal(g.state.target, first);
 });

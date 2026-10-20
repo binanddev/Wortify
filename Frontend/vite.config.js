@@ -30,6 +30,10 @@ export default defineConfig(({ mode }) => {
       outDir: "dist",
       manifest: true,
       rolldownOptions: {
+        input: {
+          app: fileURLToPath(new URL("index.html", import.meta.url)),
+          game: fileURLToPath(new URL("game.html", import.meta.url)),
+        },
         output: {
           codeSplitting: {
             groups: [

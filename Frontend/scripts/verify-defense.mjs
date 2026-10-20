@@ -8,6 +8,7 @@ process.chdir(path.resolve(import.meta.dirname, ".."));
 const dir = path.resolve(".interface-preview");
 await fs.mkdir(dir, { recursive: true });
 const entry = path.join(dir, "defense-check.jsx");
+const flight = process.argv.includes("--flight");
 const setup = process.argv.includes("--setup"),
   mobile = process.argv.includes("--mobile");
 await fs.writeFile(
@@ -19,7 +20,7 @@ import {setLanguage} from '../src/i18n/index.js';
 setLanguage('vi');
 const cards=[['Bahnhof','nhà ga'],['Abenteuer','cuộc phiêu lưu'],['Sonne','mặt trời'],['Wasser','nước'],['Freundschaft','tình bạn'],['Wald','khu rừng']].map(([german_text,vietnamese_meaning],i)=>({id:i+1,german_text,vietnamese_meaning}));
 const data={deck:{id:1,title:'Deutsch · Alltag A2',language:'de'},cards,learning:{progress:{2:{misses:4}}},difficult_cards:[2]};
-localStorage.setItem('wortify:defense:1:de',JSON.stringify({mode:'zen',difficulty:'hard',direction:'term',sound:true}));
+localStorage.setItem('wortify:defense:1:de',JSON.stringify({game:'defense',targeting:'guided',mode:'zen',difficulty:'hard',direction:'term',sound:true}));
 let writes=0;window.fetch=async(url,opts)=>{if(opts?.method && opts.method!=='GET')writes++;return new Response(JSON.stringify({decks:[{...data.deck,count:6}]}),{headers:{'Content-Type':'application/json'}});};
 window.addEventListener('error',e=>document.getElementById('result').textContent='FAIL: '+e.message);
 window.addEventListener('unhandledrejection',e=>document.getElementById('result').textContent='FAIL: '+e.reason);
@@ -27,11 +28,12 @@ const reactRoot=createRoot(document.getElementById('root'));reactRoot.render(<De
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const assert=(v,m)=>{if(!v)throw new Error(m);};
 (async()=>{
- await wait(1000);const shadow=[...document.body.children].map(el=>el.shadowRoot).find(Boolean);assert(shadow,'Shadow root not mounted');window.tapEvents=[];for(const name of ['pointerdown','pointerup','touchstart','touchend','click'])shadow.addEventListener(name,e=>window.tapEvents.push(name+':'+e.target.tagName+':'+e.target.textContent.slice(0,30)),true);
- assert(shadow.textContent.includes('Bắt đầu phòng thủ'),'Vietnamese labels missing');
- assert(shadow.querySelectorAll('select').length===3,'Game settings missing');
+ await wait(1000);const shadow=document.querySelector('[data-game-root]');assert(shadow,'Game root not mounted');window.tapEvents=[];for(const name of ['pointerdown','pointerup','touchstart','touchend','click'])shadow.addEventListener(name,e=>window.tapEvents.push(name+':'+e.target.tagName+':'+e.target.textContent.slice(0,30)),true);
+ ${flight ? "const picker=shadow.querySelector('select');picker.value='flight';picker.dispatchEvent(new Event('change',{bubbles:true}));await wait(100);" : ""}
+ assert(shadow.textContent.includes('${flight ? "Bắt đầu bay" : "Bắt đầu phòng thủ"}'),'Vietnamese labels missing');
+ assert(shadow.querySelectorAll('select').length===${flight ? 4 : 5},'Game settings missing');
  const click=async text=>{const el=[...shadow.querySelectorAll('button')].find(el=>el.textContent.includes(text));assert(el,'Button missing '+text);el.scrollIntoView({block:'center'});const r=el.getBoundingClientRect();window.pendingClick={x:r.x+r.width/2,y:r.y+r.height/2};while(window.pendingClick)await wait(30);};
- ${setup ? "document.getElementById('result').textContent='PASS: isolated setup, deck selection, game options and Vietnamese UI';" : "await click('Bắt đầu phòng thủ');await wait(2200);assert(shadow.querySelector('canvas'),'Phaser canvas not mounted');assert(!shadow.querySelector('.fd-error'),'Game initialization failed');assert(shadow.querySelector('input[autocomplete=off]'),'Keyboard input missing');await click('Tạm dừng');await wait(100);assert(shadow.querySelector('.fd-cover'),'Pause failed');await click('Tiếp tục');await wait(100);assert(!shadow.querySelector('.fd-cover'),'Resume failed');assert(shadow.activeElement===shadow.querySelector('input[autocomplete=off]'),'Direct typing is not focused');assert(getComputedStyle(shadow.activeElement).opacity==='0','Typing form should not be visible');assert(writes===0,'Unexpected learning writes');document.getElementById('result').textContent='PASS: Phaser boots, pause/resume, mobile input, no progress writes';"}
+ ${setup ? "document.getElementById('result').textContent='PASS: isolated setup, deck selection, game options and Vietnamese UI';" : `await click('${flight ? "Bắt đầu bay" : "Bắt đầu phòng thủ"}');await wait(4500);assert(shadow.querySelector('canvas'),'Phaser canvas not mounted');assert(!shadow.querySelector('.fd-error'),'Game initialization failed');assert(shadow.querySelector('input[autocomplete=off]'),'Keyboard input missing');await click('Tạm dừng');await wait(100);assert(shadow.querySelector('.fd-cover'),'Pause failed');await click('Tiếp tục');await wait(100);assert(!shadow.querySelector('.fd-cover'),'Resume failed');assert(document.activeElement===shadow.querySelector('input[autocomplete=off]'),'Direct typing is not focused');assert(getComputedStyle(document.activeElement).opacity==='0','Typing form should not be visible');const prompt=shadow.querySelector('.fd-target-copy')?.textContent;const word=cards.find(c=>c.vietnamese_meaning===prompt)?.german_text;assert(word,'Current target missing');window.pendingText=word.slice(0,2);while(window.pendingText)await wait(30);await wait(150);assert(shadow.querySelector('.fd-live-answer').textContent===word.slice(0,2),'Typed letters are not displayed');${flight ? "window.pendingText=word.slice(2);while(window.pendingText)await wait(30);await wait(150);assert(shadow.textContent.includes('Vỗ cánh'),'Flight did not resume after correct answer');await click('Vỗ cánh');" : "await click('Đổi mục tiêu');await wait(100);assert(shadow.querySelector('.fd-live-answer').textContent==='＿','Changing target kept stale input');"}assert(writes===0,'Unexpected learning writes');document.getElementById('result').textContent='PASS: ${flight ? "flight" : "defense"} starts, pauses, resumes and displays native typing without progress writes';`}
 })().catch(e=>document.getElementById('result').textContent='FAIL: '+e.message);
 `,
 );
@@ -72,6 +74,18 @@ const html = path.join(dir, "defense-check.html");
 await fs.writeFile(
   html,
   `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><pre id="result" style="position:fixed;bottom:0;z-index:20000;font:9px monospace;color:white"></pre><script>${js.replaceAll("</script", "<\\/script")}</script></body></html>`,
+);
+// The parent deliberately swallows keyboard events. The game must still type
+// because it runs in a separate browsing context, without an application server.
+const childHtml = await fs.readFile(html, "utf8");
+await fs.writeFile(
+  html,
+  `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0"><iframe id="game" title="Game test" style="position:fixed;inset:0;width:100%;height:100%;border:0" allow="autoplay"></iframe><pre id="result" hidden></pre><script>
+window.parentKeys=0;window.addEventListener('keydown',e=>{window.parentKeys++;e.preventDefault();e.stopImmediatePropagation();},true);
+const frame=document.getElementById('game');frame.srcdoc=${JSON.stringify(childHtml).replaceAll("</script", "<\\/script")};
+for(const key of ['pendingText','pendingClick','tapEvents'])Object.defineProperty(window,key,{get:()=>frame.contentWindow[key],set:v=>{frame.contentWindow[key]=v;}});
+setInterval(()=>{document.getElementById('result').textContent=frame.contentDocument?.getElementById('result')?.textContent||'';},50);
+</script></body></html>`,
 );
 const browser =
   process.env.CHROME_PATH ||
@@ -216,6 +230,37 @@ try {
         sessionId,
       );
     }
+    const typing = await send(
+      "Runtime.evaluate",
+      { expression: "window.pendingText", returnByValue: true },
+      sessionId,
+    );
+    if (typing.result.value) {
+      if (mobile)
+        await send(
+          "Input.insertText",
+          { text: typing.result.value },
+          sessionId,
+        );
+      else
+        for (const key of typing.result.value) {
+          await send(
+            "Input.dispatchKeyEvent",
+            { type: "keyDown", key, text: key },
+            sessionId,
+          );
+          await send(
+            "Input.dispatchKeyEvent",
+            { type: "keyUp", key },
+            sessionId,
+          );
+        }
+      await send(
+        "Runtime.evaluate",
+        { expression: "window.pendingText=null" },
+        sessionId,
+      );
+    }
     if (status || errors.length) break;
   }
   await new Promise((r) => setTimeout(r, 700));
@@ -227,7 +272,7 @@ try {
   await fs.writeFile(
     path.join(
       dir,
-      `defense-${process.argv.includes("--scene") ? "scene" : setup ? "setup" : "play"}-${mobile ? "mobile" : "desktop"}.png`,
+      `defense-${process.argv.includes("--scene") ? "scene" : setup ? "setup" : flight ? "flight" : "play"}-${mobile ? "mobile" : "desktop"}.png`,
     ),
     Buffer.from(shot.data, "base64"),
   );

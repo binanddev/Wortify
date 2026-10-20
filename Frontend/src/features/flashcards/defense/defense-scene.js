@@ -143,14 +143,24 @@ export function launchDefense(
         cap = DIFFICULTIES[engine.state.options.difficulty].cap;
       const columns = w < 650 ? Math.min(2, cap) : cap;
       const width = Math.min(cap === 1 ? 340 : 270, w / columns - 24);
-      return {
-        x: (((rock.lane % columns) + 0.5) * w) / columns,
-        y:
-          65 +
-          (rock.lane >= columns ? 90 : 0) +
-          (h - 180 - (rock.lane >= columns ? 90 : 0)) * rock.y,
-        width,
-      };
+      let y = 65 + (h - 180) * rock.y;
+      if (columns < cap) {
+        const siblings = engine.state.rocks
+          .filter((r) => r.lane % columns === rock.lane % columns)
+          .sort((a, b) => b.y - a.y || a.id - b.id);
+        if (siblings.length > 1) {
+          const gap = Math.min(175, Math.max(100, h - 200));
+          const lower = Math.max(
+            65 + gap,
+            Math.min(h - 110, 65 + (h - 180) * siblings[0].y),
+          );
+          y =
+            siblings[0].id === rock.id
+              ? lower
+              : Math.max(65, Math.min(y, lower - gap));
+        }
+      }
+      return { x: (((rock.lane % columns) + 0.5) * w) / columns, y, width };
     }
     addRock(rock) {
       const p = this.position(rock),
@@ -200,8 +210,7 @@ export function launchDefense(
       container.setSize(p.width, 124).setInteractive();
       container.on("pointerdown", () => {
         if (engine.state.paused || engine.state.ended) return;
-        engine.unlock();
-        engine.state.target = rock.id;
+        engine.select(rock.id);
         audio.speak(rock.card, true);
         onFrame(engine.state);
         onFocus();
@@ -215,6 +224,11 @@ export function launchDefense(
         color = colors[rock.kind],
         locked = engine.state.target === rock.id;
       v.container.setPosition(p.x, p.y);
+      v.container.setAlpha(engine.state.target && !locked ? 0.55 : 1);
+      v.badge.setText(
+        `${rock.lane + 1} · ${locked ? labels.target : rock.kind === "normal" ? "" : labels[rock.kind]}`,
+      );
+      v.slots.setColor(rock.typed ? "#b4ffe0" : "#81e4ff");
       v.clue.setWordWrapWidth(p.width - 24);
       v.slots.setWordWrapWidth(p.width - 24);
       const hintText = mask(rock);

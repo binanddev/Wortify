@@ -4,6 +4,8 @@ export const DIFFICULTIES = {
   hard: { cap: 4, fall: 22, spawn: 2.7 },
 };
 export const DEFAULT_OPTIONS = {
+  game: "defense",
+  targeting: "guided",
   mode: "classic",
   difficulty: "normal",
   direction: "term",
@@ -123,6 +125,19 @@ export function createDefense(cards, options = {}, random = Math.random) {
     s.rocks.push(rock);
     event("spawn", rock);
   }
+  function select(id) {
+    if (s.paused || s.ended || !s.rocks.some((r) => r.id === id)) return;
+    for (const rock of s.rocks) rock.typed = "";
+    s.target = id;
+    event(
+      "lock",
+      s.rocks.find((r) => r.id === id),
+    );
+  }
+  function guide() {
+    if (opts.targeting === "guided" && !s.target && s.rocks.length)
+      select([...s.rocks].sort((a, b) => b.y - a.y)[0].id);
+  }
   function remove(rock) {
     s.rocks = s.rocks.filter((r) => r.id !== rock.id);
     if (s.target === rock.id) s.target = null;
@@ -158,7 +173,7 @@ export function createDefense(cards, options = {}, random = Math.random) {
     let target = s.rocks.find((r) => r.id === s.target);
     if (!typed) {
       if (target) target.typed = "";
-      s.target = null;
+      if (opts.targeting !== "guided") s.target = null;
       return "";
     }
     const prefix = (answer, text) =>
@@ -244,11 +259,22 @@ export function createDefense(cards, options = {}, random = Math.random) {
       spawn();
       s.spawnIn = difficulty.spawn;
     }
+    if (!s.ended) guide();
   }
   return {
     state: s,
     tick,
     input,
+    select,
+    nextTarget() {
+      const ordered = [...s.rocks].sort((a, b) => a.lane - b.lane);
+      if (ordered.length)
+        select(
+          ordered[
+            (ordered.findIndex((r) => r.id === s.target) + 1) % ordered.length
+          ].id,
+        );
+    },
     unlock() {
       s.target = null;
       for (const r of s.rocks) r.typed = "";

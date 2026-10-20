@@ -5610,5 +5610,113 @@
   "Keyboard": {
     "vi": "Bàn phím",
     "de": "Tastatur"
+  },
+  "Flashcard Defense": {
+    "vi": "Thủ thành từ vựng",
+    "de": "Vokabelverteidigung"
+  },
+  "Word Flight": {
+    "vi": "Chuyến bay từ vựng",
+    "de": "Wortflug"
+  },
+  "Guided target": {
+    "vi": "Mục tiêu hướng dẫn",
+    "de": "Geführtes Ziel"
+  },
+  "Free targeting": {
+    "vi": "Tự chọn bằng chữ đầu",
+    "de": "Freie Zielwahl"
+  },
+  "Target selection": {
+    "vi": "Chọn mục tiêu",
+    "de": "Zielauswahl"
+  },
+  "Type this card": {
+    "vi": "Gõ đáp án thẻ này",
+    "de": "Diese Karte beantworten"
+  },
+  "Vocabulary gate": {
+    "vi": "Cổng từ vựng",
+    "de": "Vokabeltor"
+  },
+  "Storm sector": {
+    "vi": "Vùng bão",
+    "de": "Sturmsektor"
+  },
+  "How to play": {
+    "vi": "Cách chơi",
+    "de": "Spielanleitung"
+  },
+  "Press Space or tap Flap to stay in the air. Avoid walls and drones.": {
+    "vi": "Nhấn Space hoặc chạm Vỗ cánh để bay. Né tường và drone.",
+    "de": "Drücke die Leertaste oder tippe auf Flügelschlag. Weiche Wänden und Drohnen aus."
+  },
+  "At a vocabulary gate, flight pauses. Type the answer to open it.": {
+    "vi": "Tới cổng từ vựng, chuyến bay tạm dừng. Gõ đáp án để mở cổng.",
+    "de": "Am Vokabeltor pausiert der Flug. Tippe die Antwort, um es zu öffnen."
+  },
+  "Every fifth gate brings a storm. Correct answers grant a short shield.": {
+    "vi": "Mỗi cổng thứ năm có bão. Trả lời đúng nhận khiên bảo vệ ngắn.",
+    "de": "Jedes fünfte Tor bringt einen Sturm. Richtige Antworten geben kurzzeitig einen Schutzschild."
+  },
+  "Type the answer for the bright card marked Type this card.": {
+    "vi": "Gõ đáp án của thẻ sáng có nhãn Gõ đáp án thẻ này.",
+    "de": "Tippe die Antwort der hellen Karte mit der Markierung Diese Karte beantworten."
+  },
+  "Click another card or press Right Arrow to change target.": {
+    "vi": "Bấm thẻ khác hoặc nhấn mũi tên phải để đổi mục tiêu.",
+    "de": "Klicke auf eine andere Karte oder drücke die rechte Pfeiltaste, um das Ziel zu wechseln."
+  },
+  "Type the whole word, including revealed letters. Bosses need two answers.": {
+    "vi": "Gõ đủ từ, gồm cả chữ đã gợi ý. Boss cần gõ đúng hai lần.",
+    "de": "Tippe das ganze Wort, auch aufgedeckte Buchstaben. Bosse benötigen zwei Antworten."
+  },
+  "Esc pauses. Backspace corrects your typing.": {
+    "vi": "Esc để tạm dừng. Backspace để xóa chữ.",
+    "de": "Esc pausiert. Die Rücktaste löscht Buchstaben."
+  },
+  "Start flight": {
+    "vi": "Bắt đầu bay",
+    "de": "Flug starten"
+  },
+  "Flap": {
+    "vi": "Vỗ cánh",
+    "de": "Flügelschlag"
+  },
+  "Space / tap to fly": {
+    "vi": "Space / chạm để bay",
+    "de": "Leertaste / Tippen zum Fliegen"
+  },
+  "Your typing": {
+    "vi": "Chữ đang gõ",
+    "de": "Deine Eingabe"
+  },
+  "Next target": {
+    "vi": "Đổi mục tiêu",
+    "de": "Nächstes Ziel"
+  },
+  "Right Arrow: next target · Esc: pause": {
+    "vi": "Mũi tên phải: đổi mục tiêu · Esc: tạm dừng",
+    "de": "Pfeil rechts: nächstes Ziel · Esc: Pause"
+  },
+  "Take flight": {
+    "vi": "Cất cánh",
+    "de": "Flieg los"
+  },
+  "with every word.": {
+    "vi": "cùng từng từ mới.",
+    "de": "mit jedem Wort."
+  },
+  "Fly through gates. Unlock them with words.": {
+    "vi": "Bay qua cổng. Dùng từ vựng để mở lối.",
+    "de": "Fliege durch Tore. Öffne sie mit Wörtern."
+  },
+  "Type the whole answer": {
+    "vi": "Gõ đầy đủ đáp án",
+    "de": "Ganze Antwort eingeben"
+  },
+  "Start typing any visible answer to lock a target.": {
+    "vi": "Gõ đáp án của thẻ bất kỳ để khóa mục tiêu.",
+    "de": "Tippe eine sichtbare Antwort, um ein Ziel zu erfassen."
   }
 }

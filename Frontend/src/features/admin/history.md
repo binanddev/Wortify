@@ -1,5 +1,15 @@
 # Change Log
 
+### [v1.8.0] - 2026-10-21 | Word Flight and isolated gameplay
+
+- Added Word Flight: vocabulary gates, tap/Space flight controls, drones, storm rounds and shields, with Classic, Time Attack and Zen options.
+- Improved Flashcard Defense with guided targeting, a highlighted active card, right-arrow target switching, visible typed letters and a short gameplay guide.
+- Moved games into a standalone iframe page to isolate keyboard handling and styles from the main application. Desktop typing reaches the game directly; native input supports mobile keyboards and composition.
+- Load Phaser and game scenes only after Start. Gameplay does not change flashcard learning progress.
+- Validation: 149 frontend tests and production build passed. Static browser checks passed for desktop typing in the isolated frame and mobile Word Flight input and gate completion. Build output confirms neither the main app nor game setup eagerly loads Phaser. No application server was started; live deployment testing remains pending confirmation.
+
+---
+
 ### [v1.7.1] - 2026-10-20 | Direct typing and repeating audio
 
 - Removed the visible typing field from Flashcard Defense. Gameplay captures typing automatically after starting or resuming, with letters displayed on the target card. Native text input preserves composition support.

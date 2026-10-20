@@ -11,7 +11,7 @@ import { useAnswerClock } from "../learning/use-answer-clock.js";
 import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { useLearningSync, pendingLearning } from "../learning/learning-sync.js";
 import { useEffect, useRef, useState, lazy, Suspense } from "react";
-const FlashcardDefense = lazy(() => import("./defense/FlashcardDefense.jsx"));
+const FlashcardDefense = lazy(() => import("./defense/GameFrame.jsx"));
 import {
   endpoint,
   useResource,
