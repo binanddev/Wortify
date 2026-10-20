@@ -198,6 +198,7 @@ export function defenseAudio() {
     }
   }
   function stop() {
+    nextRepeat = 0;
     speechGeneration++;
     window.speechSynthesis?.cancel();
     restoreFX();
@@ -206,6 +207,18 @@ export function defenseAudio() {
         voice.stop();
       } catch {}
     }
+  }
+  let nextRepeat = 0,
+    repeatIndex = 0;
+  function repeat(cards, target) {
+    if (
+      !cards.length ||
+      Date.now() < nextRepeat ||
+      window.speechSynthesis?.speaking
+    )
+      return;
+    const card = target || cards[repeatIndex++ % cards.length];
+    if (speak(card)) nextRepeat = Infinity;
   }
   function speak(card, force = false) {
     if (!enabled || !window.speechSynthesis) return false;
@@ -224,7 +237,10 @@ export function defenseAudio() {
     utterance.rate = 0.85;
     utterance.volume = volume;
     const ended = () => {
-      if (generation === speechGeneration) restoreFX();
+      if (generation === speechGeneration) {
+        restoreFX();
+        nextRepeat = Date.now() + 2000;
+      }
     };
     utterance.onend = ended;
     utterance.onerror = ended;
@@ -236,6 +252,7 @@ export function defenseAudio() {
     tone,
     typing,
     speak,
+    repeat,
     stop,
     setVolume(value) {
       volume = Math.max(0, Math.min(1, Number(value) || 0));

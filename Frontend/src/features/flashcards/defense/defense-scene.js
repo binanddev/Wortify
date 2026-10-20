@@ -361,15 +361,28 @@ export function launchDefense(
           audio.stop();
           onEnd(state);
         }
-        if (e.type === "spawn" && state.options.direction === "audio")
+        if (
+          state.options.direction !== "audio" &&
+          e.type === "hint" &&
+          e.level === 2
+        )
           audio.speak(e.rock.card);
-        if (e.type === "hint" && e.level === 2) audio.speak(e.rock.card);
         this.pulse(e.rock, e.type);
         if (e.type !== "spawn" && e.type !== "hint") audio.tone(e.type);
         if (["wrong", "impact"].includes(e.type) && !reducedMotion)
           this.cameras.main.flash(100, 140, 25, 55, false);
         if (e.type === "nuke" && !reducedMotion)
           this.cameras.main.flash(180, 180, 115, 40, false);
+      }
+      if (
+        !state.paused &&
+        !state.ended &&
+        state.options.direction === "audio"
+      ) {
+        audio.repeat(
+          state.rocks.map((r) => r.card),
+          state.rocks.find((r) => r.id === state.target)?.card,
+        );
       }
       for (const rock of state.rocks) this.drawRock(rock);
       for (const [id, view] of this.rocks)

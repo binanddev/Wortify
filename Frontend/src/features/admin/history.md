@@ -1,5 +1,14 @@
 # Change Log
 
+### [v1.7.1] - 2026-10-20 | Direct typing and repeating audio
+
+- Removed the visible typing field from Flashcard Defense. Gameplay captures typing automatically after starting or resuming, with letters displayed on the target card. Native text input preserves composition support.
+- Added a touch keyboard button for reopening the mobile keyboard.
+- Audio cards repeat after a two-second pause following pronunciation. Multiple cards rotate, prioritizing the locked target; pausing stops audio.
+- Validation: 142 frontend tests and production build passed. Targeted audio tests verify repeat timing; static browser checks verify input focus, hidden typing field and pause/resume. No application server was started.
+
+---
+
 ### [v1.7.0] - 2026-10-20 | Flashcard Defense
 
 - Added Flashcard Defense with Phaser, shared across all themes: falling vocabulary targets, typing locks, lasers, explosions, progressive hints and pronunciation.

@@ -209,6 +209,29 @@ function Defense({ lang, userId, initialDeck, onClose }) {
       audio.current.stop();
     };
   }, [phase]);
+  useEffect(() => {
+    if (phase !== "play" || !ready || hud?.paused) return;
+    focus();
+    const type = (event) => {
+      if (
+        event.ctrlKey ||
+        event.metaKey ||
+        event.altKey ||
+        event.key === "Escape" ||
+        event.key === "Tab"
+      )
+        return;
+      if (
+        event.key.length === 1 ||
+        ["Backspace", "Delete", "Dead", "Process"].includes(event.key)
+      ) {
+        // Focus before the browser inserts text; native input keeps IME support.
+        focus();
+      }
+    };
+    window.addEventListener("keydown", type, true);
+    return () => window.removeEventListener("keydown", type, true);
+  }, [phase, ready, hud?.paused]);
   function pause() {
     const game = engine.current;
     if (!game || game.state.ended) return;
@@ -583,8 +606,12 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               <p className="fd-target-copy">{hud.rock.card.prompt}</p>
             )}
             <div className="fd-input-row">
+              {button("Keyboard", focus, false, {
+                className: "fd-button fd-touch-keyboard",
+              })}
               <input
                 ref={input}
+                className="fd-keyboard-capture"
                 aria-label={tr("Type your answer")}
                 placeholder={tr("Type your answer")}
                 value={draft}

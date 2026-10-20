@@ -5606,5 +5606,9 @@
   "Adventure": {
     "vi": "cuộc phiêu lưu",
     "de": "Abenteuer"
+  },
+  "Keyboard": {
+    "vi": "Bàn phím",
+    "de": "Tastatur"
   }
 }

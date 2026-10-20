@@ -135,6 +135,31 @@ test("typing, mute, speech ducking and cleanup share one bounded audio graph", (
     );
     utterances[1].onend();
     assert.equal(gains[1].gain.value, 1);
+    const realNow = Date.now;
+    try {
+      let now = realNow() + 10000;
+      Date.now = () => now;
+      const card = { answer: "Wasser", language: "de-DE" };
+      audio.repeat([card]);
+      const before = utterances.length;
+      utterances.at(-1).onend();
+      now += 1999;
+      audio.repeat([card]);
+      assert.equal(
+        utterances.length,
+        before,
+        "wait two seconds after speech ends",
+      );
+      now += 1;
+      audio.repeat([card]);
+      assert.equal(
+        utterances.length,
+        before + 1,
+        "repeat without clicking the card",
+      );
+    } finally {
+      Date.now = realNow;
+    }
     audio.mute(true);
     const count = sources.length;
     context.currentTime = 1;
