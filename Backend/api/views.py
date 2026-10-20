@@ -77,7 +77,7 @@ def deck(request, pk):
     from .learning_sync import state_payload
     state,_=DeckLearningState.objects.get_or_create(user=request.user,deck=item)
     preferences,_=StudySettings.objects.get_or_create(user=request.user,language=request.language)
-    return JsonResponse({'study_defaults':model_to_dict(preferences,exclude=['id','user','language']), 'learning':{**state_payload(state),'applied':[str(t) for t in LearningEvent.objects.filter(user=request.user,language=request.language,payload__deck=pk).order_by('-id').values_list('token',flat=True)[:100]]}, 'deck': model_to_dict(item, exclude=['owner']), 'cards': [model_to_dict(c) for c in item.cards.all()], 'folders': list(Folder.objects.filter(owner=request.user, language=request.language).values('id', 'name', 'parent_id'))})
+    return JsonResponse({'difficult_cards':list(StudyProgress.objects.filter(user=request.user,card__deck=item).filter(Q(state='weak')|Q(memory__rating=2)).values_list('card_id',flat=True)), 'study_defaults':model_to_dict(preferences,exclude=['id','user','language']), 'learning':{**state_payload(state),'applied':[str(t) for t in LearningEvent.objects.filter(user=request.user,language=request.language,payload__deck=pk).order_by('-id').values_list('token',flat=True)[:100]]}, 'deck': model_to_dict(item, exclude=['owner']), 'cards': [model_to_dict(c) for c in item.cards.all()], 'folders': list(Folder.objects.filter(owner=request.user, language=request.language).values('id', 'name', 'parent_id'))})
 
 @endpoint
 @require_http_methods(['POST', 'PATCH', 'DELETE'])

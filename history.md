@@ -1,5 +1,17 @@
 # Change Log
 
+### [v1.7.0] - 2026-10-20 | Flashcard Defense
+
+- Added Flashcard Defense with Phaser, shared across all themes: falling vocabulary targets, typing locks, lasers, explosions, progressive hints and pronunciation.
+- Added multi-deck selection, Classic, 60-second Time Attack and Zen modes, three difficulty levels, answer directions and case-sensitive typing.
+- Added Freeze, Nuke and Health power-ups and armored bosses based on difficult words. Gameplay does not write flashcard learning progress.
+- Added layered typing, error, targeting and combat sounds, volume controls and automatic effect ducking during pronunciation.
+- Fixed touch activation of game buttons inside the isolated interface while retaining HeroUI components. Added pause/resume, focus handling and responsive layouts.
+- Load the game engine only when opening gameplay; updated the compatible source-map-js dependency.
+- Validation: 142 frontend tests, the targeted backend test and production build passed. Static browser checks passed for mouse and touch Start, pause and resume. No application server was started; live deployment testing remains pending user confirmation.
+
+---
+
 ### [v1.6.0] - 2026-10-19 | Study example sentences
 
 - Added optional example-sentence study to Cards, Learn and Test using each term's existing sentence and translation. These are temporary study items, not new flashcards.

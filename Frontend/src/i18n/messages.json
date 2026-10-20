@@ -5374,5 +5374,237 @@
   "Sentence translation": {
     "vi": "Nghĩa của câu",
     "de": "Satzübersetzung"
+  },
+  "Vocabulary defense": {
+    "vi": "Thủ thành từ vựng",
+    "de": "Vokabelverteidigung"
+  },
+  "Your words. Your defense.": {
+    "vi": "Từ vựng của bạn. Phòng tuyến của bạn.",
+    "de": "Deine Wörter. Deine Verteidigung."
+  },
+  "Turn knowledge": {
+    "vi": "Biến kiến thức",
+    "de": "Mach Wissen"
+  },
+  "into firepower.": {
+    "vi": "thành hỏa lực.",
+    "de": "zu Feuerkraft."
+  },
+  "Type to lock. Finish to destroy.": {
+    "vi": "Gõ để khóa mục tiêu. Hoàn thành để tiêu diệt.",
+    "de": "Tippen zum Anvisieren. Vervollständigen zum Zerstören."
+  },
+  "Choose your decks": {
+    "vi": "Chọn bộ thẻ",
+    "de": "Kartensets wählen"
+  },
+  "Mission settings": {
+    "vi": "Thiết lập trận đấu",
+    "de": "Missionseinstellungen"
+  },
+  "Game mode": {
+    "vi": "Chế độ chơi",
+    "de": "Spielmodus"
+  },
+  "Classic": {
+    "vi": "Sinh tồn",
+    "de": "Überleben"
+  },
+  "Time Attack": {
+    "vi": "Đua thời gian",
+    "de": "Zeitrennen"
+  },
+  "Zen": {
+    "vi": "Thư giãn",
+    "de": "Entspannt"
+  },
+  "Normal": {
+    "vi": "Trung bình",
+    "de": "Mittel"
+  },
+  "Definition → term": {
+    "vi": "Nghĩa → thuật ngữ",
+    "de": "Bedeutung → Begriff"
+  },
+  "Term → definition": {
+    "vi": "Thuật ngữ → nghĩa",
+    "de": "Begriff → Bedeutung"
+  },
+  "Listen → type": {
+    "vi": "Nghe → gõ từ",
+    "de": "Hören → Tippen"
+  },
+  "Case sensitive": {
+    "vi": "Phân biệt hoa/thường",
+    "de": "Groß-/Kleinschreibung beachten"
+  },
+  "3 HP · Increasing speed": {
+    "vi": "3 máu · Tốc độ tăng dần",
+    "de": "3 Leben · Steigendes Tempo"
+  },
+  "60 seconds · Maximum score": {
+    "vi": "60 giây · Ghi điểm tối đa",
+    "de": "60 Sekunden · Maximale Punktzahl"
+  },
+  "No HP · Steady pace": {
+    "vi": "Không giới hạn máu · Tốc độ cố định",
+    "de": "Unbegrenzte Leben · Gleichmäßiges Tempo"
+  },
+  "Launch defense": {
+    "vi": "Bắt đầu phòng thủ",
+    "de": "Verteidigung starten"
+  },
+  "Freeze": {
+    "vi": "Đóng băng",
+    "de": "Einfrieren"
+  },
+  "Nuke": {
+    "vi": "Bom",
+    "de": "Bombe"
+  },
+  "Health": {
+    "vi": "Hồi máu",
+    "de": "Heilung"
+  },
+  "Boss": {
+    "vi": "Boss",
+    "de": "Boss"
+  },
+  "Tap to listen": {
+    "vi": "Chạm để nghe",
+    "de": "Antippen zum Anhören"
+  },
+  "Base shield": {
+    "vi": "Lá chắn",
+    "de": "Basisschild"
+  },
+  "Combo": {
+    "vi": "Chuỗi đúng",
+    "de": "Kombo"
+  },
+  "Remaining": {
+    "vi": "Còn lại",
+    "de": "Verbleibend"
+  },
+  "Defense arena": {
+    "vi": "Khu vực phòng thủ",
+    "de": "Verteidigungsarena"
+  },
+  "Target locked": {
+    "vi": "Đã khóa mục tiêu",
+    "de": "Ziel erfasst"
+  },
+  "Awaiting target": {
+    "vi": "Đang tìm mục tiêu",
+    "de": "Zielsuche"
+  },
+  "Type the first letter": {
+    "vi": "Gõ chữ cái đầu tiên",
+    "de": "Ersten Buchstaben tippen"
+  },
+  "Release target": {
+    "vi": "Đổi mục tiêu",
+    "de": "Ziel freigeben"
+  },
+  "Tap a meteor to hear it. Esc to pause.": {
+    "vi": "Chạm thiên thạch để nghe. Esc để tạm dừng.",
+    "de": "Meteor antippen zum Anhören. Esc zum Pausieren."
+  },
+  "Armor": {
+    "vi": "Giáp",
+    "de": "Panzerung"
+  },
+  "Mission paused": {
+    "vi": "Trận đấu tạm dừng",
+    "de": "Mission pausiert"
+  },
+  "Leave this game?": {
+    "vi": "Kết thúc trận đấu?",
+    "de": "Spiel beenden?"
+  },
+  "Mission complete": {
+    "vi": "Trận đấu kết thúc",
+    "de": "Mission abgeschlossen"
+  },
+  "points": {
+    "vi": "điểm",
+    "de": "Punkte"
+  },
+  "Words cleared": {
+    "vi": "Từ đã hoàn thành",
+    "de": "Abgeschlossene Wörter"
+  },
+  "Best combo": {
+    "vi": "Chuỗi đúng tốt nhất",
+    "de": "Beste Kombo"
+  },
+  "Typing accuracy": {
+    "vi": "Độ chính xác",
+    "de": "Tippgenauigkeit"
+  },
+  "Play again": {
+    "vi": "Chơi lại",
+    "de": "Erneut spielen"
+  },
+  "Back to deck": {
+    "vi": "Về bộ thẻ",
+    "de": "Zurück zum Kartenset"
+  },
+  "No playable cards.": {
+    "vi": "Bộ thẻ cần có thuật ngữ và nghĩa.",
+    "de": "Die Karten benötigen Begriff und Bedeutung."
+  },
+  "Speech is not available in this browser.": {
+    "vi": "Trình duyệt này không hỗ trợ đọc từ.",
+    "de": "Sprachausgabe ist in diesem Browser nicht verfügbar."
+  },
+  "Loading game…": {
+    "vi": "Đang tải trò chơi…",
+    "de": "Spiel wird geladen…"
+  },
+  "Game": {
+    "vi": "Trò chơi",
+    "de": "Spiel"
+  },
+  "Paused": {
+    "vi": "Đã tạm dừng",
+    "de": "Pausiert"
+  },
+  "Resume": {
+    "vi": "Tiếp tục",
+    "de": "Fortsetzen"
+  },
+  "Difficulty": {
+    "vi": "Độ khó",
+    "de": "Schwierigkeit"
+  },
+  "Direction": {
+    "vi": "Chiều hiển thị",
+    "de": "Richtung"
+  },
+  "Hard": {
+    "vi": "Khó",
+    "de": "Schwer"
+  },
+  "Easy": {
+    "vi": "Dễ",
+    "de": "Leicht"
+  },
+  "Sound": {
+    "vi": "Âm thanh",
+    "de": "Ton"
+  },
+  "Score": {
+    "vi": "Điểm",
+    "de": "Punkte"
+  },
+  "Train station": {
+    "vi": "nhà ga",
+    "de": "Bahnhof"
+  },
+  "Adventure": {
+    "vi": "cuộc phiêu lưu",
+    "de": "Abenteuer"
   }
 }

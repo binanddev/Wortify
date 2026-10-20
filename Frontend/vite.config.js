@@ -36,6 +36,7 @@ export default defineConfig(({ mode }) => {
               {
                 name(id) {
                   if (!id.includes("node_modules")) return null;
+                  if (/[\\/]phaser[\\/]/.test(id)) return "game-engine";
                   if (/react-dom|scheduler|[\\/]react[\\/]/.test(id))
                     return "react-runtime";
                   if (/framer-motion|motion-dom|motion-utils/.test(id))

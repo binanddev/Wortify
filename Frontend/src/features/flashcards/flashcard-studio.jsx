@@ -10,7 +10,8 @@ import { cardSolution } from "../learning/skip-learning.js";
 import { useAnswerClock } from "../learning/use-answer-clock.js";
 import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { useLearningSync, pendingLearning } from "../learning/learning-sync.js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
+const FlashcardDefense = lazy(() => import("./defense/FlashcardDefense.jsx"));
 import {
   endpoint,
   useResource,
@@ -136,6 +137,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       initialOptions.frontVoice || (lang === "de" ? "de-DE" : "en-US"),
   }));
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [defenseOpen,setDefenseOpen]=useState(false);
   const [stars, setStars] = useState(() => [...initialStars]),
     [progress, setProgress] = useState(() => initialProgress);
   const [order, setOrder] = useState(() => studyCards(data.cards, options)),
@@ -516,6 +518,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
   return (
     <Page className="flashcard-workspace">
       <Heading title={data.deck.title} />
+      {defenseOpen && <Suspense fallback={<Status>{tr("Loading game…")}</Status>}><FlashcardDefense lang={lang} userId={userId} initialDeck={{...data,learning:{...data.learning,progress}}} onClose={()=>setDefenseOpen(false)}/></Suspense>}
       <SidebarTools>
         <div className="flash-icon-row">
           <ContentSwitcher lang={lang} kind="decks" currentId={id}/>
@@ -528,6 +531,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
             ["flash", "cards", "Card"],
             ["learn", "spark", "Study"],
             ["test", "exercise", "Check"],
+            ["defense", "play", "Game"],
           ].map(([mode, icon, label]) => (
             <button
               key={mode}
@@ -535,6 +539,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
               onClick={() => {
                 setSettingsOpen(false);
                 setRunning(false);
+                if(mode==="defense"){setDefenseOpen(true);return;}
                 patch({ mode });
               }}
             >
