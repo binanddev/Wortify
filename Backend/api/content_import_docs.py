@@ -26,13 +26,14 @@ def openapi(request):
         responses[str(code)] = {'description':description, 'content':{'application/json':{'schema':{'type':'object','properties':response_properties}}}}
     properties = {
         'text': {'type':'string','description':'Complete Wortify Text 1 document'},
+        'mode': {'type':'string','enum':['append','upsert','update'],'description':'Overrides MODE in the content. append skips existing items; upsert adds/updates; update rejects missing paths.'},
         'preview': {'type':'boolean','default':False},
         'confirm': {'type':'string','enum':['IMPORT']},
         'preview_token': {'type':'string','description':'Token from preview; valid 24 hours'},
     }
     operation = {
         'operationId':'importSystemContent', 'summary':'Preview or publish public system content',
-        'description':'First send text and preview=true. Check counts, then send identical text, confirm=IMPORT and preview_token. New UUID only for new content. Retry unchanged IDs after a timeout. Fix 400 errors and preview again.',
+        'description':'First send text and preview=true. Check per-path changes and counts, then send identical text, confirm=IMPORT and preview_token. New UUID for each batch or correction. MODE append reuses folders and skips existing items; upsert adds/updates; update requires existing paths. Fetch catalog before updates. Stale previews must be regenerated. Retry unchanged IDs after a timeout. Fix 400 errors and preview again.',
         'security':[{'ImportKey':[]}],
         'parameters':[{'name':'section','in':'query','required':True,'schema':{'type':'string','enum':['flashcards','practice','reading']}}],
         'requestBody':{'required':True,'content':{'application/json':{'schema':{'type':'object','required':['text'],'additionalProperties':False,'properties':properties}}}},
@@ -41,8 +42,11 @@ def openapi(request):
     rules = {'operationId':'getAuthoringRules','summary':'Read complete syntax and lesson types','responses':{'200':{'description':'Authoring rules','content':{'text/plain':{'schema':{'type':'string'}}}}}}
     return JsonResponse({
         'openapi':'3.1.0',
-        'info':{'title':'Wortify content import','version':'1.0.0','description':'Public Flashcard, Practice Hub and Reading content credited to Wortify. Read the guide first. Direct requests max 8 MB; multipart files max 50 MB.'},
+        'info':{'title':'Wortify content import','version':'2.0.0','description':'Public Flashcard, Practice Hub and Reading content credited to Wortify. Read the guide first. Direct requests max 8 MB; multipart files max 50 MB.'},
         'servers':[{'url':request.build_absolute_uri('/').rstrip('/')}],
         'components':{'securitySchemes':{'ImportKey':{'type':'http','scheme':'bearer'}}},
-        'paths':{'/api/import/guide/':{'get':rules},'/api/import/content/':{'post':operation}},
+        'paths':{'/api/import/guide/':{'get':rules},'/api/import/content/':{'post':operation,'get':{
+            'operationId':'getSystemCatalog','summary':'Read current Wortify paths or export an item for editing','security':[{'ImportKey':[]}],
+            'parameters':[{'name':'section','in':'query','required':True,'schema':{'type':'string','enum':['flashcards','practice','reading']}},{'name':'language','in':'query','required':True,'schema':{'type':'string','enum':['de','en']}},{'name':'item','in':'query','schema':{'type':'integer'}},{'name':'kind','in':'query','schema':{'type':'string'}}],
+            'responses':{'200':{'description':'items (id, kind, path, count), revision, batches; or document for item and kind'},'401':{'description':'Invalid key'}}}}},
     })

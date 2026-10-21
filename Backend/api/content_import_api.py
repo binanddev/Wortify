@@ -37,7 +37,7 @@ def settings(request):
 
 
 @csrf_exempt
-@require_http_methods(['POST'])
+@require_http_methods(['GET','POST'])
 def upload(request):
     # This route never accepts session authentication; exemption applies only to bearer keys.
     scheme, _, raw = request.headers.get('Authorization', '').partition(' ')
@@ -57,5 +57,8 @@ def upload(request):
 @endpoint
 def _import(request):
     from .content_input import import_input
+    if request.method == 'GET':
+        from .content_merge import catalog
+        return catalog(request)
     document, options = import_input(request)
     return publish_document(request, document, **options)

@@ -193,13 +193,13 @@ def parse_package(text):
         s=raw.strip()
         if not s or s.startswith('#'): continue
         key, sep, value=s.partition(':');value=value.strip()
-        if key in ('WORTIFY','ID','TITLE','LANGUAGE') and sep:
+        if key in ('WORTIFY','ID','TITLE','LANGUAGE','MODE') and sep:
             if section or block: raise ValueError(f'Line {number}: Package headers must come first.')
             if key in header_seen: raise ValueError(f'Line {number}: Duplicate {key}.')
             header_seen.add(key)
             if key=='WORTIFY':
                 if value!='1': raise ValueError(f'Line {number}: Use WORTIFY: 1.')
-            else: document[{'ID':'id','TITLE':'title','LANGUAGE':'language'}[key]]=value
+            else: document[{'ID':'id','TITLE':'title','LANGUAGE':'language','MODE':'mode'}[key]]=value
         elif key in ('SECTION','FOLDER','LEVEL','TOPIC') and sep:
             flush()
             if key=='SECTION':
@@ -214,5 +214,5 @@ def parse_package(text):
         elif block: block.append((number,s))
         else: raise ValueError(f'Line {number}: Unexpected field; start a lesson with EXERCISE or THEORY.')
     flush()
-    if header_seen != {'WORTIFY','ID','TITLE','LANGUAGE'}: raise ValueError('Required headers: WORTIFY, ID, TITLE, LANGUAGE.')
+    if not {'WORTIFY','ID','TITLE','LANGUAGE'}.issubset(header_seen): raise ValueError('Required headers: WORTIFY, ID, TITLE, LANGUAGE.')
     return document

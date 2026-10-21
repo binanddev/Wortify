@@ -991,7 +991,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
     </Page>
   );
 }
-function ImportCards({ api, id, reload, onClose, lang }) {
+export function ImportCards({ api, id, reload, onClose, lang }) {
   useLocale();
   const [preview, setPreview] = useState(null);
   return (
@@ -1004,7 +1004,7 @@ function ImportCards({ api, id, reload, onClose, lang }) {
       onSave={async (v, s) => {
         if (preview) {
           await api(`decks/${id}/import/`, "POST", { token: preview.token }, s);
-          reload();
+          await reload();
         } else {
           const p = await api(`decks/${id}/import/`, "POST", v, s);
           setPreview(p);

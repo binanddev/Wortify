@@ -1,7 +1,6 @@
+import CardManager from "./card-manager.jsx";
 import { studyCards, sourceCardId, isExample, termProgress } from "./flashcard-engine.js";
 import ContentSwitcher from "../../components/navigation/content-switcher.jsx";
-import {cardFields} from "./card-fields.js";
-import {request} from "../../lib/core.js";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import QuickCardEditor from "./quick-card-editor.jsx";
 import { useWindowActive } from "../../lib/core.js";
@@ -21,7 +20,6 @@ import {
 } from "../../lib/core.js";
 import {
   Btn,
-  Editor,
   Icon,
   Field,
   Select,
@@ -29,7 +27,6 @@ import {
   Heading,
   SidebarTools,
   Status,
-  Link,
   Confirm,
   FlipCard,
   Choice,
@@ -48,6 +45,7 @@ const defaults = {
   mode: "flash",
   shuffle: false,
   includeExamples: false,
+  showExampleAfterAnswer: false,
   exampleOrder: "after",
   exampleDirection: "front",
   direction: "front",
@@ -81,7 +79,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
   useLocale();
   const [data, setData] = useState(initialData);
   const [editingCard, setEditingCard] = useState(null);
-  const [addingCard,setAddingCard]=useState(false);
+  const [managingCards,setManagingCards]=useState(false);
   const route = useRoute();
   const requestedMode = new URLSearchParams(route.split("?")[1]).get("mode");
   const windowActive = useWindowActive();
@@ -151,6 +149,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     [started, setStarted] = useState(0),
     [elapsed, setElapsed] = useState(0),
     [completed, setCompleted] = useState(false);
+  const [flashRevealed, setFlashRevealed] = useState(false);
   const [flashSkipped, setFlashSkipped] = useState(false);
   const [flashEnded, setFlashEnded] = useState(false);
   const [testSkipped, setTestSkipped] = useState({});
@@ -196,7 +195,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     active?.id,
     options.mode === "flash" && !flashSkipped,
   );
-  useEffect(() => setFlashSkipped(false), [active?.id]);
+  useEffect(() => { setFlashSkipped(false); setFlashRevealed(false); }, [active?.id, options.direction]);
   useEffect(() => savePreference(`${key}:options`, options), [options, key]);
   useEffect(() => savePreference(`${key}:stars`, stars), [stars, key]);
   useEffect(() => savePreference(`${key}:progress`, termProgress(progress)), [progress, key]);
@@ -262,7 +261,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
         return;
       if (e.code === "Space") {
         e.preventDefault();
-        setFlipped((v) => !v);
+        setFlipped((v) => !v); setFlashRevealed(true);
       }
       if (e.key === "ArrowRight") step(1);
       if (e.key === "ArrowLeft") step(-1);
@@ -522,8 +521,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       <SidebarTools>
         <div className="flash-icon-row">
           <ContentSwitcher lang={lang} kind="decks" currentId={id}/>
-          <Btn icon="plus" onClick={()=>setAddingCard(true)}>{tr("Add card")}</Btn>
-          <Link className="btn flash-icon-link" title={tr("Manage terms")} aria-label={tr("Manage terms")} to={`/${lang}/flashcard/deck/${id}/edit`}><Icon name="edit"/></Link>
+          <Btn icon="cards" onClick={()=>setManagingCards(true)}>{tr("Manage cards")}</Btn>
         </div>
         <Status error={sync.error} />
         <div className="flash-mode-picker" aria-label={tr("Study mode")}>
@@ -581,6 +579,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
         >
           <div className="flash-settings">
             <label className="check-line"><input type="checkbox" checked={options.includeExamples} onChange={e=>patch({includeExamples:e.target.checked})}/>{tr("Study example sentences")}</label>
+            {!options.includeExamples && <label className="check-line"><input type="checkbox" checked={options.showExampleAfterAnswer} onChange={e=>patch({showExampleAfterAnswer:e.target.checked})}/>{tr("Show example and translation after answering")}</label>}
             {options.includeExamples && <>
               <Select label={tr("Example order")} value={options.exampleOrder} onChange={exampleOrder=>patch({exampleOrder})}>
                 <option value="after">{tr("After its term")}</option><option value="mixed">{tr("Mixed with terms")}</option>
@@ -737,12 +736,14 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
         </PracticeModal>
       )}
       <Status error={error} />
-      {addingCard&&<Editor title={tr("Add card")} fields={cardFields} onClose={()=>setAddingCard(false)} onSave={async(values,signal)=>{
-        const result=await request(endpoint(lang,`decks/${id}/cards/`),'POST',values,signal);
-        const card={...values,id:result.id};
-        setData(old=>({...old,cards:[...old.cards,card]}));
-        if(!options.starredOnly)setOrder(old=>[...old,card]);
-      }}/>}
+      {managingCards && <CardManager lang={lang} deckId={id} cards={data.cards}
+        onClose={()=>setManagingCards(false)} onUpdated={cardUpdated}
+        onCardsChanged={cards=>{
+          setData(old=>({...old,cards}));
+          setOrder(studyCards(cards,options)); setIndex(0);
+          setRunning(false); setQuestion(null); setFeedback(null); setCompleted(false);
+          setSessionCards([]); setTest([]); setTestAnswers({}); setTestChecked({}); setTestResult(null);
+        }}/>}
       {editingCard && <QuickCardEditor card={editingCard} lang={lang} deckId={id}
         notice={options.mode === "test" ? tr("Saving refreshes this test and clears its answers because choices may have changed.") : undefined}
         onClose={() => setEditingCard(null)} onSaved={cardUpdated} />}
@@ -775,13 +776,15 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
             <FlipCard
               front={active.german_text}
               back={active.vietnamese_meaning}
-              example={active.example_german}
+              example={null}
               flipped={flipped}
               setFlipped={(v) => {
                 setFlipped(v);
+                setFlashRevealed(true);
                 audio.tick();
               }}
             />
+            <ExampleFeedback card={active} options={options} revealed={flashRevealed || flashSkipped}/>
             <div className="toolbar flashcard-actions flashcard-review-controls">
               {flashSkipped ? (
                 <Btn
@@ -832,7 +835,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                 isDisabled={index === order.length - 1}
                 onClick={() => step(1)}
               >{tr("Next →")}</Btn>
-              <Btn icon="flip" onClick={() => setFlipped((v) => !v)}>{tr("Flip card · Space")}</Btn>
+              <Btn icon="flip" onClick={() => {setFlipped((v) => !v); setFlashRevealed(true);}}>{tr("Flip card · Space")}</Btn>
               <Btn
                 icon="sound"
                 onClick={() =>
@@ -914,6 +917,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                 feedback={feedback?.correct}
                 disabled={feedback?.correct || feedback?.skipped}
               />
+              <ExampleFeedback card={question.card} options={options} revealed={!!feedback}/>
               {feedback?.skipped && (
                 <AnswerReveal answers={cardSolution(question)} />
               )}
@@ -985,6 +989,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                     feedback={testChecked[i]}
                     disabled={Object.hasOwn(testChecked, i)}
                   />
+                  <ExampleFeedback card={q.card} options={options} revealed={Object.hasOwn(testChecked,i)}/>
                   {testSkipped[i] && <AnswerReveal answers={cardSolution(q)} />}
                   <div className="flashcard-actions">
                     {!Object.hasOwn(testChecked, i) ? (
@@ -1164,4 +1169,9 @@ function QuestionUI({
       </div>
     </div>
   );
+}
+
+function ExampleFeedback({card,options,revealed}) {
+  if (!revealed || !options.showExampleAfterAnswer || options.includeExamples || isExample(card) || !card?.example_german) return null;
+  return <div className="answer-reveal" aria-live="polite"><p>{card.example_german}</p>{card.example_vietnamese && <p className="muted">{card.example_vietnamese}</p>}</div>;
 }

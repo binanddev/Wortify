@@ -21,7 +21,7 @@ CARD_FIELDS = {"german_text":500,"vietnamese_meaning":500,"example_german":2000,
 
 
 def validate_document(data):
-    if not isinstance(data,dict) or set(data)-{'format','version','id','title','language','flashcards','practice','reading'}:
+    if not isinstance(data,dict) or set(data)-{'format','version','id','title','language','flashcards','practice','reading','mode'}:
         raise ValueError('Unknown package fields.')
     if data.get('format')!='wortify-content' or data.get('version')!=1:
         raise ValueError('Use wortify-content version 1.')
@@ -32,6 +32,7 @@ def validate_document(data):
         return value.strip()
     data=deepcopy(data); data['title']=title(data.get('title'))
     if data.get('language') not in ('de','en'): raise ValueError('Language must be de or en.')
+    if data.get('mode') is not None and data['mode'] not in ('append','upsert','update'): raise ValueError('Invalid import mode.')
     counts=Counter(); total=0
     def walk(nodes,section,depth=0):
         nonlocal total
@@ -120,9 +121,15 @@ def materialize(package,user):
 
 
 @management('content.import')
-@require_http_methods(['POST'])
+@require_http_methods(['GET','POST','PATCH','DELETE'])
 @transaction.atomic
 def upload(request):
+    if request.method in ('PATCH','DELETE'):
+        from .content_merge import manage
+        return manage(request)
+    if request.method == 'GET':
+        from .content_merge import catalog
+        return catalog(request)
     from .content_input import import_input
     document, options = import_input(request)
     return publish_document(request, document, **options)
@@ -147,20 +154,36 @@ def publish_document(request, data, *, preview=False, confirm=None, preview_toke
         if previous_digest != digest:
             raise ValueError('This package ID already has different content. Use a new UUID for a new package.')
     from django.core import signing
-    proof = {'digest': digest, 'id': document['id'], 'user': request.user.pk}
+    changes=[]; revisions={}
+    if document.get('mode') and not existing:
+        from .content_merge import publisher, plan
+        user=publisher(create=not preview)
+        if user: get_user_model().objects.select_for_update().get(pk=user.pk)
+        changes,revisions=plan(document)
+    proof = {'digest': digest, 'id': document['id'], 'user': request.user.pk, **({'revisions':revisions} if document.get('mode') else {})}
     if preview:
-        return JsonResponse({'id':document['id'],'title':document['title'],'language':document['language'],'counts':counts,'already_published':bool(existing),'publisher':'Wortify','visibility':'public','preview_token':signing.dumps(proof,salt='content-preview'),'digest':digest})
-    if require_preview and not existing:
+        return JsonResponse({'id':document['id'],'title':document['title'],'language':document['language'],'counts':counts,'already_published':bool(existing),'publisher':'Wortify','visibility':'public','preview_token':signing.dumps(proof,salt='content-preview'),'digest':digest,'changes':changes,'mode':document.get('mode','legacy')})
+    if (require_preview or document.get('mode')) and not existing:
         try:
             if signing.loads(preview_token or '',salt='content-preview',max_age=86400) != proof:
                 raise ValueError('Preview token does not match this content or account. Preview again.')
         except signing.BadSignature:
             raise ValueError('Preview this exact content first. The preview token is valid for 24 hours.')
     if confirm!='IMPORT': raise ValueError('Preview the package before importing.')
-    get_user_model().objects.select_for_update().get(pk=request.user.pk)
+    if not document.get('mode'): get_user_model().objects.select_for_update().get(pk=request.user.pk)
     package=existing or SystemContentPackage.objects.create(id=document['id'],title=document['title'],language=document['language'],digest=digest,document=document,counts=counts)
-    result=materialize(package,request.user)
-    publish_public(package)
+    if document.get('mode'):
+        if existing:
+            result={'already_imported':True,'counts':counts}
+        else:
+            from .content_merge import apply, publisher
+            owner=publisher(create=True)
+            summary=apply(document,owner,changes)
+            result={'counts':counts,'changes':changes,'summary':summary,'already_imported':False}
+            PackageReceipt.objects.create(package=package,user=owner,result=result)
+    else:
+        result=materialize(package,request.user)
+        publish_public(package)
     if not existing: audit(request,request.user,f'Published Wortify content package {package.pk}: {package.title}')
     return JsonResponse({'id':str(package.pk),'publisher':'Wortify','visibility':'public','digest':digest,**result},status=200 if existing else 201)
 
@@ -168,9 +191,10 @@ def publish_document(request, data, *, preview=False, confirm=None, preview_toke
 @endpoint
 @require_http_methods(['GET'])
 def library(request):
-    rows=list(SystemContentPackage.objects.filter(language=request.language).order_by('-created_at').values('id','title','counts','created_at'))
+    rows=list(SystemContentPackage.objects.filter(language=request.language).order_by('-created_at').values('id','title','counts','created_at','document'))
     imported=set(PackageReceipt.objects.filter(user=request.user).values_list('package_id',flat=True))
     rows = [row for row in rows if any(row['counts'].get(k,0) for k in ('exercise','theory','reading','practice_folders','reading_folders','flashcards_folders','decks','cards'))]
+    rows=[row for row in rows if not row.pop('document').get('mode')]
     for row in rows: row.update(publisher='Wortify',imported=row['id'] in imported,counts=system_counts(row['counts']))
     return JsonResponse({'packages':rows})
 
@@ -180,6 +204,9 @@ def library(request):
 @transaction.atomic
 def copy(request,pk):
     package=get_object_or_404(SystemContentPackage,pk=pk,language=request.language)
+    if package.document.get('mode'):
+        from django.http import Http404
+        raise Http404
     get_user_model().objects.select_for_update().get(pk=request.user.pk)
     return JsonResponse(materialize(package,request.user))
 

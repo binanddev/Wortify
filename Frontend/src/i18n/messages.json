@@ -5718,5 +5718,89 @@
   "Start typing any visible answer to lock a target.": {
     "vi": "Gõ đáp án của thẻ bất kỳ để khóa mục tiêu.",
     "de": "Tippe eine sichtbare Antwort, um ein Ziel zu erfassen."
+  },
+  "Manage cards": {
+    "vi": "Quản lý thẻ",
+    "de": "Karten verwalten"
+  },
+  "Search cards": {
+    "vi": "Tìm thẻ",
+    "de": "Karten suchen"
+  },
+  "Show example and translation after answering": {
+    "vi": "Hiện ví dụ và nghĩa sau khi trả lời",
+    "de": "Beispiel und Übersetzung nach der Antwort anzeigen"
+  },
+  "Wortify content": {
+    "vi": "Nội dung Wortify",
+    "de": "Wortify-Inhalte"
+  },
+  "Import history": {
+    "vi": "Lịch sử import",
+    "de": "Importverlauf"
+  },
+  "Import mode": {
+    "vi": "Chế độ import",
+    "de": "Importmodus"
+  },
+  "Add new only": {
+    "vi": "Chỉ thêm mới",
+    "de": "Nur neue Inhalte"
+  },
+  "Add and update": {
+    "vi": "Thêm và cập nhật",
+    "de": "Hinzufügen und aktualisieren"
+  },
+  "Update existing only": {
+    "vi": "Chỉ cập nhật",
+    "de": "Nur vorhandene aktualisieren"
+  },
+  "Import here": {
+    "vi": "Import vào đây",
+    "de": "Hier importieren"
+  },
+  "Review changes": {
+    "vi": "Xem trước thay đổi",
+    "de": "Änderungen prüfen"
+  },
+  "Delete selected content": {
+    "vi": "Xóa nội dung đã chọn",
+    "de": "Ausgewählte Inhalte löschen"
+  },
+  "Delete selected items and their contents?": {
+    "vi": "Xóa các mục đã chọn và nội dung bên trong?",
+    "de": "Ausgewählte Elemente samt Inhalt löschen?"
+  },
+  "Content details": {
+    "vi": "Chi tiết nội dung",
+    "de": "Inhaltsdetails"
+  },
+  "Edit as import": {
+    "vi": "Sửa bằng import",
+    "de": "Als Import bearbeiten"
+  },
+  "create": {
+    "vi": "Tạo mới",
+    "de": "Erstellen"
+  },
+  "reuse": {
+    "vi": "Dùng thư mục có sẵn",
+    "de": "Ordner wiederverwenden"
+  },
+  "skip": {
+    "vi": "Bỏ qua",
+    "de": "Überspringen"
+  },
+  "update": {
+    "vi": "Cập nhật",
+    "de": "Aktualisieren"
+  },
+  "unchanged": {
+    "vi": "Không đổi",
+    "de": "Unverändert"
+  },
+  "Load more": {
+    "vi": "Xem thêm",
+    "de": "Mehr laden"
   }
 }

@@ -34,6 +34,11 @@ def import_input(request):
         except UnicodeError: raise ValueError('Use UTF-8 text.')
     else: raise ValueError('Send a .txt/.json file, text/plain body, or JSON with a text field.')
     document, compact=decode_text(text)
+    if not isinstance(document,dict): raise ValueError("Content package must be an object.")
+    mode=params.get('mode')
+    if mode: document['mode']=mode
+    language=request.GET.get('language')
+    if language and document.get('language')!=language: raise ValueError('Content language does not match the selected library language.')
     section=request.GET.get('section') or params.get('section')
     if section:
         if section not in ('flashcards','practice','reading'):raise ValueError('Invalid import section.')

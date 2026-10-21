@@ -1,5 +1,17 @@
 # Change Log
 
+### [v1.9.0] - 2026-10-21 | Incremental content library management
+
+- Added Library, Import and History views for staff and superusers: search, folder navigation/creation, multi-selection, rename, move, delete and content-detail modals.
+- Added append, upsert and update imports for Flashcards, Practice Hub and Reading. Batches reuse exact folder paths; deck updates preserve matching card IDs and omitted cards, while lesson updates replace submitted payloads. Personal copies remain independent.
+- Added per-path previews, library-revision checks, atomic publication and idempotent retries. Import keys can read the system catalog and export content for editing; management mutations remain session-authenticated.
+- Updated copied AI instructions, OpenAPI, examples and standalone guides with incremental import rules and current library/editing context.
+- Reading discovery uses current materialized content for legacy packages, avoiding duplicate or stale readings after updates and deletion.
+- Added optional examples and translations after answers, disabled while studying examples as virtual cards. Combined card creation and management into a modal with search, edit, delete and import.
+- Validation: 43 targeted backend tests, 149 frontend tests and production build passed. Static desktop/mobile browser fixtures verified library navigation, detail/edit modals, preview/publication, rename and history. No application server was started; live deployment verification remains pending.
+
+---
+
 ### [v1.8.0] - 2026-10-21 | Word Flight and isolated gameplay
 
 - Added Word Flight: vocabulary gates, tap/Space flight controls, drones, storm rounds and shields, with Classic, Time Attack and Zen options.

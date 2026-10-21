@@ -6,7 +6,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.db import transaction
 from django.contrib.auth import get_user_model
 from copy import deepcopy
-from practice.models import ReadingLesson, SystemContentPackage
+from practice.models import ReadingLesson, SystemContentPackage, PackageReceipt
 from .common import endpoint, body
 
 
@@ -17,6 +17,16 @@ def system_readings(nodes, prefix=''):
             yield from system_readings(node.get('children', []), path)
         elif node.get('kind') == 'reading':
             yield path, node
+
+
+def system_node(package, path):
+    if package.document.get('mode'): raise Http404
+    if PackageReceipt.objects.filter(package=package,user__username='wortify-publisher').exists():
+        source=get_object_or_404(ReadingLesson,owner__username='wortify-publisher',language=package.language,source_key=f'system:{package.pk}:{path}')
+        return {'title':source.title,'payload':source.payload,'level':source.level,'topic':source.topic},source
+    node=next((n for p,n in system_readings(package.document.get('reading',[])) if p==path),None)
+    if not node: raise Http404
+    return node,None
 
 
 def summary(key, title, level, topic, source):
@@ -35,10 +45,21 @@ def library(request):
     except ValueError:
         raise ValueError('Invalid page.')
     rows = []
-    for package in SystemContentPackage.objects.filter(language=request.language).order_by('-created_at'):
+    packages=list(SystemContentPackage.objects.filter(language=request.language).order_by('-created_at'))
+    materialized=set(PackageReceipt.objects.filter(package__in=packages,user__username='wortify-publisher').values_list('package_id',flat=True))
+    native={r.source_key:r for r in ReadingLesson.objects.filter(language=request.language,owner__username='wortify-publisher').exclude(source_key='')}
+    handled=set()
+    for package in packages:
+        if package.document.get('mode'): continue
         for path, node in system_readings(package.document.get('reading', [])):
-            rows.append(summary(f'system:{package.pk}:{path}', node['title'], node.get('level', ''), node.get('topic', ''), 'system'))
-    for lesson in ReadingLesson.objects.filter(language=request.language, visibility='public', owner__is_active=True).order_by('-updated_at').values('id', 'title', 'level', 'topic', 'owner__is_staff', 'owner__is_superuser'):
+            key=f'system:{package.pk}:{path}'
+            if package.pk in materialized:
+                current=native.get(key)
+                if not current: continue
+                node={'title':current.title,'level':current.level,'topic':current.topic}
+                handled.add(current.pk)
+            rows.append(summary(key, node['title'], node.get('level', ''), node.get('topic', ''), 'system'))
+    for lesson in ReadingLesson.objects.filter(language=request.language, visibility='public', owner__is_active=True).exclude(pk__in=handled).order_by('-updated_at').values('id', 'title', 'level', 'topic', 'owner__is_staff', 'owner__is_superuser'):
         rows.append(summary(f"community:{lesson['id']}", lesson['title'], lesson['level'], lesson['topic'], 'system' if lesson['owner__is_staff'] or lesson['owner__is_superuser'] else 'community'))
     topics = sorted(set(row['topic'] for row in rows if row['topic']), key=str.casefold)
     rows = [r for r in rows if (not query or query in (r['title']+' '+r['topic']).casefold()) and (not level or r['level'] == level) and (not topic or r['topic'].casefold() == topic) and (not source or r['source'] == source)]
@@ -67,9 +88,8 @@ def detail(request):
             pk = uuid.UUID(pk)
         except (ValueError, AttributeError): raise Http404
         package = get_object_or_404(SystemContentPackage, pk=pk, language=request.language)
-        for node_path, node in system_readings(package.document.get('reading', [])):
-            if node_path == path:
-                return JsonResponse({'title': node['title'], 'payload': node['payload']})
+        node,_=system_node(package,path)
+        return JsonResponse({'title':node['title'],'payload':node['payload']})
     raise Http404
 
 
@@ -95,8 +115,7 @@ def save(request):
             _,pk,path=key.split(':');pk=uuid.UUID(pk)
         except (ValueError,AttributeError): raise Http404
         package=get_object_or_404(SystemContentPackage,pk=pk,language=request.language)
-        node=next((n for p,n in system_readings(package.document.get('reading',[])) if p==path),None)
-        if not node: raise Http404
+        node,source=system_node(package,path)
     else: raise Http404
     payload=deepcopy(node['payload'])
     copies=[]
