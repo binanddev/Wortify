@@ -61,10 +61,10 @@ export default function WindowsTaskbar({
               <nav id="windows-start-navigation" aria-label={tr("Start menu")}>
                 {[
                   ["flashcard", "cards", "Decks"],
-                  ["practice", "book", "Exercises"],
+                  ["practice", "exercise", "Exercises"],
                   ["create", "edit", "Create content"],
-                  ["profile", "user", "Learning journey"],
-                  ["explore", "search", "Explore"],
+                  ["profile", "journey", "Learning journey"],
+                  ["explore", "explore", "Explore"],
                   ["classes", "users", "Classes & sharing"],
                   ["settings", "settings", "Settings"],
                 ].map(([path, icon, label]) => (

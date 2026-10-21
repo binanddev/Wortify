@@ -1,3 +1,5 @@
+import CardImagePicker from "./card-image-picker.jsx";
+import CardImage from "./card-image.jsx";
 import VisibilitySelect from "../../components/ui/VisibilitySelect.jsx";
 import WorkspaceManager from "./workspace-manager.jsx";
 import ContentSwitcher from "../../components/navigation/content-switcher.jsx";
@@ -219,7 +221,7 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
             startContent={<Icon name="search" />}
           />
           <div className="flash-icon-row">
-            <Link className="btn flash-icon-link" to={`/${lang}/flashcard/discover`} title={tr("Explore")} aria-label={tr("Explore")}><Icon name="search"/></Link>
+            <Link className="btn flash-icon-link" to={`/${lang}/flashcard/discover`} title={tr("Explore")} aria-label={tr("Explore")}><Icon name="explore"/></Link>
             <Btn primary icon="plus" onClick={() => setPanel("add")}>{tr("Add new")}</Btn>
             <Btn icon="select" aria-pressed={selecting} onClick={() => { setSelecting(!selecting); setChecked([]); }}>{tr("Select decks")}</Btn>
             <Btn icon="settings" onClick={() => { setPanel("settings"); }}>{tr("Workspace options")}</Btn>
@@ -238,7 +240,7 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
             <div className="flash-selection-summary"><span role="status">{tr("{count} selected", {count:checked.length})}</span><Btn icon="close" onClick={() => { setSelecting(false); setChecked([]); }}>{tr("Cancel selection")}</Btn></div>
             <label><input type="checkbox" checked={decks.length > 0 && decks.every(d => checked.includes(d.id))} ref={el => { if(el) el.indeterminate=checked.length>0 && !decks.every(d=>checked.includes(d.id)); }} onChange={e => setChecked(e.target.checked ? decks.map(d => d.id) : [])}/>{tr("Select all")}</label>
             <div className="flash-icon-row">
-              <Btn icon="folder" isDisabled={!checked.length} onClick={() => { setDestination(""); setBulk("move"); }}>{tr("Move to folder")}</Btn>
+              <Btn icon="move" isDisabled={!checked.length} onClick={() => { setDestination(""); setBulk("move"); }}>{tr("Move to folder")}</Btn>
               <Btn icon="trash" isDisabled={!checked.length} onClick={() => setBulk("delete")}>{tr("Delete selected")}</Btn>
             </div>
           </section>}
@@ -592,6 +594,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                   front={reverse ? card.vietnamese_meaning : card.german_text}
                   back={reverse ? card.german_text : card.vietnamese_meaning}
                   example={card.example_german}
+                  image={card}
                   {...{ flipped }}
                   setFlipped={flip}
                 />
@@ -771,6 +774,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                                 "example_german",
                                 "example_vietnamese",
                                 "part_of_speech",
+                                "image_url", "image_source_url", "image_credit", "image_license", "image_license_url",
                               ].map((k) => [k, c[k] || ""]),
                             ),
                           ),
@@ -930,7 +934,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
             ? (values, set) => (
                 <DeckOptions {...{ values, set, folders: data.folders }} />
               )
-            : null}
+            : edit.type === "card" ? (values,set)=><CardImagePicker values={values} set={set} lang={lang}/> : null}
         </Editor>
       )}
       {remove && (
@@ -1017,7 +1021,7 @@ export function ImportCards({ api, id, reload, onClose, lang }) {
           <div>
             {preview.preview.map((r, i) => (
               <div key={i} className="mb-3">
-                <strong>
+                <CardImage card={r}/><strong>
                   {r.german_text} — {r.vietnamese_meaning}
                 </strong>
                 {r.example_german && <p>{r.example_german}</p>}

@@ -68,6 +68,8 @@ class CardForm(forms.ModelForm):
 
     def clean(self):
         data = super().clean()
+        from .image_links import validate_image_fields
+        validate_image_fields(data)
         for name in ('accepted_answers', 'accepted_examples'):
             value = [line.strip() for line in (data.get(name) or '').splitlines() if line.strip()]
             if len(value) > 20 or any(len(v) > 2000 for v in value):

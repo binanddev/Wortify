@@ -16,7 +16,8 @@ from .management import management, audit
 from .practice_hub import validate_payload
 
 MAX_BYTES = 50 * 1024 * 1024
-CARD_FIELDS = {"german_text":500,"vietnamese_meaning":500,"example_german":2000,"example_vietnamese":2000,"part_of_speech":50}
+from cards.image_links import IMAGE_FIELDS, validate_image_fields
+CARD_FIELDS = {"german_text":500,"vietnamese_meaning":500,"example_german":2000,"example_vietnamese":2000,"part_of_speech":50, **IMAGE_FIELDS}
 
 
 
@@ -61,11 +62,13 @@ def validate_document(data):
                 if counts['cards']>100000: raise ValueError('Maximum 100000 cards per package.')
                 terms=set()
                 for card in cards:
-                    if not isinstance(card,dict) or set(card)-set(CARD_FIELDS): raise ValueError('Use the five supported card fields.')
-                    for field in CARD_FIELDS: card.setdefault(field,'')
+                    if not isinstance(card,dict) or set(card)-set(CARD_FIELDS): raise ValueError('Use supported card text and image-link fields.')
+                    for field in CARD_FIELDS:
+                        if field not in IMAGE_FIELDS: card.setdefault(field,'')
                     for field,limit in CARD_FIELDS.items():
-                        if not isinstance(card[field],str) or len(card[field])>limit: raise ValueError('Invalid card field: '+field)
+                        if not isinstance(card.get(field,''),str) or len(card.get(field,''))>limit: raise ValueError('Invalid card field: '+field)
                     if not card['german_text'].strip() or not card['vietnamese_meaning'].strip(): raise ValueError('Term and meaning are required.')
+                    validate_image_fields(card)
                     term=card['german_text'].strip().casefold()
                     if term in terms: raise ValueError('Duplicate term in deck: '+card['german_text'])
                     terms.add(term)

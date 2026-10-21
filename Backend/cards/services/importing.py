@@ -2,7 +2,10 @@ import csv
 import json
 from django.core.exceptions import ValidationError
 
+from cards.image_links import IMAGE_FIELDS
+
 FIELDS = ['german_text', 'vietnamese_meaning', 'example_german', 'example_vietnamese', 'part_of_speech', 'notes', 'usage', 'article', 'plural_form']
+JSON_FIELDS = FIELDS + list(IMAGE_FIELDS)
 
 
 def parse_cards(text, separator):
@@ -19,14 +22,14 @@ def parse_cards(text, separator):
             raise ValidationError('Enter between 1 and 2000 cards.')
         rows, errors = [], []
         for index, card in enumerate(cards, 1):
-            if not isinstance(card, dict) or set(card) - set(FIELDS) or any(not isinstance(value, str) for value in card.values()):
+            if not isinstance(card, dict) or set(card) - set(JSON_FIELDS) or any(not isinstance(value, str) for value in card.values()):
                 errors.append(f'Card {index}: use the named fields from the guide with text values.')
                 continue
             form = CardForm({**card, 'position': len(rows)})
             if not form.is_valid():
                 errors.append(f'Card {index}: check {", ".join(form.errors)}.')
                 continue
-            rows.append({field: form.cleaned_data.get(field, '') for field in FIELDS})
+            rows.append({field: form.cleaned_data.get(field, '') for field in JSON_FIELDS})
         if errors:
             raise ValidationError(errors[:20])
         return rows

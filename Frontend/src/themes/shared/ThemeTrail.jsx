@@ -2,10 +2,10 @@ import { t as tr, useLocale } from "../../i18n/index.js";
 import { Link, Icon } from "../../components/ui/ui.jsx";
 const places = [
  ["flashcard", "cards", "Flashcards", "Card collection"],
- ["practice", "book", "Practice", "Quest board"],
- ["explore", "search", "Explore", "World map"],
+ ["practice", "exercise", "Practice", "Quest board"],
+ ["explore", "explore", "Explore", "World map"],
  ["create", "edit", "Create", "Workshop"],
- ["profile", "user", "Journey", "Character journal"],
+ ["profile", "journey", "Journey", "Character journal"],
  ["classes", "class", "Classes", "Party hall"],
  ["settings", "settings", "Settings", "Game settings"],
 ];

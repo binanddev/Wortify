@@ -75,7 +75,7 @@ function ProfileContent({ initial, lang }) {
           <Btn onClick={() => setEdit("identity")}>
             <Icon name="user" />{tr(" Edit profile")}</Btn>
           <Btn onClick={editGoal}>
-            <Icon name="settings" />{tr(" Daily goal")}</Btn>
+            <Icon name="target" />{tr(" Daily goal")}</Btn>
         </SidebarTools>
         <header className="profile-identity" id="profile-overview">
           <div className="profile-avatar" aria-hidden="true">
@@ -218,10 +218,10 @@ function ProfileContent({ initial, lang }) {
                 "Accuracy",
                 "check",
               ],
-              [stats.completed, "Completed exercises", "book"],
+              [stats.completed, "Completed exercises", "exercise"],
             ].map(([value, label, icon]) => (
               <div className="profile-panel profile-metric" key={tr(label)}>
-                <Icon name={icon === "calendar" ? "class" : icon} />
+                <Icon name={icon} />
                 <strong>{value}</strong>
                 <span>{tr(label)}</span>
               </div>
@@ -318,7 +318,7 @@ function ProfileContent({ initial, lang }) {
               </div>
             )}
             <Link className="profile-practice-link" to={`/${lang}/practice`}>
-              <Icon name="book" />{tr(" Practice Hub ")}<Icon name="arrow" size={18} />
+              <Icon name="exercise" />{tr(" Practice Hub ")}<Icon name="arrow" size={18} />
             </Link>
           </section>
         </div>
@@ -356,7 +356,7 @@ function ProfileContent({ initial, lang }) {
                     <>
                       <span className={`profile-history-icon ${row.kind}`}>
                         <Icon
-                          name={row.kind === "practice" ? "book" : "cards"}
+                          name={row.kind === "practice" ? "exercise" : "cards"}
                         />
                       </span>
                       <div className="profile-history-copy">

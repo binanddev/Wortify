@@ -7,3 +7,10 @@
 .icon-family:not(.icon-default) {
   @apply hidden;
 }
+
+:root[data-interface] body .nav-face svg.app-icon {
+  @apply text-current;
+}
+:root[data-interface="notebook"] body .nav-face :is(.flash-tree-icon,.flash-tree-toggle) {
+  @apply text-[#293b46];
+}

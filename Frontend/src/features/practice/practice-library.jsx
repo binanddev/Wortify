@@ -322,7 +322,7 @@ export function PracticeLibrary({
                 setMenuId(null);
               }}
             >
-              <Icon name="arrow" />{tr("Move")}</Btn>
+              <Icon name="move" />{tr("Move")}</Btn>
             {onSettings && (
               <Btn
                 isDisabled={pending}
@@ -331,7 +331,7 @@ export function PracticeLibrary({
                   onSettings(menu);
                 }}
               >
-                <Icon name="settings" />{tr("Share and delete")}</Btn>
+                <Icon name="more" />{tr("Share and delete")}</Btn>
             )}
             {!searching && (
               <>

@@ -25,7 +25,7 @@ def preferences(user, language='de'):
     return StudySettings.objects.get_or_create(user=user, language=language)[0]
 
 
-CSV_FIELDS = ['german_text', 'vietnamese_meaning', 'example_german', 'example_vietnamese', 'part_of_speech', 'article', 'plural_form', 'notes', 'usage', 'accepted_answers', 'accepted_examples', 'position']
+CSV_FIELDS = ['german_text', 'vietnamese_meaning', 'example_german', 'example_vietnamese', 'part_of_speech', 'article', 'plural_form', 'notes', 'usage', 'accepted_answers', 'accepted_examples', 'position', 'image_url', 'image_source_url', 'image_credit', 'image_license', 'image_license_url']
 
 
 def export_deck(request, pk, fmt):

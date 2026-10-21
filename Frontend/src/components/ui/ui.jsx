@@ -1,6 +1,8 @@
+import CardImage, {ImageCredit} from "../../features/flashcards/card-image.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
+import { useInterface } from "../../themes/use-interface.js";
 import { THEME_ICONS } from "../../themes/icons.js";
-import { ICON_PATHS } from "./icon-paths.js";
+import { ICON_COMPONENTS } from "./icon-catalog.js";
 import { createPortal } from "react-dom";
 import { useContext, useEffect, useRef, useState, useId } from "react";
 import {
@@ -16,34 +18,17 @@ import { Modal } from "../modal/modal.jsx";
 import { motion } from "framer-motion";
 import { useNavigate, WindowContext, useAction } from "../../lib/core.js";
 export function Icon({ name = "cards", size = 26 }) {
-  useLocale();
-  const pixels = Math.max(22, Number(size) || 26);
-  return (
-    <svg
-      className="app-icon"
-      data-icon={name}
-      width={pixels}
-      height={pixels}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        className="icon-family icon-default"
-        d={ICON_PATHS[name] || ICON_PATHS.cards}
-      />
-      {Object.entries(THEME_ICONS).map(([theme, paths]) => (
-        <g key={theme} className={`icon-family icon-${theme}`}>
-          <path d={paths[name] || ICON_PATHS[name] || paths.cards} />
-        </g>
-      ))}
-    </svg>
-  );
+  const theme = useInterface();
+  const pixels = Math.max(12, Math.min(96, Number(size) || 26));
+  const Glyph = ICON_COMPONENTS[name] || ICON_COMPONENTS.help;
+  const props = {className:"app-icon", "data-icon":name, "data-icon-theme":theme,
+    width:pixels,height:pixels,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",
+    strokeWidth:2.25,strokeLinecap:"round",strokeLinejoin:"round","aria-hidden":true,focusable:false};
+  if(theme==="retro"&&["star","heart","trophy"].includes(name)) return <svg {...props}>
+    <foreignObject x="0" y="0" width="24" height="24"><div className="flex h-6 w-6 items-center justify-center leading-none"><i className={`nes-icon ${name} is-small`} aria-hidden="true"/></div></foreignObject>
+  </svg>;
+  const path=THEME_ICONS[theme]?.[name];
+  return path ? <svg {...props}><path d={path}/></svg> : <Glyph {...props}/>;
 }
 export function Btn({ children, primary = false, onClick, icon, ...props }) {
   useLocale();
@@ -456,10 +441,12 @@ export function useSound(enabled, language) {
     },
   };
 }
-export function FlipCard({ front, back, example, flipped, setFlipped }) {
+export function FlipCard({ front, back, example, image, flipped, setFlipped }) {
   useLocale();
+  const [failedImage,setFailedImage]=useState("");
+  const illustration=image?.image_url!==failedImage?image:null;
   return (
-    <button
+    <><button
       type="button"
       className="flip-stage"
       onClick={() => setFlipped(!flipped)}
@@ -474,10 +461,11 @@ export function FlipCard({ front, back, example, flipped, setFlipped }) {
         <span className="flip-face flip-back" aria-hidden={!flipped}>
           <span className="eyebrow">{tr("MEANING")}</span>
           <strong>{back}</strong>
+          <CardImage card={illustration} credit={false} onError={()=>setFailedImage(image.image_url)}/>
           {example && <span className="example">{example}</span>}
         </span>
       </span>
-    </button>
+    </button>{flipped && <ImageCredit card={illustration}/>}</>
   );
 }
 export function Choice({

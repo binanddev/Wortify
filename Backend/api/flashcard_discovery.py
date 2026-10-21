@@ -44,5 +44,5 @@ def detail(request,pk):
     deck=get_object_or_404(Deck,pk=pk,language=request.language,visibility='public',owner__is_active=True)
     page=max(1,int(request.GET.get('page','1')))
     size=30 if request.GET.get('study')=='true' else 10
-    cards=list(deck.cards.order_by('position','pk').values('german_text','vietnamese_meaning','example_german','example_vietnamese')[(page-1)*size:page*size])
+    cards=list(deck.cards.order_by('position','pk').values('german_text','vietnamese_meaning','example_german','example_vietnamese','image_url','image_source_url','image_credit','image_license','image_license_url')[(page-1)*size:page*size])
     return JsonResponse({'id':deck.pk,'title':deck.title,'page':page,'page_size':size,'description':deck.description,'cards':cards,'count':deck.cards.count()})

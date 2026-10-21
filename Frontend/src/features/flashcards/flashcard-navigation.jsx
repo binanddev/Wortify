@@ -134,7 +134,7 @@ export default function FlashcardNavigation({ lang, route, guest = false }) {
         >
           <Icon name="home" />
         </Link>
-        <Btn icon="undo" onClick={() => window.history.back()}>{tr("Back")}</Btn>
+        <Btn icon="back" onClick={() => window.history.back()}>{tr("Back")}</Btn>
         <Btn icon="arrow" onClick={() => window.history.forward()}>{tr("Moving forward")}</Btn>
         {deck && folder && (
           <Link

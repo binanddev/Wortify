@@ -19,6 +19,7 @@ export function flashcardAiGuide(lang = "de") {
     "example_vietnamese: Vietnamese translation of the example — up to 2000 characters.",
     "part_of_speech: Part of speech — up to 50 characters.",
     
+    "OPTIONAL IMAGE LINKS: image_url is a direct public HTTPS image URL (max 2000). Optional attribution: image_source_url (source page, 2000), image_credit (author, 500), image_license (100), image_license_url (2000). All values are strings. Never embed base64, files or binary data. Never invent image URLs. Omit these fields unless the user supplies verified links or you have verified an openly licensed image and its attribution. Without verified links leave cards without images; Wortify can suggest free Commons images later.",
     "Examples and translations must match. Prefer useful phrases and collocations, avoid duplicate cards, include the article in the term itself for German nouns when appropriate.",
     "Do not add IDs, accepted_answers, accepted_examples or extra columns; these are not part of this import format.",
     "EXAMPLE OBJECTS (place these objects inside one JSON array, separated by commas):",
@@ -29,7 +30,7 @@ export function flashcardAiGuide(lang = "de") {
     row(lang === "en"
       ? ["station",examples.station,"The station is near my house.",examples.enStation,"noun"]
       : ["der Bahnhof",examples.station,"Der Bahnhof ist in der Nähe.",examples.deStation,"noun"]),
-    "FINAL CHECK BEFORE OUTPUT: exactly 5 named string fields per object; valid JSON; unique phrases and meanings; each example has 3–40 words and contains its target expression; accurate translations; correct grammar. Do not include this checklist in the output.",
+    "FINAL CHECK BEFORE OUTPUT: 5 named text fields plus optional image-link/attribution string fields; valid JSON; unique phrases and meanings; each example has 3–40 words and contains its target expression; accurate translations; correct grammar. Do not include this checklist in the output.",
     "Review grammar and translations before returning. I will paste your output into Wortify, preview and confirm the import.",
   ].join("\n\n");
 }

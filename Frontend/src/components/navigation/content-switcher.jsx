@@ -6,7 +6,7 @@ import {t as tr,useLocale} from '../../i18n/index.js';
 export default function ContentSwitcher({lang,kind,currentId}) {
  useLocale();const [open,setOpen]=useState(false);
  const label=kind==='decks'?'Switch deck':'Switch reading';
- return <><Btn icon="folder" onClick={()=>setOpen(true)}>{tr(label)}</Btn>{open&&<PracticeModal title={tr(label)} onClose={()=>setOpen(false)}><Choices {...{lang,kind,currentId}} onClose={()=>setOpen(false)}/></PracticeModal>}</>;
+ return <><Btn icon="library" onClick={()=>setOpen(true)}>{tr(label)}</Btn>{open&&<PracticeModal title={tr(label)} onClose={()=>setOpen(false)}><Choices {...{lang,kind,currentId}} onClose={()=>setOpen(false)}/></PracticeModal>}</>;
 }
 function Choices({lang,kind,currentId,onClose}) {
  useLocale();const [query,setQuery]=useState('');

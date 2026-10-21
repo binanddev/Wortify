@@ -26,10 +26,10 @@
 .nav-hide:hover {
   @apply [background:var(--solid)];
 }
-.nav-rotate svg {
+.nav-rotate > svg {
   @apply [transition:transform_0.35s];
 }
-.nav-rotate[aria-pressed="true"] svg {
+.nav-rotate[aria-pressed="true"] > svg {
   @apply [transform:rotate(180deg)];
 }
 .nav-flip-inner {
@@ -119,7 +119,7 @@
 @media (prefers-reduced-motion: reduce) {
   .nav-flip,
   .main-shell,
-  .nav-rotate svg {
+  .nav-rotate > svg {
     @apply [transition:none];
   }
 }

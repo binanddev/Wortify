@@ -5802,5 +5802,81 @@
   "Load more": {
     "vi": "Xem thêm",
     "de": "Mehr laden"
+  },
+  "Image link": {
+    "vi": "Link ảnh",
+    "de": "Bildlink"
+  },
+  "Remove image": {
+    "vi": "Gỡ ảnh",
+    "de": "Bild entfernen"
+  },
+  "Find a free image": {
+    "vi": "Tìm ảnh miễn phí",
+    "de": "Kostenloses Bild suchen"
+  },
+  "Image keyword": {
+    "vi": "Từ khóa ảnh",
+    "de": "Bildsuchbegriff"
+  },
+  "Search images": {
+    "vi": "Tìm ảnh",
+    "de": "Bilder suchen"
+  },
+  "Use image": {
+    "vi": "Chọn ảnh",
+    "de": "Bild verwenden"
+  },
+  "Suggest images": {
+    "vi": "Gợi ý ảnh",
+    "de": "Bildvorschläge"
+  },
+  "Find suggestions": {
+    "vi": "Tìm ảnh gợi ý",
+    "de": "Vorschläge suchen"
+  },
+  "Cards without images": {
+    "vi": "Thẻ chưa có ảnh",
+    "de": "Karten ohne Bild"
+  },
+  "Another image": {
+    "vi": "Ảnh khác",
+    "de": "Anderes Bild"
+  },
+  "Apply selected images": {
+    "vi": "Áp dụng ảnh đã chọn",
+    "de": "Ausgewählte Bilder übernehmen"
+  },
+  "Image source": {
+    "vi": "Nguồn ảnh",
+    "de": "Bildquelle"
+  },
+  "Vocabulary illustration": {
+    "vi": "Ảnh minh họa từ vựng",
+    "de": "Illustration zur Vokabel"
+  },
+  "Use a public HTTPS image link.": {
+    "vi": "Dùng link ảnh HTTPS công khai.",
+    "de": "Einen öffentlichen HTTPS-Bildlink verwenden."
+  },
+  "No matching images. Try another keyword or paste a link.": {
+    "vi": "Không tìm thấy ảnh phù hợp. Thử từ khóa khác hoặc dán link.",
+    "de": "Keine passenden Bilder. Anderen Suchbegriff oder Bildlink verwenden."
+  },
+  "Image search is unavailable. Try again or paste an image link.": {
+    "vi": "Tạm thời không tìm được ảnh. Thử lại hoặc dán link ảnh.",
+    "de": "Bildsuche nicht verfügbar. Erneut versuchen oder Bildlink einfügen."
+  },
+  "Search errors": {
+    "vi": "Lỗi tìm ảnh",
+    "de": "Suchfehler"
+  },
+  "Continue search": {
+    "vi": "Tiếp tục tìm",
+    "de": "Suche fortsetzen"
+  },
+  "Image provider is busy. Continue later.": {
+    "vi": "Nguồn ảnh đang quá tải. Hãy tiếp tục sau.",
+    "de": "Bildanbieter ausgelastet. Bitte später fortsetzen."
   }
 }

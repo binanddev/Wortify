@@ -1,3 +1,4 @@
+import CardImage,{ImageCredit} from "./card-image.jsx";
 import { useState } from "react";
 import { useResource, endpoint } from "../../lib/core.js";
 import { Btn, Loading } from "../../components/ui/ui.jsx";
@@ -39,10 +40,12 @@ export default function PublicDeckStudy({
                     <strong className="block text-2xl">
                       {flipped ? card.vietnamese_meaning : card.german_text}
                     </strong>
+                    {flipped&&<CardImage card={card} credit={false}/>}
                     <span className="block mt-4">
                       {flipped ? card.example_vietnamese : card.example_german}
                     </span>
                   </button>
+                  {flipped&&<ImageCredit card={card}/>}
                   <div className="flex justify-center items-center gap-3">
                     <Btn
                       isDisabled={index === 0}

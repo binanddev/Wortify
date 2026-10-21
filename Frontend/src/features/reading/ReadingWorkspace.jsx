@@ -84,7 +84,7 @@ export default function ReadingWorkspace({ lang, route, userId, sound, onRequire
       <Link to={`/${lang}/reading`} onClick={()=>setFolderId(null)} aria-current={!id && !creating && !discovering ? "page" : undefined}><Icon name="book"/>{tr(" My readings")}</Link>
       <Link to={`/${lang}/reading/create`} aria-current={creating ? "page" : undefined}><Icon name="plus"/>{tr(" Create reading")}</Link>
     </div>
-    <Link className="btn guide-icon-link" to={`/${lang}/reading/discover`} aria-label={tr("Explore")} title={tr("Explore")} aria-current={discovering ? "page" : undefined}><Icon name="search"/></Link>
+    <Link className="btn guide-icon-link" to={`/${lang}/reading/discover`} aria-label={tr("Explore")} title={tr("Explore")} aria-current={discovering ? "page" : undefined}><Icon name="explore"/></Link>
     {authoring && <>
       <div className="reading-nav-tools" role="group" aria-label={tr("Import and authoring tools")}>
         <Btn icon="copy" isDisabled={busy} onClick={()=>act(copyGuide)}>{tr("Copy AI instructions")}</Btn>
@@ -102,8 +102,8 @@ export default function ReadingWorkspace({ lang, route, userId, sound, onRequire
     </>}
     {id && lesson && <div className="reading-nav-tools">
       {!authoring&&<ContentSwitcher lang={lang} kind="reading" currentId={id}/>}
-      <Btn icon="settings" onClick={()=>setSharing({visibility:lesson.visibility||"private",level:lesson.level||"",topic:lesson.topic||""})}>{tr("Sharing & categories")}</Btn>
-      <a className="btn" href={`/${lang}/reading/${id}/passage`} target="_blank" rel="noopener noreferrer" title={tr("Open passage in new tab")} aria-label={tr("Open passage in new tab")}><Icon name="book"/></a>
+      <Btn icon="share" onClick={()=>setSharing({visibility:lesson.visibility||"private",level:lesson.level||"",topic:lesson.topic||""})}>{tr("Sharing & categories")}</Btn>
+      <a className="btn" href={`/${lang}/reading/${id}/passage`} target="_blank" rel="noopener noreferrer" title={tr("Open passage in new tab")} aria-label={tr("Open passage in new tab")}><Icon name="external"/></a>
       <Btn icon={editing ? "book" : "edit"} onClick={()=>nav(`/${lang}/reading/${id}${editing ? "" : "/edit"}`)}>{editing ? tr("Read lesson") : tr("Edit reading")}</Btn>
       <Btn icon="trash" onClick={()=>setConfirm(true)}>{tr("Delete reading")}</Btn>
     </div>}

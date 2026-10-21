@@ -184,3 +184,25 @@ def study_pack(request):
     if deck_id: get_object_or_404(Deck,pk=deck_id,owner=request.user,language=request.language)
     cards = queue(request.user,prefs,deck_id,request.GET.get('filter','all'),language=request.language)
     return JsonResponse({'cards':[model_to_dict(c) for c in cards], 'grading':{'ignore_case':prefs.ignore_case,'ignore_punctuation':prefs.ignore_punctuation,'transliteration':prefs.transliteration and request.language=='de'}})
+
+
+@endpoint
+@require_http_methods(['POST'])
+@transaction.atomic
+def card_images(request, pk):
+    from cards.image_links import IMAGE_FIELDS, validate_image_fields
+    parent=get_object_or_404(Deck.objects.select_for_update(),pk=pk,owner=request.user,language=request.language)
+    items=body(request).get('items')
+    if not isinstance(items,list) or not 1<=len(items)<=50: raise ValueError('Select 1–50 card images.')
+    cards={c.pk:c for c in parent.cards.select_for_update()}
+    seen=set();updated=[]
+    for item in items:
+        if not isinstance(item,dict) or set(item)-({'id'}|set(IMAGE_FIELDS)) or type(item.get('id')) is not int or item['id'] in seen: raise ValueError('Invalid card image selection.')
+        seen.add(item['id']);card=cards.get(item['id'])
+        if not card: raise ValueError('Card not found in this deck.')
+        if card.image_url: continue
+        validate_image_fields(item)
+        if not item.get('image_url'): raise ValueError('Choose an image link.')
+        for field in IMAGE_FIELDS: setattr(card,field,item.get(field,''))
+        card.save(update_fields=[*IMAGE_FIELDS,'updated_at']);updated.append(model_to_dict(card))
+    return JsonResponse({'cards':updated,'skipped':len(items)-len(updated)})

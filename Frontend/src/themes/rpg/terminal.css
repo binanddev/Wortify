@@ -50,9 +50,6 @@
 :root[data-interface="rpg"] body :is(.btn,.nav-link):not(:disabled):hover { @apply bg-[#33ff00]! text-black!; }
 :root[data-interface="rpg"] body :is(.btn.primary,.nav-link.active) { @apply bg-[#33ff00]! text-black!; }
 :root[data-interface="rpg"] body :is(.btn,.nav-link):hover svg.app-icon { @apply text-current!; }
-:root[data-interface="rpg"] body .nav-link > svg { @apply hidden; }
-:root[data-interface="rpg"] body .nav-link::after { @apply content-['[__]'] order-first shrink-0; }
-:root[data-interface="rpg"] body .nav-link.active::after { @apply content-['[X]']; }
 :root[data-interface="rpg"] body :is(.heading h1,.flash-library-heading h1) { @apply uppercase tracking-wide text-[clamp(28px,3vw,42px)] wrap-anywhere; }
 :root[data-interface="rpg"] body :is(.heading h1,.flash-library-heading h1)::before { @apply content-['C:\005c_Wortify\005c_'] text-[#6eba5d]; }
 :root[data-interface="rpg"] body .notebook-folder-tab::before { @apply content-['DIR:'] shrink-0; }

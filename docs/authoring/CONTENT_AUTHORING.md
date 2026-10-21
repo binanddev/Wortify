@@ -81,6 +81,11 @@ Bài đọc cá nhân mặc định riêng tư. Sau khi lưu, người tạo ch�
 - Preview liệt kê create/reuse/skip/update/unchanged theo đường dẫn. Kiểm tra trước khi xác nhận; nếu thư viện đã đổi, preview lại. Không gửi lại gói cũ để khôi phục một bản cũ: phải tạo đợt sửa mới.
 - Staff dùng tab Thư viện để tìm kiếm, xem nội dung, chọn nhiều, đổi tên/di chuyển/xóa; các thao tác này áp dụng thư viện Wortify. Xóa thư mục xóa cả nội dung bên trong. Tab Lịch sử ghi các đợt đã nhập. Sau đổi tên/di chuyển, AI phải lấy lại đường dẫn hiện tại.
 
+
+## Ảnh cho thẻ
+
+Ảnh chỉ lưu bằng link HTTPS cùng thông tin nguồn/tác giả/giấy phép dạng văn bản. Không tải file ảnh vào database hoặc storage, không dùng base64. JSON cá nhân hỗ trợ image_url, image_source_url, image_credit, image_license, image_license_url. Gói staff dùng IMAGE, IMAGE_SOURCE, IMAGE_CREDIT, IMAGE_LICENSE, IMAGE_LICENSE_URL sau TERM/MEANING. Chỉ thêm link thật đã xác minh, không tự bịa URL. Nếu chưa có link, bỏ trường ảnh; người dùng có thể chọn gợi ý miễn phí Wikimedia Commons trong Quản lý thẻ. Các trường ảnh bị bỏ qua trong import cập nhật sẽ giữ ảnh hiện tại.
+
 <!-- GENERATED AUTHORING APPENDIX -->
 
 ## Phụ lục đầy đủ — luật và mẫu từ ứng dụng
@@ -105,7 +110,7 @@ FOLDER: path such as A2/Travel/Transport. Paths start at section root; / means r
 LEVEL: A1/A2/B1/B2/C1/C2; applies to subsequent readings and flashcard decks. TOPIC: consistent short topic, up to 80 characters. Use - to clear either.
 FOLDER, LEVEL and TOPIC apply until replaced; put them BETWEEN lessons, never inside a lesson. SECTION may repeat. Existing Wortify folders are reused across batches by exact path and language.
 EXERCISE: starts a lesson using the existing text rules below. TYPE: reading goes only in SECTION reading; the nine practice types go only in SECTION practice.
-DECK: title starts a flashcard deck in SECTION flashcards. Title max 150 characters; flashcard folder names max 100. LEVEL defaults to A1. Each card starts with TERM: then MEANING: (both required, max 500 characters each). Optional EXAMPLE: and TRANSLATION: max 2000 characters each, POS: max 50. Use > for line breaks. No article/plural/notes/usage/alternative answers. Maximum 2000 cards per deck, 100000 per package. No duplicate terms within a deck.
+DECK: title starts a flashcard deck in SECTION flashcards. Title max 150 characters; flashcard folder names max 100. LEVEL defaults to A1. Each card starts with TERM: then MEANING: (both required, max 500 characters each). Optional EXAMPLE: and TRANSLATION: max 2000 characters each, POS: max 50. Use > for line breaks. No article/plural/notes/usage/alternative answers. Maximum 2000 cards per deck, 100000 per package. No duplicate terms within a deck. Optional card directives IMAGE (direct HTTPS URL, 2000), IMAGE_SOURCE (source page, 2000), IMAGE_CREDIT (author, 500), IMAGE_LICENSE (100), IMAGE_LICENSE_URL (2000) store links/text only. Never invent URLs or embed image bytes/base64. Provide verified freely reusable images with attribution, or omit image fields. In updates, omitted image fields preserve existing images.
 THEORY: title is allowed only in SECTION practice. Follow with CONTENT: Markdown then > continuation lines. It is not an EXERCISE. Maximum 2 MB theory content.
 Use > continuation for multiline text, including any line resembling a directive. Blank lines and # comments are ignored. No explicit END markers, JSON objects, database IDs or user identifiers.
 Unique sibling titles across folders/lessons. Maximum 5000 nodes including generated folders and 50 MB/file. More than 100 lessons is allowed; each lesson still has 1–100 questions including a non-example. Keep a package small enough for the bot's request limits; use a new package UUID for every new batch or correction; reuse the same UUID only for an unchanged retry.
@@ -115,7 +120,7 @@ INCREMENTAL LIBRARY MANAGEMENT:
 Identity = section + learning language + exact folder path + exact title. Preserve spelling, capitalization and hierarchy from CURRENT LIBRARY CONTEXT or the authenticated catalog. Do not add batch numbers to existing folder names. Titles are not globally unique. Renaming/moving a published item changes its import path; fetch the catalog again before preparing updates.
 append: reuse folders, create new lessons/decks, skip entire existing lessons/decks. It does NOT append cards to an existing deck.
 upsert: reuse folders, create new items and update matching items. update: all folders/items must already exist; a missing path rejects the whole batch.
-For existing decks, cards match by trimmed case-insensitive TERM. Matching cards keep their IDs and receive the submitted five fields; new terms append. Omitted terms remain unchanged. To correct a term's spelling, use the normal editor; a changed TERM otherwise creates another card. Optional fields omitted on a submitted card are cleared. Include the full intended data for each submitted card.
+For existing decks, cards match by trimmed case-insensitive TERM. Matching cards keep their IDs and receive the submitted text fields and any explicitly supplied image-link fields; new terms append. Omitted terms remain unchanged. To correct a term's spelling, use the normal editor; a changed TERM otherwise creates another card. Optional fields omitted on a submitted card are cleared. Include the full intended data for each submitted card.
 Exercises, theory and readings replace the complete submitted lesson payload and metadata, not individual questions. Include every intended question, answer and explanation for any lesson you update. Omitted lessons, folders and decks are untouched. Personal copies and personal learning progress are not edited. Imported content is public under Wortify.
 There is no deletion directive. Staff can explicitly rename, move or delete selected system content in the Library view. Never simulate deletion by sending an empty lesson.
 Before updating, read existing content via catalog item export, preserve its path/title, and return a fresh batch UUID with MODE update or upsert. To gradually fill A1, use FOLDER: A1 every time with new lesson titles and MODE append. To add terms to an existing deck use MODE upsert and its exact DECK title. Do not resend all previous batches.
@@ -414,6 +419,8 @@ example_vietnamese: Vietnamese translation of the example — up to 2000 charact
 
 part_of_speech: Part of speech — up to 50 characters.
 
+OPTIONAL IMAGE LINKS: image_url is a direct public HTTPS image URL (max 2000). Optional attribution: image_source_url (source page, 2000), image_credit (author, 500), image_license (100), image_license_url (2000). All values are strings. Never embed base64, files or binary data. Never invent image URLs. Omit these fields unless the user supplies verified links or you have verified an openly licensed image and its attribution. Without verified links leave cards without images; Wortify can suggest free Commons images later.
+
 Examples and translations must match. Prefer useful phrases and collocations, avoid duplicate cards, include the article in the term itself for German nouns when appropriate.
 
 Do not add IDs, accepted_answers, accepted_examples or extra columns; these are not part of this import format.
@@ -444,7 +451,7 @@ EXAMPLE OBJECTS (place these objects inside one JSON array, separated by commas)
   "part_of_speech": "noun"
 }
 
-FINAL CHECK BEFORE OUTPUT: exactly 5 named string fields per object; valid JSON; unique phrases and meanings; each example has 3–40 words and contains its target expression; accurate translations; correct grammar. Do not include this checklist in the output.
+FINAL CHECK BEFORE OUTPUT: 5 named text fields plus optional image-link/attribution string fields; valid JSON; unique phrases and meanings; each example has 3–40 words and contains its target expression; accurate translations; correct grammar. Do not include this checklist in the output.
 
 Review grammar and translations before returning. I will paste your output into Wortify, preview and confirm the import.
 
@@ -478,6 +485,8 @@ example_vietnamese: Vietnamese translation of the example — up to 2000 charact
 
 part_of_speech: Part of speech — up to 50 characters.
 
+OPTIONAL IMAGE LINKS: image_url is a direct public HTTPS image URL (max 2000). Optional attribution: image_source_url (source page, 2000), image_credit (author, 500), image_license (100), image_license_url (2000). All values are strings. Never embed base64, files or binary data. Never invent image URLs. Omit these fields unless the user supplies verified links or you have verified an openly licensed image and its attribution. Without verified links leave cards without images; Wortify can suggest free Commons images later.
+
 Examples and translations must match. Prefer useful phrases and collocations, avoid duplicate cards, include the article in the term itself for German nouns when appropriate.
 
 Do not add IDs, accepted_answers, accepted_examples or extra columns; these are not part of this import format.
@@ -508,7 +517,7 @@ EXAMPLE OBJECTS (place these objects inside one JSON array, separated by commas)
   "part_of_speech": "noun"
 }
 
-FINAL CHECK BEFORE OUTPUT: exactly 5 named string fields per object; valid JSON; unique phrases and meanings; each example has 3–40 words and contains its target expression; accurate translations; correct grammar. Do not include this checklist in the output.
+FINAL CHECK BEFORE OUTPUT: 5 named text fields plus optional image-link/attribution string fields; valid JSON; unique phrases and meanings; each example has 3–40 words and contains its target expression; accurate translations; correct grammar. Do not include this checklist in the output.
 
 Review grammar and translations before returning. I will paste your output into Wortify, preview and confirm the import.
 

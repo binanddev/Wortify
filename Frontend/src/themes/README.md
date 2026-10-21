@@ -37,3 +37,13 @@ RPG Quest uses Terminal.css only inside `.quest-console`. Regenerate its scoped 
 MS-DOS replaces the RPG Quest presentation. The internal `rpg` ID and folder are intentionally retained so saved appearance profiles keep working. Its visual reference is `ms_dos_flashcard_ui.html`; green-on-black panels, VT323 and directory headings are scoped to this theme. The terminal remains on the reverse navigation face.
 
 MS-DOS uses the shared responsive layout and unscaled modal portal. Its decorative pixel/scanline mask has a brief, low-contrast flicker every 19 seconds, disabled with prefers-reduced-motion. The mask never handles pointer events; it does not rasterize HTML text. Terminal remains on the front navigation face, with help and exit().
+
+## Icon semantics
+
+`components/ui/icon-catalog.js` maps semantic keys to explicit Lucide React imports. Use the shared `Icon` component; do not embed emoji or a new SVG for application actions. Studio/Glass use Lucide; Notebook/Windows keep their local signature glyphs with the common fallback. Retro prefers installed NES.css star/heart/trophy assets; other controls use the shared catalog with theme stroke styling. MS-DOS keeps monochrome angular strokes, with recognizable home and settings symbols.
+
+Use `exercise` for Practice, `book` for Reading, `cards` for Flashcards; `explore` for discovery and `search` only for searching. Use `filter` for filters, `settings` for options, `share` for publishing, `manage` for card management, `library` for switching collections, `move` for relocating content, `game` for games, `learn` for learning, `back` for navigation and `undo` for reversing an edit. Unknown keys render help, never an unrelated flashcard. Decorative icons are hidden from assistive technology; icon-only controls must retain their translated accessible label.
+
+Run `node scripts/verify-icons.mjs` for a server-free six-theme icon gallery and visibility checks. Small inline sizes are respected; button hit targets stay controlled by the shared button component.
+
+Icon rendering uses one SVG per glyph. `use-interface.js` observes the root theme once and selects the matching glyph in React; do not nest a Lucide SVG inside another SVG or apply rotation/color to every SVG descendant. Navigation glyphs inherit the control foreground. `verify-nav-icons.mjs` renders the actual Workspace with mocked data and screenshots both nav faces (Windows uses Start menu instead).

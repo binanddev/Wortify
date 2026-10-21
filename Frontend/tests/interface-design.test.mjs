@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
 import postcss from "postcss";
-import { ICON_PATHS } from "../src/components/ui/icon-paths.js";
+import { ICON_COMPONENTS } from "../src/components/ui/icon-catalog.js";
 import { compileDesign } from "../scripts/design-system.mjs";
 
 test("shared icon catalog covers every literal Icon and action icon in the app", async () => {
@@ -16,13 +16,13 @@ test("shared icon catalog covers every literal Icon and action icon in the app",
         for (const match of source.matchAll(
           /(?:<Icon\s+name|\bicon)="([a-z_]+)"/g,
         )) {
-          assert.ok(ICON_PATHS[match[1]], `${file}: missing ${match[1]}`);
+          assert.ok(ICON_COMPONENTS[match[1]], `${file}: missing ${match[1]}`);
         }
       }
     }
   }
   await visit(path.resolve(import.meta.dirname, "../src"));
-  assert.ok(Object.keys(ICON_PATHS).length >= 40);
+  assert.ok(Object.keys(ICON_COMPONENTS).length >= 40);
 });
 
 test("flashcard scene disables filters while preserving 3D flip, and icons use independent ink", async () => {
@@ -64,4 +64,10 @@ test("flashcard scene disables filters while preserving 3D flip, and icons use i
       (d) => d.prop === "backdrop-filter" && d.value === "none" && d.important,
     ),
   );
+});
+
+
+test("semantic icon roles remain distinct and cover dynamic desktop/profile keys", () => {
+ for(const key of ["users","calendar","admin","journey","game","learn","manage","library","filter","explore"]) assert.ok(ICON_COMPONENTS[key],key);
+ for(const pair of [["book","exercise"],["explore","search"],["filter","settings"],["game","play"],["manage","cards"],["back","undo"]]) assert.notEqual(ICON_COMPONENTS[pair[0]],ICON_COMPONENTS[pair[1]],pair.join(" / "));
 });

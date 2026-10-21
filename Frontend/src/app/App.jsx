@@ -349,7 +349,7 @@ function Brand() {
     </Link>
   );
 }
-function Workspace({ user, setUser, lang, parts, route, appearance, onRequireAccount }) {
+export function Workspace({ user, setUser, lang, parts, route, appearance, onRequireAccount }) {
   useLocale();
   const sync = useLearningSync(user.id, lang);
   const prefKey = `wortify:${user.id}:appearance`,
@@ -617,7 +617,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance, onRequireAcc
                   <nav>
                     {[
                       ["flashcard", "cards", "Flashcard"],
-                      ["practice", "book", "Practice Hub"],
+                      ["practice", "exercise", "Practice Hub"],
                       ["reading", "book", "Reading"],
                     ].map(([id, icon, title]) => (
                       <Link
@@ -635,7 +635,7 @@ function Workspace({ user, setUser, lang, parts, route, appearance, onRequireAcc
 
                   <nav>
                     {[
-                      ["profile", "user", "Learning journey"],
+                      ["profile", "journey", "Learning journey"],
                       ["classes", "class", "Classes & sharing"],
                     ].map(([id, icon, title]) => (
                       <Link

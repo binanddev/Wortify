@@ -1,3 +1,4 @@
+import CardImage from "../flashcards/card-image.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import { useState, useRef, useEffect } from "react";
 import ContentImportGuide from "./ContentImportGuide.jsx";
@@ -532,6 +533,7 @@ function ContentPreview({ nodes }) {
             <div key={i} className="border-b py-2">
               <strong>{card.german_text}</strong>
               <p>{card.vietnamese_meaning}</p>
+                <CardImage card={card}/>
               <p>{card.example_german}</p>
               <p className="muted">{card.example_vietnamese}</p>
             </div>

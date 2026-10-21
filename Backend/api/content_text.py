@@ -146,7 +146,7 @@ def parse_package(text):
         is_deck = block[0][1].startswith('DECK:')
         if is_deck:
             if section != 'flashcards': raise ValueError(f'Line {start}: DECK belongs in flashcards.')
-            fields = {'TERM':'german_text','MEANING':'vietnamese_meaning','EXAMPLE':'example_german','TRANSLATION':'example_vietnamese','POS':'part_of_speech'}
+            fields = {'TERM':'german_text','MEANING':'vietnamese_meaning','EXAMPLE':'example_german','TRANSLATION':'example_vietnamese','POS':'part_of_speech','IMAGE':'image_url','IMAGE_SOURCE':'image_source_url','IMAGE_CREDIT':'image_credit','IMAGE_LICENSE':'image_license','IMAGE_LICENSE_URL':'image_license_url'}
             cards=[]; card=None; last=None
             for n, raw in block[1:]:
                 if raw.startswith('>') and card is not None and last:

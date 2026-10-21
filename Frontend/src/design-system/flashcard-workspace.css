@@ -149,3 +149,20 @@
 .flashcard-workspace input[type="checkbox"] { @apply w-4 h-4 accent-(--accent); }
 .flashcard-workspace .term-row strong { @apply text-base font-semibold; }
 .flashcard-workspace .term-row p, .flashcard-workspace .term-row small { @apply text-[13px] leading-[1.6]; }
+
+/* Optional remote illustrations reuse shared theme tokens. */
+.card-image { @apply my-3 mx-auto max-w-full min-w-0; }
+.card-image img { @apply block w-auto max-w-full h-auto max-h-[220px] object-contain m-auto rounded-lg; }
+.card-image-credit { @apply flex flex-wrap justify-center gap-y-1 gap-x-[.65rem] text-[.7rem] leading-[1.4] [overflow-wrap:anywhere]; }
+.card-image-credit a { @apply underline; }
+.card-image-compact { @apply flex-[0_0_64px] max-w-16; }
+.card-image-compact img { @apply max-h-16; }
+.card-image-compact .card-image-credit { @apply text-[.6rem]; }
+.card-image-results { @apply grid grid-cols-[repeat(auto-fit,minmax(min(100%,200px),1fr))] gap-4; }
+.card-image-results > * { @apply min-w-0 p-3 border border-(--line) rounded-xl; }
+.flip-back:has(.card-image) { @apply grid grid-cols-2 gap-4 content-center; }
+.flip-back:has(.card-image) .eyebrow { @apply left-0 right-0; }
+.flip-back:has(.card-image) .example { @apply col-span-full; }
+.flip-back .card-image { @apply m-0; }
+.flip-back .card-image img { @apply max-h-[min(160px,24vh)]; }
+@media (max-width: 600px) { .card-image img { @apply max-h-[180px]; } .flip-back .card-image img { @apply max-h-[120px]; } }

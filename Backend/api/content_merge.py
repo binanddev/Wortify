@@ -31,7 +31,7 @@ def inventory(language, section):
         folders = list(Folder.objects.filter(**scope).values('id', 'parent_id', 'name'))
         leaves = list(Deck.objects.filter(**scope).values('id', 'folder_id', 'title', 'level', 'topic', 'description'))
         grouped = {}
-        for card in Card.objects.filter(deck__owner=user, deck__language=language).order_by('position','id').values('id','deck_id','german_text','vietnamese_meaning','example_german','example_vietnamese','part_of_speech'):
+        for card in Card.objects.filter(deck__owner=user, deck__language=language).order_by('position','id').values('id','deck_id','german_text','vietnamese_meaning','example_german','example_vietnamese','part_of_speech','image_url','image_source_url','image_credit','image_license','image_license_url'):
             grouped.setdefault(card['deck_id'], []).append(card)
         for leaf in leaves:
             leaf.update(kind='deck', cards=grouped.get(leaf['id'], []))

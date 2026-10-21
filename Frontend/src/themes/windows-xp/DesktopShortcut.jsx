@@ -3,14 +3,14 @@ import { readPreference, savePreference } from "../../lib/core.js";
 import { Icon } from "../../components/ui/ui.jsx";
 const icons = {
   flashcard: "cards",
-  practice: "book",
+  practice: "exercise",
   reading: "book",
-  explore: "search",
+  explore: "explore",
   create: "edit",
-  profile: "user",
+  profile: "journey",
   classes: "users",
   settings: "settings",
-  admin: "settings",
+  admin: "admin",
 };
 export default function DesktopShortcut({ id, label, index, onOpen }) {
   const key = "wortify:windows-shortcut:" + id;

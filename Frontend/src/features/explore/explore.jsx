@@ -341,7 +341,7 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
               title={tr("Discover")}
               aria-label={tr("Discover")}
             >
-              <Icon name="home" size={23} />
+              <Icon name="explore" size={23} />
             </Link>
             <Btn
               isIconOnly
@@ -350,7 +350,7 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
               aria-pressed={Boolean(mode || sort !== "relevance")}
               onClick={() => setFilters(true)}
             >
-              <Icon name="settings" />
+              <Icon name="filter" />
             </Btn>
             <Btn
               isIconOnly
@@ -511,7 +511,7 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
               aria-pressed={Boolean(mode || sort !== "relevance")}
               onClick={() => setFilters(true)}
             >
-              <Icon name="settings" />
+              <Icon name="filter" />
             </Btn>
           </form>
           {suggestionsOpen && suggestions.length > 0 && (

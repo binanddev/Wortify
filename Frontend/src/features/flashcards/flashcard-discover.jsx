@@ -1,3 +1,4 @@
+import CardImage from "./card-image.jsx";
 import PublicDeckStudy from "./public-deck-study.jsx";
 import { useState } from "react";
 import { t as tr, useLocale } from "../../i18n/index.js";
@@ -44,7 +45,7 @@ function Preview({ lang, deck, onClose, onSave, pending, error }) {
                     )}
                   </div>
                   <div>
-                    <dd>{card.vietnamese_meaning}</dd>
+                    <dd>{card.vietnamese_meaning}<CardImage card={card}/></dd>
                     {card.example_vietnamese && (
                       <p className="text-sm text-(--muted) mt-1">
                         {card.example_vietnamese}
@@ -108,7 +109,7 @@ export default function FlashcardDiscover({
         <div className="flash-nav">
           <div className="flash-icon-row">
             <Btn
-              icon="settings"
+              icon="filter"
               aria-pressed={filtered}
               onClick={() => setDraft({ ...filters })}
             >

@@ -1,3 +1,4 @@
+import CardImage from "./card-image.jsx";
 import CardManager from "./card-manager.jsx";
 import { studyCards, sourceCardId, isExample, termProgress } from "./flashcard-engine.js";
 import ContentSwitcher from "../../components/navigation/content-switcher.jsx";
@@ -521,15 +522,15 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       <SidebarTools>
         <div className="flash-icon-row">
           <ContentSwitcher lang={lang} kind="decks" currentId={id}/>
-          <Btn icon="cards" onClick={()=>setManagingCards(true)}>{tr("Manage cards")}</Btn>
+          <Btn icon="manage" onClick={()=>setManagingCards(true)}>{tr("Manage cards")}</Btn>
         </div>
         <Status error={sync.error} />
         <div className="flash-mode-picker" aria-label={tr("Study mode")}>
           {[
             ["flash", "cards", "Card"],
-            ["learn", "spark", "Study"],
+            ["learn", "learn", "Study"],
             ["test", "exercise", "Check"],
-            ["defense", "play", "Game"],
+            ["defense", "game", "Game"],
           ].map(([mode, icon, label]) => (
             <button
               key={mode}
@@ -777,6 +778,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
               front={active.german_text}
               back={active.vietnamese_meaning}
               example={null}
+              image={!isExample(active)?active:null}
               flipped={flipped}
               setFlipped={(v) => {
                 setFlipped(v);
@@ -1080,6 +1082,7 @@ function QuestionUI({
       className={`flash-question ${checked ? (feedback ? "answer-right" : "answer-error") : ""}`}
     >
       <h2>{q.prompt}</h2>
+      {!isExample(q.card)&&q.type!=="matching"&&(q.prompt===q.card.vietnamese_meaning||checked)&&<CardImage card={q.card}/>}
       {q.type === "choice" ? (
         <div className="answer-options">
           {q.options.map((answer, i) => (

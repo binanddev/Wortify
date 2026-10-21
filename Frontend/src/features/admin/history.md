@@ -1,5 +1,15 @@
 # Change Log
 
+### [v1.10.0] - 2026-10-21 | Flashcard images and consistent theme icons
+
+- Added optional flashcard image links with source, credit and license metadata. Images remain external URLs; cards without images retain their existing layout. Import, export, discovery and personal copies preserve image links.
+- Added image search and automatic suggestions for all cards without images, with paginated review, batched saving, cancellation and retry handling. Updated copied AI instructions and authoring guides.
+- Unified functional icons through a shared semantic catalog with theme-specific variants. Corrected navigation icons and contrast, restored the flip control on both navigation faces, and removed nested SVG rendering that caused inconsistent colors and visibility.
+- Added image and navigation verification fixtures. Validation: production build and 154 frontend tests passed; targeted backend image tests passed. Static browser screenshots checked navigation across six themes and Notebook at tablet width without starting an application server.
+- Deployment: apply cards migration 0012_card_image_links on the backend. Live deployment verification remains pending.
+
+---
+
 ### [v1.9.0] - 2026-10-21 | Incremental content library management
 
 - Added Library, Import and History views for staff and superusers: search, folder navigation/creation, multi-selection, rename, move, delete and content-detail modals.
