@@ -27,10 +27,10 @@
   @apply flex flex-col gap-5 min-w-0;
 }
 .flash-folder-list {
-  @apply flex flex-col gap-1 min-w-0;
+  @apply flex flex-col gap-0.5 min-w-0;
 }
 .flash-folder-list button:not(.btn):not(.flash-tree-toggle) {
-  @apply flex w-full items-center gap-3 min-h-11 px-3 py-2 rounded-xl text-left text-base font-semibold text-(--ink) transition-colors;
+  @apply flex w-full items-center gap-2 min-h-8 px-2 py-1 rounded-md text-left text-sm font-medium text-(--ink) transition-colors;
 }
 .flash-folder-list button:hover,
 .flash-folder-list button[aria-current="page"] {
@@ -128,7 +128,7 @@
 }
 
 .flash-folder-list .flash-tree-toggle {
-  @apply grid h-7 w-6 shrink-0 place-items-center rounded-md text-(--muted) hover:bg-(--surface);
+  @apply grid h-8 w-5 shrink-0 place-items-center rounded text-(--muted) hover:bg-(--surface);
 }
 .flash-tree-toggle svg {
   @apply transition-transform;
@@ -166,3 +166,41 @@
 .flip-back .card-image { @apply m-0; }
 .flip-back .card-image img { @apply max-h-[min(160px,24vh)]; }
 @media (max-width: 600px) { .card-image img { @apply max-h-[180px]; } .flip-back .card-image img { @apply max-h-[120px]; } }
+
+/* Folder-only explorer: compact rows with quiet hierarchy guides. */
+.flash-tree-branch { @apply min-w-0; }
+.flash-tree-row { @apply flex min-w-0 items-center gap-0.5 rounded-md; }
+.flash-tree-row:has([aria-current="page"]) { @apply bg-(--surface); }
+.flash-tree-children { @apply ml-2.5 pl-2 border-l border-(--line); }
+.flash-folder-list .flash-tree-spacer { @apply block w-5 flex-none; }
+.flash-folder-list .flash-tree-folder { @apply flex-1 min-w-0; }
+.flash-folder-list > button > svg { @apply w-[18px] h-[18px]; }
+.flash-folder-list button:focus-visible { @apply outline-2 outline-offset-2 outline-(--accent); }
+@media (pointer: coarse) {
+  .flash-folder-list button:not(.btn):not(.flash-tree-toggle),
+  .flash-folder-list .flash-tree-toggle { @apply min-h-11; }
+}
+.flash-example-feedback { @apply my-5 p-5 rounded-xl border border-(--line) border-l-[3px] border-l-(--accent) bg-(--surface) text-left; }
+.flash-example-heading { @apply flex items-center gap-2 mb-3 text-xs font-semibold text-(--muted); }
+.flash-example-feedback blockquote { @apply m-0 text-lg font-medium leading-relaxed text-(--ink) whitespace-pre-wrap wrap-anywhere; }
+.flash-example-feedback > p { @apply m-0 mt-3 pt-3 border-t border-(--line) text-sm leading-relaxed text-(--muted) whitespace-pre-wrap wrap-anywhere; }
+
+/* Written recall and listening share the same feedback across themes. */
+.flash-settings .check-line { @apply m-0 min-h-0 flex items-start justify-start gap-3 py-2 text-sm leading-snug; }
+.flash-settings .check-line input { @apply mt-0.5 h-4 w-4 shrink-0; }
+.study-options-note { @apply m-0 text-xs leading-relaxed text-(--muted); }
+.question-audio { @apply flex items-center gap-3 text-sm text-(--muted); }
+.dictation-fields { @apply grid gap-4 min-w-0; }
+.dictation-fields > .btn { @apply justify-self-end; }
+.written-feedback-group { @apply grid gap-3 min-w-0; }
+.written-feedback { @apply min-w-0 rounded-xl border border-(--line) bg-(--surface) p-4 text-left; }
+.written-feedback-heading { @apply flex flex-wrap items-center justify-between gap-2 text-xs text-(--muted); }
+.written-feedback-heading strong { @apply inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold; }
+.written-feedback-heading .is-accepted { @apply bg-green-100 text-green-900; }
+.written-feedback-heading .needs-retry { @apply bg-red-100 text-red-900; }
+.written-word-diff { @apply m-0 mt-3 leading-loose text-base whitespace-pre-wrap wrap-anywhere; }
+.written-word-diff .word-diff-correct { @apply rounded px-1 py-0.5 bg-green-100 text-green-900; }
+.written-word-diff :is(ins,del) { @apply rounded px-1 py-0.5 bg-red-100 text-red-900; }
+.written-word-diff ins { @apply no-underline border-b-2 border-dotted border-red-500; }
+.written-word-diff del { @apply mr-1 line-through; }
+.written-feedback-note { @apply m-0 mt-2 text-xs text-(--ink); }

@@ -187,3 +187,8 @@ Khi chưa đăng nhập, `/api/de/flashcard/discover/` phải trả 200 (danh s�
 ### Khách chưa đăng nhập
 
 Khách được đọc catalogue Flashcard, Practice Hub và Reading công khai, xem bài/đính kèm công khai và học thử. Chỉ GET/HEAD của các endpoint public được phép; tạo/sửa/xóa, sao chép vào thư viện cá nhân, đồng bộ tiến độ và quản trị vẫn yêu cầu phiên đăng nhập. Chủ sở hữu bị vô hiệu hóa và tài nguyên riêng tư không được đưa vào các endpoint công khai. Bài tập thử được chấm trong trình duyệt, không tạo bản ghi tiến độ.
+
+
+## Dictation learning sync (1.11.0)
+
+The learning sync review whitelist accepts `type: "dictation"`. Correct dictation reviews satisfy the written-recall requirement for comprehensive deck mastery and retain their own timing/SRS mode. UUID retries remain idempotent. Deck options persist `listenBeforeAnswer` and `gradingMode` (`exact` or `flexible`) through the existing options event. Like other Studio reviews, the frontend submits the grading result; the sync endpoint records the review rather than regrading raw typed text. Deploy backend and frontend together; no schema change is needed.

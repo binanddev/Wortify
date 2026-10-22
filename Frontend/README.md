@@ -251,3 +251,21 @@ Chạy `start.ps1` ở gốc repo. Vite proxy về `http://127.0.0.1:8000`; khô
 Danh sách 5 superuser và 5 staff cùng mật khẩu nằm trong [README riêng trên máy](../README.private.local.md). File này cố ý không có trên Git/Netlify. Chỉ đăng nhập bằng các tài khoản đó khi frontend đang nối backend dùng Neon production.
 
 Nguồn: [Netlify monorepo](https://docs.netlify.com/build/configure-builds/monorepos/).
+
+
+### Flashcard folders and answer feedback
+
+The library navigation contains folders only. It opens the selected path and its immediate children; other branches can be expanded manually. The content area shows decks in the current folder, without duplicate folder tiles. Folder search retains matching branches and their ancestor paths.
+
+In Study mode, Show answer records an incorrect attempt and reveals the solution while keeping the answer editable. Next stays disabled until a correct submission. Optional examples and translations appear only after correct graded answers, not after an incorrect answer, a reveal or a card flip. Test mode retains its single-attempt scoring.
+
+Static interaction checks: `node scripts/verify-flashcard-workspace.mjs` (also `--mobile` or `--library`) after building. These use mocked data and local HTML files; no application server is started.
+
+
+### Listening and written-answer checking (1.11.0)
+
+Study and Test include **Listen and write**: hear the term and enter both the term and definition. The text prompt and solution are hidden until an answer is checked or revealed. Both fields must pass independently. Written questions also have an optional **Play the term before written questions** checkbox. Select the term voice in Study options; replay is available next to the question. Browser speech synthesis is required for pronunciation. Inactive windows and hidden tabs stop their own audio. Test questions play on first field focus or manual replay so multiple questions do not start speaking together.
+
+**Exact** checking remains the default. **Flexible · 70%** compares ordered words, penalizes missing and extra words, and gives partial credit for minor typos in words longer than three characters. Each dictation field must reach 70%; changed negation remains incorrect. Existing accepted term alternatives are respected. Feedback marks correct words green, strikes out wrong/extra words, and inserts missing/corrected words in red. It compares against saved answers rather than inferring synonyms. A learner can retry in Study; Test retains its original single-attempt scoring.
+
+Run `node scripts/verify-flashcard-dictation.mjs` (or `--mobile`) after building for mocked speech, six-theme feedback contrast, two-field grading, retry, unsupported speech and language fixtures. These open local HTML files without starting the frontend or backend.

@@ -492,6 +492,24 @@ class SyncAndRolesTests(TestCase):
         self.assertEqual(data['progress'][str(self.card.pk)]['stage'],'mastered')
         self.assertEqual(data['options']['answerWith'],'definition')
 
+    def test_dictation_options_and_written_mastery_sync_idempotently(self):
+        options = {'types':['dictation'], 'listenBeforeAnswer':True, 'gradingMode':'flexible'}
+        events = [self.event('options', deck=self.deck.pk, options=options)]
+        events += [self.event('review', deck=self.deck.pk, card=self.card.pk, correct=True,
+                              type='dictation', goal='comprehensive') for _ in range(3)]
+        first = self.sync(events)
+        self.assertEqual(first['errors'], [])
+        self.assertEqual(len(first['accepted']), 4)
+        self.sync(events)
+        self.assertEqual(StudyProgress.objects.get().correct_count, 3)
+        self.assertEqual(StudyProgress.objects.get().last_mode, 'dictation')
+        learning = self.client.get(f'/api/en/decks/{self.deck.pk}/').json()['learning']
+        self.assertEqual(learning['options']['gradingMode'], 'flexible')
+        self.assertTrue(learning['options']['listenBeforeAnswer'])
+        progress = learning['progress'][str(self.card.pk)]
+        self.assertTrue(progress['written'])
+        self.assertEqual(progress['stage'], 'mastered')
+
     def test_invalid_event_does_not_block_other_events_or_persist_log(self):
         result=self.sync([self.event('review',deck=self.deck.pk,card=99999,correct=True,type='written'),self.event('star',deck=self.deck.pk,card=self.card.pk,value=True)])
         self.assertEqual(len(result['errors']),1)

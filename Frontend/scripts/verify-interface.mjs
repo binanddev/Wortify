@@ -5,14 +5,16 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 import { THEME_ICONS } from "../src/themes/icons.js";
-import { ICON_PATHS } from "../src/components/ui/icon-paths.js";
+import { ICON_COMPONENTS } from "../src/components/ui/icon-catalog.js";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 const browser =
   process.env.CHROME_PATH ||
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 await fs.access(browser);
 const dist = path.resolve(import.meta.dirname, "../dist/assets");
 const cssFile = (await fs.readdir(dist)).find((name) =>
-  /^index-.*\.css$/.test(name),
+  /^(app|index)-.*\.css$/.test(name),
 );
 if (!cssFile)
   throw new Error("Build the frontend before rendering the interface fixture.");
@@ -28,8 +30,11 @@ if (liveOrigin) {
 } else css = await fs.readFile(path.join(dist, cssFile), "utf8");
 css=css.replaceAll('/assets/',pathToFileURL(dist).href+'/');
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), "wortify-interface-"));
-const icon = (name) =>
-  `<svg class="app-icon" data-icon="${name}" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path class="icon-family icon-default" d="${ICON_PATHS[name]}"/>${Object.entries(THEME_ICONS).map(([theme,paths])=>`<g class="icon-family icon-${theme}"><path d="${paths[name] || ICON_PATHS[name]}"/></g>`).join("")}</svg>`;
+const icon = (name) => {
+  const glyph = renderToStaticMarkup(createElement(ICON_COMPONENTS[name] || ICON_COMPONENTS.help))
+    .replace(/^<svg[^>]*>|<\/svg>$/g, "");
+  return `<svg class="app-icon" data-icon="${name}" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><g class="icon-family icon-default">${glyph}</g>${Object.entries(THEME_ICONS).map(([theme,paths])=>`<g class="icon-family icon-${theme}">${paths[name] ? `<path d="${paths[name]}"/>` : glyph}</g>`).join("")}</svg>`;
+};
 const autoCode = (await fs.readFile(new URL("../src/features/appearance/auto-contrast.js", import.meta.url), "utf8")).replaceAll("export ", "");
 const html = `<!doctype html><html data-interface="studio" data-background="mist"><meta charset="utf-8"><style>${css}</style>
 <style>${css.replaceAll(":hover", "[data-test-hover]")}</style>

@@ -11,6 +11,7 @@ export function exerciseSolution(exercise, question) {
   ];
 }
 export function cardSolution(q) {
+  if (q.type === "dictation") return [q.card.german_text, q.card.vietnamese_meaning];
   if (q.type === "matching")
     return q.left.map(
       (item) =>

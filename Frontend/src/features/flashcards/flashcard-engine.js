@@ -1,7 +1,8 @@
-import { normalize } from "../learning/local-learning.js";
+import { compareAnswer } from "./answer-comparison.js";
 export const TYPES = [
   ["choice", "Multiple choice"],
   ["written", "Type your answer"],
+  ["dictation", "Listen and write"],
   ["truefalse", "Correct / Sai"],
   ["matching", "Matching"],
 ];
@@ -49,6 +50,7 @@ export function makeQuestion(
         : answerWith,
     side = sides(card, selectedAnswerWith),
     q = { id: card.id, type, card, ...side };
+  if (type === "dictation") return {...q, prompt:"", expected:card.german_text, alternatives:card.accepted_answers || []};
   if (type === "choice") {
     q.options = mix(
       [
@@ -109,16 +111,24 @@ export function checkQuestion(q, value, options = {}) {
         q.right.find((r) => r.id === l.id)?.text,
     );
   if (q.type === "choice") return value === q.expected;
-  return [q.expected, ...q.alternatives].some(
-    (v) => normalize(v, options, true) === normalize(value, options, true),
-  );
+  return assessQuestion(q, value, options).correct;
 }
+export function assessQuestion(q, value, options = {}) {
+  if (q.type === "dictation") {
+    const term = compareAnswer(q.card.german_text, value?.term, options, q.card.accepted_answers || []);
+    const definition = compareAnswer(q.card.vietnamese_meaning, value?.definition, options);
+    return {correct:term.correct && definition.correct, term, definition};
+  }
+  if (q.type === "written") return compareAnswer(q.expected, value, options, q.alternatives || []);
+  return null;
+}
+
 export function advanceProgress(previous, correct, type, turn, goal) {
   const p = { hits: 0, misses: 0, streak: 0, written: false, ...previous };
   p.hits += Number(correct);
   p.misses += Number(!correct);
   p.streak = correct ? p.streak + 1 : 0;
-  p.written = p.written || (correct && type === "written");
+  p.written = p.written || (correct && ["written", "dictation"].includes(type));
   p.stage =
     p.streak >= 3 && (goal !== "comprehensive" || p.written)
       ? "mastered"

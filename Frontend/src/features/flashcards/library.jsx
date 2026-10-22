@@ -127,23 +127,13 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
     setEdit({ type, location: selected ? String(selected.id) : "" });
   };
   const search = query.trim().toLowerCase();
-  const visibleFolders = data.folders.filter(
-    (f) =>
-      (f.parent_id ?? null) === (selected?.id ?? null) &&
-      (!search ||
-        data.folders.some(
-          (child) =>
-            folderAncestors(data.folders, child).some((a) => a.id === f.id) &&
-            (child.name.toLowerCase().includes(search) ||
-              data.decks.some(
-                (d) =>
-                  d.folder_id === child.id &&
-                  `${d.title} ${d.description}`.toLowerCase().includes(search),
-              )),
-        )),
+  const navigationFolders = !search ? data.folders : data.folders.filter(f =>
+    data.folders.some(child =>
+      folderAncestors(data.folders, child).some(ancestor => ancestor.id === f.id) &&
+      (child.name.toLowerCase().includes(search) || data.decks.some(d =>
+        d.folder_id === child.id && `${d.title} ${d.description}`.toLowerCase().includes(search))),
+    ) || folderAncestors(data.folders, selected).some(ancestor => ancestor.id === f.id),
   );
-  if (sort === "name")
-    visibleFolders.sort((a, b) => a.name.localeCompare(b.name));
 
   const runBulk = async (signal) => {
     const failures = [];
@@ -191,27 +181,6 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
         </Select>
         <Btn isDisabled={action.pending} onClick={() => action.run(runBulk)}>{tr("Move")}</Btn>
       </PracticeModal>}
-      {!selecting && <div
-        className={`mb-5 grid gap-3 ${layout === "list" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"}`}
-      >
-        {selected?.parent_id && (
-          <Btn
-            icon="undo"
-            onClick={() => setFolder(String(selected.parent_id))}
-          >{tr("Back to parent folder")}</Btn>
-        )}
-        {visibleFolders.map((f) => (
-          <button
-            key={f.id}
-            onClick={() => setFolder(String(f.id))}
-            title={folderPath(data.folders, f)}
-            className="notebook-folder-tab flex items-center gap-3 rounded-2xl border border-(--line) bg-(--surface) px-4 py-3 font-semibold transition hover:-translate-y-0.5 hover:bg-(--solid)"
-          >
-            <Icon name="folder" />
-            <span>{f.name}</span>
-          </button>
-        ))}
-      </div>}
       <SidebarTools>
         <div className="flash-nav">
           <Field
@@ -248,12 +217,12 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
             {[{ id: "all", name: "My Flashcards", icon: "home" }].map((f) => (
               <button
                 key={f.id}
-                title={f.name}
+                title={tr(f.name)}
                 aria-current={folder === String(f.id) ? "page" : undefined}
                 onClick={() => setFolder(String(f.id))}
               >
                 <Icon name={f.icon || "folder"} />
-                <span>{f.name}</span>
+                <span>{tr(f.name)}</span>
                 <small>
                   {f.id === "all"
                     ? data.decks.length
@@ -264,8 +233,7 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
               </button>
             ))}
             <FolderTree
-              folders={data.folders}
-              decks={data.decks}
+              folders={navigationFolders}
               lang={lang}
               selected={folder}
               onSelect={setFolder}
@@ -341,14 +309,14 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
           </div>
         ))}
       </div>
-      {!decks.length && !visibleFolders.length && (
+      {!decks.length && (
         <div className="flash-empty">
           <Icon name={query ? "search" : "cards"} size={36} />
           <p>
             {query
               ? tr("Content not found.")
               : folder === "all"
-                ? tr("No folders yet.")
+                ? tr("No decks yet")
                 : tr("This folder is empty.")}
           </p>
           <Btn icon="plus" primary onClick={() => setPanel("add")}>{tr("Add new")}</Btn>

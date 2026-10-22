@@ -20,12 +20,10 @@ export function folderPath(folders, item) {
 }
 export function FolderTree({
   folders,
-  decks = [],
   lang,
   parent = null,
   selected,
   onSelect,
-  depth = 0,
 }) {
   useLocale();
   return folders
@@ -33,11 +31,11 @@ export function FolderTree({
     .map((f) => (
       <FolderBranch
         key={f.id}
-        {...{ f, folders, decks, lang, selected, onSelect, depth }}
+        {...{ f, folders, lang, selected, onSelect }}
       />
     ));
 }
-function FolderBranch({ f, folders, decks, lang, selected, onSelect, depth }) {
+function FolderBranch({ f, folders, lang, selected, onSelect }) {
   useLocale();
   const activePath = folderAncestors(
     folders,
@@ -45,61 +43,42 @@ function FolderBranch({ f, folders, decks, lang, selected, onSelect, depth }) {
   ).some((v) => v.id === f.id);
   const [open, setOpen] = useState(activePath);
   useEffect(() => {
-    if (activePath) setOpen(true);
-  }, [activePath]);
-  const children = decks.filter((d) => d.folder_id === f.id);
+    setOpen(activePath);
+  }, [activePath, selected]);
   const expandable =
-    children.length > 0 || folders.some((child) => child.parent_id === f.id);
+    folders.some((child) => child.parent_id === f.id);
   return (
-    <div className="min-w-0">
-      <div className="flex min-w-0 items-center gap-1">
+    <div className="flash-tree-branch">
+      <div className="flash-tree-row">
         {expandable ? (
           <button
             type="button"
             className="flash-tree-toggle"
             aria-expanded={open}
-            aria-label={`${open ? "Collapse" : "Expand"} ${f.name}`}
+            aria-label={tr(open ? "Collapse {v0}" : "Expand {v0}", {v0:f.name})}
             onClick={() => setOpen((v) => !v)}
           >
             <Icon name="chevron_right" size={16} />
           </button>
         ) : (
-          <span className="w-6 shrink-0" />
+          <span className="flash-tree-spacer" aria-hidden="true" />
         )}
         <button
+          className="flash-tree-folder"
           title={folderPath(folders, f)}
           aria-current={String(f.id) === selected ? "page" : undefined}
           onClick={() => onSelect(String(f.id))}
         >
-          <Icon name="folder" />
+          <Icon name="folder" size={18} />
           <span>{f.name}</span>
         </button>
       </div>
       {open && expandable && (
-        <div
-          className={
-            depth < 4
-              ? "ml-3 border-l border-(--line) pl-2"
-              : "border-l border-(--line) pl-1"
-          }
-        >
+        <div className="flash-tree-children">
           <FolderTree
-            {...{ folders, decks, lang, selected, onSelect }}
+            {...{ folders, lang, selected, onSelect }}
             parent={f.id}
-            depth={depth + 1}
           />
-          {children.map((d) => (
-            <div key={d.id} className="flex min-w-0 items-center">
-            <Link
-              to={`/${lang}/flashcard/deck/${d.id}`}
-              title={d.title}
-              className="flex flex-1 min-w-0 items-center gap-3 rounded-xl px-3 py-2 text-base hover:bg-(--surface)"
-            >
-              <Icon name="cards" />
-              <span className="truncate">{d.title}</span>
-            </Link>
-            </div>
-          ))}
         </div>
       )}
     </div>

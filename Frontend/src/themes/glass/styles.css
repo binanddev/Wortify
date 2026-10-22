@@ -264,3 +264,11 @@
   ) {
   @apply bg-emerald-600/60! text-white!;
 }
+
+/* Corrected words keep Glass white text on distinct, dark feedback surfaces. */
+:root[data-interface="glass"] body .written-feedback :is(.word-diff-correct, .is-accepted) {
+  @apply bg-emerald-900! text-white!;
+}
+:root[data-interface="glass"] body .written-feedback :is(ins, del, .needs-retry) {
+  @apply bg-red-900! text-white!;
+}

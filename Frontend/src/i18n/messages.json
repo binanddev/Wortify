@@ -5878,5 +5878,77 @@
   "Image provider is busy. Continue later.": {
     "vi": "Nguồn ảnh đang quá tải. Hãy tiếp tục sau.",
     "de": "Bildanbieter ausgelastet. Bitte später fortsetzen."
+  },
+  "Show example and translation after a correct answer": {
+    "vi": "Hiện ví dụ và bản dịch khi trả lời đúng",
+    "de": "Beispiel und Übersetzung nach einer richtigen Antwort anzeigen"
+  },
+  "Collapse {v0}": {
+    "vi": "Thu gọn {v0}",
+    "de": "{v0} einklappen"
+  },
+  "Expand {v0}": {
+    "vi": "Mở rộng {v0}",
+    "de": "{v0} ausklappen"
+  },
+  "Listen and write": {
+    "vi": "Nghe – viết",
+    "de": "Hören und schreiben"
+  },
+  "Play the term before written questions": {
+    "vi": "Nghe từ trước khi nhập câu trả lời",
+    "de": "Begriff vor Schreibfragen vorlesen"
+  },
+  "Answer checking": {
+    "vi": "Chấm câu trả lời",
+    "de": "Antwortprüfung"
+  },
+  "Exact": {
+    "vi": "Chính xác",
+    "de": "Exakt"
+  },
+  "Flexible · 70%": {
+    "vi": "Linh hoạt · 70%",
+    "de": "Tolerant · 70 %"
+  },
+  "Accepts small typos and missing words at 70%. Both dictation answers must pass; negative wording must match.": {
+    "vi": "Chấp nhận lỗi gõ nhỏ và thiếu từ khi đạt 70%. Nghe–viết cần đạt cả hai ô; từ phủ định phải khớp.",
+    "de": "Akzeptiert kleine Tippfehler und fehlende Wörter ab 70 %. Beim Diktat müssen beide Antworten bestehen; Verneinungen müssen übereinstimmen."
+  },
+  "Play term": {
+    "vi": "Phát âm từ",
+    "de": "Begriff vorlesen"
+  },
+  "Listen to the term": {
+    "vi": "Nghe phát âm của từ",
+    "de": "Höre dir den Begriff an"
+  },
+  "Close enough": {
+    "vi": "Gần đúng",
+    "de": "Fast richtig"
+  },
+  "Try again": {
+    "vi": "Thử lại",
+    "de": "Noch einmal versuchen"
+  },
+  "Missing word": {
+    "vi": "Từ còn thiếu",
+    "de": "Fehlendes Wort"
+  },
+  "Expected word": {
+    "vi": "Từ đúng",
+    "de": "Erwartetes Wort"
+  },
+  "Check the negative wording.": {
+    "vi": "Kiểm tra lại từ phủ định.",
+    "de": "Prüfe die Verneinung."
+  },
+  "Term voice": {
+    "vi": "Giọng đọc thuật ngữ",
+    "de": "Stimme für Begriffe"
+  },
+  "Definition voice": {
+    "vi": "Giọng đọc định nghĩa",
+    "de": "Stimme für Definitionen"
   }
 }

@@ -1,3 +1,5 @@
+import WrittenFeedback from "./written-feedback.jsx";
+import { useQuestionSpeech } from "./use-question-speech.js";
 import CardImage from "./card-image.jsx";
 import CardManager from "./card-manager.jsx";
 import { studyCards, sourceCardId, isExample, termProgress } from "./flashcard-engine.js";
@@ -38,6 +40,7 @@ import {
   TYPES,
   makeQuestion,
   checkQuestion,
+  assessQuestion,
   advanceProgress,
   nextLearningCard,
   createTest,
@@ -51,6 +54,8 @@ const defaults = {
   exampleDirection: "front",
   direction: "front",
   autoSpeak: false,
+  listenBeforeAnswer: false,
+  gradingMode: "exact",
   speakAfterCorrect: false,
   frontVoice: "",
   backVoice: "vi-VN",
@@ -150,7 +155,6 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     [started, setStarted] = useState(0),
     [elapsed, setElapsed] = useState(0),
     [completed, setCompleted] = useState(false);
-  const [flashRevealed, setFlashRevealed] = useState(false);
   const [flashSkipped, setFlashSkipped] = useState(false);
   const [flashEnded, setFlashEnded] = useState(false);
   const [testSkipped, setTestSkipped] = useState({});
@@ -196,7 +200,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     active?.id,
     options.mode === "flash" && !flashSkipped,
   );
-  useEffect(() => { setFlashSkipped(false); setFlashRevealed(false); }, [active?.id, options.direction]);
+  useEffect(() => { setFlashSkipped(false); }, [active?.id, options.direction]);
   useEffect(() => savePreference(`${key}:options`, options), [options, key]);
   useEffect(() => savePreference(`${key}:stars`, stars), [stars, key]);
   useEffect(() => savePreference(`${key}:progress`, termProgress(progress)), [progress, key]);
@@ -217,17 +221,18 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     );
   }, [active?.id, options.direction, options.exampleDirection]);
   useEffect(() => {
-    if (options.mode === "flash" && options.autoSpeak && active) {
+    if (options.mode === "flash" && options.autoSpeak && active && windowActive) {
       speak(
         flipped ? active.vietnamese_meaning : active.german_text,
         flipped ? options.backVoice : options.frontVoice,
       );
+      return () => window.speechSynthesis?.cancel();
     }
-    return () => window.speechSynthesis?.cancel();
   }, [
     active?.id,
     flipped,
     options.autoSpeak,
+    windowActive,
     options.frontVoice,
     options.backVoice,
     options.mode,
@@ -262,7 +267,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
         return;
       if (e.code === "Space") {
         e.preventDefault();
-        setFlipped((v) => !v); setFlashRevealed(true);
+        setFlipped((v) => !v);
       }
       if (e.key === "ArrowRight") step(1);
       if (e.key === "ArrowLeft") step(-1);
@@ -305,7 +310,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       options: { ...options, ...v },
     });
     setOptions((o) => ({ ...o, ...v }));
-    if (v.mode || v.types || v.answerWith || v.goal || "includeExamples" in v || v.exampleOrder || v.exampleDirection || "shuffle" in v || "starredOnly" in v) {
+    if (v.mode || v.types || v.answerWith || v.goal || v.gradingMode || "ignore_case" in v || "ignore_punctuation" in v || "includeExamples" in v || v.exampleOrder || v.exampleDirection || "shuffle" in v || "starredOnly" in v) {
       setFlashEnded(false);
       setFlashSkipped(false);
       setStarted(0);
@@ -341,7 +346,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     setTurn(0);
     setResetLearning(false);
   };
-  const learningGoal = options.types.includes("written")
+  const learningGoal = options.types.some(type => ["written", "dictation"].includes(type))
     ? options.goal
     : "quick";
   const chooseType = (card, records, t = 0) => {
@@ -397,7 +402,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     }
   };
   const submitLearn = (submittedValue = value, skipped = false) => {
-    if (!question || feedback?.correct || feedback?.skipped) return;
+    if (!question || feedback?.correct || (skipped && feedback?.skipped)) return;
     const correct =
         !skipped && checkQuestion(question, submittedValue, options),
       records = {
@@ -421,8 +426,8 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       response_ms: questionTimers.current[question.id]?.() ?? null,
     });
     setProgress(records);
-    setValue(submittedValue);
-    setFeedback({ correct, expected: question.expected, skipped });
+    if (!skipped) setValue(submittedValue);
+    setFeedback({ correct, assessment:skipped ? null : assessQuestion(question, submittedValue, options), expected: question.expected, skipped: skipped || (!correct && feedback?.skipped) });
     audio.feedback(correct);
     if (correct && options.speakAfterCorrect) {
       try {
@@ -433,6 +438,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
     }
   };
   const next = () => {
+    if (!feedback?.correct) return;
     if (elapsed >= options.minutes * 60) {
       setRunning(false);
       setFeedback(null);
@@ -470,7 +476,8 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       q.type === "choice" ||
       q.type === "truefalse" ||
       (q.type === "matching" && q.left.every((l) => v?.[l.id])) ||
-      (q.type === "written" && commit && String(v || "").trim());
+      (q.type === "written" && commit && String(v || "").trim()) ||
+      (q.type === "dictation" && commit && String(v?.term || "").trim() && String(v?.definition || "").trim());
     if (!complete) return;
     const correct = !skipped && checkQuestion(q, v, options),
       checked = { ...testChecked, [i]: correct };
@@ -580,7 +587,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
         >
           <div className="flash-settings">
             <label className="check-line"><input type="checkbox" checked={options.includeExamples} onChange={e=>patch({includeExamples:e.target.checked})}/>{tr("Study example sentences")}</label>
-            {!options.includeExamples && <label className="check-line"><input type="checkbox" checked={options.showExampleAfterAnswer} onChange={e=>patch({showExampleAfterAnswer:e.target.checked})}/>{tr("Show example and translation after answering")}</label>}
+            {!options.includeExamples && <label className="check-line"><input type="checkbox" checked={options.showExampleAfterAnswer} onChange={e=>patch({showExampleAfterAnswer:e.target.checked})}/>{tr("Show example and translation after a correct answer")}</label>}
             {options.includeExamples && <>
               <Select label={tr("Example order")} value={options.exampleOrder} onChange={exampleOrder=>patch({exampleOrder})}>
                 <option value="after">{tr("After its term")}</option><option value="mixed">{tr("Mixed with terms")}</option>
@@ -673,6 +680,22 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                     </label>
                   ))}
                 </fieldset>
+                {options.types.includes("written") && <label className="check-line">
+                  <input type="checkbox" checked={options.listenBeforeAnswer} onChange={e=>patch({listenBeforeAnswer:e.target.checked})}/>
+                  {tr("Play the term before written questions")}
+                </label>}
+                {(options.types.includes("dictation") || options.types.includes("written") && options.listenBeforeAnswer) &&
+                  <Select label={tr("Term voice")} value={options.frontVoice} onChange={frontVoice=>patch({frontVoice})}>
+                    <option value="en-US">English</option><option value="de-DE">Deutsch</option><option value="vi-VN">Vietnamese</option>
+                  </Select>}
+                {options.types.some(type=>["written","dictation"].includes(type)) && <Select
+                  label={tr("Answer checking")} value={options.gradingMode} onChange={gradingMode=>patch({gradingMode})}
+                  >
+                  <option value="exact">{tr("Exact")}</option>
+                  <option value="flexible">{tr("Flexible · 70%")}</option>
+                </Select>}
+                {options.gradingMode === "flexible" && options.types.some(type=>["written","dictation"].includes(type)) &&
+                  <p className="study-options-note">{tr("Accepts small typos and missing words at 70%. Both dictation answers must pass; negative wording must match.")}</p>}
                 {options.mode === "learn" && (
                   <>
                     <Select
@@ -782,11 +805,10 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
               flipped={flipped}
               setFlipped={(v) => {
                 setFlipped(v);
-                setFlashRevealed(true);
+
                 audio.tick();
               }}
             />
-            <ExampleFeedback card={active} options={options} revealed={flashRevealed || flashSkipped}/>
             <div className="toolbar flashcard-actions flashcard-review-controls">
               {flashSkipped ? (
                 <Btn
@@ -837,7 +859,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                 isDisabled={index === order.length - 1}
                 onClick={() => step(1)}
               >{tr("Next →")}</Btn>
-              <Btn icon="flip" onClick={() => {setFlipped((v) => !v); setFlashRevealed(true);}}>{tr("Flip card · Space")}</Btn>
+              <Btn icon="flip" onClick={() => {setFlipped((v) => !v);}}>{tr("Flip card · Space")}</Btn>
               <Btn
                 icon="sound"
                 onClick={() =>
@@ -917,9 +939,12 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                 }}
                 onCommit={() => submitLearn()}
                 feedback={feedback?.correct}
-                disabled={feedback?.correct || feedback?.skipped}
+                assessment={feedback?.assessment}
+                options={options}
+                active={windowActive && !settingsOpen && !resetLearning}
+                disabled={!!feedback?.correct}
               />
-              <ExampleFeedback card={question.card} options={options} revealed={!!feedback}/>
+              <ExampleFeedback card={question.card} options={options} revealed={feedback?.correct === true}/>
               {feedback?.skipped && (
                 <AnswerReveal answers={cardSolution(question)} />
               )}
@@ -939,7 +964,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                 </Btn>
                 <div className="flashcard-actions">
                   {!feedback?.correct && !feedback?.skipped && (
-                    <SkipButton onClick={() => submitLearn("", true)} />
+                    <Btn icon="help" onClick={() => submitLearn(value, true)}>{tr("Show answer")}</Btn>
                   )}
                   <Btn
                     primary
@@ -948,7 +973,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                     aria-label={tr("Next question")}
                     title={tr("Next question")}
                     onClick={next}
-                    isDisabled={!feedback?.correct && !feedback?.skipped}
+                    isDisabled={!feedback?.correct}
                   >
                     <span className="next-label">{tr("Continue")}</span>
                     <Icon name="arrow" />
@@ -989,9 +1014,12 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
                     onChange={(v) => answerTest(i, v)}
                     onCommit={() => answerTest(i, testAnswers[i], true)}
                     feedback={testChecked[i]}
+                    assessment={Object.hasOwn(testChecked, i) && !testSkipped[i] ? assessQuestion(q, testAnswers[i], options) : null}
+                    options={options}
+                    active={windowActive && !settingsOpen && !resetLearning}
                     disabled={Object.hasOwn(testChecked, i)}
                   />
-                  <ExampleFeedback card={q.card} options={options} revealed={Object.hasOwn(testChecked,i)}/>
+                  <ExampleFeedback card={q.card} options={options} revealed={testChecked[i] === true}/>
                   {testSkipped[i] && <AnswerReveal answers={cardSolution(q)} />}
                   <div className="flashcard-actions">
                     {!Object.hasOwn(testChecked, i) ? (
@@ -1065,10 +1093,18 @@ function QuestionUI({
   onChange,
   disabled,
   feedback,
+  assessment,
+  options,
+  active,
   onCommit,
   onTimer,
 }) {
   useLocale();
+  const definitionInput = useRef(null);
+  const listening = q.type === "dictation" || q.type === "written" && options.listenBeforeAnswer;
+  const speech = useQuestionSpeech({text:q.card.german_text, voice:options.frontVoice,
+    enabled:!!(listening && active && !disabled), autoplay:options.mode === "learn"});
+  const commit = () => { speech.stop(); onCommit?.(); };
   const clock = useAnswerClock(q.id, !disabled);
   useEffect(() => {
     onTimer?.(clock.read);
@@ -1079,9 +1115,15 @@ function QuestionUI({
   return (
     <div
       ref={clock.root}
+      onFocusCapture={listening ? e=>{if(e.target.matches("input,textarea"))speech.onFocus();} : undefined}
       className={`flash-question ${checked ? (feedback ? "answer-right" : "answer-error") : ""}`}
     >
-      <h2>{q.prompt}</h2>
+      <h2>{q.type === "dictation" ? tr("Listen and write") : q.prompt}</h2>
+      {listening && <div className="question-audio">
+        <Btn icon="sound" isDisabled={!active || disabled} onClick={speech.play}>{tr("Play term")}</Btn>
+        <span>{tr("Listen to the term")}</span>
+      </div>}
+      {listening && speech.error && <Status error={speech.error}/>}
       {!isExample(q.card)&&q.type!=="matching"&&(q.prompt===q.card.vietnamese_meaning||checked)&&<CardImage card={q.card}/>}
       {q.type === "choice" ? (
         <div className="answer-options">
@@ -1116,6 +1158,16 @@ function QuestionUI({
             >{tr("Sai")}</Btn>
           </div>
         </>
+      ) : q.type === "dictation" ? (
+        <div className="dictation-fields">
+          <Field label={tr("Term")} value={value?.term || ""} isDisabled={disabled} autoComplete="off" spellCheck={false} maxLength={500}
+            onChange={term=>onChange({...value,term})}
+            onKeyDown={e=>{if(e.key === "Enter" && !e.nativeEvent.isComposing){e.preventDefault();definitionInput.current?.focus();}}}/>
+          <Field ref={definitionInput} label={tr("Definition")} value={value?.definition || ""} isDisabled={disabled} autoComplete="off" spellCheck={false} maxLength={500}
+            onChange={definition=>onChange({...value,definition})}
+            onKeyDown={e=>{if(e.key === "Enter" && !e.nativeEvent.isComposing){e.preventDefault();if(value?.term?.trim() && value?.definition?.trim())commit();}}}/>
+          <Btn icon="enter" isDisabled={disabled || !value?.term?.trim() || !value?.definition?.trim()} onClick={commit}>{tr("Check answer")}</Btn>
+        </div>
       ) : q.type === "matching" ? (
         <Matching
           left={q.left}
@@ -1131,10 +1183,12 @@ function QuestionUI({
           onChange={onChange}
           isDisabled={disabled}
           autoComplete="off"
+          spellCheck={false}
+          maxLength={2000}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !e.nativeEvent.isComposing) {
               e.preventDefault();
-              onCommit?.();
+              commit();
             }
           }}
           endContent={
@@ -1142,13 +1196,14 @@ function QuestionUI({
               className="answer-enter"
               disabled={disabled || !String(value || "").trim()}
               aria-label={tr("Check answer")}
-              onClick={() => onCommit?.()}
+              onClick={commit}
             >
               <Icon name="enter" />
             </button>
           }
         />
       )}
+      <WrittenFeedback assessment={assessment}/>
       {q.type === "matching" && (
         <div className="print-only print-matching">
           <div>
@@ -1176,5 +1231,9 @@ function QuestionUI({
 
 function ExampleFeedback({card,options,revealed}) {
   if (!revealed || !options.showExampleAfterAnswer || options.includeExamples || isExample(card) || !card?.example_german) return null;
-  return <div className="answer-reveal" aria-live="polite"><p>{card.example_german}</p>{card.example_vietnamese && <p className="muted">{card.example_vietnamese}</p>}</div>;
+  return <aside className="flash-example-feedback" aria-live="polite">
+    <div className="flash-example-heading"><Icon name="book" size={18}/><span>{tr("Example sentence")}</span></div>
+    <blockquote>{card.example_german}</blockquote>
+    {card.example_vietnamese && <p>{card.example_vietnamese}</p>}
+  </aside>;
 }

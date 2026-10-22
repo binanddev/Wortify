@@ -1,5 +1,17 @@
 # Change Log
 
+### [v1.11.0] - 2026-10-22 | Listening, flexible answers and folder navigation
+
+- Added Listen and write with separate term and definition responses, automatic term pronunciation and replay. Added optional term audio before ordinary written questions and a voice selector. Test questions play on focus or request instead of speaking over one another.
+- Added opt-in Flexible 70% checking with word alignment, limited typo tolerance and per-field scores. Correct words are green; wrong/extra words are struck out and missing/corrected words inserted in red. Both dictation responses must pass; altered negation is rejected. Exact checking remains the default.
+- Keep Study answers editable after revealing the solution and require an accepted answer before advancing. Show optional examples and translations only after accepted graded answers, using a styled example panel. Test mode retains its single-attempt scoring.
+- Limit Flashcard navigation to folders, open the selected path and immediate children, and use compact explorer rows. Show decks in the content area without duplicate folder tiles.
+- Added dictation progress sync and written mastery support, manual English/Vietnamese/German labels, accessible feedback and Glass contrast treatment. Repaired the static interface fixture's retired icon import and added server-free interaction fixtures.
+- Validation: 162 frontend unit tests, 11 targeted backend sync/permission tests and production build passed. Migration check reports no changes. Static HTML fixtures cover retry, folder navigation, listening, grading, six-theme feedback contrast and interface languages; no application server was started.
+- Deployment: update backend and frontend together for the new dictation review type. No new database migration is required. Live deployment checks remain pending user confirmation.
+
+---
+
 ### [v1.10.0] - 2026-10-21 | Flashcard images and consistent theme icons
 
 - Added optional flashcard image links with source, credit and license metadata. Images remain external URLs; cards without images retain their existing layout. Import, export, discovery and personal copies preserve image links.

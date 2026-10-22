@@ -138,10 +138,10 @@ def apply_event(request,event):
                 if type(data.get('value')) is not bool:raise ValueError('Invalid star state.')
                 if stamp>=state.stars.get(key,{}).get('at',''):state.stars[key]={'value':data['value'],'at':stamp}
             else:
-                if type(data.get('correct')) is not bool or data.get('type') not in ('choice','written','truefalse','matching','flash','spell','order','write'):raise ValueError('Invalid study session.')
+                if type(data.get('correct')) is not bool or data.get('type') not in ('choice','written','dictation','truefalse','matching','flash','spell','order','write'):raise ValueError('Invalid study session.')
                 correct=data['correct'];p=state.progress.get(key,{'hits':0,'misses':0,'streak':0,'written':False})
                 p['hits']=p.get('hits',0)+int(correct);p['misses']=p.get('misses',0)+int(not correct)
-                p['streak']=p.get('streak',0)+1 if correct else 0;p['written']=p.get('written',False) or (correct and data['type']=='written')
+                p['streak']=p.get('streak',0)+1 if correct else 0;p['written']=p.get('written',False) or (correct and data['type'] in ('written','dictation'))
                 p['stage']='mastered' if p['streak']>=3 and (data.get('goal')!='comprehensive' or p['written']) else 'familiar' if p['hits'] else 'new'
                 p['lastStudied']=timezone.localtime(parse_datetime(stamp)).date().isoformat();state.progress[key]=p
                 progress,_=StudyProgress.objects.get_or_create(user=request.user,card_id=card)
