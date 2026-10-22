@@ -186,3 +186,13 @@ class LearningEvent(models.Model):
     payload = models.JSONField(default=dict)
     result = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class DeckOperation(models.Model):
+    """Durable receipts for retry-safe library operations and guarded move undo."""
+    token = models.UUIDField(unique=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    language = models.CharField(max_length=2)
+    payload = models.JSONField(default=dict)
+    result = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)

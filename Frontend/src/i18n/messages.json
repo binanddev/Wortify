@@ -5950,5 +5950,145 @@
   "Definition voice": {
     "vi": "Giọng đọc định nghĩa",
     "de": "Stimme für Definitionen"
+  },
+  "New deck": {
+    "vi": "Bộ thẻ mới",
+    "de": "Neuer Kartensatz"
+  },
+  "New subfolder": {
+    "vi": "Thư mục con mới",
+    "de": "Neuer Unterordner"
+  },
+  "Rename folder": {
+    "vi": "Đổi tên thư mục",
+    "de": "Ordner umbenennen"
+  },
+  "Move folder": {
+    "vi": "Di chuyển thư mục",
+    "de": "Ordner verschieben"
+  },
+  "Deck actions: {title}": {
+    "vi": "Thao tác bộ thẻ: {title}",
+    "de": "Aktionen für Kartensatz: {title}"
+  },
+  "Folder actions: {name}": {
+    "vi": "Thao tác thư mục: {name}",
+    "de": "Ordneraktionen: {name}"
+  },
+  "Library actions": {
+    "vi": "Thao tác thư viện",
+    "de": "Bibliotheksaktionen"
+  },
+  "Open deck": {
+    "vi": "Mở bộ thẻ",
+    "de": "Kartensatz öffnen"
+  },
+  "Copy to folder": {
+    "vi": "Sao chép vào thư mục",
+    "de": "In Ordner kopieren"
+  },
+  "Find a destination": {
+    "vi": "Tìm thư mục đích",
+    "de": "Zielordner suchen"
+  },
+  "Destination folder": {
+    "vi": "Thư mục đích",
+    "de": "Zielordner"
+  },
+  "Copies start with their own learning progress.": {
+    "vi": "Bản sao có tiến độ học riêng, bắt đầu từ đầu.",
+    "de": "Kopien beginnen mit einem eigenen, neuen Lernfortschritt."
+  },
+  "Export decks": {
+    "vi": "Xuất bộ thẻ",
+    "de": "Kartensätze exportieren"
+  },
+  "Deleting “{name}” keeps its decks and subfolders at the root.": {
+    "vi": "Xóa “{name}” sẽ giữ bộ thẻ và thư mục con ở Thẻ của tôi.",
+    "de": "Beim Löschen von „{name}“ bleiben Kartensätze und Unterordner auf der obersten Ebene erhalten."
+  },
+  "Move undone": {
+    "vi": "Đã hoàn tác di chuyển",
+    "de": "Verschieben rückgängig gemacht"
+  },
+  "Moved to {folder}": {
+    "vi": "Đã chuyển vào {folder}",
+    "de": "Nach {folder} verschoben"
+  },
+  "Copied {count} decks": {
+    "vi": "Đã sao chép {count} bộ thẻ",
+    "de": "{count} Kartensätze kopiert"
+  },
+  "Deleted {count} decks": {
+    "vi": "Đã xóa {count} bộ thẻ",
+    "de": "{count} Kartensätze gelöscht"
+  },
+  "Move {count} decks": {
+    "vi": "Di chuyển {count} bộ thẻ",
+    "de": "{count} Kartensätze verschieben"
+  },
+  "Copy {count} decks": {
+    "vi": "Sao chép {count} bộ thẻ",
+    "de": "{count} Kartensätze kopieren"
+  },
+  "{title} (copy)": {
+    "vi": "{title} (bản sao)",
+    "de": "{title} (Kopie)"
+  },
+  "Select up to 100": {
+    "vi": "Chọn tối đa 100 bộ",
+    "de": "Bis zu 100 auswählen"
+  },
+  "Please wait for the current operation.": {
+    "vi": "Vui lòng chờ thao tác hiện tại hoàn tất.",
+    "de": "Bitte warte, bis der aktuelle Vorgang abgeschlossen ist."
+  },
+  "These decks changed after the move. Refresh before moving them again.": {
+    "vi": "Các bộ thẻ đã thay đổi sau khi di chuyển. Hãy tải lại trước khi tiếp tục.",
+    "de": "Diese Kartensätze wurden nach dem Verschieben geändert. Bitte lade sie vor dem nächsten Verschieben neu."
+  },
+  "This move can no longer be undone.": {
+    "vi": "Không thể hoàn tác lần di chuyển này nữa.",
+    "de": "Dieses Verschieben kann nicht mehr rückgängig gemacht werden."
+  },
+  "Choose an active folder.": {
+    "vi": "Chọn một thư mục đang hoạt động.",
+    "de": "Wähle einen aktiven Ordner."
+  },
+  "Copy up to 20,000 cards at a time.": {
+    "vi": "Mỗi lượt sao chép tối đa 20.000 thẻ.",
+    "de": "Kopiere höchstens 20.000 Karten auf einmal."
+  },
+  "A subfolder name already exists at the root. Rename it before deleting this folder.": {
+    "vi": "Tên thư mục con đã có ở Thẻ của tôi. Hãy đổi tên trước khi xóa thư mục này.",
+    "de": "Ein Unterordnername ist auf der obersten Ebene bereits vorhanden. Benenne ihn um, bevor du diesen Ordner löschst."
+  },
+  "Sort decks": {
+    "vi": "Sắp xếp bộ thẻ",
+    "de": "Kartensätze sortieren"
+  },
+  "Most cards": {
+    "vi": "Nhiều thẻ nhất",
+    "de": "Meiste Karten"
+  },
+  "Duplicate here": {
+    "vi": "Nhân bản tại đây",
+    "de": "Hier duplizieren"
+  },
+  "Drag to a folder to move. Hold Alt to copy.": {
+    "vi": "Kéo vào thư mục để di chuyển. Giữ Alt để sao chép.",
+    "de": "Zum Verschieben in einen Ordner ziehen. Zum Kopieren Alt gedrückt halten."
+  },
+  "Delete {count} decks?": {
+    "vi": "Xóa {count} bộ thẻ?",
+    "de": "{count} Kartensätze löschen?"
+  },
+  "Deck copied": {
+    "vi": "Đã sao chép bộ thẻ",
+    "de": "Kartensatz kopiert"
+  },
+  "Deck deleted": {
+    "vi": "Đã xóa bộ thẻ",
+    "de": "Kartensatz gelöscht"
   }
 }

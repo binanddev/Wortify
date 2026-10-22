@@ -320,7 +320,7 @@ export function Confirm({
   useLocale();
   const action = useAction();
   return (
-    <Modal isOpen onClose={onClose} classNames={{ base: "glass dialog" }}>
+    <Modal isOpen onClose={onClose} isDismissable={!action.pending} isKeyboardDismissDisabled={action.pending} hideCloseButton={action.pending} classNames={{ base: "glass dialog" }}>
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
         <ModalBody>
@@ -328,7 +328,7 @@ export function Confirm({
           <Status error={action.error} />
         </ModalBody>
         <ModalFooter>
-          <Btn onClick={onClose}>{tr("Keep")}</Btn>
+          <Btn onClick={onClose} isDisabled={action.pending}>{tr("Keep")}</Btn>
           <Btn
             primary
             isLoading={action.pending}

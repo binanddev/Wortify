@@ -58,7 +58,11 @@ def decks(request):
 
 @endpoint
 @require_http_methods(['GET', 'PATCH', 'DELETE'])
+@transaction.atomic
 def deck(request, pk):
+    if request.method != 'GET':
+        from django.contrib.auth import get_user_model
+        get_user_model().objects.select_for_update().get(pk=request.user.pk)
     item = get_object_or_404(Deck, pk=pk, owner=request.user, language=request.language)
     if request.method == 'DELETE':
         item.delete()
@@ -118,6 +122,9 @@ def folder(request, pk=None):
             Deck.objects.filter(owner=request.user, language=request.language, folder_id__in=ids).delete()
             Folder.objects.filter(owner=request.user, language=request.language, pk__in=ids).delete()
         else:
+            child_names = Folder.objects.filter(parent=item).values_list('name', flat=True)
+            if Folder.objects.filter(owner=request.user, language=request.language, parent__isnull=True, name__in=child_names).exists():
+                raise ValueError('A subfolder name already exists at the root. Rename it before deleting this folder.')
             item.delete()
         return JsonResponse({'ok': True})
     data = {**(model_to_dict(item) if item else {}), **body(request)}

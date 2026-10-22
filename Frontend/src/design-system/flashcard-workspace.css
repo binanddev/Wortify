@@ -29,7 +29,7 @@
 .flash-folder-list {
   @apply flex flex-col gap-0.5 min-w-0;
 }
-.flash-folder-list button:not(.btn):not(.flash-tree-toggle) {
+.flash-folder-list button:not(.btn):not(.flash-tree-toggle):not(.flash-item-menu-trigger) {
   @apply flex w-full items-center gap-2 min-h-8 px-2 py-1 rounded-md text-left text-sm font-medium text-(--ink) transition-colors;
 }
 .flash-folder-list button:hover,
@@ -177,7 +177,7 @@
 .flash-folder-list > button > svg { @apply w-[18px] h-[18px]; }
 .flash-folder-list button:focus-visible { @apply outline-2 outline-offset-2 outline-(--accent); }
 @media (pointer: coarse) {
-  .flash-folder-list button:not(.btn):not(.flash-tree-toggle),
+  .flash-folder-list button:not(.btn):not(.flash-tree-toggle):not(.flash-item-menu-trigger),
   .flash-folder-list .flash-tree-toggle { @apply min-h-11; }
 }
 .flash-example-feedback { @apply my-5 p-5 rounded-xl border border-(--line) border-l-[3px] border-l-(--accent) bg-(--surface) text-left; }
@@ -204,3 +204,59 @@
 .written-word-diff ins { @apply no-underline border-b-2 border-dotted border-red-500; }
 .written-word-diff del { @apply mr-1 line-through; }
 .written-feedback-note { @apply m-0 mt-2 text-xs text-(--ink); }
+
+/* Library management: a quiet item menu and a selection toolbar with touch equivalents. */
+.flash-actions-menu { @apply min-w-48 max-w-[min(90vw,280px)] border border-(--line) bg-(--solid) text-(--ink) rounded-xl shadow-xl z-[100003]; }
+.flash-actions-menu [role^="menuitem"] { @apply text-sm leading-snug min-h-10 gap-3; }
+.flash-menu-danger { @apply text-red-700; }
+.deck-tile-actions { @apply absolute top-2 right-2 z-10; }
+.flash-item-menu-trigger { @apply grid w-8 min-w-8 h-8 min-h-8 p-0 rounded-md place-items-center; }
+.flash-nav .flash-folder-list .flash-item-menu-trigger { @apply w-8 min-w-8 max-w-8 h-8 min-h-8 max-h-8 p-0 flex-none opacity-0; }
+.flash-tree-row:hover .flash-item-menu-trigger,.flash-tree-row:focus-within .flash-item-menu-trigger { @apply opacity-100; }
+.flash-root-folder { @apply min-w-0 flex-1; }
+.flash-deck-item .tile-top { @apply pr-6; }
+.flash-deck-item .deck-pick-mark { @apply left-3 right-auto; }
+.flash-deck-item[data-dragging] { @apply opacity-50; }
+.flash-deck-item[draggable="true"] .deck-link { @apply cursor-grab active:cursor-grabbing; }
+.flash-tree-row[data-drop-active="true"] { @apply bg-(--surface) ring-2 ring-(--accent) ring-inset; }
+.deck-drag-notice { @apply flex items-center gap-2 rounded-lg bg-(--surface) text-(--ink) text-xs p-2; }
+.deck-management-bar { @apply sticky top-3 z-20 flex flex-wrap items-center gap-3 mb-5 p-3 rounded-xl border border-(--line) bg-(--solid) shadow-sm; }
+.deck-select-all { @apply flex items-center gap-2 min-h-10 text-sm cursor-pointer; }
+.deck-select-all input { @apply w-4 h-4 accent-(--accent); }
+.deck-selected-count { @apply text-sm text-(--muted) mr-auto tabular-nums; }
+.deck-management-bar .flash-icon-row { @apply gap-1.5; }
+.deck-management-bar .flash-icon-row .btn { @apply w-9 min-w-9 h-9 min-h-9 rounded-lg; }
+.deck-operation-notice { @apply flex flex-wrap items-center gap-2 p-3 mb-4 rounded-xl border border-(--line) bg-(--surface) text-sm; }
+.deck-operation-notice > span { @apply min-w-0 flex-1 wrap-anywhere; }
+.deck-operation-notice > .btn { @apply w-8 min-w-8 h-8 min-h-8 p-0; }
+.deck-operation-summary { @apply m-0 text-sm font-medium text-(--ink) wrap-anywhere; }
+.deck-dialog-actions { @apply flex flex-wrap justify-end gap-2 pt-3; }
+@media (hover:none),(pointer:coarse) {
+  .flash-nav .flash-folder-list .flash-item-menu-trigger { @apply w-10 min-w-10 max-w-10 h-10 min-h-10 max-h-10 opacity-100; }
+  .flash-item-menu-trigger { @apply w-10 min-w-10 h-10 min-h-10; }
+  .deck-management-bar .flash-icon-row .btn { @apply w-11 min-w-11 h-11 min-h-11; }
+}
+@media (max-width:760px) {
+  .deck-management-bar { @apply static; }
+  .deck-management-bar .flash-icon-row { @apply w-full; }
+}
+
+.flash-tree-children.flash-tree-deep { @apply ml-1 pl-1; }
+@media (max-width:760px) {
+  .flash-nav .flash-folder-list .flash-item-menu-trigger { @apply w-11 min-w-11 max-w-11 h-11 min-h-11 max-h-11 opacity-100; }
+  .flash-folder-list button:not(.btn):not(.flash-tree-toggle):not(.flash-item-menu-trigger),.flash-folder-list .flash-tree-toggle { @apply min-h-11; }
+}
+
+/* Explorer actions stay quiet without inheriting the outlined toolbar button. */
+.flash-nav .flash-folder-list .flash-folder-action {
+  @apply border-0 shadow-none bg-transparent text-inherit cursor-pointer;
+}
+.flash-nav .flash-folder-list .flash-folder-action:hover,
+.flash-nav .flash-folder-list .flash-folder-action[aria-expanded="true"] {
+  @apply bg-[color-mix(in_srgb,currentColor_10%,transparent)];
+}
+.flash-nav .flash-folder-list .flash-folder-action:focus-visible {
+  @apply outline-2 outline-current -outline-offset-3;
+}
+.flash-nav .flash-folder-list .flash-folder-action[aria-expanded="true"] { @apply opacity-100; }
+.flash-nav .flash-folder-list .flash-folder-action svg { @apply text-inherit; }

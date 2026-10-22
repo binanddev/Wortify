@@ -23,6 +23,7 @@ GUIDE = [
 
 # Examples are deliberately inert: placeholders and illustrative IDs, no secrets.
 EXAMPLES = {
+    'api.deck_management.manage': {'POST':{'request_id':'{{eventToken}}','action':'move','ids':[1],'folder':None},'response':{'operation_id':'UUID','ids':[1],'count':1,'undoable':True}},
     'users.views.interface_language': {'PATCH': {'language': 'vi'}},
     'api.admin_backups.emergency': {'POST': {'scope':'selected','ids':[1],'include_media':True,'include_audit':True,'include_credentials':False,'preview':True}, 'response':{'count':1,'accounts':[{'id':1,'username':'example'}]}},
     'api.backups.export': {'POST':{'workspace':{'de':[],'en':[]}}},
@@ -64,6 +65,8 @@ EXAMPLES = {
 }
 
 NOTES = {
+    'api.deck_management.manage': 'Owner/language-scoped atomic actions move, copy, delete and undo. Send a unique request_id UUID and reuse it only for the identical retry. Up to 100 distinct ids. move/copy require folder (null=root). copy optionally takes names keyed by source ID and copies at most 20,000 cards with fresh IDs and independent progress; publication policy still applies. undo takes operation_id from a move receipt, is valid for 15 minutes and rejects decks changed since that move. Delete permanently removes decks/cards/progress. Requires session and CSRF.',
+    'api.deck_management.export': 'GET ?ids=1,2&format=json or csv exports owned decks in the current language as a ZIP with one content file per deck and manifest.json. Up to 100 decks and 20,000 cards. Includes image links and accepted answers, excludes learning progress. CSV formula injection is escaped. No mutation occurs.',
     'api.practice_hub.public_detail': 'Anonymous read-only public exercise/theory/folder; only public children and active owners. No progress or personal data.',
     'api.flashcard_discovery.detail': 'Read-only preview of up to ten cards from an active public deck in the selected language.',
     'api.content_policy.current': 'Authenticated read of publishing mode: choice or public.',

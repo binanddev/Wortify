@@ -396,8 +396,744 @@
       ]
     },
     {
+      "name": "Appearance & media",
+      "item": [
+        {
+          "name": "GET /api/site/content-policy/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/site/content-policy/",
+            "description": "Permission: Signed-in users\n\nAuthenticated read of publishing mode: choice or public."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/me/language/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/language/",
+            "description": "Permission: Signed-in users\n\nSigned-in PATCH with language=en/vi/de saves the account-wide interface language. Does not change learning content or workspace language.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"language\": \"vi\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/themes/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/",
+            "description": "Permission: Signed-in users\n\nLegacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/themes/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/",
+            "description": "Permission: Signed-in users\n\nLegacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/themes/select/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/select/",
+            "description": "Permission: Signed-in users\n\nDeprecated; returns 410. Use /api/me/backgrounds/select/.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/themes/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/",
+            "description": "Permission: Signed-in users\n\nLegacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/themes/{pk}/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/",
+            "description": "Permission: Signed-in users\n\nLegacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/themes/{pk}/delete/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/delete/",
+            "description": "Permission: Signed-in users\n\nRequires theme editing permission. Deleting a theme clears affected account selections.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/themes/{pk}/image/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/image/",
+            "description": "Permission: Signed-in users\n\nGET/HEAD accessible theme image binary. Returns 404 if missing, inaccessible or without an image."
+          },
+          "response": []
+        },
+        {
+          "name": "HEAD /api/themes/{pk}/image/",
+          "request": {
+            "method": "HEAD",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/themes/{{pk}}/image/",
+            "description": "Permission: Signed-in users\n\nGET/HEAD accessible theme image binary. Returns 404 if missing, inaccessible or without an image."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/me/backup/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backup/",
+            "description": "Permission: Signed-in users\n\nAuthenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/me/backup/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backup/",
+            "description": "Permission: Signed-in users\n\nAuthenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspace\": {\n    \"de\": [],\n    \"en\": []\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/me/backup/restore/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backup/restore/",
+            "description": "Permission: Signed-in users\n\nMultipart file=personal ZIP; preview=true inspects counts. confirm=true restores private copies; optional settings=true replaces profile/study settings. Existing content is retained. Admin emergency ZIPs are not accepted.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "preview",
+                  "type": "text",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/me/appearance/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/appearance/",
+            "description": "Permission: Signed-in users\n\nGET the session background/theme manifest for English and German. Use returned URLs instead of constructing file paths."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/me/backgrounds/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backgrounds/",
+            "description": "Permission: Signed-in users\n\nGET the private library; POST multipart image (JPG/PNG/WebP up to 30 MB), optional name. Up to 10 images including the legacy personal background. Upload immediately selects the image across both languages and every theme."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/me/backgrounds/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backgrounds/",
+            "description": "Permission: Signed-in users\n\nGET the private library; POST multipart image (JPG/PNG/WebP up to 30 MB), optional name. Up to 10 images including the legacy personal background. Upload immediately selects the image across both languages and every theme.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "type": "text",
+                  "value": "My backgrounds"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/me/backgrounds/select/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backgrounds/select/",
+            "description": "Permission: Signed-in users\n\nPOST JSON id: an image ID owned by the account; null restores the code-generated default background; 0 selects the legacy personal image if present. Appearance settings are unchanged.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/me/backgrounds/{pk}/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/backgrounds/{{pk}}/",
+            "description": "Permission: Signed-in users\n\nDELETE an account background. ID 0 removes the legacy personal image. Deleting the selected image restores the default background.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/me/background/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/",
+            "description": "Permission: Signed-in users\n\nGET status; POST multipart image (PNG/JPG/WebP up to 30 MB); DELETE removes the personal background."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/me/background/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/",
+            "description": "Permission: Signed-in users\n\nGET status; POST multipart image (PNG/JPG/WebP up to 30 MB); DELETE removes the personal background.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/me/background/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/",
+            "description": "Permission: Signed-in users\n\nGET status; POST multipart image (PNG/JPG/WebP up to 30 MB); DELETE removes the personal background.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/me/background/image/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/image/",
+            "description": "Permission: Signed-in users\n\nGET/HEAD the signed-in account background binary with Cache-Control private,no-store."
+          },
+          "response": []
+        },
+        {
+          "name": "HEAD /api/me/background/image/",
+          "request": {
+            "method": "HEAD",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/me/background/image/",
+            "description": "Permission: Signed-in users\n\nGET/HEAD the signed-in account background binary with Cache-Control private,no-store."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/site/appearance/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/site/appearance/",
+            "description": "Permission: Signed-in users\n\nGET shared background information; sign-in is required. Returns background_image and background_url when available."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/site/appearance/image/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/site/appearance/image/",
+            "description": "Permission: Signed-in users\n\nGET shared background binary; sign-in required. This endpoint cannot modify the image."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Administration",
       "item": [
+        {
+          "name": "GET /api/manage/content-policy/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content-policy/",
+            "description": "Permission: Admin / Staff\n\nStaff/Admin GET or PATCH mode=choice/public/new_public. new_public publishes new content only, preserving existing visibility. Public publishes all existing decks, practice and readings. Choice preserves visibility and restores individual controls."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/manage/content-policy/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content-policy/",
+            "description": "Permission: Admin / Staff\n\nStaff/Admin GET or PATCH mode=choice/public/new_public. new_public publishes new content only, preserving existing visibility. Public publishes all existing decks, practice and readings. Choice preserves visibility and restores individual controls.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
         {
           "name": "GET /api/manage/import-api/",
           "request": {
@@ -509,6 +1245,21 @@
           "response": []
         },
         {
+          "name": "GET /api/manage/content-packages/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content-packages/",
+            "description": "Permission: Admin / Staff\n\nStaff/Admin only. Multipart Wortify Text 1 or legacy JSON v1. preview=true validates without writes and returns preview_token; confirm=IMPORT plus this token publishes an immutable Wortify system package and creates private copies for the importer. Practice Hub and Reading only; flashcards are personal and the flashcards field is rejected. Maximum 50 MB, 5000 nodes, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected."
+          },
+          "response": []
+        },
+        {
           "name": "POST /api/manage/content-packages/",
           "request": {
             "method": "POST",
@@ -531,7 +1282,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/manage/content-packages/",
-            "description": "Permission: Admin / Staff\n\nStaff/Admin only. Multipart file: wortify-content JSON version 1. preview=true validates without writes; confirm=IMPORT publishes an immutable Wortify system package and creates private copies for the importer. Practice Hub and Reading only; flashcards are personal and the flashcards field is rejected. Maximum 50 MB, 5000 nodes, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.",
+            "description": "Permission: Admin / Staff\n\nStaff/Admin only. Multipart Wortify Text 1 or legacy JSON v1. preview=true validates without writes and returns preview_token; confirm=IMPORT plus this token publishes an immutable Wortify system package and creates private copies for the importer. Practice Hub and Reading only; flashcards are personal and the flashcards field is rejected. Maximum 50 MB, 5000 nodes, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.",
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -546,6 +1297,86 @@
                   "value": "true"
                 }
               ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/manage/content-packages/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content-packages/",
+            "description": "Permission: Admin / Staff\n\nStaff/Admin only. Multipart Wortify Text 1 or legacy JSON v1. preview=true validates without writes and returns preview_token; confirm=IMPORT plus this token publishes an immutable Wortify system package and creates private copies for the importer. Practice Hub and Reading only; flashcards are personal and the flashcards field is rejected. Maximum 50 MB, 5000 nodes, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/manage/content-packages/",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/content-packages/",
+            "description": "Permission: Admin / Staff\n\nStaff/Admin only. Multipart Wortify Text 1 or legacy JSON v1. preview=true validates without writes and returns preview_token; confirm=IMPORT plus this token publishes an immutable Wortify system package and creates private copies for the importer. Practice Hub and Reading only; flashcards are personal and the flashcards field is rejected. Maximum 50 MB, 5000 nodes, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": []
@@ -1365,12 +2196,97 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "POST /api/{language}/decks/manage/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/manage/",
+            "description": "Permission: Admin / Staff\n\nOwner/language-scoped atomic actions move, copy, delete and undo. Send a unique request_id UUID and reuse it only for the identical retry. Up to 100 distinct ids. move/copy require folder (null=root). copy optionally takes names keyed by source ID and copies at most 20,000 cards with fresh IDs and independent progress; publication policy still applies. undo takes operation_id from a move receipt, is valid for 15 minutes and rejects decks changed since that move. Delete permanently removes decks/cards/progress. Requires session and CSRF.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"request_id\": \"{{eventToken}}\",\n  \"action\": \"move\",\n  \"ids\": [\n    1\n  ],\n  \"folder\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
         }
       ]
     },
     {
       "name": "System content import",
       "item": [
+        {
+          "name": "GET /api/import/guide/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/import/guide/",
+            "description": "Permission: Public\n\nPublic GET of complete Wortify Text authoring rules and examples. Returns UTF-8 plain text, no account data."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/import/openapi/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/import/openapi/",
+            "description": "Permission: Public\n\nPublic GET of the OpenAPI 3.1 schema for import bots. Contains only placeholders, never secrets."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/import/content/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/import/content/",
+            "description": "Permission: Import key\n\nImport-only Bearer key, no session or CSRF. Multipart .txt/legacy JSON file (maximum 50 MB), raw text or JSON {text, preview:true} (maximum 8 MB). Preview returns preview_token; publish unchanged content with confirm=IMPORT and that token. Text format is Wortify Text 1; guides at /api/import/guide/ and /api/import/openapi/. Only practice and reading sections. Keep UUID unchanged on retries. 200 preview/retry, 201 created, 400 invalid document, 401 invalid/revoked key or non-staff account."
+          },
+          "response": []
+        },
         {
           "name": "POST /api/import/content/",
           "request": {
@@ -1386,7 +2302,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/import/content/",
-            "description": "Permission: Import key\n\nImport-only Bearer key, no session or CSRF. Multipart file (UTF-8 JSON, maximum 50 MB) and preview=true to validate; then same file with confirm=IMPORT to publish as Wortify. Only practice and reading sections. Keep UUID unchanged on retries. 200 preview/retry, 201 created, 400 invalid document, 401 invalid/revoked key or non-staff account.",
+            "description": "Permission: Import key\n\nImport-only Bearer key, no session or CSRF. Multipart .txt/legacy JSON file (maximum 50 MB), raw text or JSON {text, preview:true} (maximum 8 MB). Preview returns preview_token; publish unchanged content with confirm=IMPORT and that token. Text format is Wortify Text 1; guides at /api/import/guide/ and /api/import/openapi/. Only practice and reading sections. Keep UUID unchanged on retries. 200 preview/retry, 201 created, 400 invalid document, 401 invalid/revoked key or non-staff account.",
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -1402,672 +2318,6 @@
                 }
               ]
             }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Appearance & media",
-      "item": [
-        {
-          "name": "PATCH /api/me/language/",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/language/",
-            "description": "Permission: Signed-in users\n\nSigned-in PATCH with language=en/vi/de saves the account-wide interface language. Does not change learning content or workspace language.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"language\": \"vi\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/themes/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/themes/",
-            "description": "Permission: Signed-in users\n\nLegacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images."
-          },
-          "response": []
-        },
-        {
-          "name": "POST /api/themes/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/themes/",
-            "description": "Permission: Signed-in users\n\nLegacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images.",
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "POST /api/themes/select/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/themes/select/",
-            "description": "Permission: Signed-in users\n\nDeprecated; returns 410. Use /api/me/backgrounds/select/.",
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/themes/{pk}/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/themes/{{pk}}/",
-            "description": "Permission: Signed-in users\n\nLegacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images."
-          },
-          "response": []
-        },
-        {
-          "name": "POST /api/themes/{pk}/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/themes/{{pk}}/",
-            "description": "Permission: Signed-in users\n\nLegacy: GET returns old data; POST returns 410. Use /api/me/backgrounds/ to manage background images.",
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE /api/themes/{pk}/delete/",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/themes/{{pk}}/delete/",
-            "description": "Permission: Signed-in users\n\nRequires theme editing permission. Deleting a theme clears affected account selections.",
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/themes/{pk}/image/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/themes/{{pk}}/image/",
-            "description": "Permission: Signed-in users\n\nGET/HEAD accessible theme image binary. Returns 404 if missing, inaccessible or without an image."
-          },
-          "response": []
-        },
-        {
-          "name": "HEAD /api/themes/{pk}/image/",
-          "request": {
-            "method": "HEAD",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/themes/{{pk}}/image/",
-            "description": "Permission: Signed-in users\n\nGET/HEAD accessible theme image binary. Returns 404 if missing, inaccessible or without an image."
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/me/backup/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/backup/",
-            "description": "Permission: Signed-in users\n\nAuthenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges."
-          },
-          "response": []
-        },
-        {
-          "name": "POST /api/me/backup/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/backup/",
-            "description": "Permission: Signed-in users\n\nAuthenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"workspace\": {\n    \"de\": [],\n    \"en\": []\n  }\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "POST /api/me/backup/restore/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/backup/restore/",
-            "description": "Permission: Signed-in users\n\nMultipart file=personal ZIP; preview=true inspects counts. confirm=true restores private copies; optional settings=true replaces profile/study settings. Existing content is retained. Admin emergency ZIPs are not accepted.",
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "file",
-                  "type": "file",
-                  "src": []
-                },
-                {
-                  "key": "preview",
-                  "type": "text",
-                  "value": "true"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/me/appearance/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/appearance/",
-            "description": "Permission: Signed-in users\n\nGET the session background/theme manifest for English and German. Use returned URLs instead of constructing file paths."
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/me/backgrounds/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/backgrounds/",
-            "description": "Permission: Signed-in users\n\nGET the private library; POST multipart image (JPG/PNG/WebP up to 30 MB), optional name. Up to 10 images including the legacy personal background. Upload immediately selects the image across both languages and every theme."
-          },
-          "response": []
-        },
-        {
-          "name": "POST /api/me/backgrounds/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/backgrounds/",
-            "description": "Permission: Signed-in users\n\nGET the private library; POST multipart image (JPG/PNG/WebP up to 30 MB), optional name. Up to 10 images including the legacy personal background. Upload immediately selects the image across both languages and every theme.",
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "name",
-                  "type": "text",
-                  "value": "My backgrounds"
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": []
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "POST /api/me/backgrounds/select/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/backgrounds/select/",
-            "description": "Permission: Signed-in users\n\nPOST JSON id: an image ID owned by the account; null restores the code-generated default background; 0 selects the legacy personal image if present. Appearance settings are unchanged.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"id\": null\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE /api/me/backgrounds/{pk}/",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/backgrounds/{{pk}}/",
-            "description": "Permission: Signed-in users\n\nDELETE an account background. ID 0 removes the legacy personal image. Deleting the selected image restores the default background.",
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/me/background/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/background/",
-            "description": "Permission: Signed-in users\n\nGET status; POST multipart image (PNG/JPG/WebP up to 30 MB); DELETE removes the personal background."
-          },
-          "response": []
-        },
-        {
-          "name": "POST /api/me/background/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/background/",
-            "description": "Permission: Signed-in users\n\nGET status; POST multipart image (PNG/JPG/WebP up to 30 MB); DELETE removes the personal background.",
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": []
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE /api/me/background/",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/background/",
-            "description": "Permission: Signed-in users\n\nGET status; POST multipart image (PNG/JPG/WebP up to 30 MB); DELETE removes the personal background.",
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/me/background/image/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/background/image/",
-            "description": "Permission: Signed-in users\n\nGET/HEAD the signed-in account background binary with Cache-Control private,no-store."
-          },
-          "response": []
-        },
-        {
-          "name": "HEAD /api/me/background/image/",
-          "request": {
-            "method": "HEAD",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/me/background/image/",
-            "description": "Permission: Signed-in users\n\nGET/HEAD the signed-in account background binary with Cache-Control private,no-store."
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/site/appearance/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/site/appearance/",
-            "description": "Permission: Signed-in users\n\nGET shared background information; sign-in is required. Returns background_image and background_url when available."
-          },
-          "response": []
-        },
-        {
-          "name": "GET /api/site/appearance/image/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/site/appearance/image/",
-            "description": "Permission: Signed-in users\n\nGET shared background binary; sign-in required. This endpoint cannot modify the image."
           },
           "response": []
         }
@@ -2341,6 +2591,116 @@
             ],
             "url": "{{baseUrl}}/api/{{language}}/system-library/{{pk}}/copy/",
             "description": "Permission: Signed-in users\n\nAuthenticated POST copies the package tree into the current account, scoped to the URL language. Send an empty JSON object. Repeating the request returns the existing receipt without duplicate content.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/reading/discover/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/discover/",
+            "description": "Permission: Signed-in users\n\nAuthenticated public reading catalogue for language. Filters: q (title/topic), level A1-C2, topic, source system/community, page. 24 results per page; includes topics and total. Private lessons are excluded."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/reading/discover/open/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/discover/open/",
+            "description": "Permission: Signed-in users\n\nAuthenticated GET with key from discovery: community:<id> or system:<package UUID>:<node path>. Returns only public title/payload. No personal progress; private or revoked entries return 404."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/reading/discover/save/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/discover/save/",
+            "description": "Permission: Signed-in users\n\nAuthenticated POST {key} saves a private independent reading and copies immutable media ownership records. Repeated source/user/language returns the same reading ID. 201 saved, 200 already saved. Start learning on the returned private ID to persist progress.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/{language}/reading/{pk}/sharing/",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/reading/{{pk}}/sharing/",
+            "description": "Permission: Signed-in users\n\nOwner-only PATCH visibility private/public, level blank/A1-C2 and topic up to 80 characters. Public lessons appear in discovery. Content revision and progress stay unchanged. Public attachment access follows visibility.",
             "body": {
               "mode": "raw",
               "raw": "{}",
@@ -2869,61 +3229,6 @@
           "response": []
         },
         {
-          "name": "GET /api/{language}/decks/{pk}/notebook/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/notebook/",
-            "description": "Permission: Signed-in users\n\nOwner/language scoped vocabulary notebook. GET returns cards, notebook revision, current set and review dates. POST requires token UUID, revision and action: start (size 3-8, selection ready/all), step (answer, correction, remembered boolean), or discard. Steps are prepare, recall, sentence, variation, check. Sentences are self-assessed, not automatically graded. Repeated token is idempotent; stale revision returns 409. Successful scheduled sets advance 1/3/7/14 days; difficult words return tomorrow."
-          },
-          "response": []
-        },
-        {
-          "name": "POST /api/{language}/decks/{pk}/notebook/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "X-CSRFToken",
-                "value": "{{csrfToken}}"
-              },
-              {
-                "key": "Origin",
-                "value": "{{baseUrl}}"
-              },
-              {
-                "key": "Referer",
-                "value": "{{baseUrl}}/"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/notebook/",
-            "description": "Permission: Signed-in users\n\nOwner/language scoped vocabulary notebook. GET returns cards, notebook revision, current set and review dates. POST requires token UUID, revision and action: start (size 3-8, selection ready/all), step (answer, correction, remembered boolean), or discard. Steps are prepare, recall, sentence, variation, check. Sentences are self-assessed, not automatically graded. Repeated token is idempotent; stale revision returns 409. Successful scheduled sets advance 1/3/7/14 days; difficult words return tomorrow.",
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
           "name": "POST /api/{language}/practice-hub/media/",
           "request": {
             "method": "POST",
@@ -2987,6 +3292,21 @@
             ],
             "url": "{{baseUrl}}/api/{{language}}/practice-hub/media/{{pk}}/",
             "description": "Permission: Signed-in users\n\nReturns binary after checking permissions. Supports GET/HEAD and byte ranges; partial responses use 206. Staff/Admin may read media for editing."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/practice-hub/public/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/practice-hub/public/{{pk}}/",
+            "description": "Permission: Signed-in users\n\nAnonymous read-only public exercise/theory/folder; only public children and active owners. No progress or personal data."
           },
           "response": []
         },
@@ -3291,6 +3611,21 @@
           "response": []
         },
         {
+          "name": "GET /api/{language}/decks/export/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/export/",
+            "description": "Permission: Signed-in users\n\nGET ?ids=1,2&format=json or csv exports owned decks in the current language as a ZIP with one content file per deck and manifest.json. Up to 100 decks and 20,000 cards. Includes image links and accepted answers, excludes learning progress. CSV formula injection is escaped. No mutation occurs."
+          },
+          "response": []
+        },
+        {
           "name": "GET /api/{language}/settings/",
           "request": {
             "method": "GET",
@@ -3507,6 +3842,46 @@
             ],
             "url": "{{baseUrl}}/api/{{language}}/study-pack/",
             "description": "Permission: Signed-in users\n\nOptional deck and filter query parameters; returns only owned cards."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/decks/{pk}/images/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/decks/{{pk}}/images/",
+            "description": "Permission: Signed-in users\n\ncard_images: resources are scoped to the account and language. See handler api.views.card_images to extend the integration.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
           "response": []
         },
@@ -3818,6 +4193,76 @@
             ],
             "url": "{{baseUrl}}/api/{{language}}/folders/{{pk}}/",
             "description": "Permission: Signed-in users\n\nCreate at the collection URL; edit/delete at the URL with pk. There is no separate folder list GET; read folders from GET /api/{language}/decks/. The parent must share the owner and language.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/flashcard/discover/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/flashcard/discover/",
+            "description": "Permission: Signed-in users\n\nAnonymous GET. Public decks, q/level/topic filters, page of 24. Includes the owned copy ID when saved."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/{language}/flashcard/discover/{pk}/",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/flashcard/discover/{{pk}}/",
+            "description": "Permission: Signed-in users\n\nRead-only preview of up to ten cards from an active public deck in the selected language."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/{language}/flashcard/discover/{pk}/copy/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/{{language}}/flashcard/discover/{{pk}}/copy/",
+            "description": "Permission: Signed-in users\n\nPOST creates an independent owned copy, without learning state. Retrying returns the existing copy.",
             "body": {
               "mode": "raw",
               "raw": "{}",

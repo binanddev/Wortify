@@ -1,5 +1,17 @@
 # Change Log
 
+### [v1.12.0] - 2026-10-22 | Flashcard library management
+
+- Expanded Select decks into Manage decks with a compact multi-selection toolbar, select-all, metadata editing, card management, move, copy, export and confirmed deletion. Keep the current folder scope while managing. Added sorting and per-deck action menus with quick duplication.
+- Added folder menus for creating decks/subfolders, renaming, moving and deleting folders while keeping their contents. Deep trees retain compact indentation; folder actions use a borderless hover/focus button that stays visible on touch layouts and while its menu is open.
+- Drag one deck or a selected group into navigation folders or My Flashcards to move; hold Alt to copy. Valid targets highlight and closed folders expand on hover. Dialogs offer the same actions on touch devices and with the keyboard; focused selection supports Ctrl/Cmd+A, F2, Delete and Escape.
+- Added atomic, owner/language-scoped batch operations and UUID receipts to avoid duplicate copies on retries. Copies retain content/image links with independent learning progress. Move undo is available for 15 minutes and refuses to overwrite later changes. CSV/JSON batch export downloads a ZIP with a manifest; CSV formula protection is retained.
+- Added manual English/Vietnamese/German labels, shared HeroUI menus and dialogs, inline operation feedback, and guarded pending deletion. Updated API reference and Postman examples.
+- Validation: 166 frontend unit tests and 25 targeted backend tests passed. Production build passed; static HTML fixtures cover edits, card creation, drag groups, Alt-copy, root/child drops, undo, retries, exports and confirmation. No local application server was started.
+- Deployment: apply cards migration 0013_deck_operation for durable receipts. Local database/media were preserved; live deployment verification remains pending user confirmation.
+
+---
+
 ### [v1.11.0] - 2026-10-22 | Listening, flexible answers and folder navigation
 
 - Added Listen and write with separate term and definition responses, automatic term pronunciation and replay. Added optional term audio before ordinary written questions and a voice selector. Test questions play on focus or request instead of speaking over one another.

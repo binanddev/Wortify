@@ -24,6 +24,10 @@ export function FolderTree({
   parent = null,
   selected,
   onSelect,
+  renderActions,
+  dropProps,
+  dragging=false,
+  depth=0,
 }) {
   useLocale();
   return folders
@@ -31,11 +35,11 @@ export function FolderTree({
     .map((f) => (
       <FolderBranch
         key={f.id}
-        {...{ f, folders, lang, selected, onSelect }}
+        {...{ f, folders, lang, selected, onSelect, renderActions, dropProps, dragging, depth }}
       />
     ));
 }
-function FolderBranch({ f, folders, lang, selected, onSelect }) {
+function FolderBranch({ f, folders, lang, selected, onSelect, renderActions, dropProps, dragging, depth }) {
   useLocale();
   const activePath = folderAncestors(
     folders,
@@ -45,11 +49,17 @@ function FolderBranch({ f, folders, lang, selected, onSelect }) {
   useEffect(() => {
     setOpen(activePath);
   }, [activePath, selected]);
+  const expandTimer=useRef(null);
+  useEffect(()=>()=>clearTimeout(expandTimer.current),[]);
+  useEffect(()=>{if(!dragging){clearTimeout(expandTimer.current);expandTimer.current=null;}},[dragging]);
+  const drop=dropProps?.(f.id)||{};
   const expandable =
     folders.some((child) => child.parent_id === f.id);
   return (
     <div className="flash-tree-branch">
-      <div className="flash-tree-row">
+      <div className="flash-tree-row" data-folder-id={f.id} {...drop}
+        onDragOver={e=>{drop.onDragOver?.(e);if(e.defaultPrevented&&expandable&&!open&&!expandTimer.current)expandTimer.current=setTimeout(()=>{setOpen(true);expandTimer.current=null;},600);}}
+        onDragLeave={e=>{drop.onDragLeave?.(e);if(!e.currentTarget.contains(e.relatedTarget)){clearTimeout(expandTimer.current);expandTimer.current=null;}}}>
         {expandable ? (
           <button
             type="button"
@@ -72,12 +82,14 @@ function FolderBranch({ f, folders, lang, selected, onSelect }) {
           <Icon name="folder" size={18} />
           <span>{f.name}</span>
         </button>
+        {renderActions?.(f)}
       </div>
       {open && expandable && (
-        <div className="flash-tree-children">
+        <div className={depth<3?"flash-tree-children":"flash-tree-children flash-tree-deep"}>
           <FolderTree
-            {...{ folders, lang, selected, onSelect }}
+            {...{ folders, lang, selected, onSelect, renderActions, dropProps, dragging, depth }}
             parent={f.id}
+            depth={depth+1}
           />
         </div>
       )}

@@ -1,3 +1,7 @@
+import DeckActionMenu from "./deck-action-menu.jsx";
+import {DeckTransferDialog,DeckExportDialog,LibraryCardsDialog} from "./deck-management-dialogs.jsx";
+import useDeckOperations from "./use-deck-operations.js";
+import {toggleVisibleSelection} from "./library-management.js";
 import CardImagePicker from "./card-image-picker.jsx";
 import CardImage from "./card-image.jsx";
 import VisibilitySelect from "../../components/ui/VisibilitySelect.jsx";
@@ -95,10 +99,12 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
   const route = useRoute();
   const folder =
     new URLSearchParams(route.split("?")[1]).get("folder") || "all";
-  const setFolder = (value) =>
+  const setFolder = (value) => {
+    if(ops.pending)return;
     navigate(
       `/${lang}/flashcard${value === "all" ? "" : `?folder=${encodeURIComponent(value)}`}`,
     );
+  };
   const [query, setQuery] = useState(""),
     [sort, setSort] = useState("recent"),
     [edit, setEdit] = useState(null),
@@ -107,20 +113,54 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
     [layout, setLayout] = useState("grid");
   const [selecting, setSelecting] = useState(false);
   const [checked, setChecked] = useState([]);
-  const [bulk, setBulk] = useState(null);
-  const [destination, setDestination] = useState("");
+  const [operation,setOperation]=useState(null),[cardsDeck,setCardsDeck]=useState(null);
   useEffect(() => { setChecked([]); }, [folder, query]);
   const action = useAction();
   const api = (p, m, d, s) => request(endpoint(lang, p), m, d, s);
   let decks = data.decks.filter(
     (d) =>
-      (selecting && folder === "all" || String(d.folder_id ?? "all") === folder) &&
+      (String(d.folder_id ?? "all") === folder) &&
       `${d.title} ${d.description}`.toLowerCase().includes(query.toLowerCase()),
   );
   if (sort === "name") decks.sort((a, b) => a.title.localeCompare(b.title));
   if (sort === "count") decks.sort((a, b) => b.count - a.count);
   const selected = data.folders.find((f) => String(f.id) === folder);
-  const toggleDeck = id => setChecked(ids => ids.includes(id) ? ids.filter(v => v !== id) : [...ids,id]);
+  const toggleDeck = id => setChecked(ids => ids.includes(id) ? ids.filter(v => v !== id) : ids.length<100?[...ids,id]:ids);
+  const ops=useDeckOperations({lang,data,reload,onDone:()=>setChecked([])});
+  useEffect(()=>{setChecked(ids=>ids.filter(id=>data.decks.some(deck=>deck.id===id&&String(deck.folder_id??"all")===folder)));},[data.decks,folder]);
+  const createAt=(type,location)=>{setPanel(null);setEdit({type,location:location==null?"":String(location)});};
+  const operate=(kind,items=checked)=>{
+    if(ops.pending)return;
+    const chosen=data.decks.filter(deck=>items.includes(deck.id));
+    if(!chosen.length)return;
+    if(kind==="edit")setEdit({type:"deck",item:chosen[0]});
+    else if(kind==="cards")setCardsDeck(chosen[0]);
+    else setOperation({action:kind,decks:chosen});
+  };
+  const folderMenu=item=><DeckActionMenu quiet label={tr("Folder actions: {name}",{name:item.name})} disabled={ops.pending} items={[
+    {key:"deck",icon:"cards",label:"New deck",run:()=>createAt("deck",item.id)},
+    {key:"folder",icon:"folder_add",label:"New subfolder",run:()=>createAt("folder",item.id),divider:true},
+    {key:"edit",icon:"edit",label:"Rename folder",run:()=>setEdit({type:"folder",item})},
+    {key:"move",icon:"move",label:"Move folder",run:()=>setEdit({type:"folder",item,moving:true}),divider:true},
+    {key:"delete",icon:"trash",label:"Delete folder",danger:true,run:()=>setRemove(item)},
+  ]}/>;
+  const deckMenu=deck=><DeckActionMenu label={tr("Deck actions: {title}",{title:deck.title})} disabled={ops.pending} items={[
+    {key:"open",icon:"play",label:"Open deck",run:()=>navigate(`/${lang}/flashcard/deck/${deck.id}`)},
+    {key:"cards",icon:"manage",label:"Manage cards",run:()=>operate("cards",[deck.id])},
+    {key:"edit",icon:"edit",label:"Edit deck",run:()=>operate("edit",[deck.id]),divider:true},
+    {key:"move",icon:"move",label:"Move to folder",run:()=>operate("move",[deck.id])},
+    {key:"duplicate",icon:"copy",label:"Duplicate here",run:()=>ops.background({action:"copy",ids:[deck.id],folder:deck.folder_id??null})},
+    {key:"copy",icon:"copy",label:"Copy to folder",run:()=>operate("copy",[deck.id])},
+    {key:"export",icon:"download",label:"Export",run:()=>operate("export",[deck.id]),divider:true},
+    {key:"delete",icon:"trash",label:"Delete deck",danger:true,run:()=>operate("delete",[deck.id])},
+  ]}/>;
+  const managementKeys=e=>{
+    if(!selecting||ops.pending||e.target.closest('input,textarea,select,[contenteditable="true"],[role="menu"],[role="dialog"]'))return;
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="a"){e.preventDefault();setChecked(decks.slice(0,100).map(deck=>deck.id));}
+    if(e.key==="Escape"){e.preventDefault();setSelecting(false);setChecked([]);}
+    if(e.key==="Delete"&&checked.length){e.preventDefault();operate("delete");}
+    if(e.key==="F2"&&checked.length===1){e.preventDefault();operate("edit");}
+  };
   const createHere = (type) => {
     if (folder !== "all" && !selected) return;
     setPanel(null);
@@ -135,18 +175,6 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
     ) || folderAncestors(data.folders, selected).some(ancestor => ancestor.id === f.id),
   );
 
-  const runBulk = async (signal) => {
-    const failures = [];
-    for (const id of checked) {
-      try {
-        await api(`decks/${id}/`, bulk === "delete" ? "DELETE" : "PATCH", bulk === "delete" ? undefined : {folder: destination}, signal);
-      } catch (error) { if (error.name === "AbortError") throw error; failures.push(id); }
-    }
-    setChecked(failures);
-    reload();
-    if (failures.length) throw new Error(tr("Some decks could not be updated. Please retry."));
-    setBulk(null); setSelecting(false);
-  };
   return (
     <Page>
       <div className="flash-library-heading">
@@ -159,6 +187,11 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
           </h1>
         </div>
         <div className="flash-icon-row">
+          <DeckActionMenu icon="sort" label={tr("Sort decks")} selectedKey={sort} items={[
+            {key:"recent",icon:"history",label:"Recently updated",run:()=>setSort("recent")},
+            {key:"name",icon:"list",label:"Title",run:()=>setSort("name")},
+            {key:"count",icon:"cards",label:"Most cards",run:()=>setSort("count")},
+          ]}/>
           <Btn
             icon="grid"
             aria-pressed={layout === "grid"}
@@ -172,28 +205,26 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
         </div>
       </div>
       <Status error={action.error} />
-      {bulk === "delete" && <Confirm title={tr("Delete selected decks?")} description={tr("The selected decks, cards and learning progress will be permanently deleted.")} onClose={() => setBulk(null)} onConfirm={runBulk}/>}
-      {bulk === "move" && <PracticeModal title={tr("Move to folder")} onClose={() => setBulk(null)} size="md">
-        <Status error={action.error}/>
-        <Select label={tr("Folder")} value={destination} onChange={setDestination}>
-          <option value="">{tr("My Flashcards")}</option>
-          {data.folders.map(f => <option key={f.id} value={f.id}>{folderPath(data.folders,f)}</option>)}
-        </Select>
-        <Btn isDisabled={action.pending} onClick={() => action.run(runBulk)}>{tr("Move")}</Btn>
-      </PracticeModal>}
+      <Status error={ops.error}/>
+      {ops.notice&&<div className="deck-operation-notice" role="status"><Icon name="check" size={18}/><span>{tr(ops.notice.key,{...ops.notice.values,folder:ops.notice.values.folder??tr("My Flashcards")})}</span>{ops.undo&&<Btn icon="undo" isDisabled={ops.pending} onClick={()=>ops.background({action:"undo",operation_id:ops.undo})}>{tr("Undo move")}</Btn>}<Btn icon="close" onClick={ops.clearNotice}>{tr("Dismiss")}</Btn></div>}
+      {operation?.action==="delete"&&<Confirm title={operation.decks.length===1?tr("Delete deck?"):tr("Delete {count} decks?",{count:operation.decks.length})} description={operation.decks.slice(0,3).map(deck=>deck.title).join(" · ")+". "+tr("The selected decks, cards and learning progress will be permanently deleted.")} onClose={()=>setOperation(null)} onConfirm={signal=>ops.perform({action:"delete",ids:operation.decks.map(deck=>deck.id)},signal)}/>}
+      {["move","copy"].includes(operation?.action)&&<DeckTransferDialog key={operation.action+operation.decks.map(deck=>deck.id).join(",")} operation={operation} folders={data.folders} initialFolder={selected?.id} onClose={()=>setOperation(null)} onSubmit={ops.perform}/>}
+      {operation?.action==="export"&&<DeckExportDialog lang={lang} decks={operation.decks} onClose={()=>setOperation(null)}/>}
+      {cardsDeck&&<LibraryCardsDialog lang={lang} deck={cardsDeck} onClose={()=>setCardsDeck(null)} onChanged={reload}/>}
       <SidebarTools>
         <div className="flash-nav">
           <Field
             label={tr("Search folders or decks")}
             value={query}
             onChange={setQuery}
+            isDisabled={ops.pending}
             startContent={<Icon name="search" />}
           />
           <div className="flash-icon-row">
             <Link className="btn flash-icon-link" to={`/${lang}/flashcard/discover`} title={tr("Explore")} aria-label={tr("Explore")}><Icon name="explore"/></Link>
-            <Btn primary icon="plus" onClick={() => setPanel("add")}>{tr("Add new")}</Btn>
-            <Btn icon="select" aria-pressed={selecting} onClick={() => { setSelecting(!selecting); setChecked([]); }}>{tr("Select decks")}</Btn>
-            <Btn icon="settings" onClick={() => { setPanel("settings"); }}>{tr("Workspace options")}</Btn>
+            <Btn primary icon="plus" isDisabled={ops.pending} onClick={() => setPanel("add")}>{tr("Add new")}</Btn>
+            <Btn icon="manage" aria-pressed={selecting} isDisabled={ops.pending} onClick={() => { setSelecting(!selecting); setChecked([]); }}>{tr("Manage decks")}</Btn>
+            <Btn icon="settings" isDisabled={ops.pending} onClick={() => { setPanel("settings"); }}>{tr("Workspace options")}</Btn>
             {data.resume && (
               <Link
                 className="btn flash-icon-link"
@@ -205,38 +236,26 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
               </Link>
             )}
           </div>
-          {selecting && <section className="flash-nav-selection" aria-label={tr("Select decks")}>
-            <div className="flash-selection-summary"><span role="status">{tr("{count} selected", {count:checked.length})}</span><Btn icon="close" onClick={() => { setSelecting(false); setChecked([]); }}>{tr("Cancel selection")}</Btn></div>
-            <label><input type="checkbox" checked={decks.length > 0 && decks.every(d => checked.includes(d.id))} ref={el => { if(el) el.indeterminate=checked.length>0 && !decks.every(d=>checked.includes(d.id)); }} onChange={e => setChecked(e.target.checked ? decks.map(d => d.id) : [])}/>{tr("Select all")}</label>
-            <div className="flash-icon-row">
-              <Btn icon="move" isDisabled={!checked.length} onClick={() => { setDestination(""); setBulk("move"); }}>{tr("Move to folder")}</Btn>
-              <Btn icon="trash" isDisabled={!checked.length} onClick={() => setBulk("delete")}>{tr("Delete selected")}</Btn>
-            </div>
-          </section>}
+          {ops.drag&&<div className="deck-drag-notice" role="status"><Icon name={ops.drag.mode==="copy"?"copy":"move"} size={18}/>{tr(ops.drag.mode==="copy"?"Copy {count} decks":"Move {count} decks",{count:ops.drag.ids.length})}</div>}
           <div className="flash-folder-list" aria-label={tr("Folde flashcard")}>
-            {[{ id: "all", name: "My Flashcards", icon: "home" }].map((f) => (
-              <button
-                key={f.id}
-                title={tr(f.name)}
-                aria-current={folder === String(f.id) ? "page" : undefined}
-                onClick={() => setFolder(String(f.id))}
-              >
-                <Icon name={f.icon || "folder"} />
-                <span>{tr(f.name)}</span>
-                <small>
-                  {f.id === "all"
-                    ? data.decks.length
-                    : data.decks.filter(
-                        (d) => String(d.folder_id ?? "") === String(f.id),
-                      ).length}
-                </small>
+            <div className="flash-tree-row flash-root-row" data-folder-id="root" {...ops.dropProps(null)}>
+              <button className="flash-root-folder" aria-current={folder==="all"?"page":undefined} onClick={()=>setFolder("all")}>
+                <Icon name="home" size={18}/><span>{tr("My Flashcards")}</span><small>{data.decks.length}</small>
               </button>
-            ))}
+              <DeckActionMenu quiet label={tr("Library actions")} disabled={ops.pending} items={[
+                {key:"deck",icon:"cards",label:"New deck",run:()=>createAt("deck",null)},
+                {key:"folder",icon:"folder_add",label:"New folder",run:()=>createAt("folder",null)},
+                {key:"settings",icon:"settings",label:"Workspace options",run:()=>setPanel("settings")},
+              ]}/>
+            </div>
             <FolderTree
-              folders={navigationFolders}
+              folders={ops.drag?data.folders:navigationFolders}
               lang={lang}
               selected={folder}
               onSelect={setFolder}
+              renderActions={folderMenu}
+              dropProps={ops.dropProps}
+              dragging={!!ops.drag}
             />
           </div>
         </div>
@@ -268,19 +287,36 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
             </div>
         </PracticeModal>
       )}
+      {selecting&&<div className="deck-management-bar" role="toolbar" aria-label={tr("Manage decks")}>
+        <label className="deck-select-all"><input type="checkbox" disabled={ops.pending} checked={decks.length>0&&decks.slice(0,100).every(deck=>checked.includes(deck.id))} ref={el=>{if(el)el.indeterminate=checked.length>0&&!decks.slice(0,100).every(deck=>checked.includes(deck.id));}} onChange={e=>setChecked(ids=>toggleVisibleSelection(ids,decks.map(deck=>deck.id),e.target.checked))}/>{tr(decks.length>100?"Select up to 100":"Select all")}</label>
+        <span className="deck-selected-count" role="status">{tr("{count} selected",{count:checked.length})}</span>
+        <div className="flash-icon-row">
+          <Btn icon="plus" isDisabled={ops.pending} onClick={()=>createHere("deck")}>{tr("New deck")}</Btn>
+          <Btn icon="edit" isDisabled={checked.length!==1||ops.pending} onClick={()=>operate("edit")}>{tr("Edit deck")}</Btn>
+          <Btn icon="manage" isDisabled={checked.length!==1||ops.pending} onClick={()=>operate("cards")}>{tr("Manage cards")}</Btn>
+          <Btn icon="move" isDisabled={!checked.length||ops.pending} onClick={()=>operate("move")}>{tr("Move to folder")}</Btn>
+          <Btn icon="copy" isDisabled={!checked.length||ops.pending} onClick={()=>operate("copy")}>{tr("Copy to folder")}</Btn>
+          <Btn icon="download" isDisabled={!checked.length||ops.pending} onClick={()=>operate("export")}>{tr("Export")}</Btn>
+          <Btn icon="trash" isDisabled={!checked.length||ops.pending} onClick={()=>operate("delete")}>{tr("Delete selected")}</Btn>
+          <Btn icon="close" isDisabled={ops.pending} onClick={()=>{setSelecting(false);setChecked([]);}}>{tr("Cancel selection")}</Btn>
+        </div>
+      </div>}
       <div
+        onKeyDown={managementKeys}
+        aria-busy={ops.pending}
         className={`deck-grid flash-library-grid ${layout === "list" ? "flash-library-list" : ""}`}
       >
         {decks.map((d) => (
-          <div key={d.id} className={`flash-deck-item ${selecting ? "selecting" : ""} ${checked.includes(d.id) ? "is-selected" : ""}`}>
+          <div key={d.id} {...ops.dragProps(d.id,checked)} data-deck-id={d.id} title={tr("Drag to a folder to move. Hold Alt to copy.")} data-dragging={ops.drag?.ids.includes(d.id)||undefined} className={`flash-deck-item ${selecting ? "selecting" : ""} ${checked.includes(d.id) ? "is-selected" : ""}`}>
           <Link
             className="deck-link"
+            draggable={false}
             to={`/${lang}/flashcard/deck/${d.id}`}
             role={selecting ? "checkbox" : undefined}
             aria-checked={selecting ? checked.includes(d.id) : undefined}
             aria-label={selecting ? tr("Select {title}",{title:d.title}) : undefined}
-            onKeyDown={e => { if(selecting && e.key === " ") { e.preventDefault(); toggleDeck(d.id); } }}
-            onClick={e => { if(selecting) { e.preventDefault(); toggleDeck(d.id); } }}
+            onKeyDown={e => { if(selecting && !ops.pending && e.key === " ") { e.preventDefault(); toggleDeck(d.id); } }}
+            onClick={e => { if(ops.pending||Date.now()<ops.suppressClick.current){e.preventDefault();return;}if(selecting) { e.preventDefault(); toggleDeck(d.id); } }}
           >
             <Glass className="deck-tile">
               {selecting && <span className="deck-pick-mark" aria-hidden="true"><Icon name={checked.includes(d.id) ? "check" : "select"} size={18}/></span>}
@@ -306,6 +342,7 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
               <small>{d.mastered}{tr(" mastered")}</small>
             </Glass>
           </Link>
+          <div className="deck-tile-actions">{deckMenu(d)}</div>
           </div>
         ))}
       </div>
@@ -327,19 +364,19 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
           key={`${edit.type}:${edit.item?.id ?? "new"}:${edit.location ?? ""}`}
           title={
             edit.type === "deck"
-              ? tr("Create deck")
-              : edit.item
+              ? tr(edit.item?"Edit deck":"Create deck")
+              : edit.moving?tr("Move folder"):edit.item
                 ? tr("Edit folder")
                 : tr("New folder")
           }
           fields={
             edit.type === "deck"
               ? deckFields
-              : [{ name: "name", label: "Folder name", isRequired: true }]
+              : edit.moving?[]:[{ name: "name", label: "Folder name", isRequired: true }]
           }
           initial={
             edit.item
-              ? { ...edit.item, parent: edit.item.parent_id ?? "" }
+              ? { ...edit.item, parent: edit.item.parent_id ?? "", folder:edit.item.folder_id??"" }
               : {
                   level: "A1",
                   parent: edit.location ?? "",
@@ -350,7 +387,7 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
           onSave={async (v, s) => {
             const result = await api(
               edit.type === "deck"
-                ? "decks/"
+                ? `decks/${edit.item?edit.item.id+"/":""}`
                 : `folders/${edit.item ? edit.item.id + "/" : ""}`,
               edit.item ? "PATCH" : "POST",
               edit.item
@@ -364,9 +401,8 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
                   },
               s,
             );
-            if (edit.type === "deck")
-              navigate(`/${lang}/flashcard/deck/${result.id}`);
-            else reload();
+            if (edit.type === "deck"&&!edit.item) navigate(`/${lang}/flashcard/deck/${result.id}`);
+            else {if(edit.type==="folder"&&!edit.item)setFolder(String(result.id));reload();}
           }}
         >
           {edit.type === "deck"
@@ -399,11 +435,11 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
       {remove && (
         <Confirm
           title={tr("Delete folder?")}
-          description={tr("Decks in “{v0}” will be kept.", { v0: remove.name })}
+          description={tr("Deleting “{name}” keeps its decks and subfolders at the root.", {name:remove.name})}
           onClose={() => setRemove(null)}
           onConfirm={async (s) => {
             await api(`folders/${remove.id}/`, "DELETE", undefined, s);
-            setFolder("all");
+            if(folder===String(remove.id))setFolder("all");
             reload();
           }}
         />

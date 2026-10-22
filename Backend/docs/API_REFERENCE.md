@@ -125,17 +125,41 @@ GET details first to obtain the version. The collection updates contentVersion f
 }
 ```
 
+## GET /api/site/content-policy/
+
+**Permission:** Signed-in users
+
+Authenticated read of publishing mode: choice or public.
+
+## GET, PATCH /api/manage/content-policy/
+
+**Permission:** Admin / Staff
+
+Staff/Admin GET or PATCH mode=choice/public/new_public. new_public publishes new content only, preserving existing visibility. Public publishes all existing decks, practice and readings. Choice preserves visibility and restores individual controls.
+
+## GET /api/import/guide/
+
+**Permission:** Public
+
+Public GET of complete Wortify Text authoring rules and examples. Returns UTF-8 plain text, no account data.
+
+## GET /api/import/openapi/
+
+**Permission:** Public
+
+Public GET of the OpenAPI 3.1 schema for import bots. Contains only placeholders, never secrets.
+
 ## GET, POST, DELETE /api/manage/import-api/
 
 **Permission:** Admin / Staff
 
 Staff/Admin session API. GET returns enabled status and key prefix, never the secret. POST enables or rotates the import key and reveals it once. DELETE revokes it. CSRF required for writes.
 
-## POST /api/import/content/
+## GET, POST /api/import/content/
 
 **Permission:** Import key
 
-Import-only Bearer key, no session or CSRF. Multipart file (UTF-8 JSON, maximum 50 MB) and preview=true to validate; then same file with confirm=IMPORT to publish as Wortify. Only practice and reading sections. Keep UUID unchanged on retries. 200 preview/retry, 201 created, 400 invalid document, 401 invalid/revoked key or non-staff account.
+Import-only Bearer key, no session or CSRF. Multipart .txt/legacy JSON file (maximum 50 MB), raw text or JSON {text, preview:true} (maximum 8 MB). Preview returns preview_token; publish unchanged content with confirm=IMPORT and that token. Text format is Wortify Text 1; guides at /api/import/guide/ and /api/import/openapi/. Only practice and reading sections. Keep UUID unchanged on retries. 200 preview/retry, 201 created, 400 invalid document, 401 invalid/revoked key or non-staff account.
 
 Multipart: file (file), preview (text)
 
@@ -327,11 +351,11 @@ Multipart: image (file)
 
 GET/HEAD the signed-in account background binary with Cache-Control private,no-store.
 
-## POST /api/manage/content-packages/
+## GET, POST, PATCH, DELETE /api/manage/content-packages/
 
 **Permission:** Admin / Staff
 
-Staff/Admin only. Multipart file: wortify-content JSON version 1. preview=true validates without writes; confirm=IMPORT publishes an immutable Wortify system package and creates private copies for the importer. Practice Hub and Reading only; flashcards are personal and the flashcards field is rejected. Maximum 50 MB, 5000 nodes, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.
+Staff/Admin only. Multipart Wortify Text 1 or legacy JSON v1. preview=true validates without writes and returns preview_token; confirm=IMPORT plus this token publishes an immutable Wortify system package and creates private copies for the importer. Practice Hub and Reading only; flashcards are personal and the flashcards field is rejected. Maximum 50 MB, 5000 nodes, 10 folder levels. Reuse the same UUID and unchanged content on retries; changed content with an existing UUID is rejected.
 
 Multipart: file (file), preview (text)
 
@@ -554,6 +578,30 @@ Authenticated GET lists system packages for the current language, with counts, p
 
 Authenticated POST copies the package tree into the current account, scoped to the URL language. Send an empty JSON object. Repeating the request returns the existing receipt without duplicate content.
 
+## GET /api/{language}/reading/discover/
+
+**Permission:** Signed-in users
+
+Authenticated public reading catalogue for language. Filters: q (title/topic), level A1-C2, topic, source system/community, page. 24 results per page; includes topics and total. Private lessons are excluded.
+
+## GET /api/{language}/reading/discover/open/
+
+**Permission:** Signed-in users
+
+Authenticated GET with key from discovery: community:<id> or system:<package UUID>:<node path>. Returns only public title/payload. No personal progress; private or revoked entries return 404.
+
+## POST /api/{language}/reading/discover/save/
+
+**Permission:** Signed-in users
+
+Authenticated POST {key} saves a private independent reading and copies immutable media ownership records. Repeated source/user/language returns the same reading ID. 201 saved, 200 already saved. Start learning on the returned private ID to persist progress.
+
+## PATCH /api/{language}/reading/{pk}/sharing/
+
+**Permission:** Signed-in users
+
+Owner-only PATCH visibility private/public, level blank/A1-C2 and topic up to 80 characters. Public lessons appear in discovery. Content revision and progress stay unchanged. Public attachment access follows visibility.
+
 ## GET, POST /api/{language}/reading/
 
 **Permission:** Signed-in users
@@ -639,12 +687,6 @@ Body DELETE:
 
 Copy accessible content into the current account. Content and links are validated by the API.
 
-## GET, POST /api/{language}/decks/{pk}/notebook/
-
-**Permission:** Signed-in users
-
-Owner/language scoped vocabulary notebook. GET returns cards, notebook revision, current set and review dates. POST requires token UUID, revision and action: start (size 3-8, selection ready/all), step (answer, correction, remembered boolean), or discard. Steps are prepare, recall, sentence, variation, check. Sentences are self-assessed, not automatically graded. Repeated token is idempotent; stale revision returns 409. Successful scheduled sets advance 1/3/7/14 days; difficult words return tomorrow.
-
 ## POST /api/{language}/practice-hub/media/
 
 **Permission:** Signed-in users
@@ -658,6 +700,12 @@ Multipart: file (file)
 **Permission:** Signed-in users
 
 Returns binary after checking permissions. Supports GET/HEAD and byte ranges; partial responses use 206. Staff/Admin may read media for editing.
+
+## GET /api/{language}/practice-hub/public/{pk}/
+
+**Permission:** Signed-in users
+
+Anonymous read-only public exercise/theory/folder; only public children and active owners. No progress or personal data.
 
 ## GET /api/{language}/practice-hub/explore/
 
@@ -769,6 +817,31 @@ Body POST:
 
 GET synced learning state for an owned deck. Send changes through /learning/sync/ rather than PATCH to this endpoint.
 
+## POST /api/{language}/decks/manage/
+
+**Permission:** Admin / Staff
+
+Owner/language-scoped atomic actions move, copy, delete and undo. Send a unique request_id UUID and reuse it only for the identical retry. Up to 100 distinct ids. move/copy require folder (null=root). copy optionally takes names keyed by source ID and copies at most 20,000 cards with fresh IDs and independent progress; publication policy still applies. undo takes operation_id from a move receipt, is valid for 15 minutes and rejects decks changed since that move. Delete permanently removes decks/cards/progress. Requires session and CSRF.
+
+Body POST:
+
+```json
+{
+  "request_id": "{{eventToken}}",
+  "action": "move",
+  "ids": [
+    1
+  ],
+  "folder": null
+}
+```
+
+## GET /api/{language}/decks/export/
+
+**Permission:** Signed-in users
+
+GET ?ids=1,2&format=json or csv exports owned decks in the current language as a ZIP with one content file per deck and manifest.json. Up to 100 decks and 20,000 cards. Includes image links and accepted answers, excludes learning progress. CSV formula injection is escaped. No mutation occurs.
+
 ## GET, PATCH /api/{language}/settings/
 
 **Permission:** Signed-in users
@@ -819,6 +892,12 @@ Body PATCH:
 **Permission:** Signed-in users
 
 Optional deck and filter query parameters; returns only owned cards.
+
+## POST /api/{language}/decks/{pk}/images/
+
+**Permission:** Signed-in users
+
+card_images: resources are scoped to the account and language. See handler api.views.card_images to extend the integration.
 
 ## POST /api/{language}/decks/{pk}/reorder/
 
@@ -909,6 +988,24 @@ Body PATCH:
   "name": "Vocabulary A1"
 }
 ```
+
+## GET /api/{language}/flashcard/discover/
+
+**Permission:** Signed-in users
+
+Anonymous GET. Public decks, q/level/topic filters, page of 24. Includes the owned copy ID when saved.
+
+## GET /api/{language}/flashcard/discover/{pk}/
+
+**Permission:** Signed-in users
+
+Read-only preview of up to ten cards from an active public deck in the selected language.
+
+## POST /api/{language}/flashcard/discover/{pk}/copy/
+
+**Permission:** Signed-in users
+
+POST creates an independent owned copy, without learning state. Retrying returns the existing copy.
 
 ## POST /api/{language}/sessions/
 

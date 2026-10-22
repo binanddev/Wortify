@@ -192,3 +192,14 @@ Khách được đọc catalogue Flashcard, Practice Hub và Reading công khai,
 ## Dictation learning sync (1.11.0)
 
 The learning sync review whitelist accepts `type: "dictation"`. Correct dictation reviews satisfy the written-recall requirement for comprehensive deck mastery and retain their own timing/SRS mode. UUID retries remain idempotent. Deck options persist `listenBeforeAnswer` and `gradingMode` (`exact` or `flexible`) through the existing options event. Like other Studio reviews, the frontend submits the grading result; the sync endpoint records the review rather than regrading raw typed text. Deploy backend and frontend together; no schema change is needed.
+
+
+## Library operations (1.12.0)
+
+Apply cards migration `0013_deck_operation` during deployment. `DeckOperation` stores operation UUIDs, request fingerprints and results separately from learning events; these transient management receipts are excluded from portable learning backups.
+
+`POST /api/{lang}/decks/manage/` accepts `request_id` (UUID), `action` (`move`, `copy`, `delete`, `undo`) and up to 100 distinct owned deck IDs. Move/copy require `folder` (null for root); copy may supply `names` keyed by source ID. Copy up to 20,000 cards per operation. Copies have new deck/card IDs, retain image links and accepted answers, obey publication policy, and have no copied progress. Delete removes the entire selection atomically. Repeating an identical UUID request returns its original result; reusing it with different input is rejected.
+
+Move returns an operation_id for Undo. Send a new request_id with action=undo and operation_id within 15 minutes. Every deck must still have the recorded destination and revision, and all original destinations must remain valid. Folder changes and ordinary deck mutations use the same owner lock as batch operations.
+
+`GET /api/{lang}/decks/export/?ids=1,2&format=json` (or csv) returns a ZIP of content files and manifest.json. The same 100-deck/20,000-card limits and ownership/language checks apply. Learning progress is excluded and existing CSV formula escaping is preserved. All writes require session authentication and CSRF. Tests: `manage.py test api.test_deck_management`.

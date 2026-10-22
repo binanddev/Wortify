@@ -269,3 +269,14 @@ Study and Test include **Listen and write**: hear the term and enter both the te
 **Exact** checking remains the default. **Flexible · 70%** compares ordered words, penalizes missing and extra words, and gives partial credit for minor typos in words longer than three characters. Each dictation field must reach 70%; changed negation remains incorrect. Existing accepted term alternatives are respected. Feedback marks correct words green, strikes out wrong/extra words, and inserts missing/corrected words in red. It compares against saved answers rather than inferring synonyms. A learner can retry in Study; Test retains its original single-attempt scoring.
 
 Run `node scripts/verify-flashcard-dictation.mjs` (or `--mobile`) after building for mocked speech, six-theme feedback contrast, two-field grading, retry, unsupported speech and language fixtures. These open local HTML files without starting the frontend or backend.
+
+
+### Library management (1.12.0)
+
+**Manage decks** replaces the selection-only action. Its toolbar operates on up to 100 selected decks in the current folder: edit metadata, manage cards/import, move, copy, export or delete with confirmation. Each deck also has a shared HeroUI action menu, including quick duplication. The header sorts by recent update, title or card count. Folder menus create decks/subfolders, rename, move or remove a folder while keeping decks and children at the root. Workspace options retain folder removal/restoration.
+
+Drag one deck, or the selected group if the dragged deck is selected, into a navigation folder or My Flashcards. Hold Alt to copy instead of moving. Valid destinations highlight; hovering a closed folder for 600 ms expands it. Search temporarily exposes all destination folders while dragging. Native dragging does not replace the Move/Copy dialogs for touch and keyboard use. While selection has focus, Ctrl/Cmd+A selects up to 100 visible decks, F2 edits one deck, Delete opens confirmation and Escape exits management.
+
+The latest move offers Undo for 15 minutes. Server receipts reject undo after a later deck edit/move or an invalid destination. Copies start fresh learning progress. Move/copy/delete use one atomic API request with a reusable UUID on retries; failed requests keep the selection and dialog available. Batch export produces a ZIP containing individual CSV/JSON files and manifest.json. No account credentials or learning progress are exported.
+
+Checks after building: `node scripts/verify-deck-management.mjs` and `--mobile`. `verify-library-touch.mjs` delegates to the same current fixture. The fixture mocks HTTP and opens a local HTML file; it does not run a web server.

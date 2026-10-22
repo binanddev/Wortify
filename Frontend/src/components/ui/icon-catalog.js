@@ -9,7 +9,7 @@ import {
  Compass, Funnel, FolderInput, Library, ListTodo, GraduationCap, Gamepad2,
  UsersRound, CalendarDays, ChartNoAxesCombined, Target, Share2, ShieldCheck,
  CircleHelp, ArrowLeft, LogIn, UserPlus, LockKeyhole, Globe, Link, ExternalLink,
- FileText, CodeXml, Trophy, Heart, Mic, FolderPlus
+ ArrowDownWideNarrow, FileText, CodeXml, Trophy, Heart, Mic, FolderPlus
 } from "lucide-react";
 export const ICON_COMPONENTS={
  context:MessageSquareText,sentence:PanelsTopLeft,pairs:Columns2,cards:Layers,
@@ -27,5 +27,5 @@ export const ICON_COMPONENTS={
  journey:ChartNoAxesCombined,target:Target,share:Share2,admin:ShieldCheck,
  help:CircleHelp,back:ArrowLeft,login:LogIn,register:UserPlus,lock:LockKeyhole,
  public:Globe,link:Link,external:ExternalLink,file:FileText,api:CodeXml,
- trophy:Trophy,heart:Heart,microphone:Mic,folder_add:FolderPlus,
+ trophy:Trophy,heart:Heart,microphone:Mic,folder_add:FolderPlus,sort:ArrowDownWideNarrow,
 };
