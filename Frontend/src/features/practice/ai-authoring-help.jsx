@@ -1,37 +1,37 @@
 import { t as tr, useLocale } from "../../i18n/index.js";
-import { useState } from "react";
-import { Btn } from "../../components/ui/ui.jsx";
+import { useRef, useState } from "react";
+import { Btn, Icon } from "../../components/ui/ui.jsx";
+import { PracticeModal } from "./practice-workspace.jsx";
 import { aiAuthoringGuide } from "./ai-authoring-guide.js";
+
+export function AuthoringGuideText({ lang = "en" }) {
+  useLocale();
+  const [notice, setNotice] = useState("");
+  const text = useRef(null);
+  const instructions = aiAuthoringGuide(lang);
+  async function copy() {
+    try { await navigator.clipboard.writeText(instructions); setNotice("Guide copied."); }
+    catch {
+      setNotice("Clipboard access is unavailable. Select the instructions below to copy them.");
+      text.current?.focus(); text.current?.select();
+    }
+  }
+  return <div className="authoring-guide-document">
+    <div className="guide-actions">
+      <Btn primary onClick={copy}><Icon name="copy" size={18}/><span>{tr("Copy guide")}</span></Btn>
+      <a className="btn guide-download" download={`wortify-authoring-${lang}.txt`} href={`data:text/plain;charset=utf-8,${encodeURIComponent(instructions)}`}><Icon name="download" size={18}/><span>{tr("Download full guide (.txt)")}</span></a>
+    </div>
+    {notice && <p role="status" className="text-sm">{tr(notice)}</p>}
+    <textarea ref={text} aria-label={tr("Complete instructions")} readOnly spellCheck={false} value={instructions} rows={20} className="authoring-guide-text"/>
+  </div>;
+}
 
 export function AiAuthoringHelp({ lang = "en", guide = false }) {
   useLocale();
-  const [notice, setNotice] = useState("");
-  const [manual, setManual] = useState(false);
-  const instructions = aiAuthoringGuide(lang);
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(instructions);
-      setNotice("Guide copied.");
-      setManual(false);
-    } catch {
-      setManual(true);
-      setNotice("Clipboard access is unavailable. Select the instructions below to copy them.");
-    }
-  }
-  return (
-    <section className="authoring-guide-help grid gap-3 rounded-2xl border border-(--line) bg-(--surface) p-5" aria-label={tr("Lesson guide")}>
-      <h2 className="text-xl font-semibold">{tr("Lesson guide")}</h2>
-      <div className="guide-actions">
-        <Btn primary icon="copy" onClick={copy}>{tr("Copy guide")}</Btn>
-        {!guide && <a href={"/" + lang + "/create/guide"} target="_blank" rel="noopener noreferrer">{tr("Guide ↗")}</a>}
-      </div>
-      {notice && <p role="status">{tr(notice)}</p>}
-      <details open={manual || undefined} onToggle={(event) => { if (!event.currentTarget.open) setManual(false); }}>
-        <summary className="cursor-pointer">{tr("View instructions")}</summary>
-        <textarea aria-label={tr("Complete instructions")} readOnly value={instructions} rows={12}
-          className="mt-3 w-full rounded-xl border border-(--line) bg-transparent p-3 text-sm"
-          onFocus={(event) => event.currentTarget.select()} />
-      </details>
-    </section>
-  );
+  const [open, setOpen] = useState(false);
+  if (guide) return <AuthoringGuideText lang={lang}/>;
+  return <>
+    <div className="authoring-guide-help"><Btn aria-label={tr("Authoring guide")} onClick={()=>setOpen(true)}><Icon name="help" size={18}/><span>{tr("Authoring guide")}</span></Btn></div>
+    {open && <PracticeModal title={tr("Authoring guide")} size="4xl" className="authoring-guide-dialog" onClose={()=>setOpen(false)}><AuthoringGuideText lang={lang}/></PracticeModal>}
+  </>;
 }

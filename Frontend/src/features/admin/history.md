@@ -1,5 +1,16 @@
 # Change Log
 
+### Practice Hub direct library and focused import — 2026-10-22
+
+- My practice is the virtual root of all personal/copied folders and descendants, independent of saved workspace pins. `/de/practice/all` lists all personal roots with pagination; nested folders remain inside their parent. Shared roots are included in the tree only when explicitly added. Regression checks start with no saved pins.
+- My practice now owns folder/content management directly: per-item and navigation menus, rename, move, group, selection, guarded deletion, visibility, preview and editing. Root catalogue includes personal/copied unpinned content; workspace pins remain independent. Removed the separate Manage content entry and management workspace from the learning flow.
+- Import exercises opens a single-purpose dialog for the selected editable folder. No tree, breadcrumb, location picker or tools sidebar inside it. Paste text or choose/drop multiple UTF-8 TXT files, preview the batch, optionally attach media and import all exercises into the fixed destination. Successful import returns to that folder; failed saves preserve the draft.
+- Exercise editing reuses the focused editor. Unsaved changes require explicit Keep editing/Discard choices; pending operations guard dismissal. Shared action menus use the modal portal above its wrapper with pointer events enabled, and static interaction checks validate the actual hit target.
+- All help entries share one complete plain-text guide with matching copy/TXT-download content. Manual EN/VI/DE labels and compact responsive controls are retained. Existing authoring URLs and server ownership/publication validation remain compatible.
+- Validation: 170 frontend unit tests in the isolated release snapshot, 7 targeted Practice Hub backend tests, production build and interface checks passed. Static desktop/mobile HTML fixtures cover multi-file import, preview/save/edit, dirty guards, direct folder operations, batch dragging and confirmed deletion. No application server was started. User approved committing and pushing after verification.
+
+---
+
 ### [v1.12.0] - 2026-10-22 | Flashcard library management
 
 - Expanded Select decks into Manage decks with a compact multi-selection toolbar, select-all, metadata editing, card management, move, copy, export and confirmed deletion. Keep the current folder scope while managing. Added sorting and per-deck action menus with quick duplication.

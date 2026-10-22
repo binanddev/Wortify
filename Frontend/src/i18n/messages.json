@@ -6090,5 +6090,85 @@
   "Deck deleted": {
     "vi": "Đã xóa bộ thẻ",
     "de": "Kartensatz gelöscht"
+  },
+  "My content": {
+    "vi": "Nội dung của tôi",
+    "de": "Meine Inhalte"
+  },
+  "Authoring guide": {
+    "vi": "Hướng dẫn soạn bài",
+    "de": "Anleitung zum Erstellen"
+  },
+  "Manage content": {
+    "vi": "Quản lý nội dung",
+    "de": "Inhalte verwalten"
+  },
+  "Add {name} to workspace": {
+    "vi": "Thêm {name} vào không gian học",
+    "de": "{name} zum Lernbereich hinzufügen"
+  },
+  "Remove {name} from workspace": {
+    "vi": "Bỏ {name} khỏi không gian học",
+    "de": "{name} aus dem Lernbereich entfernen"
+  },
+  "Preview {name}": {
+    "vi": "Xem trước {name}",
+    "de": "Vorschau: {name}"
+  },
+  "Keep editing": {
+    "vi": "Tiếp tục chỉnh sửa",
+    "de": "Weiter bearbeiten"
+  },
+  "Your draft has not been saved. Keep editing or discard it.": {
+    "vi": "Bạn chưa lưu bản nháp. Bạn có thể tiếp tục chỉnh sửa hoặc bỏ các thay đổi.",
+    "de": "Dein Entwurf wurde noch nicht gespeichert. Bearbeite ihn weiter oder verwirf die Änderungen."
+  },
+  "Download full guide (.txt)": {
+    "vi": "Tải hướng dẫn đầy đủ (.txt)",
+    "de": "Vollständige Anleitung herunterladen (.txt)"
+  },
+  "Import exercises": {
+    "vi": "Nhập bài tập",
+    "de": "Übungen importieren"
+  },
+  "Choose .txt files": {
+    "vi": "Chọn tệp .txt",
+    "de": ".txt-Dateien auswählen"
+  },
+  "Paste exercise text or drop .txt files here…": {
+    "vi": "Dán nội dung bài tập hoặc thả tệp .txt vào đây…",
+    "de": "Übungstext einfügen oder .txt-Dateien hier ablegen…"
+  },
+  "{count} exercises ready": {
+    "vi": "{count} bài tập sẵn sàng",
+    "de": "{count} Übungen bereit"
+  },
+  "Check the content before importing.": {
+    "vi": "Kiểm tra nội dung trước khi nhập.",
+    "de": "Inhalt vor dem Import prüfen."
+  },
+  "Import {count} exercises": {
+    "vi": "Nhập {count} bài tập",
+    "de": "{count} Übungen importieren"
+  },
+  "Imported {count} exercises": {
+    "vi": "Đã nhập {count} bài tập",
+    "de": "{count} Übungen importiert"
+  },
+  "{count} items": {
+    "vi": "{count} mục",
+    "de": "{count} Inhalte"
+  },
+  "{count} questions": {
+    "vi": "{count} câu hỏi",
+    "de": "{count} Fragen"
+  },
+  "This content and its learning progress will be permanently deleted.": {
+    "vi": "Nội dung này và tiến độ học tương ứng sẽ bị xóa vĩnh viễn.",
+    "de": "Dieser Inhalt und der zugehörige Lernfortschritt werden endgültig gelöscht."
+  },
+  "Exercise updated.": {
+    "vi": "Đã cập nhật bài tập.",
+    "de": "Übung aktualisiert."
   }
 }

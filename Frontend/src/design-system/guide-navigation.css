@@ -11,3 +11,107 @@
 /* Fixed icon column prevents theme padding and text wrapping from shifting icons. */
 :root body .sidebar .nav-link { @apply flex items-center justify-start gap-3 text-left; }
 :root body .sidebar .nav-link > svg.app-icon { @apply box-border block w-7 h-7 min-w-7 shrink-0 p-0 m-0 self-center; }
+
+/* Practice context actions use one labelled entry rather than duplicate icon shortcuts. */
+.practice-context-actions { @apply flex min-w-0; }
+:root body .context-panel .practice-context-actions .btn,
+.practice-context-actions .btn { @apply inline-flex items-center justify-start gap-2 w-full min-h-10 px-3 py-2 rounded-lg text-[13px] leading-5 font-medium whitespace-normal; }
+.practice-context-actions .btn > svg.app-icon { @apply w-[18px] h-[18px] min-w-[18px] m-0 p-0 shrink-0; }
+:root body .practice-context-link { @apply inline-flex items-center gap-2 px-2 py-1 min-h-8 text-[13px] leading-5 text-inherit rounded-md hover:bg-(--surface) focus-visible:outline-2; }
+.practice-context-link > svg.app-icon { @apply w-[18px] h-[18px] min-w-[18px] p-0 m-0; }
+.practice-content-heading { @apply flex items-start justify-between gap-4; }
+.practice-content-heading > .heading { @apply flex-1 min-w-0; }
+.practice-content-heading > .btn { @apply w-10 min-w-10 h-10 min-h-10 p-0; }
+:root body .practice-discover-tools { @apply border-0 p-0 gap-2; }
+@media (pointer:coarse), (max-width:760px) {
+  :root body .context-panel .practice-context-actions .btn,.practice-context-actions .btn,.practice-context-link { @apply min-h-11; }
+}
+
+/* Keep sidebar search readable when Studio's paper inputs meet its dark navigation. */
+:root[data-interface] body .nav-face .context-panel .practice-nav-search .native-field-wrap { @apply bg-(--surface)! text-(--ink)! border-(--line)! rounded-lg min-h-10 px-3 gap-2; }
+:root[data-interface] body .nav-face .context-panel .practice-nav-search input { @apply bg-transparent! text-(--ink)! border-0! shadow-none! min-h-10 text-sm; }
+:root body .practice-nav-search .field-label { @apply text-xs leading-5 font-medium; }
+:root body .practice-nav-search svg.app-icon { @apply w-[18px] h-[18px] min-w-[18px] p-0 m-0 text-inherit; }
+
+/* A contained authoring workspace, with clear location choice and compact headings. */
+.practice-studio-dialog { @apply rounded-2xl border border-(--line) bg-(--solid) text-(--ink); }
+.practice-studio-dialog > header { @apply border-b border-(--line) px-6 py-4; }
+.practice-studio-title { @apply flex items-center gap-3 text-base font-semibold; }
+.practice-studio-title > svg { @apply text-(--accent); }
+.practice-studio-dialog .app-modal-body { @apply p-5; }
+.practice-studio-layout { @apply grid grid-cols-[220px_minmax(0,1fr)] min-w-0 gap-5; }
+.practice-studio-tools { @apply min-w-0 rounded-xl border border-(--line) bg-(--surface) p-3; }
+.practice-studio-tools > summary { @apply flex items-center gap-2 text-xs font-semibold text-(--muted) cursor-pointer mb-3; }
+.practice-studio-tools > summary > svg:last-child { @apply ml-auto; }
+.practice-studio-tools .sidebar-tools-group + .sidebar-tools-group { @apply mt-3 pt-3 border-t border-(--line); }
+.practice-studio-tools .sidebar-tools-group { @apply grid gap-3; }
+.practice-studio-main { @apply min-w-0; }
+:root[data-interface] body .practice-studio-dialog .page { @apply p-0 m-0 min-w-0 max-w-none; }
+:root[data-interface] body .practice-studio-dialog .heading h1 { @apply text-2xl font-semibold leading-snug; }
+.practice-studio-dialog .heading { @apply mb-3; }
+.practice-studio-dialog .practice-library .hub-grid { @apply grid-cols-[repeat(auto-fit,minmax(min(100%,230px),1fr))] mt-3; }
+.practice-studio-location { @apply w-full max-w-2xl mx-auto grid gap-4 py-2; }
+.practice-studio-location h2 { @apply m-0 text-lg font-semibold; }
+.practice-location-search { @apply flex items-end gap-3; }
+.practice-location-search > label { @apply flex-1 min-w-0; }
+.practice-location-search > .btn { @apply min-h-11 gap-2 shrink-0 text-sm; }
+.practice-location-create { @apply rounded-xl bg-(--surface) border border-(--line) p-4 grid gap-3; }
+.practice-location-create-actions { @apply flex justify-end gap-2; }
+.practice-location-folders { @apply grid gap-2 max-h-[45dvh] overflow-y-auto; }
+.practice-location-folder { @apply flex items-center gap-3 text-left border border-(--line) rounded-xl min-h-16 p-3 text-(--ink) hover:bg-(--surface) focus-visible:outline-2 focus-visible:outline-(--accent); }
+.practice-location-folder > span { @apply flex-1 min-w-0; }
+.practice-location-folder strong { @apply block text-sm font-semibold truncate; }
+.practice-location-folder small { @apply block text-xs text-(--muted) truncate mt-1; }
+@media (max-width:900px) {
+  .practice-studio-layout { @apply grid-cols-1 gap-3; }
+  .practice-studio-tools { @apply p-3; }
+  .practice-studio-tools:not([open]) > summary { @apply mb-0; }
+  .practice-studio-layout.is-editing .practice-studio-tools .sidebar-tools-group { @apply flex flex-wrap items-center gap-2; }
+  .practice-studio-layout.is-editing .practice-studio-tools .sidebar-tools-group > h3 { @apply w-full text-sm; }
+  .practice-studio-layout.is-editing .practice-studio-tools .sidebar-tools-group > p { @apply text-xs; }
+  .practice-studio-dialog > header { @apply px-4 py-3; }
+  .practice-studio-dialog .app-modal-body { @apply p-3; }
+  .practice-location-search { @apply flex-wrap; }
+}
+
+/* One complete plain-text guide, shared by the guide page and every help entry. */
+.authoring-guide-document { @apply grid gap-3 min-w-0; }
+.authoring-guide-document .guide-actions { @apply items-center; }
+.authoring-guide-document .guide-actions .btn { @apply w-auto min-w-0 h-auto min-h-10 px-3 py-2 gap-2 text-sm; }
+.authoring-guide-text { @apply block w-full min-w-0 h-[min(60dvh,640px)] min-h-64 resize-y rounded-xl border border-(--line) bg-(--surface) text-(--ink) p-4 font-mono text-[13px] leading-relaxed whitespace-pre-wrap; }
+.authoring-guide-help .btn { @apply gap-2 text-sm; }
+.authoring-guide-dialog .app-modal-body { @apply p-5; }
+@media (max-width:760px) { .authoring-guide-text { @apply h-[55dvh] p-3; } .authoring-guide-document .guide-actions .btn { @apply min-h-11; } }
+
+.practice-studio-layout.is-guide { @apply grid-cols-1; }
+
+/* My practice owns organization; import dialogs contain only the authoring task. */
+.practice-folder-toolbar { @apply flex flex-wrap items-center gap-2; }
+.practice-folder-toolbar > .btn { @apply min-h-10 gap-2 text-sm; }
+.practice-node-form { @apply grid gap-4; }
+.practice-node-actions { @apply flex flex-wrap justify-end gap-2; }
+.practice-import-dialog > header { @apply border-b border-(--line) px-5 py-4 text-base; }
+.practice-import-dialog .app-modal-body { @apply p-5; }
+.practice-import-destination { @apply flex items-center gap-2 min-w-0 text-sm text-(--muted) mb-4; }
+.practice-import-destination span { @apply truncate; }
+.practice-import-editor { @apply max-w-none m-0 grid gap-3; }
+.practice-import-toolbar { @apply flex flex-wrap items-center gap-2; }
+.practice-import-toolbar .btn { @apply gap-2 min-h-10 text-sm; }
+.practice-import-toolbar small { @apply ml-auto text-xs text-(--muted); }
+.practice-import-editor .native-field textarea { @apply min-h-64 h-[min(38dvh,400px)] max-h-[50dvh] p-3 text-sm leading-relaxed rounded-xl; }
+.practice-import-editor .native-field .field-label { @apply text-sm; }
+.practice-import-files { @apply m-0 text-xs text-(--muted) wrap-anywhere; }
+.practice-import-footer { @apply sticky bottom-0 bg-(--solid) border-t border-(--line) pt-3 grid gap-2; }
+.practice-import-result { @apply text-xs text-(--muted); }
+.practice-import-buttons { @apply flex flex-wrap items-center justify-end gap-2; }
+.practice-import-buttons .btn { @apply min-h-10 gap-2 text-sm; }
+:root[data-interface] body .practice-workspace > .practice-catalog .heading h1 { @apply text-[clamp(24px,3vw,32px)] leading-tight font-semibold; }
+@media (max-width:760px) {
+  .practice-import-dialog .app-modal-body { @apply p-3; }
+  .practice-import-toolbar small { @apply w-full ml-0; }
+  .practice-import-toolbar .btn,.practice-import-buttons .btn { @apply min-h-11; }
+  .practice-import-buttons { @apply justify-start; }
+  .practice-import-editor .native-field textarea { @apply min-h-48 h-[32dvh]; }
+}
+
+.practice-library .library-card-select { @apply grid place-items-center w-10 h-10 cursor-pointer rounded-lg hover:bg-(--surface); }

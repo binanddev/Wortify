@@ -14,7 +14,7 @@ export function aiAuthoringGuide(lang = "en", brief = "") {
     "For cloze_drag_drop, explicitly choose BANK_SCOPE: question for local choices or BANK_SCOPE: exercise for shared choices. Include enough copies of repeated tokens.",
     "Never invent uploaded media URLs. Use an existing URL supplied by me or omit the image. Attach media separately in Wortify.",
     "Before returning, check all numbered blanks, option membership, required fields, unique matching partners and import limits. Do not claim the result has been tested in Wortify.",
-    "If I request THEORY instead: return a separate Markdown document with the supported lesson markup. Do not wrap theory in EXERCISE fields or mix it into an exercise import. I will paste it into Create > Theory.",
+    "If I request THEORY instead: return a separate Markdown document with the supported lesson markup. Do not wrap theory in EXERCISE fields or mix it into an exercise import. Keep it separate from the exercise text import.",
     "\nCOMPLETE EXERCISE RULES AND ALL TEMPLATES\n",
     completePracticeGuide(),
     "\nLESSON FORMATTING REFERENCE\n",

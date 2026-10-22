@@ -316,6 +316,7 @@ export function Confirm({
   onConfirm,
   onClose,
   confirmLabel = "Confirm deletion",
+  cancelLabel = "Keep",
 }) {
   useLocale();
   const action = useAction();
@@ -328,7 +329,7 @@ export function Confirm({
           <Status error={action.error} />
         </ModalBody>
         <ModalFooter>
-          <Btn onClick={onClose} isDisabled={action.pending}>{tr("Keep")}</Btn>
+          <Btn onClick={onClose} isDisabled={action.pending}>{tr(cancelLabel)}</Btn>
           <Btn
             primary
             isLoading={action.pending}

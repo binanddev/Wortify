@@ -38,6 +38,11 @@ export function legacyPracticeDestination(lang, section, segment) {
       : null;
 }
 
+// Personal content is always part of My practice; pins add accessible shared roots.
+export function myPracticeNodes(nodes, pinned = []) {
+  return workspaceNodes(nodes, [...ownedPracticeNodes(nodes).map(node => node.id), ...pinned]);
+}
+
 export function workspaceNodes(nodes, pinned) {
   const included = new Set(workspaceRoots(nodes, pinned));
   let changed = true;
@@ -106,4 +111,24 @@ export function catalogRoots(nodes, query = "") {
       (!node.parent || !byId.has(node.parent)) &&
       matches.has(node.id),
   );
+}
+
+// Search content through its containing folder, retaining only authorized ancestors.
+export function practiceFolders(nodes, query = "") {
+  const byId = new Map(nodes.map(node => [node.id, node]));
+  const needle = query.trim().toLocaleLowerCase();
+  const included = new Set();
+  for (const node of nodes) {
+    if (needle && !node.title.toLocaleLowerCase().includes(needle)) continue;
+    let current = node.kind === "folder" ? node : byId.get(node.parent);
+    const seen = new Set();
+    while (current && !seen.has(current.id)) {
+      seen.add(current.id);
+      if (current.kind === "folder") included.add(current.id);
+      current = byId.get(current.parent);
+    }
+  }
+  return nodes.filter(node => node.kind === "folder" && (!needle || included.has(node.id)))
+    .sort((a,b) => (a.position || 0) - (b.position || 0) || a.id - b.id)
+    .map(node => ({id:node.id, name:node.title, parent_id:byId.get(node.parent)?.kind === "folder" ? node.parent : null}));
 }

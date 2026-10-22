@@ -27,6 +27,7 @@ export function FolderTree({
   renderActions,
   dropProps,
   dragging=false,
+  expandAll=false,
   depth=0,
 }) {
   useLocale();
@@ -35,17 +36,18 @@ export function FolderTree({
     .map((f) => (
       <FolderBranch
         key={f.id}
-        {...{ f, folders, lang, selected, onSelect, renderActions, dropProps, dragging, depth }}
+        {...{ f, folders, lang, selected, onSelect, renderActions, dropProps, dragging, expandAll, depth }}
       />
     ));
 }
-function FolderBranch({ f, folders, lang, selected, onSelect, renderActions, dropProps, dragging, depth }) {
+function FolderBranch({ f, folders, lang, selected, onSelect, renderActions, dropProps, dragging, expandAll, depth }) {
   useLocale();
   const activePath = folderAncestors(
     folders,
     folders.find((v) => String(v.id) === selected),
   ).some((v) => v.id === f.id);
-  const [open, setOpen] = useState(activePath);
+  const [localOpen, setOpen] = useState(activePath);
+  const open = expandAll || localOpen;
   useEffect(() => {
     setOpen(activePath);
   }, [activePath, selected]);
@@ -87,7 +89,7 @@ function FolderBranch({ f, folders, lang, selected, onSelect, renderActions, dro
       {open && expandable && (
         <div className={depth<3?"flash-tree-children":"flash-tree-children flash-tree-deep"}>
           <FolderTree
-            {...{ folders, lang, selected, onSelect, renderActions, dropProps, dragging, depth }}
+            {...{ folders, lang, selected, onSelect, renderActions, dropProps, dragging, expandAll, depth }}
             parent={f.id}
             depth={depth+1}
           />

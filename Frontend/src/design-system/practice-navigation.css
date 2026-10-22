@@ -302,3 +302,29 @@
 .practice-tree-row small {
   @apply text-(--ink,#303543);
 }
+
+/* Practice uses the same folder explorer, surfaces and compact actions as Flashcards. */
+.practice-folder-nav { @apply min-w-0; }
+.practice-content-card { @apply flex flex-col min-h-56 p-6 gap-5 rounded-2xl border border-(--line) bg-(--solid) text-(--ink) shadow-sm transition-colors hover:border-(--accent) focus-visible:outline-2 focus-visible:outline-(--accent); }
+.practice-content-card h3 { @apply m-0 text-xl font-semibold leading-snug wrap-anywhere; }
+.practice-content-icon { @apply grid place-items-center w-13 h-13 rounded-2xl bg-(--surface) text-(--accent); }
+.practice-content-meta { @apply mt-auto flex items-center justify-between gap-3; }
+.practice-content-meta small { @apply text-sm text-(--muted); }
+.practice-selection-tools { @apply flex flex-wrap items-center gap-3 w-full; }
+.practice-selection-tools > p { @apply m-0 mr-auto; }
+.practice-library .library-card { @apply rounded-2xl bg-(--solid) border-(--line) shadow-sm; }
+.practice-library .library-card:hover { @apply transform-none border-(--accent); }
+.practice-library .library-card-icon { @apply bg-(--surface) text-(--accent); }
+.practice-library .library-card.is-selected { @apply border-(--accent) ring-2 ring-(--accent)/20 shadow-none; }
+.practice-library .library-card-top input { @apply w-4 h-4 accent-(--accent); }
+.practice-library .library-card-actions button:hover { @apply bg-(--surface) text-(--ink); }
+.practice-library .library-card-actions { @apply mt-auto; }
+@media (max-width:760px) {
+  .practice-catalog .catalog-grid { @apply grid-cols-1; }
+  .practice-selection-tools .btn { @apply min-h-11; }
+}
+
+.practice-workspace { @apply font-sans text-[15px]; }
+.practice-workspace .heading { @apply my-0 mb-5; }
+.practice-workspace .heading h1 { @apply font-sans text-[clamp(24px,3vw,32px)] font-semibold leading-[1.25]; }
+.practice-workspace .btn, .practice-workspace select, .practice-workspace label { @apply text-sm; }

@@ -1,10 +1,9 @@
 import { t as tr, useLocale } from "../../i18n/index.js";
 import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
-import {FormattingHelp} from "./formatting-help.jsx";
 import { remapQuestionMedia } from "./exercise-media-utils.js";
 import { MediaEditor } from "./exercise-media.jsx";
 import { PracticeModal } from "./practice-workspace.jsx";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Btn, Field, Select, Status, SidebarTools, Icon } from "../../components/ui/ui.jsx";
 import {
   EXERCISE_TYPES,
@@ -23,6 +22,9 @@ export function PracticeTextEditor({
   exercise,
   pending = false,
   lang = "en",
+  onBusyChange,
+  onDirtyChange,
+  compact = false,
 }) {
   useLocale();
   const [media, setMedia] = useState({ existing: exercise?.attachments || [] });
@@ -51,10 +53,16 @@ export function PracticeTextEditor({
         }
       : null,
   );
+  const initialText = useRef(text);
+  const initialMedia = useRef(JSON.stringify(media));
+  useEffect(() => { onDirtyChange?.(text !== initialText.current || JSON.stringify(media) !== initialMedia.current); }, [text, media, onDirtyChange]);
+  const fileInput = useRef(null);
   const previousNodes = useRef(checked?.nodes || []);
   const [mediaNotice, setMediaNotice] = useState("");
   const [error, setError] = useState("");
   const [reading, setReading] = useState(false);
+  useEffect(() => { onBusyChange?.(pending || reading || mediaBusy); }, [pending, reading, mediaBusy, onBusyChange]);
+  useEffect(() => () => onBusyChange?.(false), [onBusyChange]);
   const [files, setFiles] = useState([]);
   const update = (value) => {
     setText(value);
@@ -129,8 +137,17 @@ export function PracticeTextEditor({
     }
   };
   return (
-    <section className="practice-text-editor studio-content">
-      <SidebarTools navOnly>
+    <section className={`practice-text-editor studio-content ${compact ? "practice-import-editor" : ""}`} onDragOver={event=>{if(compact && Array.from(event.dataTransfer.types).includes("Files")) event.preventDefault();}} onDrop={event=>{if(compact && event.dataTransfer.files.length){event.preventDefault();loadFiles(event.dataTransfer.files);}}}>
+      {compact ? <>
+        <div className="practice-import-toolbar">
+          <input ref={fileInput} type="file" accept=".txt,text/plain" multiple={!exercise} hidden disabled={pending || reading || mediaBusy} aria-label={tr("Choose a .txt file")} onChange={event=>{loadFiles(event.target.files || []);event.target.value="";}}/>
+          <Btn isDisabled={pending || reading || mediaBusy} onClick={()=>fileInput.current?.click()}><Icon name="upload" size={18}/><span>{tr("Choose .txt files")}</span></Btn>
+          <AiAuthoringHelp lang={lang}/>
+          <small>{tr("UTF-8 · max 2 MB · multiple files allowed")}</small>
+        </div>
+        {files.length > 0 && <p className="practice-import-files">{files.join(" · ")}</p>}
+        <Status error={error}/>
+      </> : <SidebarTools navOnly>
         <h3 className="context-section-title">
           {exercise ? tr("Edit exercise") : tr("Create exercise")}
         </h3>
@@ -173,7 +190,7 @@ export function PracticeTextEditor({
             </Btn>
           </>
         )}
-      </SidebarTools>
+      </SidebarTools>}
       {toolsOpen && (
         <PracticeModal
           title={exercise ? tr("Edit exercise") : tr("Import .txt exercises")}
@@ -259,19 +276,26 @@ export function PracticeTextEditor({
           </div>
         </PracticeModal>
       )}
-      <h1>{exercise ? exercise.title : tr("Exercise content")}</h1>
-      <AiAuthoringHelp lang={lang} />
-      <FormattingHelp/>
+      {!compact && <><h1>{exercise ? exercise.title : tr("Exercise content")}</h1><AiAuthoringHelp lang={lang} /></>}
       {mediaNotice && <p role="status">{mediaNotice}</p>}
       <Field
         label={tr("Text draft")}
-        description={tr("Paste the exercise text from your AI chat here, or import a .txt file. Use Check and preview before saving.")}
+        description={compact ? undefined : tr("Paste the exercise text from your AI chat here, or import a .txt file. Use Check and preview before saving.")}
+        placeholder={compact ? tr("Paste exercise text or drop .txt files here…") : undefined}
         multiline
-        rows={24}
+        rows={compact ? 12 : 24}
         value={text}
         onChange={update}
         isDisabled={pending || reading || mediaBusy}
       />
+      {compact && <div className="practice-import-footer">
+        <div className="practice-import-result" role="status">{checked ? tr("{count} exercises ready",{count:checked.nodes.length}) : tr("Check the content before importing.")}</div>
+        <div className="practice-import-buttons">
+          {checked && <Btn isDisabled={pending || reading || mediaBusy} onClick={()=>validateDraft("media")}><Icon name="image" size={18}/><span>{tr("Media · MP3 and images")}</span></Btn>}
+          <Btn isDisabled={!text.trim() || pending || reading || mediaBusy} onClick={()=>validateDraft("preview")}><Icon name="eye" size={18}/><span>{tr("Check and preview")}</span></Btn>
+          <Btn primary isLoading={pending} isDisabled={!checked || pending || reading || mediaBusy} onClick={()=>onApply(checked.nodes.map(withMedia))}>{exercise ? tr("Save changes") : checked ? tr("Import {count} exercises",{count:checked.nodes.length}) : tr("Import exercises")}</Btn>
+        </div>
+      </div>}
       {checked && mediaIndex !== null && checked.nodes[mediaIndex] && (
         <PracticeModal
           title={tr("Media · {v0}", { v0: checked.nodes[mediaIndex].title })}

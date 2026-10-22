@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {practiceArea,practiceTabs,folderPage} from '../src/features/practice/practice-area.js';
 import {windowKey,desktopReducer} from '../src/themes/windows-xp/desktop-state.js';
 test('practice tabs preserve existing routes and share a Windows app',()=>{
- assert.deepEqual(practiceTabs('de').map(x=>x.path),['/de/practice/all','/de/explore','/de/create']);
+ assert.deepEqual(practiceTabs('de').map(x=>x.path),['/de/explore']);
  for(const section of ['practice','explore','create']){assert.ok(practiceArea(section));assert.equal(windowKey('/de/'+section),'practice');}
  assert.equal(practiceArea('flashcard'),false);
  let state={windows:[],active:null};state=desktopReducer(state,{type:'open',route:'/de/practice/733'});state=desktopReducer(state,{type:'open',route:'/de/explore'});

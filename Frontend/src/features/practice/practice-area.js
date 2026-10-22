@@ -1,8 +1,6 @@
 export const practiceArea = section => ['practice','explore','create'].includes(section);
 export const practiceTabs = lang => [
- {section:'practice',label:'My practice',path:`/${lang}/practice/all`},
- {section:'explore',label:'Discover',path:`/${lang}/explore`},
- {section:'create',label:'Create',path:`/${lang}/create`},
+ {section:'explore',label:'Discover',icon:'explore',path:`/${lang}/explore`},
 ];
 
 export function folderPage(items, requestedPage = 1) {

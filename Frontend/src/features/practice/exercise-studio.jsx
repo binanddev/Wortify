@@ -1,9 +1,9 @@
+import ActionMenu from "../../components/ui/action-menu.jsx";
 import VisibilitySelect from "../../components/ui/VisibilitySelect.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import { AiAuthoringHelp } from "./ai-authoring-help.jsx";
-import {FormattingHelp} from "./formatting-help.jsx";
 import { MediaEditor, ExerciseMediaDialog } from "./exercise-media.jsx";
-import { PracticeModal } from "./practice-workspace.jsx";
+import { PracticeTree, PracticeModal } from "./practice-workspace.jsx";
 import { useEffect, useState } from "react";
 import {
   endpoint,
@@ -26,7 +26,7 @@ import {
   Status,
   Icon,
 } from "../../components/ui/ui.jsx";
-import { PracticeLibrary } from "./practice-library.jsx";
+import { DestinationPicker, PracticeLibrary } from "./practice-library.jsx";
 import { PracticeTextEditor } from "./practice-text-editor.jsx";
 import { PracticeActivity } from "./practice-activity.jsx";
 import { TheoryActivity } from "./practice-theory.jsx";
@@ -39,6 +39,7 @@ export function ExerciseStudio({
   create = false,
   parentId = null,
   edit = false,
+  onDialogState,
 }) {
   useLocale();
   const navigate = useNavigate();
@@ -70,10 +71,15 @@ export function ExerciseStudio({
   const [choosingFolder, setChoosingFolder] = useState(false);
   const [mediaOpen, setMediaOpen] = useState(false);
   const [folderDraft, setFolderDraft] = useState(null);
+  const [folderAction, setFolderAction] = useState(null);
   const [settingId, setSettingId] = useState(null);
   const [removing, setRemoving] = useState(false);
   const [theory, setTheory] = useState(null);
   const [theoryMediaBusy,setTheoryMediaBusy] = useState(false);
+  const [editorBusy, setEditorBusy] = useState(false);
+  useEffect(() => {
+    onDialogState?.({ pending: action.pending || theoryMediaBusy || editorBusy, drafting: create || edit });
+  }, [action.pending, theoryMediaBusy, editorBusy, create, edit, onDialogState]);
   const [notice, setNotice] = useState("");
   const setting = nodes.find((node) => node.id === settingId);
   useEffect(() => {
@@ -142,8 +148,8 @@ export function ExerciseStudio({
   const browsing = !create && !edit && (!current || current.kind === "folder");
   const items = (
     current?.kind === "folder"
-      ? nodes.filter((node) => node.parent === current.id)
-      : roots
+      ? nodes.filter((node) => node.parent === current.id && node.kind !== "folder")
+      : nodes.filter(node => node.kind !== "folder" && !node.parent)
   ).filter((node) =>
     node.title.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
   );
@@ -159,28 +165,22 @@ export function ExerciseStudio({
     ancestor = nodes.find((node) => node.id === ancestor.parent);
   }
   return (
-    <Page>
+    <Page className="practice-workspace">
       <SidebarTools navOnly>
-        <div className="studio-navigation">
-          <nav className="studio-nav-shortcuts" aria-label={tr("Create tools")}>
-            <Link
-              className={`studio-nav-icon ${!current && !create ? "active" : ""}`}
-              to={routes.studio}
-              title={tr("My Exercise Library")}
-              aria-label={tr("My Exercise Library")}
-              aria-current={!current && !create ? "page" : undefined}
-            >
-              <Icon name="home" size={23} />
-            </Link>
-            <Link
-              className="studio-nav-icon"
-              to={routes.guide}
-              title={tr("Instructions and .txt templates")}
-              aria-label={tr("Instructions and .txt templates")}
-            >
-              <Icon name="book" size={23} />
-            </Link>
-          </nav>
+        <div className="studio-navigation flash-nav">
+          <Link className="practice-context-link" to={routes.guide} title={tr("Authoring guide")}><Icon name="help" size={18}/><span>{tr("Authoring guide")}</span></Link>
+          {!create && !edit && <>
+            <Field className="practice-nav-search" label={tr("Search folders or exercises")} value={query} onChange={setQuery} startContent={<Icon name="search"/>}/>
+            <PracticeTree nodes={nodes} base={routes.studio} currentId={id} query={query} pending={action.pending} onMove={(ids,parent)=>organize({action:"move",ids,parent})}
+              rootActions={<ActionMenu quiet label={tr("Library actions")} disabled={action.pending} items={[{key:"folder",icon:"folder_add",label:"New folder",run:()=>setFolderDraft({title:"",parent:null})},{key:"add",icon:"plus",label:"Add",run:()=>setAddTarget({parent:null})}]}/>}
+              renderActions={node=><ActionMenu quiet label={tr("Folder actions: {name}",{name:node.title})} disabled={action.pending} items={[
+                {key:"add",icon:"plus",label:"Add",run:()=>setAddTarget({parent:node.id})},
+                {key:"folder",icon:"folder_add",label:"New subfolder",run:()=>setFolderDraft({title:"",parent:node.id})},
+                {key:"rename",icon:"edit",label:"Rename folder",run:()=>setFolderAction({action:"rename",node,title:node.title})},
+                {key:"move",icon:"move",label:"Move folder",run:()=>setFolderAction({action:"move",node})},
+                {key:"settings",icon:"settings",label:"Folder options",run:()=>openSettings(node)},
+              ]}/>}/>
+          </>}
           {(create || edit) && (
             <>
               <div className="rounded-xl border border-(--line) p-3">
@@ -285,13 +285,6 @@ export function ExerciseStudio({
               </div>
             </header>
             {!current && <AiAuthoringHelp lang={lang} />}
-            <Field
-              aria-label={tr("Search")}
-              placeholder={current ? tr("Search this folder…") : tr("Search folders…")}
-              value={query}
-              onChange={setQuery}
-              startContent={<Icon name="search" />}
-            />
             <PracticeLibrary
               key={current?.id || "roots"}
               items={items}
@@ -319,6 +312,7 @@ export function ExerciseStudio({
             }
             pending={action.pending}
             onApply={saveText}
+            onBusyChange={setEditorBusy}
           />
         ) : theory ? (
           <>
@@ -353,7 +347,7 @@ export function ExerciseStudio({
                 }
               >{tr("Save content")}</Btn>
             </div>
-            <FormattingHelp/>
+            <AiAuthoringHelp lang={lang}/>
             <details className="lesson-format-help"><summary>{tr("Upload images / media")}</summary><MediaEditor lang={lang} items={theory.attachments || []} onChange={attachments=>setTheory(value=>({...value,attachments}))} onBusy={setTheoryMediaBusy} disabled={action.pending}/><p>{tr("Copy an image command into Theory content. Keep its attachment listed so readers can access it.")}</p></details>
             <Field
               label={tr("Theory content")}
@@ -499,6 +493,13 @@ export function ExerciseStudio({
             >{tr("New folder")}</Btn>
           </PracticeModal>
         )}
+      {folderAction && <PracticeModal title={tr(folderAction.action === "rename" ? "Rename folder" : "Move folder")} pending={action.pending} onClose={()=>setFolderAction(null)}>
+        <Status error={action.error}/>
+        {folderAction.action === "rename" ? <>
+          <Field label={tr("Folder name")} value={folderAction.title} onChange={title=>setFolderAction(value=>({...value,title}))} maxLength={200} autoFocus/>
+          <Btn primary isDisabled={action.pending || !folderAction.title.trim()} onClick={async()=>{if(await rename(folderAction.node,folderAction.title.trim()))setFolderAction(null);}}>{tr("Save changes")}</Btn>
+        </> : <DestinationPicker nodes={nodes} ids={[folderAction.node.id]} pending={action.pending} onClose={()=>setFolderAction(null)} onChoose={async parent=>{if(await organize({action:"move",ids:[folderAction.node.id],parent}))setFolderAction(null);}}/>}
+      </PracticeModal>}
       {folderDraft && (
         <PracticeModal
           title={tr("New folder")}

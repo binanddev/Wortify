@@ -1,7 +1,8 @@
+import ActionMenu from "../../components/ui/action-menu.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import { useEffect, useState } from "react";
 import { PracticeModal } from "./practice-workspace.jsx";
-import { Btn, Link, Icon, SidebarTools, Status, Field } from "../../components/ui/ui.jsx";
+import { Btn, Link, Icon, Status, Field } from "../../components/ui/ui.jsx";
 
 export function DestinationPicker({ nodes, ids, onChoose, onClose, pending }) {
   useLocale();
@@ -68,6 +69,8 @@ export function PracticeLibrary({
   onEdit,
   onCreate,
   onPreview,
+  onOpen,
+  extraMenuItems,
   view = "grid",
   onSettings,
   pending,
@@ -76,17 +79,9 @@ export function PracticeLibrary({
   routeBase = "create",
 }) {
   useLocale();
-  const [menuId, setMenuId] = useState(null);
   const [groupName, setGroupName] = useState("New folder");
   const [grouping, setGrouping] = useState(false);
   const [deleting, setDeleting] = useState(null);
-  const menu = nodes.find((node) => node.id === menuId);
-  const menuSiblings = menu
-    ? nodes
-        .filter((node) => node.can_edit && node.parent === menu.parent)
-        .sort((a, b) => a.position - b.position || a.id - b.id)
-    : [];
-  const menuIndex = menuSiblings.findIndex((node) => node.id === menuId);
   const [selected, setSelected] = useState([]);
   const [destination, setDestination] = useState(false);
   const [renaming, setRenaming] = useState(null);
@@ -99,7 +94,7 @@ export function PracticeLibrary({
     setDestination(false);
     setUndo(null);
   }, [parent]);
-  const availableIds = nodes.map((node) => node.id).join(",");
+  const availableIds = items.map((node) => node.id).join(",");
   useEffect(() => {
     const available = new Set(availableIds.split(",").map(Number));
     setSelected((previous) => previous.filter((id) => available.has(id)));
@@ -142,9 +137,10 @@ export function PracticeLibrary({
   return (
     <section className="practice-library" aria-label={tr("Folder contents")}>
       {(selected.length > 0 || undo) && (
-        <SidebarTools navOnly>
+        <div className="deck-management-bar">
           <div
-            className="create-selection-tools"
+            role="toolbar"
+            className="practice-selection-tools"
             aria-label={tr("Selected item tools")}
           >
             {selected.length > 0 && (
@@ -159,7 +155,7 @@ export function PracticeLibrary({
                     isDisabled={pending}
                     onClick={() => setDestination(true)}
                   >
-                    <Icon name="arrow" />
+                    <Icon name="move" />
                   </Btn>
                   <Btn
                     isIconOnly
@@ -208,7 +204,7 @@ export function PracticeLibrary({
               </Btn>
             )}
           </div>
-        </SidebarTools>
+        </div>
       )}
       {deleting && (
         <PracticeModal title={tr("Delete {v0} selected items?", { v0: deleting.length })} pending={pending} onClose={() => setDeleting(null)}>
@@ -296,62 +292,8 @@ export function PracticeLibrary({
           >{tr("Save name")}</Btn>
         </PracticeModal>
       )}
-      {menu && (
-        <PracticeModal
-          title={menu.title}
-          size="sm"
-          pending={pending}
-          onClose={() => setMenuId(null)}
-        >
-          <Status error={error} />
-          <div className="grid gap-2 [&>button]:w-full [&>button]:justify-start">
-            <Btn
-              isDisabled={pending}
-              onClick={() => {
-                setRenaming(menu.id);
-                setTitle(menu.title);
-                setMenuId(null);
-              }}
-            >
-              <Icon name="edit" />{tr("Rename")}</Btn>
-            <Btn
-              isDisabled={pending}
-              onClick={() => {
-                setSelected([menu.id]);
-                setDestination(true);
-                setMenuId(null);
-              }}
-            >
-              <Icon name="move" />{tr("Move")}</Btn>
-            {onSettings && (
-              <Btn
-                isDisabled={pending}
-                onClick={() => {
-                  setMenuId(null);
-                  onSettings(menu);
-                }}
-              >
-                <Icon name="more" />{tr("Share and delete")}</Btn>
-            )}
-            {!searching && (
-              <>
-                <Btn
-                  isDisabled={pending || menuIndex <= 0}
-                  onClick={() => reorder(menu, -1)}
-                >
-                  <Icon name="chevron_left" />{tr(" Move earlier")}</Btn>
-                <Btn
-                  isDisabled={pending || menuIndex >= menuSiblings.length - 1}
-                  onClick={() => reorder(menu, 1)}
-                >
-                  <Icon name="chevron_right" />{tr(" Move later")}</Btn>
-              </>
-            )}
-          </div>
-        </PracticeModal>
-      )}
       <div className="library-notice" role="status">
-        {message}
+        {tr(message)}
       </div>
       {destination && (
         <PracticeModal
@@ -371,6 +313,8 @@ export function PracticeLibrary({
       <div className={`hub-grid library-view-${view}`}>
         {items.map((node) => {
           const folder = node.kind === "folder";
+          const siblings = nodes.filter(other=>other.can_edit && other.parent===node.parent).sort((a,b)=>a.position-b.position || a.id-b.id);
+          const siblingIndex = siblings.findIndex(other=>other.id===node.id);
           return (
             <article
               key={node.id}
@@ -431,21 +375,21 @@ export function PracticeLibrary({
                   />
                 </span>
                 {node.can_edit && (
-                  <input
+                  <label className="library-card-select"><input
                     type="checkbox"
                     aria-label={tr("Choose {v0}", { v0: node.title })}
                     checked={selected.includes(node.id)}
                     disabled={pending}
                     onChange={() => toggle(node.id)}
-                  />
+                  /></label>
                 )}
               </div>
-              {!folder && onPreview ? (
+              {!folder && (onOpen || onPreview) ? (
                 <button
                   type="button"
                   className="library-card-title text-left"
                   title={tr("Preview {v0}", { v0: node.title })}
-                  onClick={() => onPreview(node)}
+                  onClick={() => (onOpen || onPreview)(node)}
                 >
                   {node.title}
                 </button>
@@ -459,10 +403,10 @@ export function PracticeLibrary({
               )}
               <small>
                 {folder
-                  ? `${nodes.filter((n) => n.parent === node.id).length} content`
+                  ? tr("{count} items",{count:nodes.filter((n) => n.parent === node.id).length})
                   : node.kind === "theory"
                     ? tr("Reading content")
-                    : `${node.payload?.questions?.length || 0} questions`}
+                    : node.payload?.questions || node.question_count != null ? tr("{count} questions",{count:node.question_count ?? node.payload.questions.length}) : tr("Exercises")}
               </small>
               {node.can_edit && (
                 <div className="library-card-actions">
@@ -498,15 +442,15 @@ export function PracticeLibrary({
                       <Icon name="edit" />
                     </Btn>
                   )}
-                  <Btn
-                    isIconOnly
-                    title={tr("Options")}
-                    aria-label={tr("Options {v0}", { v0: node.title })}
-                    isDisabled={pending}
-                    onClick={() => setMenuId(node.id)}
-                  >
-                    <Icon name="more" />
-                  </Btn>
+                  <ActionMenu label={tr("Options {v0}",{v0:node.title})} disabled={pending} items={[
+                    ...(extraMenuItems?.(node) || []),
+                    {key:"rename",icon:"edit",label:"Rename",run:()=>{setRenaming(node.id);setTitle(node.title);}},
+                    {key:"move",icon:"move",label:"Move",run:()=>{setSelected([node.id]);setDestination(true);}},
+                    ...(!searching ? [{key:"earlier",icon:"chevron_left",label:" Move earlier",disabled:siblingIndex<=0,run:()=>reorder(node,-1)},{key:"later",icon:"chevron_right",label:" Move later",disabled:siblingIndex>=siblings.length-1,run:()=>reorder(node,1)}] : []),
+                    ...(onSettings ? [{key:"settings",icon:"settings",label:"Content options",run:()=>onSettings(node)}] : []),
+                    {key:"delete",icon:"trash",label:"Delete permanently",danger:true,divider:true,run:()=>setDeleting([node.id])},
+                  ]}/>
+
                 </div>
               )}
             </article>
@@ -515,7 +459,7 @@ export function PracticeLibrary({
       </div>
       {!items.length && (
         <div className="library-empty">
-          <span aria-hidden="true">🌱</span>
+          <Icon name="folder" size={32}/>
           <p>
             {searching ? tr("No matching exercises found.") : tr("No content yet.")}
           </p>

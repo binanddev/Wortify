@@ -244,10 +244,17 @@
 /* Shared section links in back navigation and Windows sidebar. */
 :has(> .sidebar-tools-group > .practice-section-nav) { @apply flex flex-col; }
 .sidebar-tools-group:has(> .practice-section-nav) { @apply -order-1; }
-.practice-section-nav { @apply flex flex-wrap gap-2 mb-4; }
-.practice-section-nav a { @apply inline-flex items-center gap-2 p-2 text-inherit border-b-2 border-transparent no-underline; }
-.practice-section-nav a[aria-current="page"] { @apply border-current font-bold; }
-.practice-section-nav a:focus-visible { @apply outline-2 outline-current outline-offset-2; }
+/* Section links navigate between learning, discovery and authored content. */
+.practice-section-nav { @apply grid grid-cols-1 gap-1 m-0 w-full min-w-0; }
+:root body .practice-section-nav > a {
+  @apply grid grid-cols-[18px_minmax(0,1fr)] items-center gap-2.5 min-h-9 px-2.5 py-2 m-0 rounded-lg border-0 text-[13px] leading-5 font-medium text-inherit no-underline transition-colors;
+}
+:root body .practice-section-nav > a > svg.app-icon { @apply block w-[18px] h-[18px] min-w-[18px] p-0 m-0 shrink-0 text-current; }
+:root body .practice-section-nav > a > span { @apply min-w-0 truncate; }
+:root body .practice-section-nav > a:hover { @apply bg-[color-mix(in_srgb,currentColor_7%,transparent)]; }
+:root body .practice-section-nav > a[aria-current="page"] { @apply bg-[color-mix(in_srgb,currentColor_12%,transparent)] font-semibold; }
+:root body .practice-section-nav > a:focus-visible { @apply outline-2 outline-current -outline-offset-2; }
+@media (pointer:coarse), (max-width:760px) { :root body .practice-section-nav > a { @apply min-h-11; } }
 .practice-pagination { @apply flex items-center justify-center gap-4 mt-6; }
 
 .fall-away-choices { @apply inline-flex items-baseline; }

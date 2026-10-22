@@ -1,11 +1,15 @@
 import { t as tr, useLocale } from "../../i18n/index.js";
-import { folderPage } from "./practice-area.js";
+import ActionMenu from "../../components/ui/action-menu.jsx";
 import { PracticeTree, PracticeModal } from "./practice-workspace.jsx";
-import { useEffect, useState, useMemo } from "react";
+import { lazy, Suspense, useEffect, useState, useMemo } from "react";
+const PracticeImportModal = lazy(() => import("./practice-import-modal.jsx"));
+import { PracticeLibrary } from "./practice-library.jsx";
+import PracticeNodeDialog from "./practice-node-dialog.jsx";
 import {
   request,
   useNavigate,
   useResource,
+  useAction,
   endpoint,
   readPreference,
   savePreference,
@@ -27,11 +31,12 @@ import { previewData } from "./exercise-types.js";
 import {
   supportedPracticeNodes,
   practiceRoutes,
-  workspaceNodes,
+  myPracticeNodes,
   workspaceRoot,
   workspaceRoots,
   toggleWorkspaceRoot,
   catalogRoots,
+  ownedPracticeNodes,
 } from "./practice-navigation.js";
 
 export function PracticeHub({ lang, id, userId, sound }) {
@@ -47,8 +52,14 @@ export function PracticeHub({ lang, id, userId, sound }) {
     const value = readPreference(workspaceKey, []);
     return Array.isArray(value) ? value : [];
   });
+  const action = useAction();
+  const [importing, setImporting] = useState(null);
+  const [nodeOperation, setNodeOperation] = useState(null);
+  const [notice, setNotice] = useState(null);
+  useEffect(()=>{action.setError("");},[nodeOperation]);
+  const openImport = (folder, node = null) => setTimeout(()=>setImporting({folder,node}),0);
+  const nodeAction = (action, node) => setNodeOperation({action,node});
   const [previewId, setPreviewId] = useState(null);
-  const [setting, setSetting] = useState(null);
   const [catalogQuery, setCatalogQuery] = useState("");
   const [catalogPage, setCatalogPage] = useState(1);
   const all = !id || id === "all";
@@ -85,7 +96,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
         );
       return {
         ...node,
-        ...(details[`${lang}:${node.id}`] || {}),
+        ...(details[`${lang}:${node.id}`]?.updated_at === node.updated_at ? details[`${lang}:${node.id}`] : {}),
         progress: {
           completed: [
             ...new Set([
@@ -98,42 +109,68 @@ export function PracticeHub({ lang, id, userId, sound }) {
     },
   ), [resource.data, details, progress, userId, lang]);
   const current = nodes.find((node) => String(node.id) === String(id));
-  const workspace = useMemo(() => workspaceNodes(nodes, pinned), [nodes,pinned]);
-  const catalog = useMemo(() => catalogRoots(nodes, catalogQuery), [nodes,catalogQuery]);
-  const { page, pageCount, items: visibleCatalog } = folderPage(catalog, catalogPage);
+  const workspace = useMemo(() => myPracticeNodes(nodes, pinned), [nodes,pinned]);
+  const catalog = useMemo(() => catalogRoots(ownedPracticeNodes(nodes), catalogQuery), [nodes,catalogQuery]);
+  const pageCount = Math.max(1, Math.ceil(catalog.length / 15));
+  const page = Math.max(1, Math.min(catalogPage, pageCount));
+  const visibleCatalog = catalog.slice((page - 1) * 15, page * 15);
   const roots = workspaceRoots(nodes, pinned);
   const isPinned = (node) => roots.includes(workspaceRoot(nodes, node.id)?.id);
   const preview = nodes.find((node) => node.id === previewId);
+  const folderContent = nodes.filter(node => node.parent === current?.id && node.title.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  const owned = ownedPracticeNodes(nodes);
+  const patchNode = (node, values) => action.run(async signal=>{await request(endpoint(lang,`practice-hub/nodes/${node.id}/`),"PATCH",values,signal);resource.reload();return true;});
+  const createNode = values => action.run(async signal=>{const result = await request(endpoint(lang,"practice-hub/nodes/"),"POST",values,signal);resource.reload();navigate(`${practiceRoutes(lang).learn}/${result.node.id}`);return true;});
+  const organize = values => action.run(async signal=>{
+    const affected = new Set(values.ids);
+    if(values.action === "delete") { let changed=true; while(changed){changed=false;for(const node of nodes)if(affected.has(node.parent)&&!affected.has(node.id)){affected.add(node.id);changed=true;}} }
+    await request(endpoint(lang,"practice-hub/organize/"),"POST",values,signal);
+    resource.reload();
+    if(values.action === "delete" && current && affected.has(current.id)) navigate(`${practiceRoutes(lang).learn}/all`);
+    return true;
+  });
+  const folderMenu = node => <ActionMenu quiet label={tr("Folder actions: {name}",{name:node.title})} disabled={action.pending} items={[
+    ...(node.can_edit ? [
+      {key:"import",icon:"upload",label:"Import exercises",run:()=>openImport(node)},
+      {key:"new",icon:"folder_add",label:"New subfolder",run:()=>setNodeOperation({action:"create",parent:node.id})},
+      {key:"rename",icon:"edit",label:"Rename",run:()=>nodeAction("rename",node)},
+      {key:"move",icon:"move",label:"Move",run:()=>nodeAction("move",node)},
+      {key:"settings",icon:"settings",label:"Content options",run:()=>nodeAction("settings",node)},
+    ] : []),
+    ...(!node.can_edit ? [{key:"pin",icon:isPinned(node)?"close":"plus",label:isPinned(node)?"Remove from workspace":"Add to workspace",run:()=>togglePin(node)}] : []),
+    ...(node.can_edit ? [{key:"delete",icon:"trash",label:"Delete permanently",danger:true,run:()=>nodeAction("delete",node)}] : []),
+  ]}/>;
+  const lessonHeading = <div className="practice-content-heading"><Heading title={current?.title}/>{current?.can_edit && <Btn aria-label={tr("Edit content")} onClick={()=>current.kind === "exercise" ? openImport(nodes.find(node=>node.id===current.parent),current) : navigate(`/${lang}/create/${current.id}/edit?return=learn`)}><Icon name="edit" size={18}/></Btn>}</div>;
+  const library = items => <PracticeLibrary items={items} nodes={nodes} lang={lang} parent={all?null:current?.id} routeBase="practice" pending={action.pending} error={action.error} searching={Boolean((all?catalogQuery:query).trim())}
+    onOrganize={organize} onRename={(node,title)=>patchNode(node,{title})}
+    onOpen={node=>navigate(`${practiceRoutes(lang).learn}/${node.id}`)} onPreview={node=>setPreviewId(node.id)}
+    onEdit={node=>node.kind === "exercise" ? openImport(nodes.find(folder=>folder.id===node.parent),node) : navigate(`/${lang}/create/${node.id}/edit?return=learn`)}
+    onSettings={node=>nodeAction("settings",node)} onCreate={node=>openImport(node)}
+    extraMenuItems={node=>node.can_edit ? [] : [{key:"pin",icon:isPinned(node)?"close":"plus",label:isPinned(node)?"Remove from workspace":"Add to workspace",run:()=>togglePin(node)}]}/>;
   return (
-    <Page>
-      <Status error={detailError}/>
+    <Page className="practice-workspace">
+      <Status error={detailError || action.error}/>
+      {notice && <div className="deck-operation-notice" role="status"><Icon name="check" size={18}/><span>{notice.edited ? tr("Exercise updated.") : tr("Imported {count} exercises",{count:notice.count})}</span><Btn icon="close" onClick={()=>setNotice(null)}>{tr("Dismiss")}</Btn></div>}
       {!detailError && [current,preview].some(n=>n && n.kind!=="folder" && !n.payload) && <div role="status">{tr("Loading…")}</div>}
       <SidebarTools navOnly>
-        <div className="flex flex-wrap gap-2 mb-3">
-          <Link className="btn" to={`/${lang}/create`} title={tr("My Exercise Library")} aria-label={tr("My Exercise Library")}><Icon name="home"/></Link>
-          <Link className="btn" to={`${practiceRoutes(lang).learn}/all`} title={tr("Switch lesson")} aria-label={tr("Switch lesson")}><Icon name="folder"/></Link>
-          {current?.can_edit&&current.kind!=="folder"&&<Link className="btn" to={`/${lang}/create/${current.id}/edit?return=learn`} title={tr("Edit content")} aria-label={tr("Edit content")}><Icon name="edit"/></Link>}
-          <Link className="btn" to={`/${lang}/create${current?.can_edit&&(current.kind==='folder'||current.parent)?`/new?parent=${current.kind==='folder'?current.id:current.parent}`:''}`} title={tr("Create exercise")} aria-label={tr("Create exercise")}><Icon name="plus"/></Link>
-        </div>
-
-        <div className="learning-navigation">
+        <div className="learning-navigation flash-nav">
           <div className="workspace-search">
-            <Field label={tr("Find an exercise")} value={query} onChange={setQuery} />
+            <Field className="practice-nav-search" label={tr("Search folders or exercises")} value={query} onChange={setQuery} startContent={<Icon name="search"/>} />
           </div>
           <Status error={resource.error} />
           <nav aria-label={tr("Lesson list")}>
             <PracticeTree
-              compact={false}
-              nodes={workspace}
+              nodes={myPracticeNodes(nodes, current ? [...pinned,current.id] : pinned)}
               base={practiceRoutes(lang).learn}
               currentId={id}
               query={query}
-              onSettings={setSetting}
+              pending={action.pending}
+              onMove={(ids,parent)=>organize({action:"move",ids,parent})}
+              rootLabel="My practice"
+              rootActions={<ActionMenu quiet label={tr("Library actions")} disabled={action.pending} items={[{key:"folder",icon:"folder_add",label:"New folder",run:()=>setNodeOperation({action:"create",parent:null})}]}/>}
+              renderActions={folderMenu}
             />
           </nav>
-          {!resource.loading && !workspace.length && (
-            <p>{tr("Add folders or lessons from Your exercise library to your workspace.")}</p>
-          )}
           {current?.links?.length > 0 && (
             <div className="learning-related">
               <h3>{tr("Continue learning")}</h3>
@@ -155,6 +192,8 @@ export function PracticeHub({ lang, id, userId, sound }) {
         </div>
       </SidebarTools>
       {current?.kind === "exercise" && current.payload && <Status error={sync.error} />}
+      {importing && <Suspense fallback={<PracticeModal title={tr("Loading workspace…")} onClose={()=>setImporting(null)}><Status>{tr("Loading…")}</Status></PracticeModal>}><PracticeImportModal lang={lang} {...importing} onClose={()=>setImporting(null)} onSaved={count=>{resource.reload();setNotice({count,edited:!!importing.node});if(importing.folder)navigate(`${practiceRoutes(lang).learn}/${importing.folder.id}`);}}/></Suspense>}
+      {nodeOperation && <PracticeNodeDialog key={`${nodeOperation.action}:${nodeOperation.node?.id || nodeOperation.parent || "root"}`} operation={nodeOperation} nodes={owned} pending={action.pending} error={action.error} onClose={()=>setNodeOperation(null)} onPatch={patchNode} onOrganize={organize} onCreate={createNode}/>}
       {preview && (
         <PracticeModal title={preview.title} onClose={() => setPreviewId(null)}>
           <div className="flex flex-wrap items-center gap-3">
@@ -219,114 +258,23 @@ export function PracticeHub({ lang, id, userId, sound }) {
           ) : null}
         </PracticeModal>
       )}
-      {setting && (
-        <PracticeModal title={setting.title} onClose={() => setSetting(null)}>
-          <p>
-            {isPinned(setting)
-              ? tr("Removing a root folder from the workspace does not delete its content or progress.")
-              : tr("Add this content's root folder to your workspace.")}
-          </p>
-          <Btn
-            onClick={() => {
-              togglePin(setting);
-              setSetting(null);
-            }}
-          >
-            {isPinned(setting) ? tr("Remove from workspace") : tr("Add to workspace")}
-          </Btn>
-        </PracticeModal>
-      )}
       {resource.loading && !resource.data ? (
         <Status>{tr("Opening your learning space…")}</Status>
       ) : all ? (
         <section className="practice-catalog">
-          <Heading
-            title={tr("Your exercise library")}
-            description={tr("Root folders containing exercises you can access. Open a card to preview it.")}
-          />
-          <Field
-            label={tr("Search all content")}
-            value={catalogQuery}
-            onChange={(value) => { setCatalogQuery(value); setCatalogPage(1); }}
-          />
-          <div className="catalog-grid">
-            {visibleCatalog.map((node) => (
-              <article key={node.id} className="catalog-card">
-                <Icon
-                  name={
-                    node.kind === "folder"
-                      ? "folder"
-                      : node.kind === "theory"
-                        ? "book"
-                        : "exercise"
-                  }
-                />
-                <button
-                  type="button"
-                  className="catalog-preview"
-                  onClick={() => setPreviewId(node.id)}
-                >
-                  {node.title}
-                </button>
-                <small>
-                  {node.kind === "folder"
-                    ? tr("Folder")
-                    : node.kind === "theory"
-                      ? tr("Reading content")
-                      : tr("Exercises")}
-                  {node.parent && nodes.find((n) => n.id === node.parent)
-                    ? ` · ${nodes.find((n) => n.id === node.parent).title}`
-                    : ""}
-                </small>
-                <button
-                  type="button"
-                  className="catalog-pin"
-                  aria-label={tr("{v0} {v1} {v2} workspace", { v0: isPinned(node) ? "Remove" : "Add", v1: node.title, v2: isPinned(node) ? "from" : "into" })}
-                  title={
-                    isPinned(node) ? tr("Remove from workspace") : tr("Add to workspace")
-                  }
-                  aria-pressed={isPinned(node)}
-                  onClick={() => togglePin(node)}
-                >
-                  <Icon name={isPinned(node) ? "check" : "plus"} size={17} />
-                </button>
-              </article>
-            ))}
-          </div>
-          {pageCount > 1 && <nav className="practice-pagination" aria-label={tr("Folder pages")}>
-            <Btn isDisabled={page === 1} onClick={() => setCatalogPage(page - 1)}>{tr("Previous")}</Btn>
-            <span role="status">{tr("Page ")}{page}{tr(" of ")}{pageCount}</span>
-            <Btn isDisabled={page === pageCount} onClick={() => setCatalogPage(page + 1)}>{tr("Next")}</Btn>
-          </nav>}
-          {!visibleCatalog.length && <p>{tr("No matching content.")}</p>}
+          <div className="practice-content-heading"><Heading title={tr("My practice")}/><div className="practice-folder-toolbar"><Btn aria-label={tr("New folder")} onClick={()=>setNodeOperation({action:"create",parent:null})}><Icon name="folder_add" size={18}/><span>{tr("New folder")}</span></Btn></div></div>
+          <Field label={tr("Search all content")} value={catalogQuery} onChange={value=>{setCatalogQuery(value);setCatalogPage(1);}}/>
+          {library(visibleCatalog)}
+          {pageCount > 1 && <nav className="practice-pagination" aria-label={tr("Folder pages")}><Btn isDisabled={page===1} onClick={()=>setCatalogPage(page-1)}>{tr("Previous")}</Btn><span>{page} / {pageCount}</span><Btn isDisabled={page===pageCount} onClick={()=>setCatalogPage(page+1)}>{tr("Next")}</Btn></nav>}
         </section>
       ) : current?.kind === "folder" ? (
         <section className="practice-catalog">
-          <Heading title={current.title} />
-          <div className="catalog-grid">
-            {nodes
-              .filter((n) => n.parent === current.id)
-              .map((node) => (
-                <article className="catalog-card" key={node.id}>
-                  <Icon
-                    name={
-                      node.kind === "folder"
-                        ? "folder"
-                        : node.kind === "exercise"
-                          ? "exercise"
-                          : "book"
-                    }
-                  />
-                  <Link to={`${practiceRoutes(lang).learn}/${node.id}`}>
-                    {node.title}
-                  </Link>
-                </article>
-              ))}
-          </div>
+          <div className="practice-content-heading"><Heading title={current.title}/>{current.can_edit && <div className="practice-folder-toolbar"><Btn primary aria-label={tr("Import exercises")} isDisabled={action.pending} onClick={()=>openImport(current)}><Icon name="upload" size={18}/><span>{tr("Import exercises")}</span></Btn><Btn isIconOnly aria-label={tr("New subfolder")} onClick={()=>setNodeOperation({action:"create",parent:current.id})}><Icon name="folder_add" size={18}/></Btn>{folderMenu(current)}</div>}</div>
+          {library(folderContent)}
         </section>
       ) : current?.kind === "exercise" && current.payload ? (
         <>
-          <Heading title={current.title} />
+          {lessonHeading}
           <PracticeActivity
             key={`${userId}:${current.id}:${current.updated_at}`}
             data={{
@@ -366,7 +314,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
         </>
       ) : current?.kind === "theory" && current.payload ? (
         <>
-          <Heading title={current.title} />
+          {lessonHeading}
           <TheoryActivity payload={current.payload} />
         </>
       ) : (
