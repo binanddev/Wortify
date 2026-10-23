@@ -13,75 +13,106 @@ export function readableInk(background) {
   return light > dark ? "#ffffff" : "#000000";
 }
 export function installAutoContrast() {
-  const canvas = document.createElement("canvas");
+  const canvas = document.createElement('canvas');
   canvas.width = canvas.height = 1;
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  const selector =
-    "button,a,input,textarea,select,label,p,h1,h2,h3,h4,span,small,strong,summary,svg.app-icon";
-  let frame;
+  const ctx = canvas.getContext('2d', {willReadFrequently:true});
+  if (!ctx) return () => {};
+  const selector = 'button,a,input,textarea,select,label,p,h1,h2,h3,h4,span,small,strong,summary,svg.app-icon';
+  const controls = 'button,a,[role=button],input,textarea,select';
+  const painted = new Map();
+  const dirty = new Set();
+  let frame = null, full = true, previousControl = null;
+  const clear = element => {
+    element.removeAttribute('data-auto-ink');
+    element.style.removeProperty('--auto-ink');
+    painted.delete(element);
+  };
   const paint = () => {
     frame = null;
-    if (document.documentElement.dataset.interface === "glass") {
-      document
-        .querySelectorAll("[data-auto-ink]")
-        .forEach((el) => el.removeAttribute("data-auto-ink"));
+    const root = document.documentElement;
+    const auto = root.dataset.textAuto === 'true';
+    if (root.dataset.interface === 'glass') {
+      for (const element of painted.keys()) clear(element);
+      dirty.clear(); full = false;
       return;
     }
-    const auto = document.documentElement.dataset.textAuto === "true";
-    if (!auto)
-      document
-        .querySelectorAll("[data-auto-ink]")
-        .forEach((el) => el.removeAttribute("data-auto-ink"));
-    const cache = new Map();
-    const background = (el) => {
-      if (!el || el === document.documentElement) return [255, 255, 255];
-      if (cache.has(el)) return cache.get(el);
-      const parent = background(el.parentElement);
-      ctx.clearRect(0, 0, 1, 1);
-      ctx.fillStyle = getComputedStyle(el).backgroundColor;
-      ctx.fillRect(0, 0, 1, 1);
-      const rgba = ctx.getImageData(0, 0, 1, 1).data,
-        alpha = rgba[3] / 255;
-      const result = parent.map((v, i) => rgba[i] * alpha + v * (1 - alpha));
-      cache.set(el, result);
-      return result;
+    const candidates = new Set();
+    const collect = element => {
+      if (!element?.isConnected) return;
+      if (element.matches(selector)) candidates.add(element);
+      element.querySelectorAll(selector).forEach(child => candidates.add(child));
     };
-    document.querySelectorAll(selector).forEach((el) => {
-      if (!el.getClientRects().length) return;
-      if (
-        !auto &&
-        !el.closest(
-          "button:hover,a:hover,[role=button]:hover,button:focus-visible,a:focus-visible",
-        )
-      )
-        return;
-      el.style.setProperty("--auto-ink", readableInk(background(el)));
-      el.setAttribute("data-auto-ink", "");
-    });
+    if (full) collect(document.body);
+    else for (const element of dirty) collect(element);
+    full = false; dirty.clear();
+    for (const element of painted.keys()) if (!element.isConnected) painted.delete(element);
+    const backgrounds = new Map();
+    const background = element => {
+      if (!element || element === root) return [255,255,255];
+      if (backgrounds.has(element)) return backgrounds.get(element);
+      const parent = background(element.parentElement);
+      ctx.clearRect(0,0,1,1);
+      ctx.fillStyle = getComputedStyle(element).backgroundColor;
+      ctx.fillRect(0,0,1,1);
+      const rgba = ctx.getImageData(0,0,1,1).data;
+      const value = parent.map((channel,i) => rgba[i]*(rgba[3]/255)+channel*(1-rgba[3]/255));
+      backgrounds.set(element,value);
+      return value;
+    };
+    // Read geometry/styles first, then write once; do not alternate layout reads and writes.
+    const updates = [];
+    for (const element of candidates) {
+      const active = auto || element.closest('button:hover,a:hover,[role=button]:hover,button:focus-visible,a:focus-visible');
+      if (!active) {
+        if (painted.has(element)) updates.push([element,null]);
+        continue;
+      }
+      if (element.getClientRects().length) updates.push([element,readableInk(background(element))]);
+    }
+    for (const [element,ink] of updates) {
+      if (ink === null) clear(element);
+      else if (painted.get(element) !== ink || !element.hasAttribute('data-auto-ink')) {
+        element.style.setProperty('--auto-ink',ink);
+        element.setAttribute('data-auto-ink','');
+        painted.set(element,ink);
+      }
+    }
   };
-  const schedule = () => {
-    if (!frame) frame = setTimeout(paint, 16);
+  const schedule = element => {
+    if (element?.nodeType === 1) dirty.add(element);
+    if (frame === null) frame = requestAnimationFrame(paint);
   };
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true });
-  const rootObserver = new MutationObserver(schedule);
-  rootObserver.observe(document.documentElement, { attributes: true });
-  const events = [
-    "pointerover",
-    "pointerout",
-    "focusin",
-    "focusout",
-    "change",
-    "transitionend",
-  ];
-  events.forEach((event) => document.addEventListener(event, schedule, true));
+  const observer = new MutationObserver(records => {
+    for (const record of records) {
+      // Replacing text alone cannot change its background.
+      for (const node of record.addedNodes) if (node.nodeType === 1) schedule(node);
+      if (record.removedNodes.length) schedule();
+    }
+  });
+  observer.observe(document.body,{childList:true,subtree:true});
+  const refresh = () => {full = true; schedule();};
+  window.addEventListener('theme-styles-loaded', refresh);
+  const rootObserver = new MutationObserver(refresh);
+  rootObserver.observe(document.documentElement,{attributes:true,attributeFilter:['data-interface','data-text-auto','data-background','style']});
+  const changed = event => {
+    const element = event.target?.closest?.(controls);
+    if (event.type === 'pointerover' || event.type === 'pointerout') {
+      const related = event.relatedTarget?.closest?.(controls);
+      if (element === related) return;
+      if (previousControl) schedule(previousControl);
+      previousControl = event.type === 'pointerout' ? related : element;
+      if (related) schedule(related);
+    }
+    schedule(element || event.target);
+  };
+  const events = ['pointerover','pointerout','focusin','focusout','change','transitionend'];
+  events.forEach(event => document.addEventListener(event,changed,true));
   schedule();
   return () => {
-    observer.disconnect();
-    rootObserver.disconnect();
-    clearTimeout(frame);
-    events.forEach((event) =>
-      document.removeEventListener(event, schedule, true),
-    );
+    observer.disconnect(); rootObserver.disconnect();
+    window.removeEventListener('theme-styles-loaded', refresh);
+    if (frame !== null) cancelAnimationFrame(frame);
+    events.forEach(event => document.removeEventListener(event,changed,true));
+    for (const element of painted.keys()) clear(element);
   };
 }

@@ -1,22 +1,35 @@
 # Change Log
 
-### 2026-10-24 | Numbered Explore pages
+### [Unreleased] - 2026-10-24 | Relevant Flashcard discovery
+
+- Search public deck metadata, level, author, folder paths/theory and card text, with accent normalization, typo matching and ranked closest suggestions. Retain strict visibility, language and explicit level/topic filters.
+- Support long queries with only one or two specific keywords. Reduce search boilerplate and secondary context; add bounded Vietnamese/English/German topic synonyms while keeping literal matches ahead of related alternatives. This is lexical/thesaurus matching rather than unrestricted AI semantic inference.
+- Browse public folders and subfolders with breadcrumbs, counts and level labels. Recent searches prioritize default browsing without overriding active-query relevance. Keep history per account/language in browser storage, with reload persistence and a clear-history control.
+- Reuse a process-local text index with metadata invalidation and bounded refresh for bulk text edits. Existing flat API consumers remain compatible; no schema migration is added.
+- Validation: 184 frontend tests, 45 targeted backend tests, production build and desktop/mobile Chrome checks passed. Related-query tests include distractor content, partial keywords, multilingual topics and private-content isolation.
+
+---
+
+### [Unreleased] - 2026-10-24 | Numbered Explore pages
 
 - Replaced Explore's accumulating Show more action with numbered pages of 12 results, previous/next controls, current-page indication and result range. Use compact responsive controls and calmer folder cards/heading; retain grid/list choice.
 - Keep page in the URL and retain ranking seed, search, type, order and folder scope across page changes and browser Back. Search/filter/folder changes return to page one. Recover out-of-range URLs and focus the result heading after a requested page loads; errors can retry the same page.
-- Added manual EN/VI/DE labels, pagination unit coverage and server-free desktop/mobile interaction fixtures. Validation: 173 frontend tests in an isolated release snapshot, 7 discovery backend tests, production build, desktop/mobile pagination fixtures and global interface checks passed. Unrelated local changes are excluded from this release.
+- Added manual EN/VI/DE labels, pagination unit coverage and server-free desktop/mobile interaction fixtures. Validation: 181 frontend tests, 7 discovery backend tests and production build passed. The global interface check detects an existing local auto-contrast regression when a button background changes; no unrelated contrast code was modified.
 - User approved committing and pushing Explore pagination. No application server or deployment check was performed.
 
 ---
 
-### Practice Hub direct library and focused import — 2026-10-22
+### [v1.13.0] - 2026-10-22 | Faster learning, Practice library and staff workspace
 
-- My practice is the virtual root of all personal/copied folders and descendants, independent of saved workspace pins. `/de/practice/all` lists all personal roots with pagination; nested folders remain inside their parent. Shared roots are included in the tree only when explicitly added. Regression checks start with no saved pins.
-- My practice now owns folder/content management directly: per-item and navigation menus, rename, move, group, selection, guarded deletion, visibility, preview and editing. Root catalogue includes personal/copied unpinned content; workspace pins remain independent. Removed the separate Manage content entry and management workspace from the learning flow.
-- Import exercises opens a single-purpose dialog for the selected editable folder. No tree, breadcrumb, location picker or tools sidebar inside it. Paste text or choose/drop multiple UTF-8 TXT files, preview the batch, optionally attach media and import all exercises into the fixed destination. Successful import returns to that folder; failed saves preserve the draft.
-- Exercise editing reuses the focused editor. Unsaved changes require explicit Keep editing/Discard choices; pending operations guard dismissal. Shared action menus use the modal portal above its wrapper with pointer events enabled, and static interaction checks validate the actual hit target.
-- All help entries share one complete plain-text guide with matching copy/TXT-download content. Manual EN/VI/DE labels and compact responsive controls are retained. Existing authoring URLs and server ownership/publication validation remain compatible.
-- Validation: 170 frontend unit tests in the isolated release snapshot, 7 targeted Practice Hub backend tests, production build and interface checks passed. Static desktop/mobile HTML fixtures cover multi-file import, preview/save/edit, dirty guards, direct folder operations, batch dragging and confirmed deletion. No application server was started. User approved committing and pushing after verification.
+- Improved Practice Hub loading with dedicated metadata queries, ID-only links and user/revision-scoped progress. My practice loads owned content and authorized pinned/current roots instead of the entire public catalogue. Added folder/title filters and optional API pagination while retaining the existing metadata contract and explicit full-content requests.
+- Reduced startup downloads with lazy-loaded learning/library/settings screens, theme-specific Windows/Retro/Terminal vendor styles, separate Windows runtime dependencies and Latin/Vietnamese font subsets. Preserve stylesheet order, theme appearance and 3D flashcard interactions.
+- Scoped cache invalidation to the affected language, deck/node and learning event. Review sync preserves unrelated content and does not refetch the active learning screen. CRUD refreshes related resources in the background without discarding the displayed data; Flashcard navigation reuses its catalogue when changing routes.
+- Paginated card management and deck editing at 50 cards per page, and Practice folder/preview lists at 24 items. Search changes and clearing search return to the first page. Retained card selections across pages; select-all in the deck editor applies to the visible page. Reduced repeated storage reads, card-pool calculations and whole-document contrast scans.
+- Consolidated Practice folder/content management into My practice: a folder-only explorer, active-path expansion, search, rename, move, group, selection, guarded deletion, visibility, preview and editing. Personal/copied roots remain available without saved pins; shared roots are added explicitly. Import/edit dialogs focus on the selected folder, support multiple UTF-8 TXT files and preserve unsaved drafts with explicit dismissal guards. Help uses one complete copyable/downloadable guide with manual English/Vietnamese/German labels.
+- Moved staff bulk imports, AI/API import tools and publishing controls into the existing learning page tools. Staff share the Wortify publisher library, retain an explicitly selected private sandbox, and use the ordinary Flashcard/Practice/Reading screens. Management retains account and system operations. Shared writes validate revisions and serialize mutations; learning progress and audit identity remain attached to the authenticated account. Added per-account/revision progress for shared readings and constrained staff accounts to Studio.
+- Local benchmark: Practice workspace metadata median decreased from 1,586 ms to about 50 ms, with JSON reduced from 793 KB to 53 KB; the compatible full metadata response decreased to about 194 ms. Initial JS/CSS gzip size decreased by approximately 25%. Measurements use a local SQLite snapshot in RAM and exclude production network/hosting latency.
+- Validation: 295 backend tests and 178 frontend tests passed, with 17 targeted metadata/staff tests repeated after the final query change. Production build, migration consistency, staff/content-library fixtures and CSS checks passed. Chrome verified card creation/editing, pagination/search, cached navigation and persisted Practice progress against an isolated RAM database, plus desktop/mobile checks across all six themes. The user completed local review and approved preparing this release. Production deployment has not been performed.
+- Deployment: deploy backend and frontend together. Apply practice migration 0010_staff_reading_progress if it is not installed; upgrades from before v1.12.0 also require cards migration 0013_deck_operation. The performance changes add no further schema migration. Local database/media and hosting configuration were left unchanged.
 
 ---
 

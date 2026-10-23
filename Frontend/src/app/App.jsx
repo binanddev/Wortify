@@ -1,7 +1,9 @@
+import StaffTools from "../features/staff/StaffTools.jsx";
+import { configureStaffWorkspace } from "../lib/staff-workspace.js";
 import {guestRoute} from "./guest-route.js";
-import { PublicPracticeLesson } from "./public-practice-lesson.jsx";
+const PublicPracticeLesson = lazy(() => import('./public-practice-lesson.jsx').then(module => ({default:module.PublicPracticeLesson})));
 import { PracticeModal } from "../features/practice/practice-workspace.jsx";
-import FlashcardDiscover from "../features/flashcards/flashcard-discover.jsx";
+
 import { t as tr, setLanguage, useLocale } from "../i18n/index.js";
 import { ReadingWorkspace, Explore, ExerciseStudio, PracticeGuide, FlashcardStudio, PracticeHub, Admin } from "./workspace-pages.js";
 import PracticeArea from "../features/practice/PracticeArea.jsx";
@@ -54,9 +56,13 @@ import {
   Status,
   Link,
 } from "../components/ui/ui.jsx";
-import { Library, Deck } from "../features/flashcards/library.jsx";
-import { Session, ExtraStudy } from "../features/flashcards/study.jsx";
-import { Community, Settings } from "../features/settings/learning.jsx";
+const FlashcardDiscover = lazy(() => import('../features/flashcards/flashcard-discover.jsx'));
+const Library = lazy(() => import('../features/flashcards/library.jsx').then(module => ({default:module.Library})));
+const Deck = lazy(() => import('../features/flashcards/library.jsx').then(module => ({default:module.Deck})));
+const Session = lazy(() => import('../features/flashcards/study.jsx').then(module => ({default:module.Session})));
+const ExtraStudy = lazy(() => import('../features/flashcards/study.jsx').then(module => ({default:module.ExtraStudy})));
+const Community = lazy(() => import('../features/settings/learning.jsx').then(module => ({default:module.Community})));
+const Settings = lazy(() => import('../features/settings/learning.jsx').then(module => ({default:module.Settings})));
 
 export default function App() {
   useLocale();
@@ -74,6 +80,7 @@ export default function App() {
     window.addEventListener("interface-language-changed", changed);
     return () => window.removeEventListener("interface-language-changed", changed);
   }, []);
+  configureStaffWorkspace(user);
   const isWorkspace = /^\/(en|de|manage)(\/|\?|$)/.test(route);
   useLayoutEffect(() => {
     if (!isWorkspace) {
@@ -352,6 +359,8 @@ function Brand() {
 export function Workspace({ user, setUser, lang, parts, route, appearance, onRequireAccount }) {
   useLocale();
   const sync = useLearningSync(user.id, lang);
+  const [contentRevision, setContentRevision] = useState(0);
+  useEffect(()=>{const changed=()=>setContentRevision(value=>value+1);window.addEventListener("staff-content-changed",changed);return()=>window.removeEventListener("staff-content-changed",changed);},[]);
   const prefKey = `wortify:${user.id}:appearance`,
     [prefs, setLocalPrefs] = useState(() => {
       const pending = [
@@ -377,7 +386,7 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
       return {
         appearanceProfiles: p.appearanceProfiles || {},
         appearanceSelections: p.appearanceSelections || {},
-        interface: interfaceName(p.interface),
+        interface: user.staff && !user.superuser ? "studio" : interfaceName(p.interface),
         curvature: p.curvature ?? 18,
         glassLens: p.glassLens ?? 40,
         navPinned: p.navPinned !== false,
@@ -443,7 +452,7 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
   const setPrefs = (requested) => {
     const v = updateAppearance(
       prefs,
-      requested,
+      user.staff && !user.superuser ? {...requested, interface:"studio"} : requested,
       appearance.data?.[lang]?.theme_id,
     );
     setLocalPrefs(v);
@@ -531,10 +540,13 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
               ) : null
             }
             renderContent={(windowRoute) => (
+              <>
+              {(user.staff || user.superuser) && <StaffTools user={user} lang={lang} section={windowRoute.split("?")[0].split("/")[2] || "flashcard"} libraryLevel={!windowRoute.split("?")[0].split("/")[3] || windowRoute.split("?")[0].split("/")[3] === "all"}/>}
               <WorkspaceContent
                 {...{ lang, user, prefs, setPrefs, appearance, onRequireAccount }}
                 route={windowRoute}
               />
+              </>
             )}
           />
         </Suspense>
@@ -738,16 +750,17 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
                 <span className="studio-kicker">{tr("WORTIFY / LEARNING SPACE")}</span>
                 <strong>{contextItems.title}</strong>
               </div>
-              <Link
+              {!(user.staff && !user.superuser) && <Link
                 to={`/${lang}/settings`}
                 className="studio-appearance-link"
                 aria-label={tr("Change appearance in Settings")}
               >
-                <Icon name="palette" />{tr(" Appearance")}</Link>
+                <Icon name="palette" />{tr(" Appearance")}</Link>}
             </header>
           )}
           <main id="main-content" tabIndex={-1}>
-            <WorkspaceContent
+            {(user.staff || user.superuser) && <StaffTools user={user} lang={lang} section={parts[1] || "flashcard"} libraryLevel={!parts[2] || parts[2] === "all"}/>}
+            <WorkspaceContent key={contentRevision}
               {...{ route, lang, user, prefs, setPrefs, appearance, onRequireAccount }}
             />
           </main>
@@ -807,11 +820,11 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance, onRe
     const destination=guestRoute(route);
     if(section==='reading') return <Suspense fallback={<Status>{tr("Loading workspace…")}</Status>}><ReadingWorkspace key={route} route={`/${lang}/reading/discover`} lang={lang} initialReadingId={destination.id} onRequireAccount={onRequireAccount}/></Suspense>;
     if(practiceArea(section) && !destination.needsAccount) return <Suspense fallback={<Status>{tr('Loading workspace…')}</Status>}><PracticeArea lang={lang} section={section}><Explore lang={lang} userId={null} onRequireAccount={onRequireAccount}/>{destination.id && <PublicPracticeLesson lang={lang} id={destination.id} onClose={()=>navigate(`/${lang}/explore`)} onOpen={id=>navigate(`/${lang}/practice/${id}`)} onRequireAccount={onRequireAccount}/>}</PracticeArea></Suspense>;
-    return <FlashcardDiscover key={route} lang={lang} initialDeckId={destination.kind==='flashcard'?destination.id:undefined} onRequireAccount={onRequireAccount}/>;
+    return <Suspense fallback={<Status>{tr('Loading workspace…')}</Status>}><FlashcardDiscover key={route} lang={lang} initialDeckId={destination.kind==='flashcard'?destination.id:undefined} onRequireAccount={onRequireAccount}/></Suspense>;
   }
   if (section === "flashcard") {
     content =
-      parts[2] === "discover" ? <FlashcardDiscover lang={lang}/> : parts[2] === "deck" ? (
+      parts[2] === "discover" ? <FlashcardDiscover lang={lang} userId={user.id}/> : parts[2] === "deck" ? (
         parts[4] === "edit" ? (
           <Deck key={parts[3]} lang={lang} id={parts[3]} sound={prefs.sound} />
         ) : (

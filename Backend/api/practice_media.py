@@ -1,3 +1,4 @@
+from .content_workspace import content_owner
 """Private exercise assets, authorized using the same visibility rules as exercises."""
 from .common import public_endpoint
 import re
@@ -21,7 +22,7 @@ def validated_attachments(request, payload):
     try: ids = [uuid.UUID(str(item['id'])) for item in values]
     except (ValueError,TypeError,KeyError,AttributeError):raise ValueError('Invalid attachments.')
     if len(set(ids))!=len(ids):raise ValueError('Attachments is duplicated.')
-    rows = {item.pk:item for item in PracticeMedia.objects.filter(pk__in=ids,owner=request.user,language=request.language)}
+    rows = {item.pk:item for item in PracticeMedia.objects.filter(pk__in=ids,owner=content_owner(request),language=request.language)}
     if len(rows)!=len(ids):raise ValueError('The file does not belong to the current account or language.')
     items=[rows[pk] for pk in ids]
     if sum(item.size for item in items)>MAX_BYTES:raise ValueError('Attachments must not exceed 200 MB per exercise.')
@@ -58,7 +59,7 @@ def upload(request):
     except Exception as exc:
         raise ValueError('The file is corrupt or is not a valid MP3/image.') from exc
     source.seek(0)
-    item=PracticeMedia(owner=request.user,language=request.language,name=source.name[:255],size=source.size,content_type=allowed[extension])
+    item=PracticeMedia(owner=content_owner(request),language=request.language,name=source.name[:255],size=source.size,content_type=allowed[extension])
     try:
         item.file.save(f'{uuid.uuid4().hex}.{extension}',source,save=False)
         item.save()

@@ -12,7 +12,7 @@ import { cardSolution } from "../learning/skip-learning.js";
 import { useAnswerClock } from "../learning/use-answer-clock.js";
 import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { useLearningSync, pendingLearning } from "../learning/learning-sync.js";
-import { useEffect, useRef, useState, lazy, Suspense } from "react";
+import { useEffect, useRef, useState, useMemo, lazy, Suspense } from "react";
 const FlashcardDefense = lazy(() => import("./defense/GameFrame.jsx"));
 import {
   endpoint,
@@ -192,9 +192,11 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
   const questionTimers = useRef({});
   const audio = useSound(sound, lang),
     startSides = useRef({});
-  const pool = data.cards.filter(
-    (c) => !options.starredOnly || stars.includes(sourceCardId(c)),
-  );
+  const pool = useMemo(() => {
+    if (!options.starredOnly) return data.cards;
+    const starred = new Set(stars);
+    return data.cards.filter(card => starred.has(sourceCardId(card)));
+  }, [data.cards, options.starredOnly, stars]);
   const active = order[index];
   const flashClock = useAnswerClock(
     active?.id,
@@ -515,13 +517,14 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       sync.flush();
     }
   };
-  const stages = {
-    new: pool.filter(
-      (c) => !progress[c.id]?.stage || progress[c.id].stage === "new",
-    ).length,
-    familiar: pool.filter((c) => progress[c.id]?.stage === "familiar").length,
-    mastered: pool.filter((c) => progress[c.id]?.stage === "mastered").length,
-  };
+  const stages = useMemo(() => {
+    const counts = {new:0, familiar:0, mastered:0};
+    for (const card of pool) {
+      const stage = progress[card.id]?.stage || 'new';
+      if (stage in counts) counts[stage]++;
+    }
+    return counts;
+  }, [pool,progress]);
   return (
     <Page className="flashcard-workspace">
       <Heading title={data.deck.title} />

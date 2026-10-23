@@ -1,3 +1,6 @@
+import {usePagination} from '../../lib/pagination.js';
+import Pagination from '../../components/ui/pagination.jsx';
+import { workspaceUrl, staffWorkspace } from "../../lib/staff-workspace.js";
 import DeckActionMenu from "./deck-action-menu.jsx";
 import {DeckTransferDialog,DeckExportDialog,LibraryCardsDialog} from "./deck-management-dialogs.jsx";
 import useDeckOperations from "./use-deck-operations.js";
@@ -18,7 +21,7 @@ import {
 } from "./flashcard-navigation.jsx";
 import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { SidebarTools } from "../../components/ui/ui.jsx";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   useRoute,
   endpoint,
@@ -180,10 +183,10 @@ function LibraryContent({ data, lang, interfaceName, reload }) {
       <div className="flash-library-heading">
         <div>
           <h1>
-            {selected?.name || (
+            {selected?.name || (staffWorkspace() ? tr(staffWorkspace() === "shared" ? "Wortify library" : "Personal sandbox") : (
               <>
                 <span className="studio-title-lead">{tr("My")}</span>{tr(" Flashcards")}</>
-            )}
+            ))}
           </h1>
         </div>
         <div className="flash-icon-row">
@@ -481,11 +484,11 @@ function DeckContent({ lang, id, data, reload, sound }) {
   const action = useAction(),
     audio = useSound(sound, lang);
   const api = (p, m, d, s) => request(endpoint(lang, p), m, d, s);
-  const visibleCards = data.cards.filter((c) =>
-    `${c.german_text} ${c.vietnamese_meaning}`
-      .toLowerCase()
-      .includes(query.toLowerCase()),
-  );
+  const visibleCards = useMemo(() => data.cards.filter((c) =>
+    `${c.german_text} ${c.vietnamese_meaning}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+  ), [data.cards, query]);
+  const pagination = usePagination(visibleCards.length, query);
+  const pageCards = visibleCards.slice(pagination.start, pagination.end);
   const card = order[index];
   useEffect(() => {
     setOrder(data.cards);
@@ -744,15 +747,15 @@ function DeckContent({ lang, id, data, reload, sound }) {
                 type="checkbox"
                 aria-label={tr("Select all visible cards")}
                 checked={
-                  visibleCards.length > 0 &&
-                  visibleCards.every((c) => selected.includes(c.id))
+                  pageCards.length > 0 &&
+                  pageCards.every((c) => selected.includes(c.id))
                 }
                 onChange={(e) =>
                   setSelected((ids) =>
                     e.target.checked
-                      ? [...new Set([...ids, ...visibleCards.map((c) => c.id)])]
+                      ? [...new Set([...ids, ...pageCards.map((c) => c.id)])]
                       : ids.filter(
-                          (id) => !visibleCards.some((c) => c.id === id),
+                          (id) => !pageCards.some((c) => c.id === id),
                         ),
                   )
                 }
@@ -798,7 +801,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
             )}
           </div>
           <div className="term-list">
-            {visibleCards.map((c) => (
+            {pageCards.map((c) => (
               <Glass className="term-row" key={c.id}>
                 <div>
                   <label className="card-select">
@@ -841,6 +844,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
               </Glass>
             ))}
           </div>
+          <Pagination pagination={pagination} count={visibleCards.length}/>
         </>
       )}
       {toolPanel === "manage" && (
@@ -850,12 +854,12 @@ function DeckContent({ lang, id, data, reload, sound }) {
           onClose={() => setToolPanel(null)}
         >
           <div className="flash-action-menu">
-            <a className="btn" href={endpoint(lang, `decks/${id}/export/csv/`)}>
+            <a className="btn" href={workspaceUrl(endpoint(lang, `decks/${id}/export/csv/`))}>
               <Icon name="download" /> CSV
             </a>
             <a
               className="btn"
-              href={endpoint(lang, `decks/${id}/export/json/`)}
+              href={workspaceUrl(endpoint(lang, `decks/${id}/export/json/`))}
             >
               <Icon name="download" /> JSON
             </a>

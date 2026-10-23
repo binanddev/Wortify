@@ -25,7 +25,7 @@ export default function QuestConsole({lang,onExit}) {
    try {
     let rows=[];
     if(cmd==='find'||cwd==='/flashcard'){const data=await request(endpoint(lang,'decks/'));rows.push(...data.decks.map(d=>({name:d.title,path:`/${lang}/flashcard/deck/${d.id}`})));}
-    if(cmd==='find'||cwd==='/practice'){const data=await request(endpoint(lang,'practice-hub/nodes/?full=1'));const nodes=Array.isArray(data)?data:data.nodes||[];rows.push(...nodes.map(n=>({name:n.title||n.name||String(n.id),path:`/${lang}/practice/${n.id}`})));}
+    if(cmd==='find'||cwd==='/practice'){const data=await request(endpoint(lang,'practice-hub/nodes/'));const nodes=Array.isArray(data)?data:data.nodes||[];rows.push(...nodes.map(n=>({name:n.title||n.name||String(n.id),path:`/${lang}/practice/${n.id}`})));}
     if(cmd==='find')rows=rows.filter(r=>r.name.toLowerCase().includes(arg.toLowerCase()));
     setEntries(rows);write(rows.length?rows.map((r,i)=>`${i+1}. ${r.name}`).join('\n'):'No entries here. Use an area command to open its page.');
    }catch{write('Could not load this directory. Please try again.');}finally{setBusy(false);}return;

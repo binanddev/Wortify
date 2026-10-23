@@ -12,7 +12,7 @@ const browser =
   process.env.CHROME_PATH ||
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 await fs.access(browser);
-const dist = path.resolve(import.meta.dirname, "../dist/assets");
+const dist = process.env.INTERFACE_ASSET_DIR || path.resolve(import.meta.dirname, "../dist/assets");
 const cssFile = (await fs.readdir(dist)).find((name) =>
   /^(app|index)-.*\.css$/.test(name),
 );

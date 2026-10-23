@@ -1,3 +1,4 @@
+from api.content_workspace import studio_preferences
 import uuid
 import secrets
 from django.conf import settings
@@ -55,7 +56,7 @@ def session(request, superuser_registration=False):
     if user.is_authenticated:
         from .models import Profile
         profile,_=Profile.objects.get_or_create(user=user)
-        preferences=profile.preferences
+        preferences=studio_preferences(user,profile.preferences)
         if not request.session.get("appearance_session"):
             request.session["appearance_session"] = uuid.uuid4().hex
     return JsonResponse({'user': {'id': user.pk, 'username': user.username, 'staff': user.is_staff, 'superuser': user.is_superuser, 'preferences':preferences, 'appearance_session':request.session.get('appearance_session')} if user.is_authenticated else None})

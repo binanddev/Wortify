@@ -1,9 +1,5 @@
-import ImportSections from "./ImportSections.jsx";
-import ContentPolicy from "./ContentPolicy.jsx";
-import ContentImportApi from "./ContentImportApi.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import LanguageSettings from "../../i18n/LanguageSettings.jsx";
-import ContentPackageImport from './ContentPackageImport.jsx';
 import History from "./History.jsx";
 import DataGrid from "./DataGrid.jsx";
 import {sortQuery} from "./grid-state.js";
@@ -15,7 +11,6 @@ import { useState, useLayoutEffect } from "react";
 import { useResource } from "../../lib/core.js";
 import { Page, Btn, Glass, Loading, Field } from "../../components/ui/ui.jsx";
 import Users from "./Users.jsx";
-import Content from "./Content.jsx";
 import SystemOverview from "./SystemOverview.jsx";
 import Appearance from "./Appearance.jsx";
 import ApiDocs from "./ApiDocs.jsx";
@@ -25,7 +20,7 @@ function Dashboard({user,open}) {
   useLocale();
  const resource=useResource('/api/manage/summary/');
  return <Loading resource={resource}>{d=><>
-  <div className="admin-kpis">{[['Accounts',d.users,'users'],['Locked accounts',d.inactive,'users'],['Public content',d.public,'content'],['Private content',d.private,'content']].map(([name,value,target])=><button key={tr(name)} onClick={()=>open(target)}><span>{tr(name)}</span><strong>{value}</strong></button>)}</div>
+  <div className="admin-kpis">{[['Accounts',d.users,'users'],['Locked accounts',d.inactive,'users'],['Public content',d.public,'library'],['Private content',d.private,'library']].map(([name,value,target])=><button key={tr(name)} onClick={()=>open(target)}><span>{tr(name)}</span><strong>{value}</strong></button>)}</div>
   <div className="admin-overview-columns"><DataGrid id="recent-content" label={tr("Recently updated content")} rows={d.recent_content} columns={[{key:'title',label:'Title',required:true},{key:'owner',label:'Owner',render:n=>n.owner.username},{key:'language',label:'Language'},{key:'visibility',label:'Visibility'},{key:'updated_at',label:'Updated',numeric:true,render:n=>dateText(n.updated_at)}]}/>
 
   </div>
@@ -104,10 +99,6 @@ export default function Admin({ user }) {
     ["language", "App language"],
     ["dashboard", "Overview"],
     ["users", "Users"],
-    ["content", "Content"],
-    ["publishing", "Publishing mode"],
-    ["content-import", "Import content"],
-    ["import-api", "Content import API"],
     ["activity", "Activity log"],
     ["history", "Change log"],
     ...(user.superuser
@@ -123,7 +114,7 @@ export default function Admin({ user }) {
     <div className="admin-console">
       <aside className="admin-sidebar">
         <Link to="/" className="admin-brand">wortify<span>{tr(" / CONTROL CENTER")}</span></Link>
-        <nav aria-label={tr("Admin features")}>{tabs.map(([key,label])=><button key={key} aria-current={tab===key?'page':undefined} onClick={()=>setTab(key)}>{tr(label)}</button>)}</nav>
+        <Link to="/de/flashcard" className="btn">{tr("Content workspace")}</Link><nav aria-label={tr("Admin features")}>{tabs.map(([key,label])=><button key={key} aria-current={tab===key?'page':undefined} onClick={()=>setTab(key)}>{tr(label)}</button>)}</nav>
         <div className="admin-identity"><strong>{user.username}</strong><span>{user.superuser ? tr("Administrator") : tr("Staff")}</span><Link to="/">{tr("Back to home")}</Link></div>
       </aside>
       <div className="admin-content">
@@ -131,12 +122,8 @@ export default function Admin({ user }) {
         <main className="admin-main" id="main-content">
       {tab === "history" && <History/>}
       {tab === "language" && <LanguageSettings />}
-{tab === "dashboard" && <Dashboard user={user} open={setTab} />}
+{tab === "dashboard" && <Dashboard user={user} open={target=>target === "library" ? location.assign("/de/flashcard") : setTab(target)} />}
       {tab === "users" && <Users user={user} />}
-      {tab === "publishing" && <ContentPolicy />}
-      {tab === "content" && <Content user={user} />}
-      {tab === "content-import" && <ImportSections component={ContentPackageImport} />}
-      {tab === "import-api" && <ImportSections component={ContentImportApi} />}
       {tab === "activity" && <Activity user={user} />}
       {tab === "backups" && user.superuser && <EmergencyBackups />}
       {tab === "system" && user.superuser && <SystemOverview />}

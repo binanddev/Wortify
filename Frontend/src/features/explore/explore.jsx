@@ -341,15 +341,7 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
     <Page className="explore-page">
       <SidebarTools navOnly>
         <div className="explore-nav">
-          <nav className="studio-nav-shortcuts" aria-label={tr("Discover tools")}>
-            <Link
-              className={`studio-nav-icon ${!parent ? "active" : ""}`}
-              to={routes.explore}
-              title={tr("Discover")}
-              aria-label={tr("Discover")}
-            >
-              <Icon name="explore" size={23} />
-            </Link>
+          <nav className="studio-nav-shortcuts practice-discover-tools" aria-label={tr("Discover tools")}>
             <Btn
               isIconOnly
               title={tr("Filters")}

@@ -150,7 +150,7 @@ function SettingsContent({
         )}
         {tab === "appearance" && (
           <>
-            <section className="interface-picker" aria-label={tr("Choose appearance")}>
+            {(!staff || superuser) && <section className="interface-picker" aria-label={tr("Choose appearance")}>
               {INTERFACE_CHOICES.map(([id, name, description]) => (
                 <button
                   key={id}
@@ -171,7 +171,7 @@ function SettingsContent({
                   <span>{tr(description)}</span>
                 </button>
               ))}
-            </section>
+            </section>}
             <Glass>
               <h2>{tr("Appearance")}</h2>
               <Status error={appearance?.warning} />

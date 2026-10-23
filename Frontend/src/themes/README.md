@@ -47,3 +47,7 @@ Use `exercise` for Practice, `book` for Reading, `cards` for Flashcards; `explor
 Run `node scripts/verify-icons.mjs` for a server-free six-theme icon gallery and visibility checks. Small inline sizes are respected; button hit targets stay controlled by the shared button component.
 
 Icon rendering uses one SVG per glyph. `use-interface.js` observes the root theme once and selects the matching glyph in React; do not nest a Lucide SVG inside another SVG or apply rotation/color to every SVG descendant. Navigation glyphs inherit the control foreground. `verify-nav-icons.mjs` renders the actual Workspace with mocked data and screenshots both nav faces (Windows uses Start menu instead).
+
+## Staff scope
+
+Staff accounts that are not superusers use Studio only. App initializes and updates their appearance with interface=studio; Settings hides the theme picker. The session and preference-sync API enforce the same rule, including legacy saved appearance selections. Do not add staff-specific variants to the other themes. Superuser and learner theme selection remains unchanged. Staff fixtures cover Studio; shared feature components still serve the normal themes for other accounts.

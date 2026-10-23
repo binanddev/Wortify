@@ -18,10 +18,11 @@ def sentence_items(text):
     return items
 
 
-def create_match(deck, wrong_only=False):
+def create_match(deck, wrong_only=False, user=None):
+    user = user or deck.owner
     cards = list(deck.cards.all())
     if wrong_only:
-        cards = [c for c in cards if c.studyprogress_set.filter(user=deck.owner, state='weak').exists()]
+        cards = [c for c in cards if c.studyprogress_set.filter(user=user, state='weak').exists()]
     random.shuffle(cards)
     selected, terms, meanings = [], set(), set()
     for card in cards:
@@ -37,7 +38,7 @@ def create_match(deck, wrong_only=False):
     with transaction.atomic():
         pairs = []
         for card in selected:
-            attempt = StudyAttempt.objects.create(user=deck.owner, card=card, mode='match')
+            attempt = StudyAttempt.objects.create(user=user, card=card, mode='match')
             pairs.append({'id': uuid.uuid4().hex, 'term': card.german_text, 'meaning': card.vietnamese_meaning, 'attempt': str(attempt.token)})
         return MatchRound.objects.create(deck=deck, pairs=pairs)
 
@@ -53,7 +54,8 @@ def match_payload(round):
 
 
 @transaction.atomic
-def submit_match(round, mapping):
+def submit_match(round, mapping, user=None):
+    user = user or round.deck.owner
     if not isinstance(mapping, dict) or set(mapping) != {p['id'] for p in round.pairs} or set(mapping.values()) != {str(i) for i in range(len(round.pairs))}:
         raise ValueError('Match each word to a different meaning, without gaps or repeated meanings.')
     if not MatchRound.objects.filter(pk=round.pk, completed_at__isnull=True).update(completed_at=timezone.now()):
@@ -62,7 +64,7 @@ def submit_match(round, mapping):
     rows = []
     for i, pair in enumerate(round.pairs):
         correct = mapping[pair['id']] == str(i)
-        attempt = StudyAttempt.objects.get(token=pair['attempt'], user=round.deck.owner)
+        attempt = StudyAttempt.objects.get(token=pair['attempt'], user=user)
         finish(attempt, round.pairs[int(mapping[pair['id']])]['meaning'], {'is_correct': correct})
         rows.append({'term': pair['term'], 'meaning': pair['meaning'], 'is_correct': correct})
     result = {'correct': sum(row['is_correct'] for row in rows), 'total': len(rows), 'rows': rows}

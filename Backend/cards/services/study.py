@@ -61,8 +61,8 @@ def finish(attempt, answer, result, response_ms=None, use_fsrs=False):
     return attempt.result
 
 
-def queue(user, settings, deck_id=None, filter_name='all', learn=False, language=None):
-    cards = Card.objects.filter(deck__owner=user)
+def queue(user, settings, deck_id=None, filter_name='all', learn=False, language=None, owner=None):
+    cards = Card.objects.filter(deck__owner=owner or user)
     if language:
         cards = cards.filter(deck__language=language)
     if deck_id:

@@ -11,11 +11,14 @@ export const endpoint = (lang, path) => {
 export function useResource(path, keepDataOnReload = false) {
   const [state, set] = useState({ data: null, error: "", loading: true });
   const [version, bump] = useState(0);
+  const backgroundRefresh = useRef(false);
   useEffect(() => {
     if (!path) { set({data:null,error:"",loading:false}); return; }
     const c = new AbortController();
+    const background = backgroundRefresh.current;
+    backgroundRefresh.current = false;
     set((prev) =>
-      keepDataOnReload && prev.path === path && prev.data
+      (keepDataOnReload || background) && prev.path === path && prev.data
         ? { ...prev, error: "", loading: false }
         : { path, data: null, error: "", loading: true },
     );
@@ -29,6 +32,16 @@ export function useResource(path, keepDataOnReload = false) {
       });
     return () => c.abort();
   }, [path, version, keepDataOnReload]);
+  useEffect(() => {
+    const changed = event => {
+      if (path && event.detail.matches(path)) {
+        backgroundRefresh.current = true;
+        bump(value => value + 1);
+      }
+    };
+    window.addEventListener('content-cache-invalidated', changed);
+    return () => window.removeEventListener('content-cache-invalidated', changed);
+  }, [path]);
   const reload = useCallback(() => {
     invalidateContentCache(path);
     bump((v) => v + 1);

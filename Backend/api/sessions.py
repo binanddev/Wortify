@@ -1,3 +1,4 @@
+from .content_workspace import content_owner, learning_owners
 import random
 from django.db import transaction
 from django.http import JsonResponse
@@ -14,7 +15,7 @@ def owned(request, token):
     return get_object_or_404(StudySession, token=token, user=request.user, language=request.language)
 
 def attempts(session):
-    rows = {str(a.token): a for a in StudyAttempt.objects.filter(token__in=session.tokens, user=session.user, card__deck__owner=session.user, card__deck__language=session.language).select_related('card')}
+    rows = {str(a.token): a for a in StudyAttempt.objects.filter(token__in=session.tokens, user=session.user, card__deck__owner__in=learning_owners(session.user), card__deck__language=session.language).select_related('card')}
     tokens = [token for token in session.tokens if token in rows]
     if tokens != session.tokens:
         session.tokens = tokens
@@ -73,10 +74,10 @@ def create(request):
     data = body(request); kind = data.get('kind', 'learn')
     if kind not in ['flash','learn','test']: raise ValueError('Invalid study mode.')
     prefs, _ = StudySettings.objects.get_or_create(user=request.user, language=request.language)
-    deck = get_object_or_404(Deck, pk=data['deck'], owner=request.user, language=request.language) if data.get('deck') else None
+    deck = get_object_or_404(Deck, pk=data['deck'], owner=content_owner(request), language=request.language) if data.get('deck') else None
     count = int(data.get('count', 20))
     if not 1 <= count <= 100: raise ValueError('Choose between 1 and 100 questions.')
-    pool = queue(request.user, prefs, deck.pk if deck else None, data.get('filter','all'), learn=data.get('today',False) is True, language=request.language)
+    pool = queue(request.user, prefs, deck.pk if deck else None, data.get('filter','all'), learn=data.get('today',False) is True, language=request.language, owner=content_owner(request))
     if data.get('review_session'):
         previous = owned(request, data['review_session'])
         ids = {row['card_id'] for row in previous.result.get('rows',[]) if not row['is_correct']}

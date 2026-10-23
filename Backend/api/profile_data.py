@@ -1,3 +1,4 @@
+from .content_workspace import content_owner
 """Profile dashboard, aggregated from persisted learning activity in one response."""
 from collections import defaultdict
 from datetime import timedelta
@@ -62,8 +63,8 @@ def profile_data(request, profile):
     calendar = [{'date': (day := start + timedelta(days=i)).isoformat(), **days.get(day, {'total': 0, 'correct': 0, 'completed': 0}), 'future': day > today} for i in range(28)]
     progress = StudyProgress.objects.filter(user=user, card__deck__language=lang)
     counts = progress.aggregate(studied=Count('id'), mastered=Count('id', filter=Q(state='mastered')), due=Count('id', filter=Q(due_at__lte=now)))
-    total_cards = Card.objects.filter(deck__owner=user, deck__language=lang).count()
-    deck_rows = Deck.objects.filter(owner=user, language=lang).annotate(
+    total_cards = Card.objects.filter(deck__owner=content_owner(request), deck__language=lang).count()
+    deck_rows = Deck.objects.filter(owner=content_owner(request), language=lang).annotate(
         total=Count('cards', distinct=True),
         mastered_count=Count('cards', filter=Q(cards__studyprogress__user=user, cards__studyprogress__state='mastered'), distinct=True),
         due_count=Count('cards', filter=Q(cards__studyprogress__user=user, cards__studyprogress__due_at__lte=now), distinct=True),
@@ -74,7 +75,7 @@ def profile_data(request, profile):
     study_history = [{'token': str(e.token), 'kind': e.kind, 'result': e.result, 'date': e.created_at.isoformat()} for e in events.filter(kind='test').order_by('-created_at')[:30]]
     history = [{'id': f'practice-{h["id"]}', 'kind': 'practice', 'title': h['title'], 'score': h['score'], 'total': h['total'], 'date': h['date'], 'path': f'/{lang}/practice/{h["node"]}'} for h in practice_history]
     test_decks = {int(h['result']['deck']) for h in study_history if h['result'].get('deck')}
-    available = set(Deck.objects.filter(pk__in=test_decks, owner=user, language=lang).values_list('pk', flat=True))
+    available = set(Deck.objects.filter(pk__in=test_decks, owner=content_owner(request), language=lang).values_list('pk', flat=True))
     history += [{'id': h['token'], 'kind': 'test', 'title': h['result'].get('title', 'Flashcard'), 'score': h['result'].get('correct', 0), 'total': h['result'].get('total', 0), 'date': h['date'], 'path': f'/{lang}/flashcard/deck/{h["result"]["deck"]}' if h['result'].get('deck') in available else None} for h in study_history]
     for session in sessions.filter(completed_at__isnull=False).select_related('deck').order_by('-completed_at')[:30]:
         history.append({'id': str(session.token), 'kind': 'session', 'title': session.deck.title if session.deck else 'Review', 'score': session.result.get('correct', 0), 'total': session.result.get('total', 0), 'date': session.completed_at.isoformat(), 'path': f'/{lang}/flashcard/session/{session.token}'})

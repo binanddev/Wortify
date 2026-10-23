@@ -6,10 +6,10 @@ import { request } from "../../lib/core.js";
 import { Btn, Status, Field, Select } from "../../components/ui/ui.jsx";
 import { PracticeModal } from "../practice/practice-workspace.jsx";
 const itemKey = (item) => `${item.kind}:${item.id}`;
-export default function ContentPackageImport({ section = "practice" }) {
+export default function ContentPackageImport({ section = "practice", initialLanguage = "de", initialTab = "library", onPublished }) {
   useLocale();
-  const [tab, setTab] = useState("library"),
-    [language, setLanguage] = useState("de"),
+  const [tab, setTab] = useState(initialTab),
+    [language, setLanguage] = useState(initialLanguage),
     [catalog, setCatalog] = useState(null);
   const [limit, setLimit] = useState(50);
   const [query, setQuery] = useState(""),
@@ -96,6 +96,7 @@ export default function ContentPackageImport({ section = "practice" }) {
         setPreview(null);
         setModal(null);
         await reload();
+        onPublished?.();
       } else {
         setPreview(response);
         setModal("preview");
@@ -123,6 +124,7 @@ export default function ContentPackageImport({ section = "practice" }) {
         destination: destination ? Number(destination) : null,
       });
       await reload();
+      onPublished?.();
       setModal(null);
     } catch (e) {
       setError(e.message);
@@ -148,7 +150,7 @@ Existing Wortify paths (reference only; do not recreate or rename unless request
 ${(catalog?.items || []).map((item) => `${item.kind}: ${item.path.join("/")}`).join("\n")}`;
   return (
     <section className="space-y-4">
-      <h2>{tr("Wortify content")}</h2>
+      <div className="flex flex-wrap items-center justify-between gap-2"><h2>{tr("Wortify content")}</h2><Btn icon="library" onClick={()=>{location.assign(`/${language}/${section === "flashcards" ? "flashcard" : section === "reading" ? "reading" : "create"}`);}}>{tr("Open library")}</Btn></div>
       <div className="toolbar">
         {[
           ["library", "Library"],
@@ -467,6 +469,7 @@ ${(catalog?.items || []).map((item) => `${item.kind}: ${item.path.join("/")}`).j
           {modal.document && (
             <>
               <h3>{modal.item.path.join(" / ")}</h3>
+              {modal.item.kind !== "folder" && <Btn icon="edit" onClick={()=>location.assign(`/${language}/${section === "flashcards" ? `flashcard/deck/${modal.item.id}/edit` : section === "reading" ? `reading/${modal.item.id}/edit` : modal.item.kind === "folder" ? `create/${modal.item.id}` : `create/${modal.item.id}/edit`}`)}>{tr("Edit content")}</Btn>}
               <ContentPreview nodes={modal.document[section]} />
               <ContentImportGuide
                 section={section}

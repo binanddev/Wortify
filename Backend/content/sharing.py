@@ -13,10 +13,16 @@ def sharing_mode(using='default'):
 class SharedContentQuerySet(models.QuerySet):
     def update(self, **kwargs):
         if 'visibility' not in kwargs:
+            from api.content_workspace import forced_visibility
+            if forced_visibility.get():
+                kwargs['visibility'] = forced_visibility.get()
             return super().update(**kwargs)
         with sharing_mode(self.db) as mode:
             if mode == 'public':
                 kwargs['visibility'] = 'public'
+            from api.content_workspace import forced_visibility
+            if forced_visibility.get():
+                kwargs['visibility'] = forced_visibility.get()
             return super().update(**kwargs)
 
     def bulk_create(self, objs, *args, **kwargs):
@@ -25,6 +31,11 @@ class SharedContentQuerySet(models.QuerySet):
             if mode in ('public', 'new_public'):
                 for obj in objs:
                     obj.visibility = 'public'
+            from api.content_workspace import forced_visibility
+            visibility = forced_visibility.get()
+            if visibility:
+                for obj in objs:
+                    obj.visibility = visibility
             return super().bulk_create(objs, *args, **kwargs)
 
 class SharedContent(models.Model):
@@ -38,6 +49,12 @@ class SharedContent(models.Model):
         with sharing_mode(using) as mode:
             if mode == 'public' or (mode == 'new_public' and self._state.adding):
                 self.visibility = 'public'
+                if kwargs.get('update_fields') is not None:
+                    kwargs['update_fields'] = set(kwargs['update_fields']) | {'visibility'}
+            from api.content_workspace import forced_visibility
+            visibility = forced_visibility.get()
+            if visibility:
+                self.visibility = visibility
                 if kwargs.get('update_fields') is not None:
                     kwargs['update_fields'] = set(kwargs['update_fields']) | {'visibility'}
             return super().save(*args, **kwargs)

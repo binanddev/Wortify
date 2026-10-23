@@ -1,3 +1,4 @@
+import { workspaceUrl } from "../../lib/staff-workspace.js";
 import { useState, lazy, Suspense } from "react";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import { endpoint, useResource, useAction } from "../../lib/core.js";
@@ -129,12 +130,12 @@ export function DeckExportDialog({ lang, decks, onClose }) {
             key={format}
             className="btn"
             download
-            href={endpoint(
+            href={workspaceUrl(endpoint(
               lang,
               ids.length === 1
                 ? `decks/${ids[0]}/export/${format}/`
                 : `decks/export/?ids=${ids.join(",")}&format=${format}`,
-            )}
+            ))}
           >
             {format.toUpperCase()}
             {ids.length > 1 ? " · ZIP" : ""}

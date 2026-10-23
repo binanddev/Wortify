@@ -102,13 +102,6 @@ export default function FlashcardNavigation({ lang, route, guest = false }) {
   useLocale();
   const resource = useResource(guest ? null : endpoint(lang, "decks/"));
   const { data } = resource;
-  const lastRoute = useRef(route);
-  useEffect(() => {
-    if (lastRoute.current !== route) {
-      lastRoute.current = route;
-      resource.reload();
-    }
-  }, [route]);
   const base = `/${lang}/flashcard`;
   const deckId = route.match(/\/deck\/(\d+)/)?.[1];
   const folderId = new URLSearchParams(route.split("?")[1]).get("folder");

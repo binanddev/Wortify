@@ -84,3 +84,14 @@ Backend và Frontend có dependency, env, deploy và README riêng. Backend khô
 ## Cấu trúc Frontend hiện hành (2026-10-08)
 
 Đường dẫn module ở các mô tả lịch sử phía trên đã được tổ chức lại. Xem `Frontend/README.md` để tra cấu trúc hiện hành: shell ở `src/app`, component chung ở `src/components`, nghiệp vụ ở `src/features`, định nghĩa giao diện ở `src/themes`. Không tạo lại module ở đường dẫn cũ. Các tính năng và API không thay đổi trong lần tổ chức này.
+
+## Staff authoring workspace (v1.13.0, 2026-10-22)
+
+- Main-web Flashcard/Practice/Reading use the shared Wortify library for staff; create/edit remain in their existing feature screens. `features/staff` owns bulk import, library and publishing tools. `/manage` retains accounts, logs and system operations. Existing management API paths remain compatible.
+- `api/content_workspace.py` resolves the editorial content owner without replacing request.user. X-Wortify-Workspace selects shared/personal; normal users cannot opt into shared editing. Shared reads return X-Wortify-Revision; editorial writes require it and serialize on the shared publisher.
+- Personal sandbox saves remain private even under all-public policy. Existing personal content is not migrated or automatically published. Explicit bulk publication previews changes before confirmation.
+- Study/session/matching and audit use the actual actor. ReadingProgress (practice0010) isolates shared reading completion by user/lesson/revision. Do not apply migrations to the local database during development without instruction.
+- Staff (excluding superuser) are constrained to Studio in App, Settings and backend preferences. Other themes have no staff-specific support.
+- Validate with backend tests, frontend test/build and static verify-staff-workspace/verify-content-library fixtures. Never start a server, test deployment or commit/push without the user's current authorization.
+
+Staff use the same learning and authoring flows as regular users. Extra bulk/publishing actions are placed in the existing SidebarTools page-tools area, with no separate staff toolbar or alternate learning screen.

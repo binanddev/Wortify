@@ -1,3 +1,4 @@
+from .content_workspace import learning_owners, studio_preferences
 """Idempotent batch writes; learner interaction never waits for this endpoint."""
 import uuid
 from datetime import timedelta
@@ -23,7 +24,7 @@ def state_payload(state):
 @endpoint
 @require_http_methods(['GET'])
 def deck_state(request, pk):
-    deck=get_object_or_404(Deck,pk=pk,owner=request.user,language=request.language)
+    deck=get_object_or_404(Deck,pk=pk,owner__in=learning_owners(request.user),language=request.language)
     state,_=DeckLearningState.objects.get_or_create(user=request.user,deck=deck)
     return JsonResponse(state_payload(state))
 
@@ -70,7 +71,7 @@ def apply_event(request,event):
     if kind=='preferences':
         from users.models import Profile
         from users.preferences import validate_preferences
-        changes=validate_preferences(data)
+        changes=studio_preferences(request.user,validate_preferences(data))
         profile,_=Profile.objects.get_or_create(user=request.user)
         profile=Profile.objects.select_for_update().get(pk=profile.pk)
         stamp=parse_datetime(event.get('at',''))
@@ -90,7 +91,7 @@ def apply_event(request,event):
         if not form.is_valid():raise ValueError(form.errors.as_text())
         form.save();result={'saved':True}
     elif kind in ('practice_progress','practice'):
-        accessible=get_object_or_404(visible(request),pk=data.get('node'),kind='exercise')
+        accessible=get_object_or_404(visible(request, include_personal=True),pk=data.get('node'),kind='exercise')
         node=PracticeNode.objects.select_for_update().get(pk=accessible.pk)
         revision=node.updated_at.isoformat()
         if data.get('revision')!=revision:
@@ -118,7 +119,7 @@ def apply_event(request,event):
         log.payload={key:data[key] for key in ('node','revision','completed') if key in data}
         log.save(update_fields=['payload'])
     else:
-        deck=get_object_or_404(Deck,pk=data.get('deck'),owner=request.user,language=request.language)
+        deck=get_object_or_404(Deck,pk=data.get('deck'),owner__in=learning_owners(request.user),language=request.language)
         state,_=DeckLearningState.objects.get_or_create(user=request.user,deck=deck)
         state=DeckLearningState.objects.select_for_update().get(pk=state.pk)
         stamp=parse_datetime(event.get('at',''))

@@ -20,7 +20,7 @@ Download the v2.1 collection and import it into Postman. Create a private enviro
 
 ## 5. Test the flashcard workflow
 
-POST /api/en/decks/ with title and level=A1; use the returned id as deck_id and pk. POST /api/en/decks/{deck_id}/cards/ with german_text and vietnamese_meaning. GET /api/en/decks/{pk}/ to verify the card, and PATCH the same URL to rename the deck. Learning endpoints access only data owned by the signed-in account, including admins.
+POST /api/en/decks/ with title and level=A1; use the returned id as deck_id and pk. POST /api/en/decks/{deck_id}/cards/ with german_text and vietnamese_meaning. GET /api/en/decks/{pk}/ to verify the card, and PATCH the same URL to rename the deck. Normal users access their own decks. Staff use the shared Wortify library by default, or X-Wortify-Workspace: personal for their private sandbox. Administrators explicitly select X-Wortify-Workspace: shared to edit Wortify. Progress always belongs to the signed-in learner. Shared content GET responses include X-Wortify-Revision; send that header on subsequent edits/deletions. A stale or missing revision returns 409.
 
 ## 6. Edit and publish content
 
@@ -897,7 +897,7 @@ Optional deck and filter query parameters; returns only owned cards.
 
 **Permission:** Signed-in users
 
-card_images: resources are scoped to the account and language. See handler api.views.card_images to extend the integration.
+POST items: 1–50 card IDs with image_url and optional image_source_url, image_credit, image_license, image_license_url. Existing image links are skipped. Owner, language and staff workspace checks apply.
 
 ## POST /api/{language}/decks/{pk}/reorder/
 
@@ -993,7 +993,7 @@ Body PATCH:
 
 **Permission:** Signed-in users
 
-Anonymous GET. Public decks, q/level/topic filters, page of 24. Includes the owned copy ID when saved.
+Anonymous GET. Ranked public decks; q searches deck metadata, author, folder ancestry/theory and card text, with accent-insensitive exact/typo/closest matching, filler-word reduction and bounded Vietnamese/English/German topic synonyms. Partial queries prioritize the specific keywords over secondary context; this is not unrestricted AI semantic search. level/topic remain hard filters; page of 24. browse=1 groups folders and decks, folder selects a visible folder, ancestors supplies breadcrumbs. recent is a JSON array of up to five recent query strings; recent_folders is a comma-separated recent folder list. Current query relevance takes priority over history. approximate marks closest suggestions. Includes the owned copy ID when saved.
 
 ## GET /api/{language}/flashcard/discover/{pk}/
 

@@ -6091,6 +6091,78 @@
     "vi": "Đã xóa bộ thẻ",
     "de": "Kartensatz gelöscht"
   },
+  "Choose a folder to view its contents.": {
+    "vi": "Chọn thư mục để xem nội dung.",
+    "de": "Wähle einen Ordner, um seinen Inhalt zu sehen."
+  },
+  "Search folders or exercises": {
+    "vi": "Tìm thư mục hoặc bài tập",
+    "de": "Ordner oder Übungen suchen"
+  },
+  "Staff tools": {
+    "vi": "Công cụ staff",
+    "de": "Redaktionswerkzeuge"
+  },
+  "Wortify library": {
+    "vi": "Thư viện Wortify",
+    "de": "Wortify-Bibliothek"
+  },
+  "Personal sandbox": {
+    "vi": "Không gian thử cá nhân",
+    "de": "Persönlicher Testbereich"
+  },
+  "Bulk import": {
+    "vi": "Nhập hàng loạt",
+    "de": "Massenimport"
+  },
+  "Publishing tools": {
+    "vi": "Công cụ xuất bản",
+    "de": "Veröffentlichungswerkzeuge"
+  },
+  "Accounts & history": {
+    "vi": "Tài khoản và lịch sử",
+    "de": "Konten und Verlauf"
+  },
+  "Switch content workspace?": {
+    "vi": "Đổi không gian nội dung?",
+    "de": "Inhaltsbereich wechseln?"
+  },
+  "Unsaved edits on this page will be discarded. Your saved content and learning progress are kept.": {
+    "vi": "Các chỉnh sửa chưa lưu trên trang này sẽ bị bỏ. Nội dung đã lưu và tiến độ học được giữ nguyên.",
+    "de": "Ungespeicherte Änderungen auf dieser Seite werden verworfen. Gespeicherte Inhalte und Lernfortschritte bleiben erhalten."
+  },
+  "Content workspace": {
+    "vi": "Không gian nội dung",
+    "de": "Inhaltsbereich"
+  },
+  "Open library": {
+    "vi": "Mở thư viện",
+    "de": "Bibliothek öffnen"
+  },
+  "Switch workspace": {
+    "vi": "Đổi không gian",
+    "de": "Bereich wechseln"
+  },
+  "Switch to {name}?": {
+    "vi": "Chuyển sang {name}?",
+    "de": "Zu {name} wechseln?"
+  },
+  "Publish to Wortify": {
+    "vi": "Xuất bản lên Wortify",
+    "de": "In Wortify veröffentlichen"
+  },
+  "Shared content changed. Reload the library before saving; your unsaved edits are still available.": {
+    "vi": "Nội dung chung đã thay đổi. Tải lại thư viện trước khi lưu; các chỉnh sửa chưa lưu của bạn vẫn được giữ.",
+    "de": "Gemeinsame Inhalte wurden geändert. Lade die Bibliothek vor dem Speichern neu; deine ungespeicherten Änderungen bleiben erhalten."
+  },
+  "Switch to Personal sandbox to save a personal copy. Use Bulk import to publish reviewed content as Wortify.": {
+    "vi": "Chuyển sang Không gian thử cá nhân để lưu bản sao riêng. Dùng Nhập hàng loạt để xuất bản nội dung đã kiểm tra lên Wortify.",
+    "de": "Wechsle zum persönlichen Testbereich, um eine eigene Kopie zu speichern. Nutze den Massenimport, um geprüfte Inhalte als Wortify zu veröffentlichen."
+  },
+  "Invalid content workspace.": {
+    "vi": "Không gian nội dung không hợp lệ.",
+    "de": "Ungültiger Inhaltsbereich."
+  },
   "My content": {
     "vi": "Nội dung của tôi",
     "de": "Meine Inhalte"
@@ -6190,5 +6262,25 @@
   "Showing {start}–{end} of {total}": {
     "vi": "Hiển thị {start}–{end} trong {total} mục",
     "de": "{start}–{end} von {total} Einträgen"
+  },
+  "Folder path": {
+    "en": "Folder path",
+    "vi": "Đường dẫn thư mục",
+    "de": "Ordnerpfad"
+  },
+  "Closest matches to your search": {
+    "en": "Closest matches to your search",
+    "vi": "Kết quả gần đúng nhất với tìm kiếm của bạn",
+    "de": "Die ähnlichsten Ergebnisse zu deiner Suche"
+  },
+  "{count} decks": {
+    "en": "{count} decks",
+    "vi": "{count} bộ thẻ",
+    "de": "{count} Kartensätze"
+  },
+  "{count} deck": {
+    "en": "{count} deck",
+    "vi": "{count} bộ thẻ",
+    "de": "{count} Kartensatz"
   }
 }

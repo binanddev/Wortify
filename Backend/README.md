@@ -203,3 +203,32 @@ Apply cards migration `0013_deck_operation` during deployment. `DeckOperation` s
 Move returns an operation_id for Undo. Send a new request_id with action=undo and operation_id within 15 minutes. Every deck must still have the recorded destination and revision, and all original destinations must remain valid. Folder changes and ordinary deck mutations use the same owner lock as batch operations.
 
 `GET /api/{lang}/decks/export/?ids=1,2&format=json` (or csv) returns a ZIP of content files and manifest.json. The same 100-deck/20,000-card limits and ownership/language checks apply. Learning progress is excluded and existing CSV formula escaping is preserved. All writes require session authentication and CSRF. Tests: `manage.py test api.test_deck_management`.
+
+## Staff authoring and private learning state
+
+`api/content_workspace.py` separates the shared content owner from the authenticated actor. Staff language APIs default to the shared Wortify publisher; X-Wortify-Workspace: personal selects their own sandbox. Superusers can explicitly request shared (the main frontend does this). Regular users cannot gain editorial access by changing this header. Internal legacy management calls retain their explicitly supplied owner.
+
+Shared content reads return X-Wortify-Revision. Send it on updates, deletion and bulk editorial mutations; missing/stale revisions return 409. Mutations lock the publisher account, using the same serialization as package imports. Content is shared, but learning settings, stars, attempts, queues and audit identity remain attached to the actual operator. Direct export URLs accept `workspace=shared|personal`. Private sandbox writes override the global public policy. Bulk package imports remain on their existing authorized API for compatibility; their UI lives in the main frontend.
+
+Apply practice migration 0010_staff_reading_progress before using shared Reading. ReadingProgress stores completion per staff/lesson/revision; personal reading completion retains its prior storage and backup format. This migration creates a table and does not move or publish existing personal data. Do not apply it automatically to a user's local database without their instruction.
+
+Staff preference reads and sync constrain interface to Studio; normal users and superusers retain their theme choices. No local database/media data is required by the staff regression tests in api.test_staff_workspace.
+
+
+## Practice catalogue performance
+
+`GET /api/{lang}/practice-hub/nodes/` keeps its metadata response contract without selecting complete payloads or hydrating linked targets. `?full=1` remains available for callers explicitly needing bodies. No schema migration is required.
+
+Optional metadata filters: `scope=workspace` selects owned content and authorized pinned/current roots; `roots=1,2` and `current=3` resolve only nodes already allowed by the existing visibility query. `parent=root` or an ID filters direct children, `q` filters titles, and `page=1&page_size=24` adds total/page/page_size/has_more (maximum 100 per page). Filters and pagination apply before payload-key extraction; links are ID pairs and progress belongs only to the current user/revision. Unpaginated clients remain compatible.
+
+Regression coverage: `api.test_practice_metadata` checks metadata/detail equivalence, exclusion of full JSON payloads, workspace access, progress and stable folder pages.
+
+
+## Public flashcard search
+
+`GET /api/{lang}/flashcard/discover/` retains flat deck results by default. `browse=1` returns ranked folder/deck summaries, `folder` drills into a visible folder and `ancestors` supports breadcrumbs. `q` searches public deck metadata, folder paths/theory, author and card text with case/accent normalization and typo/closest ranking. `level` and `topic` are strict filters. `recent` accepts a JSON array of up to five recent queries; `recent_folders` accepts folder IDs. History only personalizes ordering within eligible public content; current query relevance wins.
+
+A process-local text index avoids reloading card bodies for each keystroke/search. Lightweight metadata checks detect changes from other workers, model signals invalidate local edits and a 60-second rebuild bound covers bulk changes that skip signals/timestamps. Private/disabled-owner/other-language decks never enter the index; folder visibility is derived from public descendants. History is supplied by the browser, not stored in a shared server-side user history.
+
+
+Related queries also ignore common Vietnamese/English/German search boilerplate and downweight context such as “advanced/daily” when a specific topic is present. A bounded multilingual thesaurus covers transport, travel, stations, food, work, shopping, health and grammar. Literal matches lead synonyms; matches only on secondary context do not qualify as topic matches when relevant topic results exist. This is deterministic lexical/thesaurus matching, not unrestricted semantic inference or an external AI service. Regression coverage lives in `api.test_flashcard_related_search`.

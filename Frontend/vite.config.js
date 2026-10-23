@@ -49,6 +49,7 @@ export default defineConfig(({ mode }) => {
                     /@heroui|@react-aria|@react-stately|@react-types/.test(id)
                   )
                     return "ui-runtime";
+                  if (/react95|styled-components/.test(id)) return "windows-runtime";
                   return "vendor";
                 },
               },

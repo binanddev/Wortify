@@ -1,3 +1,5 @@
+import {usePagination} from '../../lib/pagination.js';
+import Pagination from '../../components/ui/pagination.jsx';
 import { t as tr, useLocale } from "../../i18n/index.js";
 import ActionMenu from "../../components/ui/action-menu.jsx";
 import { PracticeTree, PracticeModal } from "./practice-workspace.jsx";
@@ -42,16 +44,15 @@ import {
 export function PracticeHub({ lang, id, userId, sound }) {
   useLocale();
   const navigate = useNavigate();
-  const resource = useResource(
-    endpoint(lang, "practice-hub/nodes/"),
-    true,
-  );
   const sync = useLearningSync(userId, lang);
   const workspaceKey = `wortify:practice-workspace:${userId}:${lang}`;
   const [pinned, setPinned] = useState(() => {
     const value = readPreference(workspaceKey, []);
     return Array.isArray(value) ? value : [];
   });
+  const metadataParams = new URLSearchParams({scope:'workspace', roots:[...new Set(pinned)].slice(0,500).join(',')});
+  if (/^\d+$/.test(String(id))) metadataParams.set('current', id);
+  const resource = useResource(endpoint(lang, `practice-hub/nodes/?${metadataParams}`), true);
   const action = useAction();
   const [importing, setImporting] = useState(null);
   const [nodeOperation, setNodeOperation] = useState(null);
@@ -77,7 +78,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
   useEffect(() => {
     const controller = new AbortController();
     setDetailError("");
-    const ids = [...new Set([id, previewId])].filter(value => resource.data?.nodes.some(n => String(n.id)===String(value) && n.kind!=="folder"));
+    const ids = [...new Set([id, previewId])].filter(value => metadataById.get(String(value))?.kind && metadataById.get(String(value)).kind!=="folder");
     Promise.all(ids.map(async value => {
       const key = `${lang}:${value}`;
       const result = await request(endpoint(lang,`practice-hub/nodes/${value}/`),"GET",undefined,controller.signal);
@@ -85,30 +86,22 @@ export function PracticeHub({ lang, id, userId, sound }) {
     })).catch(error => { if(error.name!=="AbortError") setDetailError(error.message); });
     return () => controller.abort();
   }, [id, previewId, lang, resource.data]);
-  const nodes = useMemo(() => supportedPracticeNodes(resource.data?.nodes || []).map(
-    (node) => {
-      const key = `${node.id}:${node.updated_at}`;
-      const local =
-        progress[key] ||
-        readPreference(
-          `wortify:practice-progress:${userId}:${lang}:hub-${key}`,
-          [],
-        );
-      return {
-        ...node,
-        ...(details[`${lang}:${node.id}`]?.updated_at === node.updated_at ? details[`${lang}:${node.id}`] : {}),
-        progress: {
-          completed: [
-            ...new Set([
-              ...(node.progress?.completed || []),
-              ...(Array.isArray(local) ? local : []),
-            ]),
-          ],
-        },
-      };
-    },
-  ), [resource.data, details, progress, userId, lang]);
-  const current = nodes.find((node) => String(node.id) === String(id));
+  const metadata = useMemo(() => supportedPracticeNodes(resource.data?.nodes || []), [resource.data]);
+  const metadataById = useMemo(() => new Map(metadata.map(node => [String(node.id),node])), [metadata]);
+  const localProgress = useMemo(() => new Map(metadata.map(node => [node.id,
+    readPreference(`wortify:practice-progress:${userId}:${lang}:hub-${node.id}:${node.updated_at}`, [])
+  ])), [metadata, userId, lang]);
+  const nodes = useMemo(() => metadata.map(node => {
+    const local = progress[`${node.id}:${node.updated_at}`] || localProgress.get(node.id);
+    const completed = [...new Set([...(node.progress?.completed || []), ...(Array.isArray(local) ? local : [])])];
+    return {...node, progress:{completed}};
+  }), [metadata, localProgress, progress]);
+  const nodesById = useMemo(() => new Map(nodes.map(node => [String(node.id),node])), [nodes]);
+  const withDetail = node => {
+    const detail = node && details[`${lang}:${node.id}`];
+    return node && detail && detail.updated_at === node.updated_at ? {...detail, progress:node.progress} : node;
+  };
+  const current = withDetail(nodesById.get(String(id)));
   const workspace = useMemo(() => myPracticeNodes(nodes, pinned), [nodes,pinned]);
   const catalog = useMemo(() => catalogRoots(ownedPracticeNodes(nodes), catalogQuery), [nodes,catalogQuery]);
   const pageCount = Math.max(1, Math.ceil(catalog.length / 15));
@@ -116,8 +109,11 @@ export function PracticeHub({ lang, id, userId, sound }) {
   const visibleCatalog = catalog.slice((page - 1) * 15, page * 15);
   const roots = workspaceRoots(nodes, pinned);
   const isPinned = (node) => roots.includes(workspaceRoot(nodes, node.id)?.id);
-  const preview = nodes.find((node) => node.id === previewId);
+  const preview = withDetail(nodesById.get(String(previewId)));
   const folderContent = nodes.filter(node => node.parent === current?.id && node.title.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  const folderPagination = usePagination(folderContent.length, `${id}:${query}`, 24);
+  const previewChildren = useMemo(() => nodes.filter(node => node.parent === previewId), [nodes,previewId]);
+  const previewPagination = usePagination(previewChildren.length, String(previewId), 24);
   const owned = ownedPracticeNodes(nodes);
   const patchNode = (node, values) => action.run(async signal=>{await request(endpoint(lang,`practice-hub/nodes/${node.id}/`),"PATCH",values,signal);resource.reload();return true;});
   const createNode = values => action.run(async signal=>{const result = await request(endpoint(lang,"practice-hub/nodes/"),"POST",values,signal);resource.reload();navigate(`${practiceRoutes(lang).learn}/${result.node.id}`);return true;});
@@ -175,7 +171,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
             <div className="learning-related">
               <h3>{tr("Continue learning")}</h3>
               {current.links.map((target) => {
-                const node = nodes.find((n) => n.id === target);
+                const node = nodesById.get(String(target));
                 return (
                   node && (
                     <Link
@@ -221,9 +217,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
           <p className="text-sm text-(--muted)">{tr("Preview content without changing your learning progress.")}</p>
           {preview.kind === "folder" ? (
             <div className="grid gap-2">
-              {nodes
-                .filter((node) => node.parent === preview.id)
-                .map((node) => (
+              {previewChildren.slice(previewPagination.start,previewPagination.end).map((node) => (
                   <button
                     type="button"
                     key={node.id}
@@ -242,7 +236,8 @@ export function PracticeHub({ lang, id, userId, sound }) {
                     {node.title}
                   </button>
                 ))}
-              {!nodes.some((node) => node.parent === preview.id) && (
+              <Pagination pagination={previewPagination} count={previewChildren.length}/>
+              {!previewChildren.length && (
                 <p>{tr("No accessible content in this folder.")}</p>
               )}
             </div>
@@ -270,7 +265,8 @@ export function PracticeHub({ lang, id, userId, sound }) {
       ) : current?.kind === "folder" ? (
         <section className="practice-catalog">
           <div className="practice-content-heading"><Heading title={current.title}/>{current.can_edit && <div className="practice-folder-toolbar"><Btn primary aria-label={tr("Import exercises")} isDisabled={action.pending} onClick={()=>openImport(current)}><Icon name="upload" size={18}/><span>{tr("Import exercises")}</span></Btn><Btn isIconOnly aria-label={tr("New subfolder")} onClick={()=>setNodeOperation({action:"create",parent:current.id})}><Icon name="folder_add" size={18}/></Btn>{folderMenu(current)}</div>}</div>
-          {library(folderContent)}
+          {library(folderContent.slice(folderPagination.start,folderPagination.end))}
+          <Pagination pagination={folderPagination} count={folderContent.length}/>
         </section>
       ) : current?.kind === "exercise" && current.payload ? (
         <>

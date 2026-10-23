@@ -72,7 +72,16 @@ export function fingerprint(css) {
   );
 }
 export async function compileDesign() {
-  let input = await fs.readFile(path.join(designRoot, "index.css"), "utf8");
+  let input = (await fs.readFile(path.join(designRoot, "index.css"), "utf8")).replace(/\r\n/g, '\n');
+  input = input.replace('@import "./tokens.css";', [
+    '@import "../vendor/retro-libraries.css";',
+    '@import "../vendor/windows-libraries.css";',
+    '@import "../vendor/terminal-scoped.css";',
+    '@import "./tokens.css";',
+  ].join('\n'));
+  // Font subsets affect download size, not the component cascade fingerprint.
+  input = input.replace(/@import "@fontsource\/(montserrat|cormorant-garamond)\/latin-([^";]+)";\n@import "@fontsource\/\1\/vietnamese-\2";/g,
+    '@import "@fontsource/$1/$2";');
   input = input
     .replace('@import "tailwindcss";', '@reference "tailwindcss";')
     .replace(/^@(?:plugin|source|custom-variant).*$/gm, "")

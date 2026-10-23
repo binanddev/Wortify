@@ -1,3 +1,4 @@
+from .content_workspace import content_owner, is_editor, scope
 """Copy a public collection into a reader's private, independently editable library."""
 from copy import deepcopy
 from django.db import transaction
@@ -12,6 +13,11 @@ from .practice_media import media_data
 @require_http_methods(['POST'])
 @transaction.atomic
 def copy_collection(request, pk):
+    if is_editor(request.user) and scope(request) == 'shared':
+        selected = get_object_or_404(PracticeNode,pk=pk,language=request.language,visibility='public')
+        if selected.owner_id == content_owner(request).pk:
+            return JsonResponse({'id':selected.pk,'title':selected.title,'count':0,'already_saved':True})
+        raise ValueError('Switch to Personal sandbox to save a personal copy. Use Bulk import to publish reviewed content as Wortify.')
     source = get_object_or_404(PracticeNode, pk=pk, language=request.language, visibility='public')
     selected = source
     # Validate every ancestor before copying the selected public subtree.

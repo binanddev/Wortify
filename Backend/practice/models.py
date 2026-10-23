@@ -79,6 +79,16 @@ class ReadingLesson(SharedContent):
         constraints = [models.UniqueConstraint(fields=['owner','language','source_key'], condition=~models.Q(source_key=''), name='unique_saved_reading_source')]
 
 
+class ReadingProgress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(ReadingLesson, on_delete=models.CASCADE)
+    revision = models.CharField(max_length=64)
+    completed = models.JSONField(default=list)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'lesson'], name='unique_reading_progress')]
+
+
 class ReadingFolder(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     language = models.CharField(max_length=2)

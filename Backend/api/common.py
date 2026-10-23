@@ -1,3 +1,4 @@
+from .content_workspace import content_owner, learning_owners, workspace_request, finish_workspace
 import json
 from functools import wraps
 from django.core.exceptions import ValidationError
@@ -28,7 +29,10 @@ def endpoint(view, *, public=False):
         if not request.user.is_authenticated and not (public and request.method in ('GET','HEAD')):
             return JsonResponse({'error': 'Please sign in.'}, status=401)
         try:
-            return view(request, *args, **kwargs)
+            with workspace_request(request) as workspace:
+                if isinstance(workspace, JsonResponse):
+                    return workspace
+                return finish_workspace(request, view(request, *args, **kwargs), workspace)
         except Http404:
             return JsonResponse({'error': 'Content not found.'}, status=404)
         except (ValueError, TypeError, ValidationError) as exc:
@@ -51,15 +55,15 @@ def legacy_json(view):
         name = view.__name__
         language = request.language
         if name == 'next_question' and request.POST.get('deck'):
-            get_object_or_404(Deck, pk=request.POST['deck'], owner=request.user, language=language)
+            get_object_or_404(Deck, pk=request.POST['deck'], owner=content_owner(request), language=language)
         elif name in ('match_new', 'export_deck'):
-            get_object_or_404(Deck, pk=kwargs['pk'], owner=request.user, language=language)
+            get_object_or_404(Deck, pk=kwargs['pk'], owner=content_owner(request), language=language)
         elif name == 'card_audio':
-            get_object_or_404(Card, pk=kwargs['pk'], deck__owner=request.user, deck__language=language)
+            get_object_or_404(Card, pk=kwargs['pk'], deck__owner=content_owner(request), deck__language=language)
         elif name == 'tts_file':
-            get_object_or_404(CardAudio, pk=kwargs['pk'], card__deck__owner=request.user, card__deck__language=language)
+            get_object_or_404(CardAudio, pk=kwargs['pk'], card__deck__owner__in=learning_owners(request.user), card__deck__language=language)
         elif name == 'match_submit':
-            get_object_or_404(MatchRound, token=kwargs['token'], deck__owner=request.user, deck__language=language)
+            get_object_or_404(MatchRound, token=kwargs['token'], deck__owner=content_owner(request), deck__language=language)
         elif 'token' in kwargs:
             if any(str(kwargs['token']) in tokens for tokens in StudySession.objects.filter(user=request.user,kind='test').values_list('tokens',flat=True)):
                 raise ValueError('Test results are available only after submitting the entire test.')

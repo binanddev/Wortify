@@ -1,3 +1,4 @@
+from .content_workspace import content_owner, learning_owners
 """JSON/file endpoints for card practice, audio and exports. No page rendering."""
 import csv
 import hashlib
@@ -31,7 +32,7 @@ CSV_FIELDS = ['german_text', 'vietnamese_meaning', 'example_german', 'example_vi
 def export_deck(request, pk, fmt):
     if fmt not in ('json', 'csv'):
         raise Http404
-    deck = get_object_or_404(Deck, pk=pk, owner=request.user)
+    deck = get_object_or_404(Deck, pk=pk, owner=content_owner(request))
     rows = list(deck.cards.values(*CSV_FIELDS))
     if fmt == 'json':
         response = HttpResponse(json.dumps(rows, ensure_ascii=False, indent=2), content_type='application/json')
@@ -88,8 +89,8 @@ def next_question(request):
     if deck_id:
         if not deck_id.isdigit():
             return JsonResponse({'error': 'Invalid deck.'}, status=400)
-        get_object_or_404(Deck, pk=deck_id, owner=request.user)
-    cards = study.queue(request.user, prefs, deck_id, request.POST.get('filter', 'all'), mode == 'learn', language=getattr(request, 'language', 'de'))
+        get_object_or_404(Deck, pk=deck_id, owner=content_owner(request))
+    cards = study.queue(request.user, prefs, deck_id, request.POST.get('filter', 'all'), mode == 'learn', language=getattr(request, 'language', 'de'), owner=content_owner(request))
     if mode == 'order':
         cards = [card for card in cards if 2 <= len(card.example_german.split()) <= 40]
     if not cards:
@@ -195,13 +196,13 @@ def audio(request, token):
 
 
 def tts_file(request, pk):
-    obj = get_object_or_404(CardAudio, pk=pk, card__deck__owner=request.user)
+    obj = get_object_or_404(CardAudio, pk=pk, card__deck__owner__in=learning_owners(request.user))
     return private_file(obj.audio_file, 'audio/mpeg')
 
 
 @require_POST
 def card_audio(request, pk):
-    card = get_object_or_404(Card, pk=pk, deck__owner=request.user)
+    card = get_object_or_404(Card, pk=pk, deck__owner=content_owner(request))
     kind = request.POST.get('type', 'term')
     text = card.example_german if kind == 'example' else card.german_text
     if not text:
@@ -281,12 +282,14 @@ def retry(request, token):
 
 @require_POST
 def match_new(request, pk):
-    deck = get_object_or_404(Deck, pk=pk, owner=request.user)
+    deck = get_object_or_404(Deck, pk=pk, owner=content_owner(request))
     try:
         if request.POST.get('resume'):
             round = get_object_or_404(MatchRound, token=request.POST['resume'], deck=deck)
+            if not round.pairs or not StudyAttempt.objects.filter(token=round.pairs[0]['attempt'],user=request.user).exists():
+                raise Http404
         else:
-            round = create_match(deck, request.POST.get('weak') == '1')
+            round = create_match(deck, request.POST.get('weak') == '1', user=request.user)
         return JsonResponse(match_payload(round))
     except (ValueError, ValidationError):
         return JsonResponse({'error': 'At least two cards with distinct terms and meanings are required. If filtering weak words, choose all cards.'}, status=400)
@@ -294,10 +297,12 @@ def match_new(request, pk):
 
 @require_POST
 def match_submit(request, token):
-    round = get_object_or_404(MatchRound.objects.select_related('deck'), token=token, deck__owner=request.user)
+    round = get_object_or_404(MatchRound.objects.select_related('deck'), token=token, deck__owner=content_owner(request))
+    if not round.pairs or not StudyAttempt.objects.filter(token=round.pairs[0]['attempt'],user=request.user).exists():
+        raise Http404
     try:
         mapping = json.loads(request.POST.get('pairs', '{}'))
-        return JsonResponse(submit_match(round, mapping))
+        return JsonResponse(submit_match(round, mapping, user=request.user))
     except (ValueError, TypeError):
         return JsonResponse({'error': 'Complete all pairs before checking.'}, status=400)
 

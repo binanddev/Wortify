@@ -1,3 +1,4 @@
+from .content_workspace import content_owner, is_editor, scope
 """Public reading catalogue. Private lessons never enter the result set."""
 from .common import public_endpoint
 from django.http import JsonResponse, Http404
@@ -63,8 +64,8 @@ def library(request):
         rows.append(summary(f"community:{lesson['id']}", lesson['title'], lesson['level'], lesson['topic'], 'system' if lesson['owner__is_staff'] or lesson['owner__is_superuser'] else 'community'))
     topics = sorted(set(row['topic'] for row in rows if row['topic']), key=str.casefold)
     rows = [r for r in rows if (not query or query in (r['title']+' '+r['topic']).casefold()) and (not level or r['level'] == level) and (not topic or r['topic'].casefold() == topic) and (not source or r['source'] == source)]
-    saved = dict(ReadingLesson.objects.filter(owner=request.user, language=request.language).exclude(source_key='').values_list('source_key','id')) if request.user.is_authenticated else {}
-    own = set(ReadingLesson.objects.filter(owner=request.user,language=request.language).values_list('id',flat=True)) if request.user.is_authenticated else set()
+    saved = dict(ReadingLesson.objects.filter(owner=content_owner(request), language=request.language).exclude(source_key='').values_list('source_key','id')) if request.user.is_authenticated else {}
+    own = set(ReadingLesson.objects.filter(owner=content_owner(request),language=request.language).values_list('id',flat=True)) if request.user.is_authenticated else set()
     for row in rows:
         row['saved_id'] = saved.get(row['key'])
         if row['key'].startswith('community:') and int(row['key'].split(':')[1]) in own:
@@ -97,6 +98,15 @@ def detail(request):
 @require_POST
 @transaction.atomic
 def save(request):
+    if is_editor(request.user) and scope(request) == 'shared':
+        key = body(request).get('key')
+        owned = ReadingLesson.objects.filter(owner=content_owner(request),language=request.language,visibility='public')
+        selected = owned.filter(source_key=key).first() if isinstance(key,str) and key else None
+        if isinstance(key,str) and key.startswith('community:') and key.split(':',1)[1].isdigit():
+            selected = owned.filter(pk=int(key.split(':',1)[1])).first()
+        if selected:
+            return JsonResponse({'id':selected.pk,'already_saved':True,'saved':True})
+        raise ValueError('Switch to Personal sandbox to save a personal copy. Use Bulk import to publish reviewed content as Wortify.')
     key = body(request).get('key')
     if not isinstance(key,str) or len(key)>160: raise ValueError('Choose a reading from Explore.')
     get_user_model().objects.select_for_update().get(pk=request.user.pk)

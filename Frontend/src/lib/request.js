@@ -1,3 +1,5 @@
+import { configureStaffWorkspace, staffWorkspace, workspaceSection } from "./staff-workspace.js";
+const revisions = new Map();
 // Shared transport and bounded cache. Each consumer owns its cancellation.
 const cache = new Map();
 const flights = new Map();
@@ -11,10 +13,16 @@ function put(path, data) {
   cache.set(path, { at: Date.now(), data: structuredClone(data) });
 }
 export function invalidateContentCache(path) {
-  generation++;
-  flights.clear();
-  if (path) cache.delete(path);
-  else cache.clear();
+  if (!path) {
+    generation++;
+    flights.clear();
+    cache.clear();
+    return;
+  }
+  cache.delete(path);
+  const flight = flights.get(path);
+  if (flight) flight.invalidated = true;
+  flights.delete(path);
 }
 export function clearContentCache() {
   invalidateContentCache();
@@ -23,23 +31,62 @@ export function primeContentCache(path, data) {
   invalidateContentCache(path);
   put(path, data);
 }
-function invalidateMutation(path) {
-  generation++;
-  flights.clear();
-  if (path.endsWith("/learning/sync/")) {
-    for (const key of cache.keys()) {
-      if (
-        /\/decks\//.test(key) ||
-        key.includes("/practice-hub/") ||
-        key.includes("/study-pack/") ||
-        key.includes("/sessions/")
-      )
-        cache.delete(key);
-    }
-  } else cache.clear();
+function mutationMatches(path, data) {
+  const language = /^\/api\/(en|de)\//.exec(path)?.[1];
+  if (!language) return () => true;
+  const base = `/api/${language}/`;
+  if (path.endsWith('/learning/sync/')) {
+    const events = data?.events || [];
+    return key => {
+      if (!key.startsWith(base)) return false;
+      return events.some(({kind, payload = {}}) => {
+        if (kind === 'practice_progress' || kind === 'practice')
+          return key.startsWith(`${base}practice-hub/nodes/`) &&
+            (!/nodes\/\d+\//.test(key) || key.split('?')[0] === `${base}practice-hub/nodes/${payload.node}/`);
+        if (kind === 'preferences') return false;
+        if (kind === 'study_settings')
+          return key.startsWith(`${base}decks/`) || key.startsWith(`${base}study-pack/`);
+        if (!['review','test','reset','star','options'].includes(kind)) return false;
+        if (key.startsWith(`${base}study-pack/`)) return true;
+        if (key.startsWith(`${base}sessions/`)) return ['review','test','reset'].includes(kind);
+        if (key.split('?')[0] === `${base}decks/`)
+          return ['review','test','reset'].includes(kind);
+        return key.startsWith(`${base}decks/${payload.deck}/`);
+      });
+    };
+  }
+  const domain = path.slice(base.length).split('/')[0];
+  if (['decks','folders'].includes(domain)) {
+    const deck = /^decks\/(\d+)\//.exec(path.slice(base.length))?.[1];
+    return key => key.startsWith(base) && (
+      key.startsWith(`${base}study-pack/`) || key.startsWith(`${base}sessions/`) ||
+      key.startsWith(`${base}flashcard/discover/`) ||
+      (key.startsWith(`${base}decks/`) && (!deck || key.split('?')[0] === `${base}decks/` || key.startsWith(`${base}decks/${deck}/`)))
+    );
+  }
+  if (['practice-hub','reading'].includes(domain))
+    return key => key.startsWith(`${base}${domain}/`);
+  return key => key.startsWith(base);
+}
+function invalidateMutation(path, data, announce = false) {
+  const matches = mutationMatches(path, data);
+  for (const key of cache.keys()) if (matches(key)) cache.delete(key);
+  for (const [key, flight] of flights) if (matches(key)) {
+    flight.invalidated = true;
+    flights.delete(key);
+  }
+  if (announce && !path.endsWith('/learning/sync/') && typeof window !== 'undefined' && typeof CustomEvent !== 'undefined')
+    window.dispatchEvent(new CustomEvent('content-cache-invalidated', {detail:{matches}}));
 }
 async function transport(path, method, data, signal) {
   const headers = {};
+  const scope = staffWorkspace();
+  const section = workspaceSection(path);
+  const resource = path.split("?")[0].replace(/(\/decks\/\d+\/).*/, "$1");
+  const expected = revisions.get(resource) || revisions.get(section);
+  if (scope && /^\/api\/(en|de)\//.test(path)) headers["X-Wortify-Workspace"] = scope;
+  if (scope === "shared" && section && method !== "GET" && expected)
+    headers["X-Wortify-Revision"] = expected;
   if (data !== undefined && !(data instanceof FormData))
     headers["Content-Type"] = "application/json";
   if (method !== "GET")
@@ -82,6 +129,19 @@ async function transport(path, method, data, signal) {
       json.error || "Unable to complete the request. Please try again.",
     );
   }
+  if (path === "/api/session/" && "user" in json) {
+    revisions.clear();
+    clearContentCache();
+    configureStaffWorkspace(json.user);
+  }
+  const revision = res.headers?.get?.("X-Wortify-Revision");
+  if (section && revision) {
+    if (method !== "GET") {
+      for (const key of revisions.keys()) if (key === section || workspaceSection(key) === section) revisions.set(key, revision);
+    }
+    revisions.set(section, revision);
+    revisions.set(resource, revision);
+  }
   return json;
 }
 function subscribe(flight, signal) {
@@ -109,22 +169,22 @@ export async function request(path, method = "GET", data, signal) {
   if (signal?.aborted) throw aborted();
   const cacheable =
     method === "GET" &&
-    /\/api\/(en|de)\/(practice-hub|decks|sessions|study-pack)\//.test(path);
+    /\/api\/(en|de)\/(practice-hub|decks|sessions|study-pack|reading)\//.test(path);
   if (!cacheable) {
-    if (method !== "GET") invalidateMutation(path);
+    if (method !== "GET") invalidateMutation(path, data);
     const startedGeneration = generation;
     let json;
     try {
       json = await transport(path, method, data, signal);
     } finally {
-      if (method !== "GET") invalidateMutation(path);
+      if (method !== "GET") invalidateMutation(path, data, true);
     }
     // Reuse a newly created session without an immediate duplicate GET.
     if (
       method === "POST" &&
       /\/sessions\/$/.test(path) &&
       json.token &&
-      generation === startedGeneration + 1
+      generation === startedGeneration
     ) {
       put(`${path}${json.token}/`, json);
     }
@@ -143,7 +203,7 @@ export async function request(path, method = "GET", data, signal) {
       .then((json) => {
         if (
           generation === startedGeneration &&
-          !current.controller.signal.aborted
+          !current.controller.signal.aborted && !current.invalidated
         )
           put(path, json);
         return json;

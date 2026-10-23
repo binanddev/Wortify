@@ -1,3 +1,4 @@
+import {discoveryHistoryKey, discoveryHistory, rememberDiscovery, discoveryHistoryParams} from './discovery-history.js';
 import CardImage from "./card-image.jsx";
 import PublicDeckStudy from "./public-deck-study.jsx";
 import { useState } from "react";
@@ -8,6 +9,8 @@ import {
   useResource,
   useAction,
   useNavigate,
+  readPreference,
+  savePreference,
 } from "../../lib/core.js";
 import {
   Page,
@@ -17,6 +20,7 @@ import {
   Select,
   Btn,
   Glass,
+  Icon,
   Loading,
   Status,
 } from "../../components/ui/ui.jsx";
@@ -65,20 +69,37 @@ function Preview({ lang, deck, onClose, onSave, pending, error }) {
   );
 }
 
-export default function FlashcardDiscover({
-  lang,
-  onRequireAccount,
-  initialDeckId,
-}) {
+export default function FlashcardDiscover(props) {
+  return <DiscoverContent key={`${props.userId ?? 'guest'}:${props.lang}`} {...props}/>;
+}
+function DiscoverContent({lang, userId = null, onRequireAccount, initialDeckId}) {
   useLocale();
   const navigate = useNavigate(),
     action = useAction();
   const [search, setSearch] = useState(""),
-    [filters, setFilters] = useState({ q: "", level: "", topic: "", page: 1 });
+    [filters, setFilters] = useState({ q: "", level: "", topic: "", page: 1, folder: "" });
+  const historyKey = discoveryHistoryKey(userId,lang);
+  const [history,setHistory] = useState(()=>discoveryHistory(readPreference(historyKey,{})));
+  const remember = (values) => setHistory(previous=>{
+    const next=rememberDiscovery(previous,values);
+    savePreference(historyKey,next);
+    return next;
+  });
+  const searchFor = value => {
+    const q=value.trim();
+    remember({query:q});
+    setSearch(q);
+    setFilters(previous=>({...previous,q,page:1,folder:''}));
+  };
+  const enterFolder = folder => {
+    remember({folder:folder.root_id || folder.id});
+    setFilters(previous=>({...previous,folder:String(folder.id),page:1}));
+  };
+  const rememberDeck = deck => { if(deck.root_id) remember({folder:deck.root_id}); };
   const [draft, setDraft] = useState(null),
     [opened, setOpened] = useState(null);
   const resource = useResource(
-    endpoint(lang, `flashcard/discover/?${new URLSearchParams(filters)}`),
+    endpoint(lang, `flashcard/discover/?${new URLSearchParams({...filters,browse:'1',...discoveryHistoryParams(history)})}`),
     true,
   );
   const [studying, setStudying] = useState(
@@ -86,6 +107,7 @@ export default function FlashcardDiscover({
   );
   const filtered = !!(filters.level || filters.topic);
   function save(deck) {
+    rememberDeck(deck);
     if (onRequireAccount) {
       onRequireAccount({ kind: "flashcard", id: deck.id });
       return;
@@ -123,7 +145,7 @@ export default function FlashcardDiscover({
             className="space-y-3"
             onSubmit={(e) => {
               e.preventDefault();
-              setFilters((f) => ({ ...f, q: search.trim(), page: 1 }));
+              searchFor(search);
             }}
           >
             <Field
@@ -135,6 +157,10 @@ export default function FlashcardDiscover({
               {tr("Search")}
             </Btn>
           </form>
+          {history.queries.length>0 && <div className="grid gap-2" aria-label={tr('Recent searches')}>
+            <div className="flex items-center justify-between gap-2"><span>{tr('Recent searches')}</span><Btn icon="close" aria-label={tr('Clear search history')} onClick={()=>{const next=discoveryHistory({});savePreference(historyKey,next);setHistory(next);}}>{tr('Clear search history')}</Btn></div>
+            {history.queries.slice(0,5).map(row=><button key={row.query} type="button" className="text-left text-sm wrap-anywhere" onClick={()=>searchFor(row.query)}>{row.query}</button>)}
+          </div>}
           {filtered && (
             <div className="flex flex-wrap gap-2 text-sm">
               {filters.level && <span className="pill">{filters.level}</span>}
@@ -154,9 +180,20 @@ export default function FlashcardDiscover({
       >
         {(data) => (
           <>
+            <nav className="flex flex-wrap items-center gap-2 mb-4" aria-label={tr('Folder path')}>
+              <Btn isDisabled={!filters.folder} onClick={()=>setFilters(previous=>({...previous,folder:'',page:1}))}>{tr('All folders')}</Btn>
+              {(data.ancestors || []).map(folder=><Btn className="btn max-w-full h-auto whitespace-normal wrap-anywhere text-left" key={folder.id} isDisabled={String(folder.id)===String(filters.folder)} onClick={()=>setFilters(previous=>({...previous,folder:String(folder.id),page:1}))}>{folder.title}</Btn>)}
+            </nav>
+            {data.approximate && <p className="mb-4 text-sm text-(--muted)" role="status">{tr('Closest matches to your search')}</p>}
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {data.results.map((deck) => (
-                <Glass key={deck.id} className="h-full">
+                deck.kind === 'folder' ? <Glass key={`folder:${deck.id}`} className="h-full">
+                  <div className="flex items-center justify-between gap-3"><Icon name="folder"/><span className="text-sm text-(--muted)">{tr(deck.deck_count===1 ? '{count} deck' : '{count} decks',{count:deck.deck_count})}</span></div>
+                  <button type="button" className="text-left font-semibold text-lg wrap-anywhere" onClick={()=>enterFolder(deck)}>{deck.title}</button>
+                  <p className="text-sm text-(--muted) wrap-anywhere">{deck.author}</p>
+                  <div className="flex flex-wrap gap-2">{deck.levels.map(level=><span className="pill" key={level}>{level}</span>)}</div>
+                  <Btn className="btn mt-auto" onClick={()=>enterFolder(deck)}>{tr('Open folder')}</Btn>
+                </Glass> : <Glass key={`deck:${deck.id}`} className="h-full">
                   <div className="flex items-center justify-between gap-3">
                     <span className="pill">{deck.level}</span>
                     <span className="text-sm text-(--muted)">
@@ -166,21 +203,22 @@ export default function FlashcardDiscover({
                   <button
                     type="button"
                     className="text-left font-semibold text-lg wrap-anywhere"
-                    onClick={() => setOpened(deck)}
+                    onClick={() => {rememberDeck(deck);setOpened(deck);}}
                   >
                     {deck.title}
                   </button>
+                  {deck.folder_path?.length>0 && <p className="text-sm text-(--muted)">{deck.folder_path.map(folder=>folder.title).join(' / ')}</p>}
                   <p className="text-sm text-(--muted)">
                     {deck.author}
                     {deck.topic && ` · ${deck.topic}`}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-auto pt-3">
                     {onRequireAccount && (
-                      <Btn onClick={() => setStudying(deck)}>
+                      <Btn onClick={() => {rememberDeck(deck);setStudying(deck);}}>
                         {tr("Study now")}
                       </Btn>
                     )}
-                    <Btn icon="eye" onClick={() => setOpened(deck)}>
+                    <Btn icon="eye" onClick={() => {rememberDeck(deck);setOpened(deck);}}>
                       {tr("Preview")}
                     </Btn>
                     <Btn

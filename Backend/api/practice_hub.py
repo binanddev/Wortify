@@ -1,3 +1,4 @@
+from .content_workspace import content_owner, learning_owners
 """Practice Hub API: folder trees and folder-based practice/theory, automatic grading and batch persistence."""
 from .common import public_endpoint
 from django.db import transaction
@@ -12,20 +13,21 @@ from .common import endpoint, body
 from copy import deepcopy
 import re
 
-def visible(request):
+def visible(request, include_personal=False):
     if not request.user.is_authenticated:
         return PracticeNode.objects.filter(language=request.language,visibility='public',owner__is_active=True)
-    access=Q(owner=request.user)|Q(visibility='public')
+    access=Q(owner__in=learning_owners(request.user)) if include_personal else Q(owner=content_owner(request))
+    access |= Q(visibility='public')
     for prefix in ('parent__'*depth for depth in range(11)):
         access |= Q(**{prefix+'class_assignments__classroom__members':request.user})
     return PracticeNode.objects.filter(language=request.language).filter(access).distinct()
 
-def node_data(n,user):
+def node_data(n,user,owner=None):
     presentation = n.payload.get('presentation', {})
     legacy_mode = presentation.get('type') or n.payload.get('kind')
     interaction = presentation.get('interaction') or {'cloze':'cloze_drag_drop','choice':'multiple_choice','multi':'multiple_choice','text':'short_answer','order':'sentence_building','wordset':'short_answer'}.get(legacy_mode, legacy_mode)
     progress=next((p for p in n.learning_progress.all() if p.user_id==user.pk and p.revision==n.updated_at.isoformat()),None)
-    return {'id':n.pk,'parent':n.parent_id,'kind':n.kind,'title':n.title,'payload':n.payload,'tags':n.payload.get('tags',[]) if n.kind=='folder' and not n.parent_id else [],'links':[r.pk for r in n.links.all()], 'visibility':n.visibility,'position':n.position,'can_edit':n.owner_id==user.pk,'updated_at':n.updated_at.isoformat(),'interaction':interaction if n.kind=='exercise' else None,'progress':{'completed':progress.completed if progress else []}}
+    return {'id':n.pk,'parent':n.parent_id,'kind':n.kind,'title':n.title,'payload':n.payload,'tags':n.payload.get('tags',[]) if n.kind=='folder' and not n.parent_id else [],'links':[r.pk for r in n.links.all()], 'visibility':n.visibility,'position':n.position,'can_edit':n.owner_id==(owner or user).pk,'updated_at':n.updated_at.isoformat(),'interaction':interaction if n.kind=='exercise' else None,'progress':{'completed':progress.completed if progress else []}}
 
 def validate_payload(kind,payload):
     if not isinstance(payload,dict):raise ValueError('Content must be a JSON object.')
@@ -86,7 +88,7 @@ def save_node(request,data,node=None):
     title=data.get('title',node.title if node else '')
     if not isinstance(title,str) or not title.strip() or len(title)>200:raise ValueError('Content titles must contain 1–200 characters.')
     parent_id=data.get('parent',node.parent_id if node else None) or None
-    parent=get_object_or_404(PracticeNode,pk=parent_id,owner=request.user,language=request.language,kind='folder') if parent_id else None
+    parent=get_object_or_404(PracticeNode,pk=parent_id,owner=content_owner(request),language=request.language,kind='folder') if parent_id else None
     if kind=='exercise' and parent is None:raise ValueError('Choose a folder before adding or moving exercises.')
     p=parent;depth=0;seen=set()
     while p:
@@ -115,7 +117,7 @@ def save_node(request,data,node=None):
     if node and node.pk in links:raise ValueError('Content cannot link to itself.')
     visibility=data.get('visibility',node.visibility if node else 'private')
     if visibility not in ('private','public'):raise ValueError('Invalid sharing setting.')
-    n=node or PracticeNode(owner=request.user,language=request.language)
+    n=node or PracticeNode(owner=content_owner(request),language=request.language)
     n.kind=kind;n.parent=parent;n.title=title.strip();n.payload=payload;n.visibility=visibility;n.position=int(data.get('position',n.position))
     n.full_clean()
     n.save() if content_changed else n.save(update_fields=['kind','parent','title','payload','visibility','position'])
@@ -127,12 +129,14 @@ def save_node(request,data,node=None):
 @require_http_methods(['GET','POST'])
 @transaction.atomic
 def nodes(request):
-    if request.method=='POST':return JsonResponse({'node':node_data(save_node(request,body(request)),request.user)},status=201)
-    # Small metadata response first; full content is fetched once in the background.
-    qs=visible(request).prefetch_related('links',Prefetch('learning_progress',queryset=PracticeProgress.objects.filter(user=request.user)))
+    if request.method=='POST':return JsonResponse({'node':node_data(save_node(request,body(request)),request.user,content_owner(request))},status=201)
+    if request.GET.get('full') != '1':
+        from .practice_metadata import catalogue
+        return JsonResponse(catalogue(visible(request), request, content_owner(request)))
+    qs=visible(request).prefetch_related(Prefetch('links', queryset=PracticeNode.objects.only('id')),Prefetch('learning_progress',queryset=PracticeProgress.objects.filter(user=request.user)))
     rows=[]
     for n in qs:
-        d=node_data(n,request.user)
+        d=node_data(n,request.user,content_owner(request))
         if request.GET.get('full')!='1':d.pop('payload')
         rows.append(d)
     return JsonResponse({'nodes':rows})
@@ -141,11 +145,11 @@ def nodes(request):
 @require_http_methods(['GET','PATCH','DELETE'])
 @transaction.atomic
 def node(request,pk):
-    n=get_object_or_404(visible(request).prefetch_related('links',Prefetch('learning_progress',queryset=PracticeProgress.objects.filter(user=request.user))),pk=pk)
-    if request.method=='GET':return JsonResponse({'node':node_data(n,request.user)})
-    if n.owner_id!=request.user.pk:return JsonResponse({'error':'Only the owner can edit this content.'},status=403)
+    n=get_object_or_404(visible(request).prefetch_related(Prefetch('links', queryset=PracticeNode.objects.only('id')),Prefetch('learning_progress',queryset=PracticeProgress.objects.filter(user=request.user))),pk=pk)
+    if request.method=='GET':return JsonResponse({'node':node_data(n,request.user,content_owner(request))})
+    if n.owner_id!=content_owner(request).pk:return JsonResponse({'error':'Only the owner can edit this content.'},status=403)
     if request.method=='DELETE':n.delete();return JsonResponse({'ok':True})
-    return JsonResponse({'node':node_data(save_node(request,body(request),n),request.user)})
+    return JsonResponse({'node':node_data(save_node(request,body(request),n),request.user,content_owner(request))})
 
 @endpoint
 @require_http_methods(['POST'])
@@ -176,7 +180,7 @@ def organize(request):
     ids=data.get('ids')
     if not isinstance(ids,list) or not 1<=len(ids)<=100 or any(type(i) is not int for i in ids) or len(set(ids))!=len(ids):
         raise ValueError('Choose 1–100 distinct items.')
-    owned={n.pk:n for n in PracticeNode.objects.select_for_update().filter(owner=request.user,language=request.language)}
+    owned={n.pk:n for n in PracticeNode.objects.select_for_update().filter(owner=content_owner(request),language=request.language)}
     if any(i not in owned for i in ids):raise ValueError('Only the owner can organize this content.')
     action=data.get('action','move')
     if action=='delete':
@@ -184,11 +188,11 @@ def organize(request):
         frontier=set(ids)
         while frontier:
             children=list(PracticeNode.objects.filter(parent_id__in=frontier).values_list('pk','owner_id','language'))
-            if any(owner!=request.user.pk or language!=request.language for _,owner,language in children):
+            if any(owner!=content_owner(request).pk or language!=request.language for _,owner,language in children):
                 raise ValueError('Cannot delete a folder containing content outside your workspace.')
             frontier={pk for pk,_,_ in children}-descendants
             descendants.update(frontier)
-        PracticeNode.objects.filter(pk__in=ids,owner=request.user,language=request.language).delete()
+        PracticeNode.objects.filter(pk__in=ids,owner=content_owner(request),language=request.language).delete()
         return JsonResponse({'ok':True,'deleted':len(descendants)})
     if action=='restore':
         placements=data.get('placements')
@@ -219,7 +223,7 @@ def organize(request):
     if action=='group':
         folder=save_node(request,{'kind':'folder','title':data.get('title','New exercise group'),'parent':parent})
         parent=folder.pk
-    offset=PracticeNode.objects.filter(owner=request.user,language=request.language,parent_id=parent).count()
+    offset=PracticeNode.objects.filter(owner=content_owner(request),language=request.language,parent_id=parent).count()
     for index,pk in enumerate(ids):
         save_node(request,{'parent':parent,'position':offset+index},owned[pk])
     return JsonResponse({'ok':True,'parent':parent})
@@ -272,7 +276,7 @@ def explore(request):
             'id':node.pk, 'title':node.title, 'kind':node.kind, 'interaction':interaction,
             'description':description[:200], 'author':author,
             'question_count':len(payload.get('questions', [])), 'updated_at':node.updated_at.isoformat(),
-            'can_edit':node.owner_id == request.user.pk,
+            'can_edit':node.owner_id == content_owner(request).pk,
         }))
     results.sort(key=lambda item: (item[1], item[2]) if sort == 'newest' else item[:3], reverse=True)
     total = len(results)

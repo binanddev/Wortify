@@ -1,4 +1,4 @@
-import {contentTextGuide} from '../Frontend/src/features/admin/content-text-guide.js';
+import {contentTextGuide} from '../Frontend/src/features/staff/content-text-guide.js';
 import {readFile,writeFile} from 'node:fs/promises';
 import {flashcardAiGuide} from '../Frontend/src/features/flashcards/flashcard-ai-guide.js';
 import {aiAuthoringGuide} from '../Frontend/src/features/practice/ai-authoring-guide.js';

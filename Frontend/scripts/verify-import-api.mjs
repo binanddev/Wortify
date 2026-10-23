@@ -11,7 +11,7 @@ await fs.mkdir(dir, { recursive: true });
 const entry = path.join(dir, "import-api-check.jsx");
 await fs.writeFile(
   entry,
-  `import React from 'react';import {createRoot} from 'react-dom/client';import ImportApi from '../src/features/admin/ContentImportApi.jsx';import {setLanguage} from '../src/i18n/index.js';
+  `import React from 'react';import {createRoot} from 'react-dom/client';import ImportApi from '../src/features/staff/ContentImportApi.jsx';import {setLanguage} from '../src/i18n/index.js';
 let enabled=false,mutations=[];
 window.fetch=async(path,options={})=>{const method=options.method||'GET';if(method==='POST'){enabled=true;mutations.push(method);}if(method==='DELETE'){enabled=false;mutations.push(method);}return new Response(JSON.stringify({enabled,...(enabled?{prefix:'wti_fixture',...(method==='POST'?{key:'wti_fixture_secret_not_real'}:{})}:{})}),{status:200,headers:{'Content-Type':'application/json'}});};
 const root=createRoot(document.getElementById('root'));const wait=()=>new Promise(r=>setTimeout(r,200));

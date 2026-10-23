@@ -1,3 +1,4 @@
+from .content_workspace import content_owner
 """Atomic, owner-scoped deck management; copies never inherit learning progress."""
 import io
 import json
@@ -60,7 +61,7 @@ def manage(request):
         raise ValueError('A valid operation ID is required.')
     payload = {key: value for key, value in data.items() if key != 'request_id'}
     # Use the same owner lock as folder changes so a destination cannot disappear mid-operation.
-    get_user_model().objects.select_for_update().get(pk=request.user.pk)
+    get_user_model().objects.select_for_update().get(pk=content_owner(request).pk)
     existing = DeckOperation.objects.filter(token=token).first()
     if existing:
         if existing.user_id != request.user.pk or existing.language != request.language or existing.payload != payload:
@@ -82,30 +83,30 @@ def manage(request):
         if not original or original.payload.get('action') != 'move' or original.result.get('undone_by') or original.created_at < timezone.now() - timedelta(minutes=15):
             raise ValueError('This move can no longer be undone.')
         moves = original.result['moves']
-        decks = selection([move['id'] for move in moves], request.user, request.language, lock=True)
+        decks = selection([move['id'] for move in moves], content_owner(request), request.language, lock=True)
         by_id = {deck.pk: deck for deck in decks}
         for move in moves:
             deck = by_id[move['id']]
             if deck.folder_id != move['to'] or deck.updated_at.isoformat() != move['version']:
                 raise ValueError('These decks changed after the move. Refresh before moving them again.')
         for folder_id in {move['from'] for move in moves}:
-            destination(folder_id, request.user, request.language)
+            destination(folder_id, content_owner(request), request.language)
         for move in moves:
             deck = by_id[move['id']]
-            Deck.objects.filter(pk=deck.pk, owner=request.user, language=request.language).update(folder_id=move['from'], updated_at=timezone.now())
+            Deck.objects.filter(pk=deck.pk, owner=content_owner(request), language=request.language).update(folder_id=move['from'], updated_at=timezone.now())
         original.result['undone_by'] = str(token)
         original.result['undoable'] = False
         original.save(update_fields=['result'])
         result.update(ids=[deck.pk for deck in decks], count=len(decks))
     else:
-        decks = selection(payload.get('ids'), request.user, request.language, lock=action != 'copy')
+        decks = selection(payload.get('ids'), content_owner(request), request.language, lock=action != 'copy')
         result.update(ids=[deck.pk for deck in decks], count=len(decks))
         if action == 'delete':
-            Deck.objects.filter(pk__in=result['ids'], owner=request.user, language=request.language).delete()
+            Deck.objects.filter(pk__in=result['ids'], owner=content_owner(request), language=request.language).delete()
         else:
             if 'folder' not in payload:
                 raise ValueError('Choose a destination folder.')
-            folder_id = destination(payload.get('folder'), request.user, request.language)
+            folder_id = destination(payload.get('folder'), content_owner(request), request.language)
             if action == 'move':
                 moves = []
                 for deck in decks:
@@ -115,7 +116,7 @@ def manage(request):
                     # Move only location, leaving publication policy and learning data untouched.
                     deck.folder_id = folder_id
                     deck.updated_at = timezone.now()
-                    Deck.objects.filter(pk=deck.pk, owner=request.user, language=request.language).update(folder_id=folder_id, updated_at=deck.updated_at)
+                    Deck.objects.filter(pk=deck.pk, owner=content_owner(request), language=request.language).update(folder_id=folder_id, updated_at=deck.updated_at)
                     moves.append({'id': deck.pk, 'from': old_folder, 'to': folder_id, 'version': deck.updated_at.isoformat()})
                 result.update(moves=moves, count=len(moves), ids=[move['id'] for move in moves], undoable=bool(moves))
             else:
@@ -126,7 +127,7 @@ def manage(request):
                     raise ValueError('Use deck names of 1–150 characters.')
                 copies = []
                 for source in decks:
-                    copied = Deck.objects.create(owner=request.user, language=request.language, folder_id=folder_id,
+                    copied = Deck.objects.create(owner=content_owner(request), language=request.language, folder_id=folder_id,
                         title=names.get(str(source.pk), source.title[:143] + ' (copy)').strip(), description=source.description,
                         topic=source.topic, level=source.level, visibility='private')
                     Card.objects.bulk_create([Card(deck=copied, **model_to_dict(card, exclude=['id', 'deck'])) for card in source.cards.all()])
@@ -145,7 +146,7 @@ def export(request):
         ids = [int(value) for value in request.GET.get('ids', '').split(',') if value]
     except ValueError:
         raise ValueError('Invalid deck selection.')
-    decks = selection(ids, request.user, request.language)
+    decks = selection(ids, content_owner(request), request.language)
     fmt = request.GET.get('format', 'json')
     if fmt not in ('json', 'csv'):
         raise ValueError('Choose JSON or CSV.')

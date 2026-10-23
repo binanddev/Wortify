@@ -1,3 +1,4 @@
+from .content_workspace import content_owner
 """Bounded public folder discovery, with lightweight local relevance ranking."""
 import hashlib
 from difflib import get_close_matches
@@ -105,7 +106,7 @@ def browse(request):
         root = paths[n.pk][0]
         return {'id':n.pk,'parent':n.parent_id,'root_id':root.pk,'kind':n.kind,'title':n.title,
                 'tags':n.payload.get('tags',[]) if not n.parent_id and n.kind=='folder' else [],
-                'visibility':'public','position':n.position,'can_edit':n.owner_id==request.user.pk,
+                'visibility':'public','position':n.position,'can_edit':n.owner_id==content_owner(request).pk,
                 'author':publisher(n.owner),
                 'updated_at':n.updated_at.isoformat(), 'question_count':len(n.payload.get('questions',[])),
                 'child_count':child_counts[n.pk]}

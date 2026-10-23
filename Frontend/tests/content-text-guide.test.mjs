@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {contentTextGuide,contentTextExample} from '../src/features/admin/content-text-guide.js';
+import {contentTextGuide,contentTextExample} from '../src/features/staff/content-text-guide.js';
 import {EXERCISE_TYPES,exerciseStylesOf} from '../src/features/practice/exercise-types.js';
 test('deployed rules and examples stay aligned with the UI guide',()=>{
  for(const base of ['../public/templates/','../../Backend/sample_data/']) {

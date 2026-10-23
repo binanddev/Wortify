@@ -1,3 +1,4 @@
+import { loadThemeVendor } from "./vendor-styles.js";
 import { interfaceName } from "./registry.js";
 import { glassPolicy } from "./glass/policy.js";
 export function applyAppearance(p = {}) {
@@ -5,6 +6,9 @@ export function applyAppearance(p = {}) {
   const root = document.documentElement;
   const style = interfaceName(p.interface);
   root.dataset.interface = style;
+  void loadThemeVendor(style).catch(() => {
+    // Keep the shared theme styling available; retry on the next selection.
+  });
   root.dataset.textAuto = String(
     style !== "glass" && (!p.textColor || p.textColor === "auto"),
   );
