@@ -1,5 +1,14 @@
 # Change Log
 
+### 2026-10-24 | Numbered Explore pages
+
+- Replaced Explore's accumulating Show more action with numbered pages of 12 results, previous/next controls, current-page indication and result range. Use compact responsive controls and calmer folder cards/heading; retain grid/list choice.
+- Keep page in the URL and retain ranking seed, search, type, order and folder scope across page changes and browser Back. Search/filter/folder changes return to page one. Recover out-of-range URLs and focus the result heading after a requested page loads; errors can retry the same page.
+- Added manual EN/VI/DE labels, pagination unit coverage and server-free desktop/mobile interaction fixtures. Validation: 173 frontend tests in an isolated release snapshot, 7 discovery backend tests, production build, desktop/mobile pagination fixtures and global interface checks passed. Unrelated local changes are excluded from this release.
+- User approved committing and pushing Explore pagination. No application server or deployment check was performed.
+
+---
+
 ### Practice Hub direct library and focused import — 2026-10-22
 
 - My practice is the virtual root of all personal/copied folders and descendants, independent of saved workspace pins. `/de/practice/all` lists all personal roots with pagination; nested folders remain inside their parent. Shared roots are included in the tree only when explicitly added. Regression checks start with no saved pins.

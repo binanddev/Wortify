@@ -1,5 +1,5 @@
 import { t as tr, useLocale } from "../../i18n/index.js";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@heroui/react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -33,6 +33,8 @@ import {
 import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { PracticeActivity } from "../practice/practice-activity.jsx";
 import { TheoryActivity } from "../practice/practice-theory.jsx";
+
+import { EXPLORE_PAGE_SIZE, explorePage, exploreScope, explorePageUrl, explorePageNumbers } from "./explore-pagination.js";
 
 function ExplorePreview({ lang, node, onClose, guest }) {
   useLocale();
@@ -79,7 +81,7 @@ export function Explore({ lang, userId, onRequireAccount }) {
   const route = useRoute();
   return (
     <ExploreContent
-      key={`${userId}:${lang}:${route}`}
+      key={`${userId}:${lang}:${exploreScope(route)}`}
       lang={lang}
       userId={userId}
       onRequireAccount={onRequireAccount}
@@ -135,8 +137,14 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
     error: "",
   });
   const [retry, setRetry] = useState(0);
-  const [page, setPage] = useState(1);
-  const [seed] = useState(() => String(Date.now()));
+  const page = explorePage(params.get("page"));
+  const [seed] = useState(() => params.get("seed")?.slice(0,80) || String(Date.now()));
+  const resultHeading = useRef(null);
+  const focusPage = useRef(false);
+  const changePage = (next) => {
+    focusPage.current = true;
+    navigate(explorePageUrl(routes.explore, params, next, seed));
+  };
   const current = results.current;
   const viewsKey = `wortify:explore-views:${userId}:${lang}`;
   const [interests] = useState(() => {
@@ -172,7 +180,7 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
   const reduced = useReducedMotion();
   useEffect(() => setDraft(query), [query]);
 
-  const resultKey = `${lang}:${query}:${mode}:${sort}:${parent}`;
+  const resultKey = `${lang}:${query}:${mode}:${sort}:${parent}:${page}`;
   useEffect(() => {
     const controller = new AbortController();
     const searchParams = new URLSearchParams({
@@ -193,22 +201,13 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
       controller.signal,
     )
       .then((data) => {
-        if (!controller.signal.aborted)
-          setResults((previous) => ({
-            ...data,
-            key: resultKey,
-            loading: false,
-            error: "",
-            rows:
-              page === 1 || previous.key !== resultKey
-                ? data.results
-                : [
-                    ...previous.rows,
-                    ...data.results.filter(
-                      (n) => !previous.rows.some((old) => old.id === n.id),
-                    ),
-                  ],
-          }));
+        if (controller.signal.aborted) return;
+        const pages = Math.max(1, Math.ceil(data.total / EXPLORE_PAGE_SIZE));
+        if (page > pages) {
+          navigate(explorePageUrl(routes.explore, params, pages, seed));
+          return;
+        }
+        setResults({...data, key:resultKey, loading:false, error:"", rows:data.results});
       })
       .catch((error) => {
         if (!controller.signal.aborted)
@@ -221,9 +220,9 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
     return () => controller.abort();
   }, [resultKey, page, seed, interests, retry]);
   const search = (changes) => {
-    setPage(1);
     const next = new URLSearchParams(params);
     next.delete("page");
+    next.delete("seed");
     next.delete("kind");
     for (const [key, value] of Object.entries(changes))
       value ? next.set(key, String(value)) : next.delete(key);
@@ -326,18 +325,26 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
         ? "Open copy in Create library"
         : "Copy to Create library";
   const items = results.key === resultKey ? results.rows : [];
-  const loading = results.loading && !items.length;
+  const loading = results.loading;
+  const total = results.total || 0;
+  const pages = Math.max(1, Math.ceil(total / EXPLORE_PAGE_SIZE));
+  useEffect(() => {
+    if (!loading && !results.error && results.key === resultKey && focusPage.current) {
+      focusPage.current = false;
+      resultHeading.current?.focus({preventScroll:true});
+      resultHeading.current?.scrollIntoView({block:"start", behavior:reduced ? "instant" : "smooth"});
+    }
+  }, [loading, results.key, results.error, resultKey, reduced]);
   const error = results.error;
   const ancestors = results.ancestors || [];
   return (
-    <Page>
+    <Page className="explore-page">
       <SidebarTools navOnly>
         <div className="explore-nav">
           <nav className="studio-nav-shortcuts" aria-label={tr("Discover tools")}>
             <Link
               className={`studio-nav-icon ${!parent ? "active" : ""}`}
               to={routes.explore}
-              onClick={() => setPage(1)}
               title={tr("Discover")}
               aria-label={tr("Discover")}
             >
@@ -418,7 +425,7 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
           </nav>
         )}
         <header className="flex flex-wrap items-center justify-between gap-3">
-          <Heading title={current?.title || tr("Discover")} />
+          <div className="explore-result-heading" ref={resultHeading} tabIndex={-1}><Heading title={current?.title || tr("Discover")} /></div>
           <div className="flex gap-2">
             {[
               ["grid", "Grid view"],
@@ -427,8 +434,8 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
               <Btn
                 key={value}
                 isIconOnly
-                title={label}
-                aria-label={label}
+                title={tr(label)}
+                aria-label={tr(label)}
                 aria-pressed={view === value}
                 onClick={() => {
                   setView(value);
@@ -557,7 +564,7 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
         ) : (
           <div className={`hub-grid library-view-${view}`} aria-busy={loading}>
             {loading
-              ? Array.from({ length: 6 }, (_, index) => (
+              ? Array.from({ length: EXPLORE_PAGE_SIZE }, (_, index) => (
                   <Skeleton key={index} className="h-48 rounded-2xl" />
                 ))
               : items.map((node, index) => {
@@ -602,9 +609,9 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
                       </button>
                       <small>
                         {folder
-                          ? `${node.child_count || 0} content`
+                          ? tr("{count} items", {count:node.child_count || 0})
                           : node.kind === "exercise"
-                            ? `${info?.question_count || 0} questions`
+                            ? tr("{count} questions", {count:info?.question_count || 0})
                             : tr("Reading content")}
                         {author
                           ? ` · ${author}`
@@ -670,18 +677,17 @@ function ExploreContent({ lang, userId, onRequireAccount }) {
             </p>
           </div>
         )}
-        {results.has_more && items.length > 0 && (
-          <div className="flex justify-center">
-            <Btn
-              icon="more"
-              isLoading={results.loading}
-              isDisabled={results.loading}
-              onClick={() =>
-                error ? setRetry((v) => v + 1) : setPage((v) => v + 1)
-              }
-            >{tr("Show more results")}</Btn>
-          </div>
-        )}
+        {total > 0 && <footer className="explore-pagination">
+          <p className="explore-page-summary" role="status">{loading ? tr("Loading…") : tr("Showing {start}–{end} of {total}", {start:(page-1)*EXPLORE_PAGE_SIZE+1, end:Math.min(page*EXPLORE_PAGE_SIZE,total), total})}</p>
+          {pages > 1 && <nav aria-label={tr("Explore pages")} className="explore-page-controls">
+            <Btn className="explore-page-step" isDisabled={loading || page <= 1} onClick={()=>changePage(page-1)} aria-label={tr("Previous page")}><Icon name="chevron_left" size={18}/><span>{tr("Previous")}</span></Btn>
+            <div className="explore-page-numbers">
+              {explorePageNumbers(page,pages).map(number=><Btn key={number} isIconOnly primary={number===page} aria-label={tr("Page {page}",{page:number})} aria-current={number===page ? "page" : undefined} isDisabled={loading} onClick={()=>number!==page && changePage(number)}>{number}</Btn>)}
+            </div>
+            <Btn className="explore-page-step" isDisabled={loading || page >= pages} onClick={()=>changePage(page+1)} aria-label={tr("Next page")}><span>{tr("Next")}</span><Icon name="chevron_right" size={18}/></Btn>
+          </nav>}
+        </footer>}
+
       </section>
       {historyOpen && (
         <PracticeModal

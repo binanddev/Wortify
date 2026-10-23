@@ -6170,5 +6170,25 @@
   "Exercise updated.": {
     "vi": "Đã cập nhật bài tập.",
     "de": "Übung aktualisiert."
+  },
+  "Explore pages": {
+    "vi": "Các trang khám phá",
+    "de": "Entdecken-Seiten"
+  },
+  "Previous page": {
+    "vi": "Trang trước",
+    "de": "Vorherige Seite"
+  },
+  "Next page": {
+    "vi": "Trang sau",
+    "de": "Nächste Seite"
+  },
+  "Page {page}": {
+    "vi": "Trang {page}",
+    "de": "Seite {page}"
+  },
+  "Showing {start}–{end} of {total}": {
+    "vi": "Hiển thị {start}–{end} trong {total} mục",
+    "de": "{start}–{end} von {total} Einträgen"
   }
 }

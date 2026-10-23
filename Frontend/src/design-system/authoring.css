@@ -360,3 +360,26 @@
 .exercise-workspace .gap-token {
   @apply inline-flex align-baseline;
 }
+
+/* Bounded Discover pages keep navigation separate from content actions. */
+:root body .explore-page header .heading h1 { @apply text-[clamp(28px,3vw,36px)] leading-tight; }
+.explore-page .hub-grid.library-view-grid { @apply grid-cols-[repeat(auto-fill,minmax(min(100%,250px),1fr))] gap-5; }
+.explore-page .library-view-grid .hub-tile.library-card { @apply min-h-52; }
+.explore-page .hub-tile.library-card { @apply rounded-2xl bg-(--solid) border-(--line) shadow-sm; }
+.explore-page .hub-tile.library-card:hover { @apply transform-none border-(--accent); }
+.explore-page .library-card-title { @apply text-base leading-snug; }
+.explore-result-heading { @apply min-w-0 scroll-mt-6; }
+.explore-result-heading:focus-visible { @apply outline-2 outline-(--accent) outline-offset-4 rounded-lg; }
+.explore-pagination { @apply flex flex-wrap items-center justify-between gap-4 mt-6 pt-5 border-t border-(--line); }
+.explore-page-summary { @apply m-0 text-xs text-(--muted) tabular-nums; }
+.explore-page-controls,.explore-page-numbers { @apply flex items-center gap-1; }
+.explore-page-controls .btn { @apply min-w-10 w-10 min-h-10 h-10 p-0 rounded-lg text-sm tabular-nums; }
+.explore-page-controls .explore-page-step { @apply w-auto px-3 gap-1.5; }
+.explore-page-numbers [aria-current="page"] { @apply font-semibold shadow-sm; }
+@media (max-width:640px) {
+  .explore-pagination { @apply flex-col gap-3; }
+  .explore-page-controls { @apply max-w-full; }
+  .explore-page-controls .btn { @apply min-w-9 w-9 min-h-11 h-11; }
+  .explore-page-controls .explore-page-step { @apply px-0; }
+  .explore-page-step span { @apply sr-only; }
+}
