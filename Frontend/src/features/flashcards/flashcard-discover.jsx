@@ -80,11 +80,12 @@ function DiscoverContent({lang, userId = null, onRequireAccount, initialDeckId})
     [filters, setFilters] = useState({ q: "", level: "", topic: "", page: 1, folder: "" });
   const historyKey = discoveryHistoryKey(userId,lang);
   const [history,setHistory] = useState(()=>discoveryHistory(readPreference(historyKey,{})));
-  const remember = (values) => setHistory(previous=>{
-    const next=rememberDiscovery(previous,values);
+  const updateHistory = update => setHistory(previous=>{
+    const next=discoveryHistory(update(previous));
     savePreference(historyKey,next);
     return next;
   });
+  const remember = values => updateHistory(previous=>rememberDiscovery(previous,values));
   const searchFor = value => {
     const q=value.trim();
     remember({query:q});
@@ -128,7 +129,7 @@ function DiscoverContent({lang, userId = null, onRequireAccount, initialDeckId})
     <Page>
       <Heading title={tr("Explore")} />
       <SidebarTools>
-        <div className="flash-nav">
+        <div className="flash-nav flash-discover-nav">
           <div className="flash-icon-row">
             <Btn
               icon="filter"
@@ -142,7 +143,7 @@ function DiscoverContent({lang, userId = null, onRequireAccount, initialDeckId})
             </Btn>
           </div>
           <form
-            className="space-y-3"
+            className="flash-discover-search"
             onSubmit={(e) => {
               e.preventDefault();
               searchFor(search);
@@ -152,15 +153,27 @@ function DiscoverContent({lang, userId = null, onRequireAccount, initialDeckId})
               label={tr("Search decks")}
               value={search}
               onChange={setSearch}
+              autoComplete="off"
+              maxLength={200}
             />
             <Btn icon="search" type="submit">
               {tr("Search")}
             </Btn>
           </form>
-          {history.queries.length>0 && <div className="grid gap-2" aria-label={tr('Recent searches')}>
-            <div className="flex items-center justify-between gap-2"><span>{tr('Recent searches')}</span><Btn icon="close" aria-label={tr('Clear search history')} onClick={()=>{const next=discoveryHistory({});savePreference(historyKey,next);setHistory(next);}}>{tr('Clear search history')}</Btn></div>
-            {history.queries.slice(0,5).map(row=><button key={row.query} type="button" className="text-left text-sm wrap-anywhere" onClick={()=>searchFor(row.query)}>{row.query}</button>)}
-          </div>}
+          {history.queries.length > 0 && <section className="flash-recent-searches" aria-label={tr("Recent searches")}>
+            <div className="flash-recent-heading">
+              <span title={tr("Recent searches")}>{tr("Recent searches")}</span>
+              <Btn className="btn flash-recent-clear" icon="trash" aria-label={tr("Clear search history")} onClick={()=>updateHistory(()=>({}))}>{tr("Clear search history")}</Btn>
+            </div>
+            <ul className="flash-recent-list">
+              {history.queries.slice(0,5).map(row=><li key={row.query}>
+                <button type="button" className="flash-recent-query" title={row.query} onClick={()=>searchFor(row.query)}>
+                  <Icon name="history" size={15}/><span>{row.query}</span>
+                </button>
+                <Btn className="btn flash-recent-remove" icon="close" aria-label={tr("Delete search {v0}",{v0:row.query})} onClick={()=>updateHistory(previous=>({...previous,queries:previous.queries.filter(item=>item.query!==row.query)}))}>{tr("Delete search {v0}",{v0:row.query})}</Btn>
+              </li>)}
+            </ul>
+          </section>}
           {filtered && (
             <div className="flex flex-wrap gap-2 text-sm">
               {filters.level && <span className="pill">{filters.level}</span>}

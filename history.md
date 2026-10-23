@@ -1,5 +1,13 @@
 # Change Log
 
+### 2026-10-24 | Compact Flashcard discovery navigation
+
+- Keep Discover search input and its fixed-size submit button on one row, with explicit sidebar sizing that also works with Notebook paper controls. Recent searches use a single-line header, quiet clear action and compact history rows; long queries truncate visually while retaining the full accessible text/title.
+- Add individual recent-query removal with browser persistence, keeping folder recommendations intact. Replaying a query and clearing history retain the existing search behavior. Touch controls keep 44 px hit targets; labels reuse manual EN/VI/DE translations.
+- Validation: 184 frontend tests and production build passed. Static sidebar fixtures verify long terms, replay, deletion, remount persistence, history clearing, alignment and zero horizontal overflow across all six themes, with manual EN/VI/DE labels and narrow layouts. No application server or deployed-site test is used. User reviewed the change and approved commit/push.
+
+---
+
 ### [Unreleased] - 2026-10-24 | Relevant Flashcard discovery
 
 - Search public deck metadata, level, author, folder paths/theory and card text, with accent normalization, typo matching and ranked closest suggestions. Retain strict visibility, language and explicit level/topic filters.

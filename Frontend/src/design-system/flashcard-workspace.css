@@ -260,3 +260,40 @@
 }
 .flash-nav .flash-folder-list .flash-folder-action[aria-expanded="true"] { @apply opacity-100; }
 .flash-nav .flash-folder-list .flash-folder-action svg { @apply text-inherit; }
+
+/* Discover search stays inside the sidebar, including Notebook's paper controls. */
+.context-panel .flash-discover-nav { @apply w-full min-w-0 max-w-full gap-4; }
+.flash-discover-search { @apply grid grid-cols-[minmax(0,1fr)_40px] items-end gap-2 min-w-0 max-w-full; }
+.flash-discover-search .native-field { @apply min-w-0 m-0; }
+:root body .context-panel .flash-discover-search .field-label { @apply text-xs leading-5; }
+:root body .context-panel .flash-discover-search .native-field-wrap { @apply box-border h-10 min-h-10 px-3 text-sm; }
+:root body .context-panel .flash-discover-search > .btn,
+:root body .context-panel .flash-discover-nav .flash-icon-row > .btn { @apply w-10 min-w-10 max-w-10 h-10 min-h-10 p-0 shrink-0; }
+:root body .context-panel .flash-discover-search input { @apply box-border min-w-0 w-full h-full min-h-0 py-0 text-sm; }
+.flash-recent-searches { @apply min-w-0 max-w-full; }
+.flash-recent-heading { @apply flex items-center gap-2 min-w-0 mb-1; }
+.flash-recent-heading > span { @apply flex-1 min-w-0 truncate text-xs font-medium text-inherit; }
+.flash-recent-list { @apply grid gap-0.5 list-none m-0 p-0 min-w-0; }
+.flash-recent-list > li { @apply grid grid-cols-[minmax(0,1fr)_32px] items-center min-w-0 rounded-lg; }
+:root body .context-panel .flash-recent-query { @apply flex items-center gap-2 w-full min-w-0 max-w-full min-h-8 px-2 py-1.5 m-0 border-0 bg-transparent text-inherit text-left text-sm leading-5 rounded-lg; }
+.flash-recent-query > span { @apply min-w-0 truncate; }
+.flash-recent-query > svg { @apply shrink-0 opacity-60; }
+:root body .context-panel .flash-recent-clear.btn,
+:root body .context-panel .flash-recent-remove.btn { @apply w-8 min-w-8 max-w-8 h-8 min-h-8 p-0 m-0 border-0 bg-transparent shadow-none rounded-lg [clip-path:none] shrink-0 text-inherit opacity-60; }
+:root body .context-panel .flash-recent-query:hover,
+:root body .context-panel .flash-recent-remove.btn:hover,
+:root body .context-panel .flash-recent-clear.btn:hover { @apply bg-[color-mix(in_srgb,currentColor_8%,transparent)] opacity-100; }
+:root body .context-panel :is(.flash-recent-clear,.flash-recent-remove) svg.app-icon { @apply w-4 h-4 min-w-4 text-current; }
+.flash-recent-query:focus-visible { @apply outline-2 outline-current -outline-offset-2; }
+@media (pointer:coarse), (max-width:760px) {
+  .flash-discover-search { @apply grid-cols-[minmax(0,1fr)_44px]; }
+  :root body .context-panel .flash-discover-search > .btn,
+  :root body .context-panel .flash-discover-nav .flash-icon-row > .btn,
+  :root body .context-panel .flash-discover-search .native-field-wrap { @apply min-h-11 h-11; }
+  :root body .context-panel .flash-discover-search > .btn,
+  :root body .context-panel .flash-discover-nav .flash-icon-row > .btn { @apply w-11 min-w-11 max-w-11; }
+  .flash-recent-list > li { @apply grid-cols-[minmax(0,1fr)_44px]; }
+  :root body .context-panel .flash-recent-query { @apply min-h-11; }
+  :root body .context-panel .flash-recent-clear.btn,
+  :root body .context-panel .flash-recent-remove.btn { @apply w-11 min-w-11 max-w-11 h-11 min-h-11; }
+}
