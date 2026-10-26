@@ -631,13 +631,39 @@ Owner-only PATCH visibility private/public, level blank/A1-C2 and topic up to 80
 
 **Permission:** Signed-in users
 
-Private account/language Reading workspace, independent of Practice Hub. GET lists lessons. POST lessons:[{title,payload}] atomically creates 1-100 readings; payload uses presentation.interaction=reading, context, context_format in presentation, and choice/multi questions inferred from accepted_answers.
+Private account/language Reading workspace, independent of Practice Hub. GET returns folders (id/title/parent_id) and lesson metadata (id/title/updated_at/folder_id/visibility/level/topic). POST {lessons:[{title,payload}],folder_id:null} atomically creates 1-100 readings in the selected owned folder and language; omit/null folder_id for root. Destination validation or any invalid lesson rolls back the entire batch; payload uses presentation.interaction=reading, context, context_format in presentation, and choice/multi questions inferred from accepted_answers.
 
 ## GET, PATCH, POST, DELETE /api/{language}/reading/{pk}/
 
 **Permission:** Signed-in users
 
-GET a reading, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading.
+GET a reading, folder_id, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading.
+
+## POST /api/{language}/reading/folders/
+
+**Permission:** Signed-in users, current content owner and language
+
+Body: `{title,parent_id:null}`. Create a folder; response 201 `{folder:{id,title,parent_id}}`. Title is 1–200 characters after trimming. Parent IDs must be positive JSON integers, or null for root. Ancestors must remain within the same owner/language; maximum depth is 20.
+
+## PATCH, DELETE /api/{language}/reading/folders/{pk}/
+
+**Permission:** Signed-in users, current content owner and language
+
+PATCH `{title?,parent_id?}` renames or moves the folder and returns `{folder:{id,title,parent_id}}`. Reject self/descendant moves, inaccessible ancestors and moves exceeding 20 levels including the moved subtree. DELETE returns `{ok:true}` and removes the folder tree only: all readings inside it are rehomed to the deleted root's parent or to root. Reading payloads, revisions and both personal/shared progress remain unchanged.
+
+## PATCH /api/{language}/reading/{pk}/metadata/
+
+**Permission:** Signed-in users, current content owner and language
+
+Body: `{title?,folder_id?}`, with at least one recognized field. Renames/moves an owned lesson without changing its content payload, revision or progress; response is the normal reading detail including folder_id. For actual lesson content edits, use the existing revision-checked detail PATCH instead. Foreign-owner/language readings or destinations return 404; malformed titles/IDs return 400.
+
+## POST /api/{language}/reading/organize/
+
+**Permission:** Signed-in users, current content owner and language
+
+Body: `{action:"move"|"copy"|"delete",ids:[...],folder_id:null}`. Requires 1–100 distinct positive JSON integer lesson IDs. Move/copy validate the selected owned destination; null/omitted destination means root. Operations are atomic: inaccessible readings, invalid destinations or invalid copied media roll back the whole batch. Response: `{ok:true,ids:[...]}`, containing new lesson IDs for copy.
+
+Move preserves payload, revision and progress. Copy preserves title/level/topic and validated same-owner/language media references, but creates private lessons with empty progress and source_key; it does not duplicate uploaded files. Shared staff workspace copies are refused with personal-sandbox guidance. Delete permanently removes the selected readings and their progress. Shared editorial writes retain X-Wortify-Revision checks and owner locking. These batch APIs do not create durable idempotency receipts; a repeated successful copy is a new copy.
 
 ## GET, PATCH /api/{language}/profile/
 

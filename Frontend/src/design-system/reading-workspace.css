@@ -112,3 +112,90 @@
   :root body .reading-discover-card-actions > .btn { @apply min-w-11 w-11 max-w-11 h-11 min-h-11; }
   :root body .reading-discover-card-actions > .btn.primary { @apply min-w-0 w-auto max-w-none; }
 }
+
+/* Personal Reading library and modal authoring stay local to the Reading feature. */
+.reading-personal-page { @apply min-w-0; }
+:root body .reading-personal-page > h1,:root body .reading-library-heading > h1 { @apply text-[clamp(26px,3vw,34px)] font-semibold leading-tight m-0; }
+.reading-personal-links { @apply grid gap-1 min-w-0; }
+:root body .reading-personal-links > a { @apply flex items-center gap-2.5 px-2.5 py-2 min-h-9 rounded-lg text-[13px] leading-5 text-inherit no-underline; }
+:root body .reading-personal-links > a:hover { @apply bg-[color-mix(in_srgb,currentColor_8%,transparent)]; }
+:root body .reading-personal-links svg.app-icon { @apply w-[18px] h-[18px] min-w-[18px] text-current p-0 m-0; }
+.reading-library-navigation { @apply min-w-0 max-w-full; }
+:root body .context-panel .reading-library-navigation .native-field-wrap { @apply min-h-10 text-sm; }
+.reading-library-navigation .flash-tree-row[data-drop-active="true"],.reading-folder-tile[data-drop-active="true"] { @apply outline-2 outline-(--accent) bg-(--surface) rounded-lg; }
+.reading-library-heading { @apply flex flex-wrap items-center justify-between gap-4 mb-5; }
+.reading-library-heading > div { @apply flex flex-wrap items-center gap-2; }
+:root body .reading-library-heading > div > .btn { @apply w-10 min-w-10 h-10 min-h-10 p-0; }
+:root body .reading-library-heading > div > .btn.primary { @apply w-auto min-w-0 px-3 gap-2 text-sm; }
+.reading-library-breadcrumb { @apply flex flex-wrap items-center gap-1.5 text-xs text-(--muted) mb-3; }
+.reading-library-breadcrumb > span { @apply inline-flex items-center gap-1 min-w-0; }
+.reading-library-breadcrumb button { @apply text-inherit truncate max-w-52; }
+.reading-library-folders { @apply grid grid-cols-[repeat(auto-fill,minmax(min(100%,240px),1fr))] gap-3 mb-5; }
+.reading-folder-tile { @apply flex items-center gap-2 border border-(--line) rounded-xl px-3 py-2 bg-(--solid) min-w-0; }
+.reading-folder-tile > button:first-child { @apply flex items-center gap-2 flex-1 min-w-0 text-left text-sm; }
+.reading-folder-tile > button > span { @apply truncate; }
+.reading-personal-grid { @apply grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-5; }
+.reading-personal-card { @apply min-w-0 bg-(--solid) text-(--ink) border border-(--line) rounded-2xl shadow-sm; }
+.reading-personal-card.is-selected { @apply border-(--accent) ring-2 ring-(--accent)/20; }
+.reading-personal-card > .glass-body { @apply flex flex-col gap-3 p-5; }
+.reading-personal-card-top { @apply flex items-center gap-2 min-w-0; }
+.reading-personal-card-icon { @apply w-10 h-10 grid place-items-center rounded-xl bg-(--surface) mr-auto text-(--accent); }
+.reading-personal-card-top > small { @apply text-[11px] rounded-full px-2 py-1 bg-(--surface); }
+.reading-personal-title { @apply text-base font-semibold text-inherit no-underline line-clamp-2; }
+.reading-personal-meta { @apply text-xs text-(--muted) m-0 truncate; }
+.reading-personal-card-actions { @apply flex items-center justify-between gap-2 mt-auto pt-3; }
+:root body .reading-personal-card-actions > .btn { @apply h-10 min-h-10 text-sm gap-2; }
+:root body .reading-personal-card-actions > button.btn { @apply w-10 min-w-10 p-0; }
+.reading-select-box { @apply w-8 h-8 grid place-items-center cursor-pointer; }
+.reading-select-box > input { @apply w-4 h-4 accent-(--accent); }
+.reading-selection-bar { @apply flex flex-wrap items-center gap-2 p-3 mb-4 rounded-xl border border-(--line) bg-(--surface) text-sm; }
+.reading-selection-bar > span { @apply mr-auto; }
+.reading-selection-bar .btn { @apply min-h-9 text-sm; }
+.reading-library-empty { @apply border border-dashed border-(--line) rounded-2xl p-8 text-center text-sm text-(--muted); }
+.reading-library-empty > svg { @apply mx-auto; }
+.reading-library-empty > p { @apply my-3; }
+.reading-library-notice { @apply flex items-center gap-3 text-sm mb-4; }
+.reading-library-notice > span { @apply mr-auto; }
+:root body .reading-library-notice > .btn { @apply w-8 min-w-8 h-8 min-h-8 p-0; }
+.reading-library-pagination .toolbar { @apply justify-center mt-5 text-sm; }
+.reading-study-tools { @apply flex flex-wrap items-center gap-2; }
+:root body .context-panel .reading-study-tools > .btn { @apply w-10 min-w-10 max-w-10 h-10 min-h-10 p-0; }
+.reading-library-form { @apply grid gap-4; }
+.reading-library-form .field { @apply m-0; }
+.reading-library-dialog-actions { @apply flex flex-wrap items-center justify-end gap-2 pt-3 border-t border-(--line); }
+.reading-destination-list { @apply grid gap-1 max-h-[50vh] overflow-y-auto; }
+.reading-destination-list > button { @apply flex items-center gap-2 px-3 py-2.5 min-h-10 rounded-lg text-left text-sm border border-transparent; }
+.reading-destination-list > button:hover { @apply border-(--line) bg-(--surface); }
+.reading-destination-list > button > span { @apply min-w-0 wrap-anywhere; }
+.reading-editor-modal > header,.reading-library-dialog > header,.reading-guide-modal > header { @apply text-base border-b border-(--line); }
+.reading-editor-modal .app-modal-body { @apply p-5; }
+.reading-editor-destination { @apply flex items-center gap-2 text-sm text-(--muted) mb-3 min-w-0; }
+.reading-editor-destination > span { @apply truncate; }
+.reading-editor { @apply grid gap-3 min-w-0; }
+.reading-editor-tools { @apply flex flex-wrap items-center gap-2; }
+.reading-editor-tools > .btn { @apply gap-2 text-sm min-h-10; }
+.reading-editor .field { @apply m-0; }
+:root body .reading-editor textarea { @apply min-h-64 h-[min(38dvh,420px)] max-h-[55dvh] p-3 text-sm leading-relaxed rounded-xl; }
+.reading-editor-files,.reading-editor-hint { @apply text-xs text-(--muted) m-0 leading-relaxed wrap-anywhere; }
+.reading-editor-footer { @apply sticky bottom-0 bg-(--solid) border-t border-(--line) pt-3 grid gap-2; }
+.reading-editor-footer > span { @apply text-xs text-(--muted); }
+.reading-editor-footer > div { @apply flex flex-wrap justify-end gap-2; }
+.reading-editor-footer .btn { @apply gap-2 text-sm min-h-10; }
+.reading-guide-modal textarea { @apply h-[55dvh] w-full resize-y p-3 border border-(--line) rounded-xl text-sm font-mono leading-relaxed bg-(--surface) text-(--ink); }
+@media (max-width:640px),(pointer:coarse) {
+  :root body .reading-personal-links > a { @apply min-h-11; }
+  :root body .reading-library-heading > div > .btn,.reading-editor-tools > .btn,.reading-editor-footer .btn { @apply min-h-11; }
+  :root body .reading-study-tools > .btn { @apply min-h-11 h-11; }
+  .reading-library-heading > div { @apply w-full; }
+  .reading-editor-modal .app-modal-body { @apply p-3; }
+  :root body .reading-editor textarea { @apply min-h-48 h-[32dvh]; }
+  .reading-editor-footer > div { @apply justify-start; }
+}
+
+:root body .context-panel .reading-library-navigation .field-label { @apply text-xs; }
+
+.reading-orphan-media { @apply grid gap-2 p-3 rounded-xl border border-(--line) bg-(--surface) text-sm; }
+.reading-orphan-media > p { @apply text-xs m-0; }
+.reading-orphan-media > div { @apply flex flex-wrap items-center gap-2; }
+.reading-orphan-media > div > span { @apply flex-1 min-w-0 wrap-anywhere; }
+.reading-orphan-media .btn { @apply min-h-9 text-sm; }

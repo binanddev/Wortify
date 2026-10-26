@@ -6638,5 +6638,161 @@
   "Reading pages": {
     "vi": "Các trang bài đọc",
     "de": "Lesetextseiten"
+  },
+  "Reading actions: {name}": {
+    "vi": "Tùy chọn bài đọc: {name}",
+    "de": "Aktionen für Lesetext: {name}"
+  },
+  "{count} readings ready": {
+    "vi": "{count} bài đọc sẵn sàng",
+    "de": "{count} Lesetexte bereit"
+  },
+  "Reading draft": {
+    "vi": "Bản nháp bài đọc",
+    "de": "Lesetextentwurf"
+  },
+  "Save readings": {
+    "vi": "Lưu bài đọc",
+    "de": "Lesetexte speichern"
+  },
+  "Keep uploaded images listed in this reading. Insert their image command into the passage.": {
+    "vi": "Giữ ảnh trong danh sách đính kèm và chèn lệnh ảnh vào đoạn đọc.",
+    "de": "Lass hochgeladene Bilder in der Anlagenliste und füge ihren Bildbefehl in den Lesetext ein."
+  },
+  "Search readings or folders": {
+    "vi": "Tìm bài đọc hoặc thư mục",
+    "de": "Lesetexte oder Ordner suchen"
+  },
+  "Dismiss": {
+    "vi": "Đóng thông báo",
+    "de": "Meldung schließen"
+  },
+  "Select readings": {
+    "vi": "Chọn bài đọc",
+    "de": "Lesetexte auswählen"
+  },
+  "Selected readings": {
+    "vi": "Bài đọc đã chọn",
+    "de": "Ausgewählte Lesetexte"
+  },
+  "Select visible": {
+    "vi": "Chọn trang này",
+    "de": "Diese Seite auswählen"
+  },
+  "Select {name}": {
+    "vi": "Chọn {name}",
+    "de": "{name} auswählen"
+  },
+  "Download reading (.txt)": {
+    "vi": "Tải bài đọc (.txt)",
+    "de": "Lesetext herunterladen (.txt)"
+  },
+  "Readings updated.": {
+    "vi": "Đã cập nhật bài đọc.",
+    "de": "Lesetexte aktualisiert."
+  },
+  "Readings saved.": {
+    "vi": "Đã lưu bài đọc.",
+    "de": "Lesetexte gespeichert."
+  },
+  "No readings yet.": {
+    "vi": "Chưa có bài đọc.",
+    "de": "Noch keine Lesetexte."
+  },
+  "Select up to 100 readings at a time.": {
+    "vi": "Mỗi lần chọn tối đa 100 bài đọc.",
+    "de": "Wähle höchstens 100 Lesetexte gleichzeitig aus."
+  },
+  "The folder and its subfolders will be removed. Readings will be kept in {folder}.": {
+    "vi": "Thư mục và các thư mục con sẽ bị xóa. Các bài đọc được giữ lại trong {folder}.",
+    "de": "Der Ordner und seine Unterordner werden entfernt. Die Lesetexte bleiben in {folder} erhalten."
+  },
+  "This reading and its learning progress will be permanently deleted.": {
+    "vi": "Bài đọc này và tiến độ học sẽ bị xóa vĩnh viễn.",
+    "de": "Dieser Lesetext und sein Lernfortschritt werden endgültig gelöscht."
+  },
+  "Selected readings and their learning progress will be permanently deleted.": {
+    "vi": "Các bài đọc đã chọn và tiến độ học sẽ bị xóa vĩnh viễn.",
+    "de": "Die ausgewählten Lesetexte und ihre Lernfortschritte werden endgültig gelöscht."
+  },
+  "Reading title must contain 1–200 characters.": {
+    "vi": "Tên bài đọc phải có từ 1 đến 200 ký tự.",
+    "de": "Der Titel muss 1–200 Zeichen enthalten."
+  },
+  "Choose a reading folder.": {
+    "vi": "Chọn thư mục bài đọc hợp lệ.",
+    "de": "Wähle einen gültigen Lesetextordner."
+  },
+  "Reading folders cannot contain a cycle.": {
+    "vi": "Không thể tạo vòng lặp trong cây thư mục bài đọc.",
+    "de": "Lesetextordner dürfen keinen Kreis bilden."
+  },
+  "Reading folders support at most 20 levels.": {
+    "vi": "Thư mục bài đọc hỗ trợ tối đa 20 cấp.",
+    "de": "Lesetextordner unterstützen höchstens 20 Ebenen."
+  },
+  "The folder hierarchy is not available in this account and language.": {
+    "vi": "Cây thư mục không thuộc tài khoản và ngôn ngữ này.",
+    "de": "Diese Ordnerstruktur gehört nicht zu diesem Konto und Sprachbereich."
+  },
+  "The folder contains readings outside this account or language.": {
+    "vi": "Thư mục chứa bài đọc không thuộc tài khoản hoặc ngôn ngữ này.",
+    "de": "Der Ordner enthält Lesetexte eines anderen Kontos oder Sprachbereichs."
+  },
+  "Choose a folder change.": {
+    "vi": "Chọn thay đổi cho thư mục.",
+    "de": "Wähle eine Änderung für den Ordner."
+  },
+  "Choose a reading change.": {
+    "vi": "Chọn thay đổi cho bài đọc.",
+    "de": "Wähle eine Änderung für den Lesetext."
+  },
+  "Choose move, copy or delete.": {
+    "vi": "Chọn di chuyển, sao chép hoặc xóa.",
+    "de": "Wähle Verschieben, Kopieren oder Löschen."
+  },
+  "Choose between 1 and 100 different readings.": {
+    "vi": "Chọn từ 1 đến 100 bài đọc khác nhau.",
+    "de": "Wähle 1 bis 100 unterschiedliche Lesetexte."
+  },
+  "Some attachments need a reading. Reassign them before saving.": {
+    "vi": "Một số tệp chưa gắn với bài đọc. Hãy gán lại trước khi lưu.",
+    "de": "Einige Anlagen sind keinem Lesetext zugeordnet. Ordne sie vor dem Speichern neu zu."
+  },
+  "Assign to this reading": {
+    "vi": "Gán vào bài đọc này",
+    "de": "Diesem Lesetext zuordnen"
+  },
+  "Remove": {
+    "vi": "Gỡ",
+    "de": "Entfernen"
+  },
+  "Duplicate reading": {
+    "vi": "Nhân bản bài đọc",
+    "de": "Lesetext duplizieren"
+  },
+  "Reading title A–Z": {
+    "vi": "Tên A–Z",
+    "de": "Titel A–Z"
+  },
+  "A folder cannot be moved into itself or one of its subfolders.": {
+    "vi": "Không thể chuyển thư mục vào chính nó hoặc thư mục con của nó.",
+    "de": "Ein Ordner kann nicht in sich selbst oder einen seiner Unterordner verschoben werden."
+  },
+  "Only UTF-8 .txt files are supported.": {
+    "vi": "Chỉ hỗ trợ tệp .txt mã hóa UTF-8.",
+    "de": "Es werden nur UTF-8-Dateien im .txt-Format unterstützt."
+  },
+  "Combined files must not exceed 2 MB.": {
+    "vi": "Tổng dung lượng các tệp không được vượt quá 2 MB.",
+    "de": "Die Dateien dürfen zusammen höchstens 2 MB groß sein."
+  },
+  "Only TYPE: reading lessons belong here.": {
+    "vi": "Chỉ nhập bài có TYPE: reading ở đây.",
+    "de": "Hier sind nur Lesetexte mit TYPE: reading zulässig."
+  },
+  "Edit one reading at a time.": {
+    "vi": "Mỗi lần chỉ sửa một bài đọc.",
+    "de": "Bearbeite jeweils nur einen Lesetext."
   }
 }

@@ -16,7 +16,7 @@ def serialized(lesson, user=None):
     if user and lesson.owner_id != user.pk:
         progress = ReadingProgress.objects.filter(user=user,lesson=lesson,revision=lesson.updated_at.isoformat()).first()
         completed = progress.completed if progress else []
-    return {'id':lesson.pk,'title':lesson.title,'visibility':lesson.visibility,'level':lesson.level,'topic':lesson.topic,'payload':lesson.payload,'progress':{'completed':completed},'revision':lesson.updated_at.isoformat()}
+    return {'id':lesson.pk,'folder_id':lesson.folder_id,'title':lesson.title,'visibility':lesson.visibility,'level':lesson.level,'topic':lesson.topic,'payload':lesson.payload,'progress':{'completed':completed},'revision':lesson.updated_at.isoformat()}
 
 
 def content(request, data):
@@ -37,14 +37,18 @@ def content(request, data):
 @transaction.atomic
 def library(request):
     if request.method == 'GET':
-        return JsonResponse({'folders':list(ReadingFolder.objects.filter(owner=content_owner(request),language=request.language).values('id','title','parent_id')), 'lessons':list(ReadingLesson.objects.filter(owner=content_owner(request),language=request.language).order_by('-updated_at').values('id','title','updated_at','folder_id'))})
-    entries = body(request).get('lessons')
+        return JsonResponse({'folders':list(ReadingFolder.objects.filter(owner=content_owner(request),language=request.language).values('id','title','parent_id')), 'lessons':list(ReadingLesson.objects.filter(owner=content_owner(request),language=request.language).order_by('-updated_at').values('id','title','updated_at','folder_id','visibility','level','topic'))})
+    from .reading_management import locked_owner, destination
+    owner = locked_owner(request)
+    data = body(request)
+    folder = destination(request, data.get('folder_id'), owner)
+    entries = data.get('lessons')
     if not isinstance(entries,list) or not 1 <= len(entries) <= 100 or any(not isinstance(d,dict) for d in entries):
         raise ValueError('Import between 1 and 100 reading lessons.')
     result=[]
     for data in entries:
         title,payload = content(request,data)
-        lesson = ReadingLesson.objects.create(owner=content_owner(request),language=request.language,title=title,payload=payload)
+        lesson = ReadingLesson.objects.create(owner=owner,language=request.language,folder=folder,title=title,payload=payload)
         lesson.attachments.set(validated_attachments(request,payload))
         result.append(serialized(lesson, request.user))
     return JsonResponse({'lessons':result},status=201)

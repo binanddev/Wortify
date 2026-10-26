@@ -3,7 +3,7 @@ from api import content_policy
 from api import flashcard_discovery
 from api import content_import_api, content_import_docs
 from api import content_packages
-from api import reading, reading_discovery
+from api import reading, reading_discovery, reading_management
 from api import admin_backups, admin_restore, site_exports
 from api import backups
 from api import api_reference, management_center, management_data, personal_appearance, monitoring, themes, backgrounds
@@ -53,7 +53,7 @@ urlpatterns=[path("api/site/content-policy/",content_policy.current),path("api/m
  path('api/manage/appearance/',management.site_appearance),path('api/site/appearance/',management.public_appearance),path('api/site/appearance/image/',management.site_appearance_image)]
 def route(pattern,view):urlpatterns.append(path('api/<str:language>/'+pattern,namespace(view)))
 for pattern,view in [
- ('system-library/',content_packages.library),('system-library/<uuid:pk>/copy/',content_packages.copy),('reading/discover/',reading_discovery.library),('reading/discover/open/',reading_discovery.detail),('reading/discover/save/',reading_discovery.save),('reading/<int:pk>/sharing/',reading.sharing),('reading/',reading.library),('reading/<int:pk>/',reading.detail),
+ ('system-library/',content_packages.library),('system-library/<uuid:pk>/copy/',content_packages.copy),('reading/discover/',reading_discovery.library),('reading/discover/open/',reading_discovery.detail),('reading/discover/save/',reading_discovery.save),('reading/folders/',reading_management.create_folder),('reading/folders/<int:pk>/',reading_management.folder_detail),('reading/<int:pk>/metadata/',reading_management.metadata),('reading/organize/',reading_management.organize),('reading/<int:pk>/sharing/',reading.sharing),('reading/',reading.library),('reading/<int:pk>/',reading.detail),
  ('profile/',community.profile),('classes/',community.classes),('classes/<int:pk>/',community.classroom),('classes/<int:pk>/assignments/',community.classroom_assignments),
  ('practice-hub/nodes/<int:pk>/copy/',practice_copy.copy_collection),
  ('practice-hub/media/',practice_media.upload),('practice-hub/media/<uuid:pk>/',practice_media.content),

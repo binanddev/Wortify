@@ -331,3 +331,11 @@ Discover browses public folders and decks, searching deck title/description/leve
 ### Reading discovery layout
 
 Reading Discover uses a compact search/filter toolbar, modal filter drafts with Apply/Cancel, removable active criteria and one labelled Study/Continue action per card. Preview and save remain available as labelled icon actions. Discover navigation and every new style are scoped with `reading-discover-*`; the Reading editor/library, Flashcard and Practice views keep their existing markup/styles. The backend page size remains 24. After building, `node scripts/verify-reading-discover.mjs` supports `--mobile` and `--themes` using local HTML and mocked requests, with no server.
+
+### My readings authoring and organization
+
+My readings owns creation/import, editing and organization. The folder explorer shows only folders; the main area shows the selected folder's immediate readings and subfolders, with search, title/recent ordering, 24-item pages and optional multi-selection. Root/folder/card menus offer contextual actions. Drag a reading or selected group into the tree to move it; Alt drops copy. Deleting a folder keeps contained readings in its parent; lesson deletion is separately confirmed.
+
+ReadingEditorModal accepts multiple UTF-8 TXT files (2 MB combined), previews every batch, retains per-reading media and saves into the selected folder. It reuses the existing parser, media editor and preview component without changing their Flashcard/Practice consumers. Unsaved close/Back/Forward and pending saves/uploads are guarded. Draft media matching uses content/title uniqueness; ambiguous matches block saving until reassigned or removed. Old /reading/create?folder=ID and /reading/ID/edit links open the same modal flow. The full Reading guide has matching copy/TXT download content.
+
+After building: `node scripts/verify-reading-library.mjs` supports `--themes`, `--mobile`, and `--editor`. Fixtures mock HTTP and open local HTML only. Ship the new backend Reading endpoints with this frontend; no database migration is needed.

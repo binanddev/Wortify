@@ -232,3 +232,13 @@ A process-local text index avoids reloading card bodies for each keystroke/searc
 
 
 Related queries also ignore common Vietnamese/English/German search boilerplate and downweight context such as “advanced/daily” when a specific topic is present. A bounded multilingual thesaurus covers transport, travel, stations, food, work, shopping, health and grammar. Literal matches lead synonyms; matches only on secondary context do not qualify as topic matches when relevant topic results exist. This is deterministic lexical/thesaurus matching, not unrestricted semantic inference or an external AI service. Regression coverage lives in `api.test_flashcard_related_search`.
+
+## Reading library organization
+
+Reading creation/import can run inside My readings. `GET /api/{lang}/reading/` returns folder IDs/titles/parents and lesson metadata (including folder, visibility, level and topic). `POST` accepts `{lessons:[{title,payload}],folder_id:null}` and imports 1–100 lessons atomically into that owned language-specific folder; omit/null `folder_id` for the root. Detail responses include `folder_id`.
+
+Create a folder with `POST reading/folders/ {title,parent_id:null}`. Rename/move with `PATCH reading/folders/{id}/ {title?,parent_id?}`. Folder ancestors must belong to the same owner/language; cycles and trees deeper than 20 levels are rejected, including the height of moved subtrees. `DELETE reading/folders/{id}/` removes that folder and its subfolders, while keeping every contained reading in the deleted root's parent (or My readings root). It preserves reading content, revisions and learning progress.
+
+`PATCH reading/{id}/metadata/ {title?,folder_id?}` renames/moves a lesson without changing its payload, content revision or progress. Actual content edits still use the existing revision-checked `PATCH reading/{id}/` and reset progress. Sharing/categories keep their existing endpoint.
+
+`POST reading/organize/ {action:"move"|"copy"|"delete",ids:[...],folder_id:null}` applies an atomic operation to 1–100 distinct owned lesson IDs; move/copy target the selected folder or root. Response is `{ok:true,ids:[...]}`, with new IDs for copies. Copies have private visibility, no source identity or progress, and reuse validated same-owner/language media links rather than writing media files. Shared staff copies are refused with personal-sandbox guidance; other editorial mutations retain shared-owner revision checks. No schema migration is added. Targeted checks: `api.test_reading_management`, `api.test_reading`, `api.test_reading_discovery`, `api.test_staff_workspace`, `api.test_guest_access`.

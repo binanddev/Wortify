@@ -1,5 +1,16 @@
 # Change Log
 
+### 2026-10-26 | My readings organization and modal authoring
+
+- Move Reading creation/import/editing into focused My readings dialogs with a fixed selected folder, multiple UTF-8 TXT files, one complete copyable/downloadable guide, sample insertion, preview and per-reading media. Keep old create/edit URLs compatible. Modal close, browser Back/Forward and pending operations guard unsaved drafts; failed saves retain their text and files. Unchanged edits cannot be resaved, preventing unnecessary progress resets.
+- Add a folder-only explorer, breadcrumbs, scoped search, sorting and paged reading cards. Provide root/subfolder creation, folder rename/move, lesson rename/edit/sharing, text download, duplication, multi-selection, batch move/copy/delete and drag/drop into navigation folders (Alt copies). Folder deletion keeps all readings in its parent; permanent reading deletion requires confirmation.
+- Add owner/language-scoped Reading management APIs without schema changes. Import accepts folder_id; organization and metadata edits preserve content revisions/progress. Copies are private, use independent progress/source identity and retain validated media links. Shared editorial copies require the personal sandbox. Folder mutations reject cycles and excessive depth; batch operations are atomic and bounded to 100 readings.
+- Preserve attachment identity across reorder/title changes; ambiguous draft matches require explicit reassignment/removal before saving. Add manual EN/VI/DE labels, docs and fixtures. All component/style changes stay within Reading; existing Flashcard, Practice and Reading Discover regression fixtures passed.
+- Validation: 189 frontend tests, 45 targeted backend tests and production build passed. Static desktop tests across six themes and mobile cover batch import/retry, dirty close and real browser Back, preview/media reassignment, folder CRUD/rehome, batch drag/copy and legacy folder destinations. The global interface fixture still reports the existing auto-contrast background-change failure; no unrelated contrast code was modified.
+- Deploy backend and frontend together for these new endpoints. User approved commit/push. No migration, local server or deployed-site test was performed; local database/media are preserved.
+
+---
+
 ### 2026-10-26 | Compact Reading discovery
 
 - Redesigned Reading Discover with a compact search/filter toolbar, an on-demand filter dialog with Apply/Cancel and visible removable active criteria. Keep the existing level/topic/source/search contract and 24-item pages.
