@@ -23,6 +23,7 @@ GUIDE = [
 
 # Examples are deliberately inert: placeholders and illustrative IDs, no secrets.
 EXAMPLES = {
+    'api.site_exports.export_site': {'POST': {'scope':'all','dataset':'learning','identity':'anonymous','visibility':'all','modules':['cards','practice','reading'],'include_media':True,'include_progress':False,'preview':True}, 'response':{'count':1,'counts':[{'model':'cards.card','count':100}],'warnings':[]}},
     'api.deck_management.manage': {'POST':{'request_id':'{{eventToken}}','action':'move','ids':[1],'folder':None},'response':{'operation_id':'UUID','ids':[1],'count':1,'undoable':True}},
     'users.views.interface_language': {'PATCH': {'language': 'vi'}},
     'api.admin_backups.emergency': {'POST': {'scope':'selected','ids':[1],'include_media':True,'include_audit':True,'include_credentials':False,'preview':True}, 'response':{'count':1,'accounts':[{'id':1,'username':'example'}]}},
@@ -93,6 +94,7 @@ NOTES = {
     'api.reading.detail': 'GET a reading, payload, progress and revision. PATCH title/payload with revision edits the lesson and resets progress. POST revision/completed merges valid question IDs. Stale revisions return 409. DELETE removes only the owned reading.',
 
 
+    'api.site_exports.export_site': 'SUPERUSER ONLY. Documented site ZIP export. POST scope=all/filtered/selected; same account filters as emergency export. dataset=learning/accounts/full; identity=anonymous/linked (accounts, credentials and progress require linked). visibility=all/public/private; modules=cards,practice,reading; language empty/de/en; date_from/date_to YYYY-MM-DD filter updated_at or created_at. include_media defaults true; include_progress/include_audit/include_credentials default false. preview=true returns per-model counts; remove preview and send confirm=EXPORT for binary ZIP. The archive contains JSON model records, uploaded media, SHA-256 manifest, schema, index, unresolved references and Vietnamese/English recovery/analysis instructions. Account-detached learning removes structured identity relations and selection query/IDs from manifest, but retains free text and content IDs. Full-site packages are included for scope all; module filters project selected sections. Public-only packages retain unmaterialized reading sections. Exports are audited and bounded to 2 GiB/500,000 records. This format uses operator-led recovery and is not accepted by the existing portable/emergency ZIP import screens.',
     'api.admin_backups.emergency': 'SUPERUSER ONLY. POST scope=all, filtered or selected. selected requires ids; filtered accepts q (username/email), role=user/staff/superuser and status=active/inactive. preview=true returns matching account count. To download binary ZIP, remove preview and send confirm=EXPORT. Options: include_media=true (portable per-user ZIPs), include_audit=true, include_credentials=false (opt-in password hashes). Original account identities, roles and content relations are included. No sessions or server secrets. Exports are audited. Maximum 2 GB total and 512 MB per portable user archive; split larger exports. Use Postman Send and Download. Emergency archives require operator-led recovery; they cannot be uploaded to personal restore.',
     'api.backups.export': 'Authenticated account backup. GET exports server data; POST additionally accepts workspace={de:[nodeIds],en:[nodeIds]}. Returns application/zip, not JSON. Up to 512 MB. No password hashes or privileges.',
     'api.backups.restore': 'Multipart file=personal ZIP; preview=true inspects counts. confirm=true restores private copies; optional settings=true replaces profile/study settings. Existing content is retained. Admin emergency ZIPs are not accepted.',
@@ -227,7 +229,7 @@ def reference_data():
         group = 'Learning & content'
         if '/manage/' in path:
             group = 'Administration'
-            role = 'Admin' if key in ('api.management_data.overview','api.monitoring.logs','api.management.site_appearance','api.api_reference.reference','api.admin_backups.emergency','api.admin_restore.restore') else 'Admin / Staff'
+            role = 'Admin' if key in ('api.management_data.overview','api.monitoring.logs','api.management.site_appearance','api.api_reference.reference','api.admin_backups.emergency','api.site_exports.export_site','api.admin_restore.restore') else 'Admin / Staff'
         elif key.startswith('api.themes.') or '/me/' in path or '/site/' in path: group = 'Appearance & media'
         elif key.startswith('api.content_import_docs.'): group, role = 'System content import', 'Public'
         elif public: group = 'Session & health'

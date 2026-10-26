@@ -3348,7 +3348,7 @@
     "de": "Alle Typen"
   },
   "All languages": {
-    "vi": "Tất cả ngôn ngữ",
+    "vi": "Mọi ngôn ngữ",
     "de": "Alle Sprachen"
   },
   "Visibility": {
@@ -6282,5 +6282,345 @@
     "en": "{count} deck",
     "vi": "{count} bộ thẻ",
     "de": "{count} Kartensatz"
+  },
+  "Emergency account backup and import": {
+    "vi": "Sao lưu khẩn cấp và nhập tài khoản",
+    "de": "Notfallsicherung und Import von Konten"
+  },
+  "Use this separate format to restore new accounts through the existing ZIP importer. Site exports include their own recovery documentation.": {
+    "vi": "Dùng định dạng riêng này để khôi phục tài khoản mới bằng công cụ nhập ZIP hiện có. Gói xuất website có tài liệu khôi phục riêng.",
+    "de": "Verwenden Sie dieses separate Format, um neue Konten über den vorhandenen ZIP-Import wiederherzustellen. Website-Exporte enthalten eine eigene Wiederherstellungsanleitung."
+  },
+  "Export website data": {
+    "vi": "Xuất dữ liệu website",
+    "de": "Website-Daten exportieren"
+  },
+  "Download learning content from every section, with optional accounts and learning history. Each ZIP includes a data dictionary, integrity checks and recovery guidance.": {
+    "vi": "Tải nội dung học tập của mọi phần, có thể kèm tài khoản và lịch sử học tập. Mỗi ZIP có mô tả cấu trúc dữ liệu, mã kiểm tra tính toàn vẹn và hướng dẫn khôi phục.",
+    "de": "Laden Sie Lerninhalte aus allen Bereichen herunter, optional mit Konten und Lernverlauf. Jede ZIP enthält ein Datenwörterbuch, Integritätsprüfungen und eine Wiederherstellungsanleitung."
+  },
+  "Quick configurations": {
+    "vi": "Cấu hình nhanh",
+    "de": "Schnellkonfigurationen"
+  },
+  "All learning content": {
+    "vi": "Toàn bộ nội dung học tập",
+    "de": "Alle Lerninhalte"
+  },
+  "Public learning content": {
+    "vi": "Nội dung học tập công khai",
+    "de": "Öffentliche Lerninhalte"
+  },
+  "Content and accounts": {
+    "vi": "Nội dung và tài khoản",
+    "de": "Inhalte und Konten"
+  },
+  "Accounts only": {
+    "vi": "Chỉ tài khoản",
+    "de": "Nur Konten"
+  },
+  "1. Choose the data": {
+    "vi": "1. Chọn dữ liệu",
+    "de": "1. Daten auswählen"
+  },
+  "Data to export": {
+    "vi": "Dữ liệu cần xuất",
+    "de": "Zu exportierende Daten"
+  },
+  "Learning content only": {
+    "vi": "Chỉ nội dung học tập",
+    "de": "Nur Lerninhalte"
+  },
+  "Content visibility": {
+    "vi": "Phạm vi công khai",
+    "de": "Sichtbarkeit der Inhalte"
+  },
+  "Public and private": {
+    "vi": "Công khai và riêng tư",
+    "de": "Öffentlich und privat"
+  },
+  "Public only": {
+    "vi": "Chỉ công khai",
+    "de": "Nur öffentlich"
+  },
+  "Private only": {
+    "vi": "Chỉ riêng tư",
+    "de": "Nur privat"
+  },
+  "Account association": {
+    "vi": "Liên kết tài khoản",
+    "de": "Kontozuordnung"
+  },
+  "Without account identities": {
+    "vi": "Không kèm danh tính tài khoản",
+    "de": "Ohne Kontoidentitäten"
+  },
+  "Keep account references": {
+    "vi": "Giữ mã liên kết tài khoản",
+    "de": "Kontoverweise beibehalten"
+  },
+  "Learning language": {
+    "vi": "Ngôn ngữ học",
+    "de": "Lernsprache"
+  },
+  "Learning sections": {
+    "vi": "Các phần học tập",
+    "de": "Lernbereiche"
+  },
+  "Practice includes every exercise and theory type, including grammar, listening, writing, speaking and dictation.": {
+    "vi": "Phần Luyện tập bao gồm mọi loại bài tập và lý thuyết, kể cả ngữ pháp, nghe, viết, nói và chính tả.",
+    "de": "Übungen umfasst alle Übungs- und Theorietypen, einschließlich Grammatik, Hören, Schreiben, Sprechen und Diktat."
+  },
+  "Select at least one learning section.": {
+    "vi": "Chọn ít nhất một phần học tập.",
+    "de": "Wählen Sie mindestens einen Lernbereich aus."
+  },
+  "The end date must be on or after the start date.": {
+    "vi": "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu.",
+    "de": "Das Enddatum muss am oder nach dem Startdatum liegen."
+  },
+  "Include uploaded images, audio and attachments": {
+    "vi": "Kèm hình ảnh, âm thanh và tệp đính kèm đã tải lên",
+    "de": "Hochgeladene Bilder, Audiodateien und Anhänge einschließen"
+  },
+  "Media files will be omitted. References remain in the data; this export cannot fully restore attachments.": {
+    "vi": "Tệp đa phương tiện sẽ bị bỏ qua. Dữ liệu vẫn giữ tham chiếu; gói xuất này không thể khôi phục đầy đủ tệp đính kèm.",
+    "de": "Mediendateien werden ausgelassen. Verweise bleiben in den Daten; Anhänge lassen sich mit diesem Export nicht vollständig wiederherstellen."
+  },
+  "Include learning progress and activity": {
+    "vi": "Kèm tiến độ và hoạt động học tập",
+    "de": "Lernfortschritt und Aktivitäten einschließen"
+  },
+  "Account identities and personal learning history are excluded. Content keeps internal references for analysis; review free text and attachments before sharing.": {
+    "vi": "Không xuất danh tính tài khoản và lịch sử học cá nhân. Nội dung giữ tham chiếu nội bộ để phân tích; hãy xem lại văn bản tự do và tệp đính kèm trước khi chia sẻ.",
+    "de": "Kontoidentitäten und persönlicher Lernverlauf werden ausgeschlossen. Inhalte behalten interne Verweise zur Analyse; prüfen Sie Freitext und Anhänge vor dem Teilen."
+  },
+  "Include administrator audit history": {
+    "vi": "Kèm lịch sử thao tác quản trị",
+    "de": "Administrationsprotokoll einschließen"
+  },
+  "2. Choose the account scope": {
+    "vi": "2. Chọn phạm vi tài khoản",
+    "de": "2. Kontoumfang auswählen"
+  },
+  "Selected accounts ({v0})": {
+    "vi": "Tài khoản đã chọn ({v0})",
+    "de": "Ausgewählte Konten ({v0})"
+  },
+  "Learning content is filtered by its owner. Related child records are included with the selected content.": {
+    "vi": "Nội dung học tập được lọc theo chủ sở hữu. Các bản ghi con liên quan được xuất cùng nội dung đã chọn.",
+    "de": "Lerninhalte werden nach Eigentümer gefiltert. Zugehörige untergeordnete Datensätze werden mit den ausgewählten Inhalten exportiert."
+  },
+  "{v0} selected across all pages": {
+    "vi": "Đã chọn {v0} tài khoản trên mọi trang",
+    "de": "{v0} auf allen Seiten ausgewählt"
+  },
+  "Export documentation": {
+    "vi": "Tài liệu gói xuất",
+    "de": "Exportdokumentation"
+  },
+  "Documentation travels with your data": {
+    "vi": "Tài liệu đi kèm dữ liệu",
+    "de": "Dokumentation zusammen mit Ihren Daten"
+  },
+  "The archive records your filters, exported counts, model fields and relationships, plus checksums and instructions for recovery and analysis. Keep the entire ZIP together.": {
+    "vi": "Gói xuất ghi lại bộ lọc, số lượng bản ghi, các trường và quan hệ dữ liệu, kèm mã kiểm tra và hướng dẫn khôi phục, phân tích. Hãy giữ nguyên toàn bộ ZIP.",
+    "de": "Das Archiv dokumentiert Filter, Datensatzanzahlen, Modellfelder und Beziehungen sowie Prüfsummen und Anleitungen zur Wiederherstellung und Analyse. Bewahren Sie die gesamte ZIP zusammen auf."
+  },
+  "3. Review and download": {
+    "vi": "3. Kiểm tra và tải xuống",
+    "de": "3. Prüfen und herunterladen"
+  },
+  "{v0} accounts in scope": {
+    "vi": "{v0} tài khoản trong phạm vi",
+    "de": "{v0} Konten im ausgewählten Umfang"
+  },
+  "Download documented ZIP": {
+    "vi": "Tải ZIP kèm tài liệu",
+    "de": "ZIP mit Dokumentation herunterladen"
+  },
+  "The ZIP is ready. Check your browser downloads and keep its recovery documentation with the archive.": {
+    "vi": "ZIP đã sẵn sàng. Kiểm tra mục tải xuống của trình duyệt và giữ tài liệu khôi phục cùng gói dữ liệu.",
+    "de": "Die ZIP ist bereit. Prüfen Sie die Browser-Downloads und bewahren Sie die Wiederherstellungsanleitung zusammen mit dem Archiv auf."
+  },
+  "Export failed. Please try again.": {
+    "vi": "Xuất dữ liệu thất bại. Vui lòng thử lại.",
+    "de": "Export fehlgeschlagen. Bitte versuchen Sie es erneut."
+  },
+  "Updated from (optional)": {
+    "vi": "Cập nhật từ ngày (không bắt buộc)",
+    "de": "Aktualisiert ab (optional)"
+  },
+  "Updated through (optional)": {
+    "vi": "Cập nhật đến hết ngày (không bắt buộc)",
+    "de": "Aktualisiert bis einschließlich (optional)"
+  },
+  "Dates filter the latest update, or creation date where no update timestamp exists. Related records and parent folders are retained to preserve content structure.": {
+    "vi": "Lọc theo lần cập nhật gần nhất, hoặc ngày tạo nếu không có thời điểm cập nhật. Các bản ghi liên quan và thư mục cha được giữ để bảo toàn cấu trúc nội dung.",
+    "de": "Datumsfilter beziehen sich auf die letzte Aktualisierung oder auf das Erstellungsdatum, falls kein Aktualisierungszeitpunkt vorhanden ist. Zugehörige Datensätze und übergeordnete Ordner bleiben zur Erhaltung der Inhaltsstruktur enthalten."
+  },
+  "This is a documented data export, not a server snapshot. Source code, deployment secrets, sessions and import API keys are excluded.": {
+    "vi": "Đây là gói xuất dữ liệu kèm tài liệu, không phải bản sao nguyên trạng máy chủ. Không gồm mã nguồn, bí mật triển khai, phiên đăng nhập và khóa API nhập dữ liệu.",
+    "de": "Dies ist ein dokumentierter Datenexport, kein Serverabbild. Quellcode, Bereitstellungsgeheimnisse, Sitzungen und Import-API-Schlüssel sind ausgeschlossen."
+  },
+  "External image/audio URLs are retained as links; remote files are not downloaded. Generated card speech is included only when media is enabled.": {
+    "vi": "URL hình ảnh/âm thanh bên ngoài được giữ dưới dạng liên kết; không tải các tệp từ xa. Giọng đọc thẻ được tạo sẵn chỉ được xuất khi bật tệp đa phương tiện.",
+    "de": "Externe Bild-/Audio-URLs bleiben als Links erhalten; entfernte Dateien werden nicht heruntergeladen. Erzeugte Kartensprachausgabe wird nur bei aktivierten Medien eingeschlossen."
+  },
+  "Filtered exports may have references outside the selection; inspect reference/unresolved.json before restoring.": {
+    "vi": "Gói xuất có bộ lọc có thể chứa tham chiếu ngoài phạm vi đã chọn; kiểm tra reference/unresolved.json trước khi khôi phục.",
+    "de": "Gefilterte Exporte können Verweise außerhalb der Auswahl enthalten; prüfen Sie reference/unresolved.json vor der Wiederherstellung."
+  },
+  "Restore this format through an operator into an isolated database; the existing ZIP import screens accept different portable/emergency formats.": {
+    "vi": "Định dạng này cần người vận hành khôi phục vào cơ sở dữ liệu riêng để kiểm tra; màn hình nhập ZIP hiện có dùng định dạng di động/khẩn cấp khác.",
+    "de": "Dieses Format muss durch einen Administrator in einer isolierten Datenbank wiederhergestellt werden; die vorhandenen ZIP-Importmasken verwenden andere portable bzw. Notfallformate."
+  },
+  "Account links are removed; free text, URLs and original content IDs are retained. Review before sharing.": {
+    "vi": "Đã bỏ liên kết tài khoản; vẫn giữ văn bản tự do, URL và mã nội dung gốc. Xem lại trước khi chia sẻ.",
+    "de": "Kontoverknüpfungen werden entfernt; Freitext, URLs und ursprüngliche Inhalts-IDs bleiben erhalten. Vor dem Teilen prüfen."
+  },
+  "Uploaded file bytes are excluded; this archive alone cannot restore media.": {
+    "vi": "Không xuất dữ liệu nhị phân của tệp tải lên; chỉ gói này không thể khôi phục tệp đa phương tiện.",
+    "de": "Hochgeladene Dateiinhalte sind ausgeschlossen; mit diesem Archiv allein lassen sich Medien nicht wiederherstellen."
+  },
+  "Source packages are excluded from filtered exports to avoid embedding content outside the selected scope.": {
+    "vi": "Các gói nguồn bị loại khỏi gói xuất có bộ lọc để tránh kèm nội dung ngoài phạm vi đã chọn.",
+    "de": "Quellpakete werden bei gefilterten Exporten ausgeschlossen, damit keine Inhalte außerhalb des ausgewählten Umfangs eingebettet werden."
+  },
+  "System packages are excluded from account-scoped/private exports; module-filtered packages contain selected sections only. Public exports contain unmaterialized public reading sections only.": {
+    "vi": "Các gói hệ thống bị loại khỏi gói xuất theo tài khoản hoặc nội dung riêng tư; gói được lọc theo mô-đun chỉ chứa các phần đã chọn. Gói xuất công khai chỉ kèm các phần đọc công khai chưa được tạo thành bài học riêng.",
+    "de": "Systempakete sind bei kontobezogenen bzw. privaten Exporten ausgeschlossen; nach Modulen gefilterte Pakete enthalten nur ausgewählte Bereiche. Öffentliche Exporte enthalten nur noch nicht als eigene Lektionen angelegte öffentliche Lesebereiche."
+  },
+  "Learning history belongs to the selected learners and may reference content by other authors. References outside the export are documented in reference/unresolved.json.": {
+    "vi": "Lịch sử học thuộc các tài khoản người học đã chọn và có thể tham chiếu nội dung của tác giả khác. Các tham chiếu ngoài gói xuất được ghi trong reference/unresolved.json.",
+    "de": "Der Lernverlauf gehört zu den ausgewählten Lernenden und kann auf Inhalte anderer Autoren verweisen. Verweise außerhalb des Exports werden in reference/unresolved.json dokumentiert."
+  },
+  "Flashcard folders": {
+    "vi": "Thư mục thẻ từ",
+    "de": "Karteikartenordner"
+  },
+  "Flashcard decks": {
+    "vi": "Bộ thẻ từ",
+    "de": "Karteikartensätze"
+  },
+  "Flashcard speech recordings": {
+    "vi": "Bản ghi giọng đọc thẻ",
+    "de": "Sprachaufnahmen für Karteikarten"
+  },
+  "Flashcard learning progress": {
+    "vi": "Tiến độ học thẻ",
+    "de": "Karteikarten-Lernfortschritt"
+  },
+  "Flashcard answers": {
+    "vi": "Lượt trả lời thẻ",
+    "de": "Karteikartenantworten"
+  },
+  "Deck learning state": {
+    "vi": "Trạng thái học bộ thẻ",
+    "de": "Lernstatus der Kartensätze"
+  },
+  "Study sessions": {
+    "vi": "Phiên học",
+    "de": "Lernsitzungen"
+  },
+  "Learning activity history": {
+    "vi": "Lịch sử hoạt động học",
+    "de": "Lernaktivitätsverlauf"
+  },
+  "Flashcard import history": {
+    "vi": "Lịch sử nhập thẻ",
+    "de": "Karteikarten-Importverlauf"
+  },
+  "Matching game rounds": {
+    "vi": "Lượt chơi ghép cặp",
+    "de": "Zuordnungsspielrunden"
+  },
+  "Deck edit history": {
+    "vi": "Lịch sử chỉnh sửa bộ thẻ",
+    "de": "Bearbeitungsverlauf der Kartensätze"
+  },
+  "Practice exercises and theory": {
+    "vi": "Bài tập và lý thuyết luyện tập",
+    "de": "Übungen und Theorie"
+  },
+  "Uploaded learning media": {
+    "vi": "Tệp đa phương tiện học tập đã tải lên",
+    "de": "Hochgeladene Lernmedien"
+  },
+  "Practice progress": {
+    "vi": "Tiến độ luyện tập",
+    "de": "Übungsfortschritt"
+  },
+  "Practice answers": {
+    "vi": "Lượt trả lời bài tập",
+    "de": "Übungsantworten"
+  },
+  "Reading lessons": {
+    "vi": "Bài đọc",
+    "de": "Leselektionen"
+  },
+  "Reading progress": {
+    "vi": "Tiến độ đọc",
+    "de": "Lesefortschritt"
+  },
+  "System content packages": {
+    "vi": "Gói nội dung hệ thống",
+    "de": "Systeminhaltspakete"
+  },
+  "Content package import history": {
+    "vi": "Lịch sử nhập gói nội dung",
+    "de": "Importverlauf der Inhaltspakete"
+  },
+  "Classrooms": {
+    "vi": "Lớp học",
+    "de": "Klassen"
+  },
+  "Classroom assignments": {
+    "vi": "Bài tập được giao trong lớp",
+    "de": "Klassenaufgaben"
+  },
+  "Account profiles": {
+    "vi": "Hồ sơ tài khoản",
+    "de": "Kontoprofile"
+  },
+  "Saved appearance themes": {
+    "vi": "Giao diện đã lưu",
+    "de": "Gespeicherte Designs"
+  },
+  "Permission groups": {
+    "vi": "Nhóm phân quyền",
+    "de": "Berechtigungsgruppen"
+  },
+  "Account permissions": {
+    "vi": "Quyền tài khoản",
+    "de": "Kontoberechtigungen"
+  },
+  "Permission resource types": {
+    "vi": "Loại tài nguyên phân quyền",
+    "de": "Ressourcentypen für Berechtigungen"
+  },
+  "Administrator audit history": {
+    "vi": "Lịch sử thao tác quản trị",
+    "de": "Administrationsprotokoll"
+  },
+  "System check history": {
+    "vi": "Lịch sử kiểm tra hệ thống",
+    "de": "Systemprüfungsverlauf"
+  },
+  "Website appearance": {
+    "vi": "Giao diện website",
+    "de": "Website-Design"
+  },
+  "Content policies": {
+    "vi": "Chính sách nội dung",
+    "de": "Inhaltsrichtlinien"
+  },
+  "Administrator export guide": {
+    "vi": "Hướng dẫn xuất và khôi phục dữ liệu cho admin",
+    "de": "Admin-Anleitung für Export und Wiederherstellung"
+  },
+  "Download administrator guide": {
+    "vi": "Tải hướng dẫn dành cho admin",
+    "de": "Admin-Anleitung herunterladen"
   }
 }

@@ -1424,6 +1424,46 @@
           "response": []
         },
         {
+          "name": "POST /api/manage/backups/site/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRFToken",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}"
+              },
+              {
+                "key": "Referer",
+                "value": "{{baseUrl}}/"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/manage/backups/site/",
+            "description": "Permission: Admin\n\nSUPERUSER ONLY. Documented site ZIP export. POST scope=all/filtered/selected; same account filters as emergency export. dataset=learning/accounts/full; identity=anonymous/linked (accounts, credentials and progress require linked). visibility=all/public/private; modules=cards,practice,reading; language empty/de/en; date_from/date_to YYYY-MM-DD filter updated_at or created_at. include_media defaults true; include_progress/include_audit/include_credentials default false. preview=true returns per-model counts; remove preview and send confirm=EXPORT for binary ZIP. The archive contains JSON model records, uploaded media, SHA-256 manifest, schema, index, unresolved references and Vietnamese/English recovery/analysis instructions. Account-detached learning removes structured identity relations and selection query/IDs from manifest, but retains free text and content IDs. Full-site packages are included for scope all; module filters project selected sections. Public-only packages retain unmaterialized reading sections. Exports are audited and bounded to 2 GiB/500,000 records. This format uses operator-led recovery and is not accepted by the existing portable/emergency ZIP import screens.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scope\": \"all\",\n  \"dataset\": \"learning\",\n  \"identity\": \"anonymous\",\n  \"visibility\": \"all\",\n  \"modules\": [\n    \"cards\",\n    \"practice\",\n    \"reading\"\n  ],\n  \"include_media\": true,\n  \"include_progress\": false,\n  \"preview\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
           "name": "POST /api/manage/backups/",
           "request": {
             "method": "POST",

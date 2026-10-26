@@ -4,7 +4,7 @@ from api import flashcard_discovery
 from api import content_import_api, content_import_docs
 from api import content_packages
 from api import reading, reading_discovery
-from api import admin_backups, admin_restore
+from api import admin_backups, admin_restore, site_exports
 from api import backups
 from api import api_reference, management_center, management_data, personal_appearance, monitoring, themes, backgrounds
 from django.urls import path,re_path
@@ -18,7 +18,7 @@ def health(request):
     from django.conf import settings
     identity=hashlib.sha256(str(settings.BASE_DIR).lower().encode()).hexdigest()[:16]
     import os
-    response = JsonResponse({'app':'Wortify','workspace':identity,'version':'1.13.0','revision':os.environ.get('RENDER_GIT_COMMIT',''),'features':['guest-learning','flashcard-discovery','content-import','content-policy','flashcard-dictation','flexible-answer-checking','flashcard-library-management']})
+    response = JsonResponse({'app':'Wortify','workspace':identity,'version':'1.14.0','revision':os.environ.get('RENDER_GIT_COMMIT',''),'features':['guest-learning','flashcard-discovery','content-import','content-policy','flashcard-dictation','flexible-answer-checking','flashcard-library-management','documented-site-export']})
     response['Cache-Control']='no-store'
     return response
 urlpatterns=[path("api/site/content-policy/",content_policy.current),path("api/manage/content-policy/",content_policy.settings),path("api/import/guide/",content_import_docs.guide),path("api/import/openapi/",content_import_docs.openapi),path("api/manage/import-api/",content_import_api.settings),path("api/import/content/",content_import_api.upload),path('api/me/language/',interface_language),path('api/superuser-registration/<slug:setup_key>/',superuser_registration),path('api/health/',health),path('api/session/',session),
@@ -38,7 +38,7 @@ urlpatterns=[path("api/site/content-policy/",content_policy.current),path("api/m
  path('api/me/backgrounds/<int:pk>/',backgrounds.remove),
  path('api/me/background/',personal_appearance.background),
  path('api/me/background/image/',personal_appearance.image),
- path('api/manage/content-packages/',content_packages.upload),path('api/manage/backups/import/',admin_restore.restore),path('api/manage/backups/',admin_backups.emergency),
+ path('api/manage/content-packages/',content_packages.upload),path('api/manage/backups/import/',admin_restore.restore),path('api/manage/backups/site/',site_exports.export_site),path('api/manage/backups/',admin_backups.emergency),
  path('api/manage/summary/',management_center.summary),
  path('api/manage/api-docs/',api_reference.reference),
  path('api/manage/activity/',management_center.activity),

@@ -367,6 +367,31 @@ SUPERUSER ONLY. Multipart file=emergency ZIP; preview=true validates accounts an
 
 Multipart: file (file), preview (text)
 
+## POST /api/manage/backups/site/
+
+**Permission:** Admin
+
+SUPERUSER ONLY. Documented site ZIP export. POST scope=all/filtered/selected; same account filters as emergency export. dataset=learning/accounts/full; identity=anonymous/linked (accounts, credentials and progress require linked). visibility=all/public/private; modules=cards,practice,reading; language empty/de/en; date_from/date_to YYYY-MM-DD filter updated_at or created_at. include_media defaults true; include_progress/include_audit/include_credentials default false. preview=true returns per-model counts; remove preview and send confirm=EXPORT for binary ZIP. The archive contains JSON model records, uploaded media, SHA-256 manifest, schema, index, unresolved references and Vietnamese/English recovery/analysis instructions. Account-detached learning removes structured identity relations and selection query/IDs from manifest, but retains free text and content IDs. Full-site packages are included for scope all; module filters project selected sections. Public-only packages retain unmaterialized reading sections. Exports are audited and bounded to 2 GiB/500,000 records. This format uses operator-led recovery and is not accepted by the existing portable/emergency ZIP import screens.
+
+Body POST:
+
+```json
+{
+  "scope": "all",
+  "dataset": "learning",
+  "identity": "anonymous",
+  "visibility": "all",
+  "modules": [
+    "cards",
+    "practice",
+    "reading"
+  ],
+  "include_media": true,
+  "include_progress": false,
+  "preview": true
+}
+```
+
 ## POST /api/manage/backups/
 
 **Permission:** Admin

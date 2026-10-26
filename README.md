@@ -2,6 +2,10 @@
 
 Ứng dụng học tiếng Anh/Đức: Django API trong `Backend/`, React/Vite trong `Frontend/`.
 
+## Hướng dẫn admin
+
+Phiên bản 1.14.0: xem [hướng dẫn xuất, sao lưu và khôi phục dữ liệu](ADMIN_BACKUPS.md). Hướng dẫn có thể đọc/tải trực tiếp tại Quản trị → Sao lưu & nhập.
+
 ## Chạy local
 
 Yêu cầu Python 3.12+ và Node.js 22.12+.

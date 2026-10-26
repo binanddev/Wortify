@@ -1,5 +1,16 @@
 # Change Log
 
+### [v1.14.0] - 2026-10-26 | Documented administrator data exports
+
+- Added a superuser-only website exporter with presets for all learning content, public learning content, content with accounts, and accounts only. Support account search/role/status filters, selection across pages, visibility, learning modules, language and date ranges, with optional account references, uploaded media, progress, audit history and password hashes.
+- Preserve Flashcard answers/variants, Practice exercises/theory, Reading lessons, folder trees and system source packages, including readings not yet attached to accounts. Retain selected learners' progress on other authors' eligible content and document external references. Keep private ancestor contents out of public-only exports.
+- Package UTF-8 model data and optional media with SHA-256 checksums, schema, CSV index, migration inventory, recovery/analysis instructions and reference mappings. Bound exports to 2 GiB, 500,000 records and fewer than 100,000 files; missing media fails the export instead of silently producing an incomplete archive.
+- Added a downloadable administrator guide in Vietnamese, English and German directly in Backup & import, covering presets, account scope, examples, archive contents, recovery formats and troubleshooting. Updated the standalone Vietnamese guide, API reference and Postman collection. Existing emergency account export/import remains available in a separate expandable panel.
+- Recovery: the new wortify-site-export format requires operator-led recovery into an isolated database/storage environment. It is not accepted by the existing ZIP importer. Account-detached exports retain free text/content IDs and must be reviewed before sharing. Source code, static assets, deployment configuration and secrets require separate backups; no schema migration is added.
+- Validation: 66 targeted backend tests and 184 frontend tests passed; production build and Django system checks passed. Tests cover access control, filters, detached/linked identity, source packages, cross-account progress, media, checksums, documentation and compatibility with existing backup/restore. PostgreSQL/live deployment has not been verified.
+
+---
+
 ### 2026-10-24 | Compact Flashcard discovery navigation
 
 - Keep Discover search input and its fixed-size submit button on one row, with explicit sidebar sizing that also works with Notebook paper controls. Recent searches use a single-line header, quiet clear action and compact history rows; long queries truncate visually while retaining the full accessible text/title.

@@ -1,3 +1,4 @@
+import SiteExport from './SiteExport.jsx';
 import { t as tr, useLocale } from "../../i18n/index.js";
 import BackupImport from './BackupImport.jsx';
 import {useState,useEffect} from 'react';
@@ -5,7 +6,7 @@ import {request,useResource} from '../../lib/core.js';
 import {Btn,Field,Select,Loading,Status} from '../../components/ui/ui.jsx';
 import {Pagination,roleName} from './shared.jsx';
 
-export default function EmergencyBackups(){
+function LegacyEmergencyBackups(){
   useLocale();
  const [q,setQ]=useState(''),[role,setRole]=useState(''),[status,setStatus]=useState(''),[page,setPage]=useState(1),[ids,setIds]=useState([]),[scope,setScope]=useState('selected');
  const [media,setMedia]=useState(true),[audit,setAudit]=useState(true),[credentials,setCredentials]=useState(false),[preview,setPreview]=useState(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
@@ -45,4 +46,16 @@ export default function EmergencyBackups(){
   })}>{tr("Download emergency ZIP")}</Btn></div>}
   {busy&&<p role="status">{tr("Preparing export. Keep this page open…")}</p>}
  </section>;
+}
+
+export default function EmergencyBackups() {
+  useLocale();
+  return <section>
+    <SiteExport />
+    <details className="admin-backup-detail">
+      <summary>{tr("Emergency account backup and import")}</summary>
+      <p>{tr("Use this separate format to restore new accounts through the existing ZIP importer. Site exports include their own recovery documentation.")}</p>
+      <LegacyEmergencyBackups />
+    </details>
+  </section>;
 }

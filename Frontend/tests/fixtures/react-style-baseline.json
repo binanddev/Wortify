@@ -284,8 +284,8 @@
     "sha256": "1cc68b8921f17f955331fc255e2ba73f1c2ee5025a1046e24607e429de608d10"
   },
   "--tw-font-weight": {
-    "count": 85,
-    "sha256": "fc50226a734938b546b7d7195c53ec59ab90835d4034a130594c814481d98718"
+    "count": 88,
+    "sha256": "f61724af1da01bdda73d74423eea1c29f6213fdff26170dfa48bf76436f3c193"
   },
   "--tw-gradient-from": {
     "count": 25,
@@ -368,8 +368,8 @@
     "sha256": "243162ef2844ea47fc7f1094ea095932e41a216b2731b479b895193cb829bb65"
   },
   "--tw-numeric-spacing": {
-    "count": 7,
-    "sha256": "a16e12e6215f80b6de2015f9ede574925eb5e2a065b00c501c4ee70b9ba05d84"
+    "count": 8,
+    "sha256": "35c04cf9fb40f95a6da5410cf32873a50d2327af42c010fd5d254d53aeaa3063"
   },
   "--tw-opacity": {
     "count": 1,
@@ -472,8 +472,8 @@
     "sha256": "4208f4cd7bcad567310b0ace0457046e000f557491374fd6e175abb055a88dc4"
   },
   "alignment": {
-    "count": 450,
-    "sha256": "04ba681ee81cf902a23cdc2df4eb3dabb99e522da6e009ad3a233b22e6611e84"
+    "count": 451,
+    "sha256": "ccda1c0a7a1cf9158b80981ac4f26e253af8161d9cf31091a01b4d6a680ea636"
   },
   "animation": {
     "count": 42,
@@ -500,8 +500,8 @@
     "sha256": "1ee7ce0e9f6e9fe6847d1c6570c0073665e93b248bd5cc503eeb47ada040cd84"
   },
   "border": {
-    "count": 1618,
-    "sha256": "a7231c396a05edbb162e213a62fb242ab4dac32d71f938ae3779f8e9f2b36c1f"
+    "count": 1621,
+    "sha256": "32d66944d88a89de9fc1ae8707317ee5a9759aae0d2082797a99cbc4b2974344"
   },
   "box": {
     "count": 350,
@@ -532,12 +532,12 @@
     "sha256": "418f5de911c49c60f257eb1466ff889b1a59fc2f84effaf72a6a590b1356aac4"
   },
   "cursor": {
-    "count": 72,
-    "sha256": "e3700cab626725baa35639a101201438d1469ebc90913b83b6298d8c3f2629e0"
+    "count": 73,
+    "sha256": "473115dc627d3494b8cc91fdb0525eada4f28aa177cbe1ddbc5c10a0864e8c3e"
   },
   "display": {
-    "count": 696,
-    "sha256": "acd3890c0bb40e767f5c6da5c378cf6b35a83c33b33ad4bc95060e7181d09bec"
+    "count": 700,
+    "sha256": "8b5b8c140b124b21fe115dd1d985699024f67dcd25731db5e427b9e2195d0d7b"
   },
   "fill": {
     "count": 1,
@@ -548,24 +548,24 @@
     "sha256": "e3608a7f92a4114c2b2969a3b3ca039d2debe54c389f849519811867eb070f99"
   },
   "flex": {
-    "count": 256,
-    "sha256": "7014fb2210e377423007976223431c7004103e9fec6fd1991594b0cdad81f239"
+    "count": 257,
+    "sha256": "982bded632c8a38de1f701a4323389b3548d6ced4920bec00a71ad489e815aed"
   },
   "float": {
     "count": 3,
     "sha256": "b6c3cbb00525689a2701b0c1da85ed57e9d31844afece0c1271f30b823f4dd12"
   },
   "font": {
-    "count": 1445,
-    "sha256": "a97fbdbe83ea21d781211db1c1c10f6f87c77f84e1a2ebc2bdf3ad6135825bfc"
+    "count": 1453,
+    "sha256": "ec2887a7e107d35a08e4b38f81a26c1612d53774019642820ca5372ee88fc5b0"
   },
   "gap": {
-    "count": 512,
-    "sha256": "04e7e79fae7095df567aaac3f8720345ec7081726a5a7fcd5e5f3f9e06b42dff"
+    "count": 516,
+    "sha256": "5b0811dbfac2879bf50d4917ae64aac622564f69168301c0e1298501430f0eab"
   },
   "grid": {
-    "count": 163,
-    "sha256": "42882d4b11d42f7c0a690d63487b8a62ec61c2bf6e3cedd4c0b25ff995537195"
+    "count": 167,
+    "sha256": "ae7cf46dee169021e004f1de63a2fbf60070af8d39d769928bc1049d1235c32b"
   },
   "height": {
     "count": 239,
@@ -628,8 +628,8 @@
     "sha256": "31b53138ddd0d5b4a21104a48b6a6e08fb71b6d7b45ff24c91ba6f1bf08e817c"
   },
   "margin": {
-    "count": 531,
-    "sha256": "0c8995a993d07081fded5e1597514213a5004885697753dd830dee8986c6fc9a"
+    "count": 534,
+    "sha256": "c3d67eeddcb2492732bef825ea73e9c53561112411c4f19e7c026f9041fee6bb"
   },
   "mask": {
     "count": 1,
@@ -672,8 +672,8 @@
     "sha256": "266a2f1bf68950fc7123bb53a7620940ab01e37b8a81c74dae526847d7858190"
   },
   "padding": {
-    "count": 722,
-    "sha256": "ad0c9e26d1dade4a955d591baa158ad7ed2da86acdcaf4f99be781baf11b7eed"
+    "count": 723,
+    "sha256": "aa3abeb90e00a317a902ba73d0e19d346acc2023314efbf8e4653715bc18343a"
   },
   "perspective": {
     "count": 3,
@@ -776,8 +776,8 @@
     "sha256": "ac40272c1fc18cd31d010aa599d8119bc9a816e2ec3e35676fa19775924d66a8"
   },
   "word": {
-    "count": 3,
-    "sha256": "8135a638225c63f12038d1b181a94f41d08dd94f52a608de079cd255fd83cb54"
+    "count": 4,
+    "sha256": "5319ac7cb07a48c19c1205e6c227e89bceee914fbd78fbf6743104325015bd73"
   },
   "z": {
     "count": 54,

@@ -99,3 +99,12 @@
 :root[data-interface="admin"] .admin-column-options { @apply grid gap-2 p-2 min-w-40 text-[13px]; }
 :root[data-interface="admin"] .admin-column-options label { @apply flex items-center gap-2; }
 :root[data-interface="admin"] .admin-column-heading .admin-filter-trigger { @apply flex items-center justify-center w-6! h-6!; }
+
+.admin-export-presets { @apply flex flex-wrap gap-2 my-5; }
+.admin-export-presets legend { @apply text-sm font-semibold mb-2; }
+.admin-export-modules { @apply grid gap-3 sm:grid-cols-2 lg:grid-cols-4; }
+.admin-export-counts { @apply grid gap-2 my-4 sm:grid-cols-2 lg:grid-cols-3; }
+.admin-export-counts > div { @apply flex justify-between gap-3 border-b border-(--line) py-2; }
+.admin-export-counts dt { @apply text-sm break-all; }
+.admin-export-counts dd { @apply font-semibold tabular-nums; }
+.admin-backup-detail > summary { @apply cursor-pointer font-semibold; }
