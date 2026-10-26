@@ -1,5 +1,14 @@
 # Change Log
 
+### 2026-10-26 | Compact Reading discovery
+
+- Redesigned Reading Discover with a compact search/filter toolbar, an on-demand filter dialog with Apply/Cancel and visible removable active criteria. Keep the existing level/topic/source/search contract and 24-item pages.
+- Reading-only cards use a book/source/optional level header, previewable title, one labelled Study/Continue action and quiet preview/save icons. Saved copies retain their existing ID and learning progress; guest study remains a public preview and guest saves request an account. Failed saves remain visible inside the preview dialog and can be retried.
+- Replaced the Discover page's stretched icon link with compact labelled Reading navigation. All added CSS is scoped to Reading discovery classes; Flashcard/Practice components and shared controls are unchanged. Added manual EN/VI/DE labels.
+- Validation: 184 frontend tests, 9 Reading discovery backend tests and production build passed. Static interaction coverage includes filter apply/cancel/reset/chips, page reset, 24+1 pages, saved-copy reuse, preview, error/retry and guest flows. Existing Flashcard mobile navigation and Practice metadata/preview regression fixtures passed. Reading desktop checks passed across all six themes, with additional narrow-layout coverage. The global interface fixture still reports the pre-existing auto-contrast background-change failure, reproduced after removing all new Reading CSS; that unrelated implementation is untouched. User reviewed the change and approved commit/push. No application server or deployment test was used.
+
+---
+
 ### [v1.14.0] - 2026-10-26 | Documented administrator data exports
 
 - Added a superuser-only website exporter with presets for all learning content, public learning content, content with accounts, and accounts only. Support account search/role/status filters, selection across pages, visibility, learning modules, language and date ranges, with optional account references, uploaded media, progress, audit history and password hashes.

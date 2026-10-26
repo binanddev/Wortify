@@ -6622,5 +6622,21 @@
   "Download administrator guide": {
     "vi": "Tải hướng dẫn dành cho admin",
     "de": "Admin-Anleitung herunterladen"
+  },
+  "Explore readings": {
+    "vi": "Khám phá bài đọc",
+    "de": "Lesetexte entdecken"
+  },
+  "Active filters": {
+    "vi": "Bộ lọc đang dùng",
+    "de": "Aktive Filter"
+  },
+  "Remove filter: {name}": {
+    "vi": "Bỏ bộ lọc: {name}",
+    "de": "Filter entfernen: {name}"
+  },
+  "Reading pages": {
+    "vi": "Các trang bài đọc",
+    "de": "Lesetextseiten"
   }
 }

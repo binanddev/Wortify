@@ -57,3 +57,58 @@
 :root[data-interface="studio"] .reading-option { @apply rounded-xl bg-(--surface); }
 
 .reading-library { @apply grid gap-4 md:grid-cols-2; }
+
+/* Discover-only surfaces; Flashcard, Practice and reading lessons keep their styles. */
+:root body .reading-discover-page > h1 { @apply text-[clamp(28px,3vw,36px)] font-semibold leading-tight mb-5; }
+.reading-discover { @apply grid gap-4 min-w-0; }
+.reading-discover-links { @apply grid gap-1 min-w-0; }
+:root body .reading-discover-links > a { @apply grid grid-cols-[18px_minmax(0,1fr)] items-center gap-2.5 min-h-9 px-2.5 py-2 rounded-lg text-[13px] leading-5 font-medium no-underline text-inherit; }
+.reading-discover-links > a > span { @apply min-w-0 truncate; }
+:root body .reading-discover-links svg.app-icon { @apply w-[18px] h-[18px] min-w-[18px] p-0 m-0 text-current bg-transparent; }
+.reading-discover-links > a[aria-current="page"],.reading-discover-links > a:hover { @apply bg-[color-mix(in_srgb,currentColor_9%,transparent)]; }
+.reading-discover-search { @apply grid grid-cols-[minmax(0,1fr)_44px_44px] items-center gap-2 min-w-0; }
+.reading-discover-search .native-field { @apply m-0 min-w-0; }
+:root body .reading-discover-search .native-field-wrap { @apply box-border min-h-11 h-11 text-sm px-3; }
+:root body .reading-discover-search input { @apply box-border min-w-0 w-full h-full min-h-0 py-0; }
+:root body .reading-discover-search > .btn { @apply w-11 min-w-11 max-w-11 h-11 min-h-11 p-0 rounded-xl; }
+.reading-discover-summary { @apply flex flex-wrap items-center gap-3 min-w-0 text-sm; }
+.reading-discover-count { @apply text-(--muted) text-xs mr-auto; }
+.reading-discover-active { @apply flex flex-wrap items-center gap-2 min-w-0; }
+.reading-discover-active > button:not(.btn) { @apply inline-flex items-center gap-1.5 px-2 py-1 max-w-52 min-w-0 rounded-lg bg-(--surface) text-(--ink) text-xs; }
+.reading-discover-active > button > span { @apply min-w-0 truncate; }
+.reading-discover-active svg { @apply shrink-0; }
+:root body .reading-discover-clear.btn { @apply w-auto min-w-0 h-8 min-h-8 p-1 text-xs bg-transparent shadow-none; }
+.reading-discover-grid { @apply grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-5; }
+.reading-discover-card { @apply min-w-0 h-full border border-(--line) rounded-2xl bg-(--solid) text-(--ink) shadow-sm; }
+.reading-discover-card > .glass-body { @apply flex flex-col gap-3 p-5; }
+.reading-discover-card-top { @apply flex items-center gap-2.5 min-w-0; }
+.reading-discover-icon { @apply flex items-center justify-center w-10 h-10 rounded-xl bg-(--surface) text-(--accent) shrink-0; }
+.reading-discover-source { @apply min-w-0 truncate text-xs text-(--muted); }
+.reading-discover-level { @apply ml-auto text-[11px] font-medium rounded-full py-1 px-2 bg-(--surface) text-(--ink) shrink-0; }
+:root body .reading-discover-title { @apply text-left text-base font-semibold leading-snug min-w-0 line-clamp-2 bg-transparent border-0 p-0 m-0 text-inherit; }
+.reading-discover-topic { @apply text-xs text-(--muted) m-0 truncate; }
+.reading-discover-card-actions { @apply flex items-center gap-2 mt-auto pt-3; }
+:root body .reading-discover-card-actions > .btn { @apply w-10 min-w-10 max-w-10 h-10 min-h-10 p-0 rounded-lg; }
+:root body .reading-discover-card-actions > .btn.primary { @apply w-auto max-w-none flex-1 min-w-0 px-3 gap-2 text-sm; }
+.reading-discover-card-actions > .btn.primary > span { @apply truncate; }
+.reading-discover-card-actions svg.app-icon { @apply w-[18px] h-[18px]; }
+.reading-discover-notice { @apply flex items-center gap-2 text-sm text-(--muted) m-0; }
+.reading-discover-empty { @apply border border-dashed border-(--line) rounded-2xl py-10 px-5 text-center text-sm text-(--muted); }
+.reading-discover-empty > svg { @apply mx-auto mb-3; }
+.reading-discover-empty > p { @apply mb-3; }
+.reading-discover-pagination { @apply flex items-center justify-center gap-3 border-t border-(--line) pt-5 text-sm; }
+.reading-discover-pagination > .btn { @apply w-10 min-w-10 h-10 min-h-10 p-0; }
+.reading-discover-filter-form { @apply grid gap-4; }
+.reading-discover-filter-form .field { @apply m-0; }
+.reading-discover-filter-footer { @apply flex flex-wrap items-center gap-2 pt-3 border-t border-(--line); }
+.reading-discover-filter-footer > .reading-discover-reset { @apply mr-auto; }
+.reading-discover-filters > header { @apply text-base border-b border-(--line); }
+.reading-discover-preview-actions { @apply flex flex-wrap items-center justify-end gap-2 mb-3; }
+.reading-discover-preview-actions > .btn { @apply gap-2 text-sm; }
+@media (max-width:640px),(pointer:coarse) {
+  :root body .reading-discover-links > a { @apply min-h-11; }
+  .reading-discover-active > button:not(.btn) { @apply min-h-11; }
+  :root body .reading-discover-clear.btn { @apply min-h-11; }
+  :root body .reading-discover-card-actions > .btn { @apply min-w-11 w-11 max-w-11 h-11 min-h-11; }
+  :root body .reading-discover-card-actions > .btn.primary { @apply min-w-0 w-auto max-w-none; }
+}

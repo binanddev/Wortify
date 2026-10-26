@@ -79,12 +79,18 @@ export default function ReadingWorkspace({ lang, route, userId, sound, onRequire
     setText(textTemplate("reading")); setDraft(null); setPreview(false);
   }
   if (passageOnly) return <Page><h1>{lesson?.title || tr("Reading")}</h1>{message && <p role="status">{message}</p>}{lesson && <ReadingPassage exercise={lesson.payload}/>}</Page> ;
-  return <Page><SidebarTools navOnly><nav className="reading-navigation" aria-label={tr("Reading tools")}>
+  return <Page className={discovering ? "reading-discover-page" : ""}><SidebarTools navOnly><nav className="reading-navigation" aria-label={tr("Reading tools")}>
+    {discovering ? <div className="reading-discover-links">
+      <Link to={`/${lang}/reading`}><Icon name="book" size={18}/><span>{tr("My readings")}</span></Link>
+      <Link to={`/${lang}/reading/discover`} aria-current="page"><Icon name="explore" size={18}/><span>{tr("Explore")}</span></Link>
+      <Link to={`/${lang}/reading/create`}><Icon name="plus" size={18}/><span>{tr("Create reading")}</span></Link>
+    </div> : <>
     <div className="reading-nav-links">
       <Link to={`/${lang}/reading`} onClick={()=>setFolderId(null)} aria-current={!id && !creating && !discovering ? "page" : undefined}><Icon name="book"/>{tr(" My readings")}</Link>
       <Link to={`/${lang}/reading/create`} aria-current={creating ? "page" : undefined}><Icon name="plus"/>{tr(" Create reading")}</Link>
     </div>
     <Link className="btn guide-icon-link" to={`/${lang}/reading/discover`} aria-label={tr("Explore")} title={tr("Explore")} aria-current={discovering ? "page" : undefined}><Icon name="explore"/></Link>
+    </>}
     {authoring && <>
       <div className="reading-nav-tools" role="group" aria-label={tr("Import and authoring tools")}>
         <Btn icon="copy" isDisabled={busy} onClick={()=>act(copyGuide)}>{tr("Copy AI instructions")}</Btn>

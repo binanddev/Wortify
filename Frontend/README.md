@@ -327,3 +327,7 @@ Explore uses the existing bounded discovery API: 12 roots per page, or 12 immedi
 ## Flashcard Discover search
 
 Discover browses public folders and decks, searching deck title/description/level/topic/language, public author, folder ancestry/theory and card text. Exact matches lead typo/closest suggestions; hard level/topic filters remain enforced. Search history and visited folders are stored separately per account/language in the browser, with a clear-history control. Recent queries prioritize default folder browsing and break ties in active searches without overriding relevance. No migration is required.
+
+### Reading discovery layout
+
+Reading Discover uses a compact search/filter toolbar, modal filter drafts with Apply/Cancel, removable active criteria and one labelled Study/Continue action per card. Preview and save remain available as labelled icon actions. Discover navigation and every new style are scoped with `reading-discover-*`; the Reading editor/library, Flashcard and Practice views keep their existing markup/styles. The backend page size remains 24. After building, `node scripts/verify-reading-discover.mjs` supports `--mobile` and `--themes` using local HTML and mocked requests, with no server.
