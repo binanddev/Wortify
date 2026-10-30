@@ -1,11 +1,29 @@
+import { ClassGate, useAvailability, themeEnabled, MAINTENANCE_MESSAGE } from "../features/feature-availability.jsx";
+import { FeatureBoundary } from "../components/ui/feature-boundary.jsx";
+import { publicTeachingRoute } from "../features/teaching/public-route.js";
 import StaffTools from "../features/staff/StaffTools.jsx";
 import { configureStaffWorkspace } from "../lib/staff-workspace.js";
-import {guestRoute} from "./guest-route.js";
-const PublicPracticeLesson = lazy(() => import('./public-practice-lesson.jsx').then(module => ({default:module.PublicPracticeLesson})));
+import { guestRoute } from "./guest-route.js";
+const PublicTeachingBoard = lazy(
+  () => import("../features/teaching/PublicTeachingBoard.jsx"),
+);
+const PublicPracticeLesson = lazy(() =>
+  import("./public-practice-lesson.jsx").then((module) => ({
+    default: module.PublicPracticeLesson,
+  })),
+);
 import { PracticeModal } from "../features/practice/practice-workspace.jsx";
 
 import { t as tr, setLanguage, useLocale } from "../i18n/index.js";
-import { ReadingWorkspace, Explore, ExerciseStudio, PracticeGuide, FlashcardStudio, PracticeHub, Admin } from "./workspace-pages.js";
+import {
+  ReadingWorkspace,
+  Explore,
+  ExerciseStudio,
+  PracticeGuide,
+  FlashcardStudio,
+  PracticeHub,
+  Admin,
+} from "./workspace-pages.js";
 import PracticeArea from "../features/practice/PracticeArea.jsx";
 import { practiceArea } from "../features/practice/practice-area.js";
 import CrtOverlay from "../themes/rpg/CrtOverlay.jsx";
@@ -56,13 +74,40 @@ import {
   Status,
   Link,
 } from "../components/ui/ui.jsx";
-const FlashcardDiscover = lazy(() => import('../features/flashcards/flashcard-discover.jsx'));
-const Library = lazy(() => import('../features/flashcards/library.jsx').then(module => ({default:module.Library})));
-const Deck = lazy(() => import('../features/flashcards/library.jsx').then(module => ({default:module.Deck})));
-const Session = lazy(() => import('../features/flashcards/study.jsx').then(module => ({default:module.Session})));
-const ExtraStudy = lazy(() => import('../features/flashcards/study.jsx').then(module => ({default:module.ExtraStudy})));
-const Community = lazy(() => import('../features/settings/learning.jsx').then(module => ({default:module.Community})));
-const Settings = lazy(() => import('../features/settings/learning.jsx').then(module => ({default:module.Settings})));
+const FlashcardDiscover = lazy(
+  () => import("../features/flashcards/flashcard-discover.jsx"),
+);
+const Library = lazy(() =>
+  import("../features/flashcards/library.jsx").then((module) => ({
+    default: module.Library,
+  })),
+);
+const Deck = lazy(() =>
+  import("../features/flashcards/library.jsx").then((module) => ({
+    default: module.Deck,
+  })),
+);
+const Session = lazy(() =>
+  import("../features/flashcards/study.jsx").then((module) => ({
+    default: module.Session,
+  })),
+);
+const ExtraStudy = lazy(() =>
+  import("../features/flashcards/study.jsx").then((module) => ({
+    default: module.ExtraStudy,
+  })),
+);
+const Community = lazy(() =>
+  import("../features/account/community.jsx").then((module) => ({
+    default: module.Community,
+  })),
+);
+const LearningProfile = lazy(() => import("../features/account/profile.jsx"));
+const Settings = lazy(() =>
+  import("../features/settings/learning.jsx").then((module) => ({
+    default: module.Settings,
+  })),
+);
 
 export default function App() {
   useLocale();
@@ -70,15 +115,24 @@ export default function App() {
     [user, setUser] = useState(undefined),
     [appearance, setAppearance] = useState({ background_url: "" }),
     [error, setError] = useState("");
-  const [accountPrompt,setAccountPrompt]=useState(false);
-  const requireAccount=()=>setAccountPrompt(true);
+  const [accountPrompt, setAccountPrompt] = useState(false);
+  const requireAccount = () => setAccountPrompt(true);
   useLayoutEffect(() => {
     if (user) setLanguage(user.preferences?.uiLanguage || "en");
   }, [user?.id, user?.preferences?.uiLanguage]);
   useEffect(() => {
-    const changed = e => setUser(old => old ? { ...old, preferences: { ...old.preferences, uiLanguage: e.detail } } : old);
+    const changed = (e) =>
+      setUser((old) =>
+        old
+          ? {
+              ...old,
+              preferences: { ...old.preferences, uiLanguage: e.detail },
+            }
+          : old,
+      );
     window.addEventListener("interface-language-changed", changed);
-    return () => window.removeEventListener("interface-language-changed", changed);
+    return () =>
+      window.removeEventListener("interface-language-changed", changed);
   }, []);
   configureStaffWorkspace(user);
   const isWorkspace = /^\/(en|de|manage)(\/|\?|$)/.test(route);
@@ -154,7 +208,8 @@ export default function App() {
           setAppearance({
             key: appearanceKey,
             data: {},
-            warning: "Unable to save the theme in this browser. Please sign in again.",
+            warning:
+              "Unable to save the theme in this browser. Please sign in again.",
           });
       });
     return () => {
@@ -167,13 +222,24 @@ export default function App() {
   const setupKey = /^\/setup-7f3c91d8\/([A-Za-z0-9_-]+)\/?$/.exec(
     route.split("?")[0],
   )?.[1];
+  const publicLesson = publicTeachingRoute(route);
+  if (publicLesson)
+    return (
+      <FeatureBoundary resetKey={route} label="Public lesson">
+        <Suspense fallback={<Status>{tr("Opening board…")}</Status>}>
+          <ClassGate><PublicTeachingBoard key={publicLesson.token} {...publicLesson} /></ClassGate>
+        </Suspense>
+      </FeatureBoundary>
+    );
   if (error)
     return (
       <div className="welcome">
         <Glass>
           <h1>{tr("Unable to connect")}</h1>
           <Status error={error} />
-          <Btn icon="refresh" onClick={() => location.reload()}>{tr("Reconnect")}</Btn>
+          <Btn icon="refresh" onClick={() => location.reload()}>
+            {tr("Reconnect")}
+          </Btn>
         </Glass>
       </div>
     );
@@ -195,16 +261,67 @@ export default function App() {
         }}
       />
     );
-  if (!user && /^\/(login|register)(?:\?|$)/.test(route)) return <Login key={route.split('?')[0]} initialRegister={route.startsWith('/register')} onLogin={created=>{setUser(created);setAccountPrompt(false);navigate(`/${activeLanguage}/flashcard/discover`);}}/>;
+  if (!user && /^\/(login|register)(?:\?|$)/.test(route))
+    return (
+      <Login
+        key={route.split("?")[0]}
+        initialRegister={route.startsWith("/register")}
+        onLogin={(created) => {
+          setUser(created);
+          setAccountPrompt(false);
+          navigate(`/${activeLanguage}/flashcard/discover`);
+        }}
+      />
+    );
   if (!user) {
-    if (!lang && parts[0] !== 'manage') return <Home />;
-    const guestLang=lang || 'de';
-    const guest={id:null,username:tr('Guest'),guest:true,preferences:{}};
-    return <><Workspace key={`guest:${guestLang}`} user={guest} setUser={setUser} lang={guestLang} parts={parts} route={route} appearance={{data:{}}} onRequireAccount={requireAccount}/>
-      {accountPrompt && <PracticeModal title={tr('Sign in to continue')} onClose={()=>setAccountPrompt(false)}>
-        <div className="flex gap-3"><Btn primary onClick={()=>{setAccountPrompt(false);navigate('/register');}}>{tr('Create account')}</Btn><Btn onClick={()=>{setAccountPrompt(false);navigate('/login');}}>{tr('Sign in')}</Btn></div>
-      </PracticeModal>}
-    </>;
+    if (!lang && parts[0] !== "manage") return <Home />;
+    const guestLang = lang || "de";
+    const guest = {
+      id: null,
+      username: tr("Guest"),
+      guest: true,
+      preferences: {},
+    };
+    return (
+      <>
+        <Workspace
+          key={`guest:${guestLang}`}
+          user={guest}
+          setUser={setUser}
+          lang={guestLang}
+          parts={parts}
+          route={route}
+          appearance={{ data: {} }}
+          onRequireAccount={requireAccount}
+        />
+        {accountPrompt && (
+          <PracticeModal
+            title={tr("Sign in to continue")}
+            onClose={() => setAccountPrompt(false)}
+          >
+            <div className="flex gap-3">
+              <Btn
+                primary
+                onClick={() => {
+                  setAccountPrompt(false);
+                  navigate("/register");
+                }}
+              >
+                {tr("Create account")}
+              </Btn>
+              <Btn
+                onClick={() => {
+                  setAccountPrompt(false);
+                  navigate("/login");
+                }}
+              >
+                {tr("Sign in")}
+              </Btn>
+            </div>
+          </PracticeModal>
+        )}
+      </>
+    );
   }
   if (appearance.key !== appearanceKey)
     return (
@@ -213,8 +330,19 @@ export default function App() {
         <p>{tr("Preparing your workspace…")}</p>
       </div>
     );
-  if (parts[0] === "manage" || (["en", "de"].includes(parts[0]) && parts[1] === "admin"))
-    return user.staff || user.superuser ? <Suspense fallback={<p>{tr("Opening administration…")}</p>}><Admin user={user} /></Suspense> : <Home {...{user,setUser}}><Status error="You do not have administrative access." /></Home>;
+  if (
+    parts[0] === "manage" ||
+    (["en", "de"].includes(parts[0]) && parts[1] === "admin")
+  )
+    return user.staff || user.superuser ? (
+      <Suspense fallback={<p>{tr("Opening administration…")}</p>}>
+        <Admin user={user} />
+      </Suspense>
+    ) : (
+      <Home {...{ user, setUser }}>
+        <Status error="You do not have administrative access." />
+      </Home>
+    );
   if (!lang) return <Home {...{ user, setUser }} />;
   return (
     <Workspace
@@ -224,9 +352,16 @@ export default function App() {
     />
   );
 }
-function Login({ onLogin, setupKey, initialRegister = false, compact = false }) {
+function Login({
+  onLogin,
+  setupKey,
+  initialRegister = false,
+  compact = false,
+}) {
   useLocale();
-  const [register, setRegister] = useState(Boolean(setupKey || initialRegister)),
+  const [register, setRegister] = useState(
+      Boolean(setupKey || initialRegister),
+    ),
     [values, setValues] = useState({
       username: "",
       password: "",
@@ -234,7 +369,7 @@ function Login({ onLogin, setupKey, initialRegister = false, compact = false }) 
       password2: "",
     }),
     action = useAction();
-  const [authenticated,setAuthenticated]=useState(null);
+  const [authenticated, setAuthenticated] = useState(null);
   const [setupState, setSetupState] = useState(setupKey ? "loading" : "ready");
   const [setupError, setSetupError] = useState("");
   const authEndpoint = setupKey
@@ -272,7 +407,10 @@ function Login({ onLogin, setupKey, initialRegister = false, compact = false }) 
             onSubmit={(e) => {
               e.preventDefault();
               action.run(async (s) => {
-                if(authenticated){await onLogin(authenticated);return;}
+                if (authenticated) {
+                  await onLogin(authenticated);
+                  return;
+                }
                 const d = await request(
                   authEndpoint,
                   "POST",
@@ -318,7 +456,11 @@ function Login({ onLogin, setupKey, initialRegister = false, compact = false }) 
               className="btn primary full"
               isLoading={action.pending}
             >
-              {authenticated ? tr("Retry") : register ? tr("Create account") : tr("Sign in")}
+              {authenticated
+                ? tr("Retry")
+                : register
+                  ? tr("Create account")
+                  : tr("Sign in")}
               <Icon name="arrow" />
             </Btn>
           </form>
@@ -356,13 +498,25 @@ function Brand() {
     </Link>
   );
 }
-export function Workspace({ user, setUser, lang, parts, route, appearance, onRequireAccount }) {
+export function Workspace({
+  user,
+  setUser,
+  lang,
+  parts,
+  route,
+  appearance,
+  onRequireAccount,
+}) {
   useLocale();
   const sync = useLearningSync(user.id, lang);
   const [contentRevision, setContentRevision] = useState(0);
-  useEffect(()=>{const changed=()=>setContentRevision(value=>value+1);window.addEventListener("staff-content-changed",changed);return()=>window.removeEventListener("staff-content-changed",changed);},[]);
+  useEffect(() => {
+    const changed = () => setContentRevision((value) => value + 1);
+    window.addEventListener("staff-content-changed", changed);
+    return () => window.removeEventListener("staff-content-changed", changed);
+  }, []);
   const prefKey = `wortify:${user.id}:appearance`,
-    [prefs, setLocalPrefs] = useState(() => {
+    [storedPrefs, setLocalPrefs] = useState(() => {
       const pending = [
         ...pendingLearning(user.id, "en"),
         ...pendingLearning(user.id, "de"),
@@ -386,7 +540,8 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
       return {
         appearanceProfiles: p.appearanceProfiles || {},
         appearanceSelections: p.appearanceSelections || {},
-        interface: user.staff && !user.superuser ? "studio" : interfaceName(p.interface),
+        interface:
+          user.staff && !user.superuser ? "studio" : interfaceName(p.interface),
         curvature: p.curvature ?? 18,
         glassLens: p.glassLens ?? 40,
         navPinned: p.navPinned !== false,
@@ -400,8 +555,14 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
         ambient: p?.ambient === true,
         volume: Math.min(1, Math.max(0, Number(p?.volume ?? 0.25))),
         transparency: Math.min(100, Math.max(0, Number(p?.transparency ?? 25))),
-        exerciseTextSize: Math.min(36, Math.max(16, Number(p.exerciseTextSize) || 22)),
-        exerciseTextWeight: Math.min(700, Math.max(400, Number(p.exerciseTextWeight) || 500)),
+        exerciseTextSize: Math.min(
+          36,
+          Math.max(16, Number(p.exerciseTextSize) || 22),
+        ),
+        exerciseTextWeight: Math.min(
+          700,
+          Math.max(400, Number(p.exerciseTextWeight) || 500),
+        ),
         textWeight: Math.min(700, Math.max(400, Number(p.textWeight) || 500)),
         textContrast: Math.min(100, Math.max(0, Number(p.textContrast ?? 80))),
         textColor: /^#[0-9a-f]{6}$/i.test(p.textColor) ? p.textColor : "auto",
@@ -413,14 +574,19 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
     }),
     [navBack, setNavBack] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
+  const availability = useAvailability();
+  const prefs = themeEnabled(availability, storedPrefs.interface) ? storedPrefs : { ...storedPrefs, interface: "studio" };
   useThemeBackground(prefs.interface, user.id);
   const navWidth = widthForScale(prefs.navScale);
   const [smallScreen, setSmallScreen] = useState(
-    () => window.matchMedia("(max-width: 1024px), (any-pointer: coarse)").matches,
+    () =>
+      window.matchMedia("(max-width: 1024px), (any-pointer: coarse)").matches,
   );
   const [navOpen, setNavOpen] = useState(false);
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 1024px), (any-pointer: coarse)");
+    const media = window.matchMedia(
+      "(max-width: 1024px), (any-pointer: coarse)",
+    );
     const change = () => {
       setSmallScreen(media.matches);
       setNavOpen(false);
@@ -447,12 +613,18 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
     return () => document.removeEventListener("keydown", escape);
   }, [smallScreen, navOpen]);
   useEffect(() => {
-    setLocalPrefs(old => ({ ...old, uiLanguage: user.preferences?.uiLanguage || "en" }));
+    setLocalPrefs((old) => ({
+      ...old,
+      uiLanguage: user.preferences?.uiLanguage || "en",
+    }));
   }, [user.preferences?.uiLanguage]);
   const setPrefs = (requested) => {
+    if (requested.interface && !themeEnabled(availability, requested.interface)) { window.alert(tr(MAINTENANCE_MESSAGE)); return; }
     const v = updateAppearance(
       prefs,
-      user.staff && !user.superuser ? {...requested, interface:"studio"} : requested,
+      user.staff && !user.superuser
+        ? { ...requested, interface: "studio" }
+        : requested,
       appearance.data?.[lang]?.theme_id,
     );
     setLocalPrefs(v);
@@ -461,7 +633,7 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
       `wortify:${user.id}:${user.appearance_session}:${lang}:live-display`,
       v,
     );
-    if(user.guest) return;
+    if (user.guest) return;
     setUser((u) => ({ ...u, preferences: v }));
     sync.enqueue(
       "preferences",
@@ -494,21 +666,29 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
       window.dispatchEvent(new PopStateEvent("popstate"));
     }
   }, [legacyDestination]);
-  useEffect(()=>{if(user.guest && guestRoute(route).needsAccount) onRequireAccount();},[route,user.guest]);
+  useEffect(() => {
+    if (user.guest && guestRoute(route).needsAccount) onRequireAccount();
+  }, [route, user.guest]);
   const contextItems = getContextItems(lang, section, parts);
   return (
     <div
       className="app-shell"
-      onClickCapture={event=>{
-        if(!user.guest)return;
-        const link=event.target.closest('a[href]');
-        if(!link)return;
-        const url=new URL(link.href,location.origin);
-        if(url.origin===location.origin && guestRoute(url.pathname+url.search).needsAccount){event.preventDefault();event.stopPropagation();onRequireAccount();}
+      onClickCapture={(event) => {
+        if (!user.guest) return;
+        const link = event.target.closest("a[href]");
+        if (!link) return;
+        const url = new URL(link.href, location.origin);
+        if (
+          url.origin === location.origin &&
+          guestRoute(url.pathname + url.search).needsAccount
+        ) {
+          event.preventDefault();
+          event.stopPropagation();
+          onRequireAccount();
+        }
       }}
       style={{
         "--nav-width": `${navWidth}px`,
-
       }}
     >
       {prefs.interface === "xp" && (
@@ -541,11 +721,30 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
             }
             renderContent={(windowRoute) => (
               <>
-              {(user.staff || user.superuser) && <StaffTools user={user} lang={lang} section={windowRoute.split("?")[0].split("/")[2] || "flashcard"} libraryLevel={!windowRoute.split("?")[0].split("/")[3] || windowRoute.split("?")[0].split("/")[3] === "all"}/>}
-              <WorkspaceContent
-                {...{ lang, user, prefs, setPrefs, appearance, onRequireAccount }}
-                route={windowRoute}
-              />
+                {(user.staff || user.superuser) && (
+                  <StaffTools
+                    user={user}
+                    lang={lang}
+                    section={
+                      windowRoute.split("?")[0].split("/")[2] || "flashcard"
+                    }
+                    libraryLevel={
+                      !windowRoute.split("?")[0].split("/")[3] ||
+                      windowRoute.split("?")[0].split("/")[3] === "all"
+                    }
+                  />
+                )}
+                <WorkspaceContent
+                  {...{
+                    lang,
+                    user,
+                    prefs,
+                    setPrefs,
+                    appearance,
+                    onRequireAccount,
+                  }}
+                  route={windowRoute}
+                />
               </>
             )}
           />
@@ -557,7 +756,9 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
         track={prefs.ambientTrack}
         volume={prefs.volume}
       />
-      <a className="skip-link" href="#main-content">{tr("Skip to main content")}</a>
+      <a className="skip-link" href="#main-content">
+        {tr("Skip to main content")}
+      </a>
       {prefs.interface !== "xp" && (
         <>
           <div className="mobile-nav-bar">
@@ -570,7 +771,9 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
                 setNavOpen((open) => navBack || !open);
               }}
             >
-              <Icon name="menu" />{tr(" Menu")}</button>
+              <Icon name="menu" />
+              {tr(" Menu")}
+            </button>
             <button
               aria-controls="app-navigation"
               aria-expanded={navOpen && navBack}
@@ -578,7 +781,9 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
                 setNavBack(true);
                 setNavOpen((open) => !navBack || !open);
               }}
-            >{tr("Page tools")}</button>
+            >
+              {tr("Page tools")}
+            </button>
           </div>
           {smallScreen && navOpen && (
             <button
@@ -597,7 +802,7 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
                 setNavOpen(false);
             }}
           >
-            {(
+            {
               <NavResize
                 width={navWidth}
                 setWidth={(width) =>
@@ -607,7 +812,7 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
                   })
                 }
               />
-            )}
+            }
             <div className={`nav-flip-inner ${navBack ? "is-flipped" : ""}`}>
               <div
                 inert={navBack}
@@ -624,87 +829,135 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
                   inert={navBack}
                   aria-hidden={navBack}
                 >
-                  {prefs.interface === "rpg" && <button className="nav-link" onClick={() => setTerminalOpen(v => !v)}>{terminalOpen ? tr("Exit terminal") : tr("Terminal")}</button>}
-                  {prefs.interface === "rpg" && terminalOpen ? <QuestConsole lang={lang} onExit={() => setTerminalOpen(false)} /> : <>
-                  <nav>
-                    {[
-                      ["flashcard", "cards", "Flashcard"],
-                      ["practice", "exercise", "Practice Hub"],
-                      ["reading", "book", "Reading"],
-                    ].map(([id, icon, title]) => (
-                      <Link
-                        key={id}
-                        to={`/${lang}/${id === "practice" ? "practice/all" : id}`}
-                        className={`nav-link ${(section === id || (id === "practice" && practiceArea(section))) ? "active" : ""}`}
-                        aria-current={(section === id || (id === "practice" && practiceArea(section))) ? "page" : undefined}
-                      >
-                        <Icon name={icon} />
-                        {tr(title)}
-                        
-                      </Link>
-                    ))}
-                  </nav>
-
-                  <nav>
-                    {[
-                      ["profile", "journey", "Learning journey"],
-                      ["classes", "class", "Classes & sharing"],
-                    ].map(([id, icon, title]) => (
-                      <Link
-                        key={id}
-                        to={`/${lang}/${id === "practice" ? "practice/all" : id}`}
-                        className={`nav-link ${(section === id || (id === "practice" && practiceArea(section))) ? "active" : ""}`}
-                        aria-current={(section === id || (id === "practice" && practiceArea(section))) ? "page" : undefined}
-                      >
-                        <Icon name={icon} />
-                        {tr(title)}
-                      </Link>
-                    ))}
-                  </nav>
-                  <div className="sidebar-bottom">
-
-                    <Link
-                      className={`nav-link ${section === "settings" ? "active" : ""}`}
-                      to={`/${lang}/settings`}
+                  {prefs.interface === "rpg" && (
+                    <button
+                      className="nav-link"
+                      onClick={() => setTerminalOpen((v) => !v)}
                     >
-                      <Icon name="settings" />{tr("Study settings")}</Link>
-                    <div className={user.guest ? "account guest-account" : "account"}>
-                      {user.guest ? <>
-                        <Btn primary fullWidth onClick={()=>navigate("/register")}>{tr("Create account")}</Btn>
-                        <Btn fullWidth variant="bordered" onClick={()=>navigate("/login")}>{tr("Sign in")}</Btn>
-                      </> : <>
-                      <Link to={`/${lang}/profile`} className="account-name">
-                        <span className="avatar">
-                          {user.username[0].toUpperCase()}
-                        </span>
-                        <span>{user.username}</span>
-                      </Link>
-                      <Btn
-                        aria-label={tr("Sign out")}
-                        isLoading={action.pending}
-                        onClick={() =>
-                          action.run(async (s) => {
-                            await Promise.all([
-                              flushLearning(user.id, "en"),
-                              flushLearning(user.id, "de"),
-                            ]);
-                            await request(
-                              "/api/session/",
-                              "DELETE",
-                              undefined,
-                              s,
-                            );
-                            setUser(null);
-                            navigate("/");
-                          })
-                        }
-                      >
-                        <Icon name="logout" size={18} />
-                      </Btn>
-                    </>} </div>
-                    <Status error={action.error || sync.error} />
-                  </div>
-                  </>}
+                      {terminalOpen ? tr("Exit terminal") : tr("Terminal")}
+                    </button>
+                  )}
+                  {prefs.interface === "rpg" && terminalOpen ? (
+                    <QuestConsole
+                      lang={lang}
+                      onExit={() => setTerminalOpen(false)}
+                    />
+                  ) : (
+                    <>
+                      <nav>
+                        {[
+                          ["flashcard", "cards", "Flashcard"],
+                          ["practice", "exercise", "Practice Hub"],
+                          ["reading", "book", "Reading"],
+                        ].map(([id, icon, title]) => (
+                          <Link
+                            key={id}
+                            to={`/${lang}/${id === "practice" ? "practice/all" : id}`}
+                            className={`nav-link ${section === id || (id === "practice" && practiceArea(section)) ? "active" : ""}`}
+                            aria-current={
+                              section === id ||
+                              (id === "practice" && practiceArea(section))
+                                ? "page"
+                                : undefined
+                            }
+                          >
+                            <Icon name={icon} />
+                            {tr(title)}
+                          </Link>
+                        ))}
+                      </nav>
+
+                      <nav>
+                        {[
+                          ["profile", "journey", "Learning journey"],
+                          ["classes", "class", "Classes & sharing"],
+                        ].map(([id, icon, title]) => (
+                          <Link
+                            key={id}
+                            to={`/${lang}/${id === "practice" ? "practice/all" : id}`}
+                            className={`nav-link ${section === id || (id === "practice" && practiceArea(section)) ? "active" : ""}`}
+                            aria-current={
+                              section === id ||
+                              (id === "practice" && practiceArea(section))
+                                ? "page"
+                                : undefined
+                            }
+                          >
+                            <Icon name={icon} />
+                            {tr(title)}
+                          </Link>
+                        ))}
+                      </nav>
+                      <div className="sidebar-bottom">
+                        <Link
+                          className={`nav-link ${section === "settings" ? "active" : ""}`}
+                          to={`/${lang}/settings`}
+                        >
+                          <Icon name="settings" />
+                          {tr("Study settings")}
+                        </Link>
+                        <div
+                          className={
+                            user.guest ? "account guest-account" : "account"
+                          }
+                        >
+                          {user.guest ? (
+                            <>
+                              <Btn
+                                primary
+                                fullWidth
+                                onClick={() => navigate("/register")}
+                              >
+                                {tr("Create account")}
+                              </Btn>
+                              <Btn
+                                fullWidth
+                                variant="bordered"
+                                onClick={() => navigate("/login")}
+                              >
+                                {tr("Sign in")}
+                              </Btn>
+                            </>
+                          ) : (
+                            <>
+                              <Link
+                                to={`/${lang}/profile`}
+                                className="account-name"
+                              >
+                                <span className="avatar">
+                                  {user.username[0].toUpperCase()}
+                                </span>
+                                <span>{user.username}</span>
+                              </Link>
+                              <Btn
+                                aria-label={tr("Sign out")}
+                                isLoading={action.pending}
+                                onClick={() =>
+                                  action.run(async (s) => {
+                                    await Promise.all([
+                                      flushLearning(user.id, "en"),
+                                      flushLearning(user.id, "de"),
+                                    ]);
+                                    await request(
+                                      "/api/session/",
+                                      "DELETE",
+                                      undefined,
+                                      s,
+                                    );
+                                    setUser(null);
+                                    navigate("/");
+                                  })
+                                }
+                              >
+                                <Icon name="logout" size={18} />
+                              </Btn>
+                            </>
+                          )}{" "}
+                        </div>
+                        <Status error={action.error || sync.error} />
+                      </div>
+                    </>
+                  )}
                 </aside>
               </div>
               <div
@@ -743,25 +996,47 @@ export function Workspace({ user, setUser, lang, parts, route, appearance, onReq
       {prefs.interface !== "xp" && (
         <div className="main-shell">
           {prefs.interface === "rpg" && <CrtOverlay />}
-          
+
           {prefs.interface === "studio" && (
             <header className="studio-masthead">
               <div>
-                <span className="studio-kicker">{tr("WORTIFY / LEARNING SPACE")}</span>
+                <span className="studio-kicker">
+                  {tr("WORTIFY / LEARNING SPACE")}
+                </span>
                 <strong>{contextItems.title}</strong>
               </div>
-              {!(user.staff && !user.superuser) && <Link
-                to={`/${lang}/settings`}
-                className="studio-appearance-link"
-                aria-label={tr("Change appearance in Settings")}
-              >
-                <Icon name="palette" />{tr(" Appearance")}</Link>}
+              {!(user.staff && !user.superuser) && (
+                <Link
+                  to={`/${lang}/settings`}
+                  className="studio-appearance-link"
+                  aria-label={tr("Change appearance in Settings")}
+                >
+                  <Icon name="palette" />
+                  {tr(" Appearance")}
+                </Link>
+              )}
             </header>
           )}
           <main id="main-content" tabIndex={-1}>
-            {(user.staff || user.superuser) && <StaffTools user={user} lang={lang} section={parts[1] || "flashcard"} libraryLevel={!parts[2] || parts[2] === "all"}/>}
-            <WorkspaceContent key={contentRevision}
-              {...{ route, lang, user, prefs, setPrefs, appearance, onRequireAccount }}
+            {(user.staff || user.superuser) && (
+              <StaffTools
+                user={user}
+                lang={lang}
+                section={parts[1] || "flashcard"}
+                libraryLevel={!parts[2] || parts[2] === "all"}
+              />
+            )}
+            <WorkspaceContent
+              key={contentRevision}
+              {...{
+                route,
+                lang,
+                user,
+                prefs,
+                setPrefs,
+                appearance,
+                onRequireAccount,
+              }}
             />
           </main>
         </div>
@@ -810,21 +1085,73 @@ function getContextItems(lang, section, parts) {
   };
 }
 
-function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance, onRequireAccount }) {
+function WorkspaceContent({
+  route,
+  lang,
+  user,
+  prefs,
+  setPrefs,
+  appearance,
+  onRequireAccount,
+}) {
   useLocale();
   const parts = route.split("?")[0].split("/").filter(Boolean);
   const section = parts[0] === "manage" ? "admin" : parts[1] || "flashcard";
   const legacyDestination = legacyPracticeDestination(lang, section, parts[2]);
   let content;
-  if(user.guest) {
-    const destination=guestRoute(route);
-    if(section==='reading') return <Suspense fallback={<Status>{tr("Loading workspace…")}</Status>}><ReadingWorkspace key={route} route={`/${lang}/reading/discover`} lang={lang} initialReadingId={destination.id} onRequireAccount={onRequireAccount}/></Suspense>;
-    if(practiceArea(section) && !destination.needsAccount) return <Suspense fallback={<Status>{tr('Loading workspace…')}</Status>}><PracticeArea lang={lang} section={section}><Explore lang={lang} userId={null} onRequireAccount={onRequireAccount}/>{destination.id && <PublicPracticeLesson lang={lang} id={destination.id} onClose={()=>navigate(`/${lang}/explore`)} onOpen={id=>navigate(`/${lang}/practice/${id}`)} onRequireAccount={onRequireAccount}/>}</PracticeArea></Suspense>;
-    return <Suspense fallback={<Status>{tr('Loading workspace…')}</Status>}><FlashcardDiscover key={route} lang={lang} initialDeckId={destination.kind==='flashcard'?destination.id:undefined} onRequireAccount={onRequireAccount}/></Suspense>;
+  if (user.guest) {
+    const destination = guestRoute(route);
+    if (section === "reading")
+      return (
+        <Suspense fallback={<Status>{tr("Loading workspace…")}</Status>}>
+          <ReadingWorkspace
+            key={route}
+            route={`/${lang}/reading/discover`}
+            lang={lang}
+            initialReadingId={destination.id}
+            onRequireAccount={onRequireAccount}
+          />
+        </Suspense>
+      );
+    if (practiceArea(section) && !destination.needsAccount)
+      return (
+        <Suspense fallback={<Status>{tr("Loading workspace…")}</Status>}>
+          <PracticeArea lang={lang} section={section}>
+            <Explore
+              lang={lang}
+              userId={null}
+              onRequireAccount={onRequireAccount}
+            />
+            {destination.id && (
+              <PublicPracticeLesson
+                lang={lang}
+                id={destination.id}
+                onClose={() => navigate(`/${lang}/explore`)}
+                onOpen={(id) => navigate(`/${lang}/practice/${id}`)}
+                onRequireAccount={onRequireAccount}
+              />
+            )}
+          </PracticeArea>
+        </Suspense>
+      );
+    return (
+      <Suspense fallback={<Status>{tr("Loading workspace…")}</Status>}>
+        <FlashcardDiscover
+          key={route}
+          lang={lang}
+          initialDeckId={
+            destination.kind === "flashcard" ? destination.id : undefined
+          }
+          onRequireAccount={onRequireAccount}
+        />
+      </Suspense>
+    );
   }
   if (section === "flashcard") {
     content =
-      parts[2] === "discover" ? <FlashcardDiscover lang={lang} userId={user.id}/> : parts[2] === "deck" ? (
+      parts[2] === "discover" ? (
+        <FlashcardDiscover lang={lang} userId={user.id} />
+      ) : parts[2] === "deck" ? (
         parts[4] === "edit" ? (
           <Deck key={parts[3]} lang={lang} id={parts[3]} sound={prefs.sound} />
         ) : (
@@ -854,7 +1181,16 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance, onRe
       ) : (
         <Library lang={lang} interfaceName={prefs.interface} />
       );
-  } else if (section === "reading") content = <ReadingWorkspace key={`${lang}:${route}`} lang={lang} route={route} userId={user.id} sound={prefs.sound} />;
+  } else if (section === "reading")
+    content = (
+      <ReadingWorkspace
+        key={`${lang}:${route}`}
+        lang={lang}
+        route={route}
+        userId={user.id}
+        sound={prefs.sound}
+      />
+    );
   else if (legacyDestination)
     content = (
       <Page>
@@ -889,9 +1225,13 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance, onRe
       />
     );
   else if (section === "profile")
-    content = <Community key={route} {...{ lang, section, id: parts[2] }} />;
+    content = <LearningProfile key={route} lang={lang} />;
   else if (section === "classes")
-    content = <Community key={route} {...{ lang, section, id: parts[2] }} />;
+    content = (
+      <FeatureBoundary resetKey={route} label="Classes">
+        <ClassGate><Community key={route} {...{ lang, section, id: parts[2] }} /></ClassGate>
+      </FeatureBoundary>
+    );
   else if (section === "admin")
     content =
       user.superuser || user.staff ? (
@@ -919,5 +1259,19 @@ function WorkspaceContent({ route, lang, user, prefs, setPrefs, appearance, onRe
       </Page>
     );
 
-  return <Suspense fallback={<Status>{tr("Loading workspace…")}</Status>}>{practiceArea(section) ? <PracticeArea lang={lang} section={section} focused={!!parts[2] && section !== "explore"}>{content}</PracticeArea> : content}</Suspense>;
+  return (
+    <Suspense fallback={<Status>{tr("Loading workspace…")}</Status>}>
+      {practiceArea(section) ? (
+        <PracticeArea
+          lang={lang}
+          section={section}
+          focused={!!parts[2] && section !== "explore"}
+        >
+          {content}
+        </PracticeArea>
+      ) : (
+        content
+      )}
+    </Suspense>
+  );
 }

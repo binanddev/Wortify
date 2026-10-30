@@ -65,3 +65,42 @@ class ContentImportKey(models.Model):
     prefix = models.CharField(max_length=12)
     created_at = models.DateTimeField(auto_now=True)
     last_used_at = models.DateTimeField(null=True, blank=True)
+
+
+class TeachingBoard(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='boards')
+    title = models.CharField(max_length=120)
+    state = models.JSONField(default=dict)
+    revision = models.PositiveIntegerField(default=0)
+    public_enabled = models.BooleanField(default=False)
+    public_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    public_version = models.PositiveIntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class BoardEvent(models.Model):
+    board = models.ForeignKey(TeachingBoard, on_delete=models.CASCADE, related_name='events')
+    revision = models.PositiveIntegerField()
+    batch = models.UUIDField()
+    operations = models.JSONField()
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['board', 'revision'], name='board_revision'), models.UniqueConstraint(fields=['board', 'batch'], name='board_batch')]
+
+class BoardPDF(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    board = models.ForeignKey(TeachingBoard, on_delete=models.CASCADE, related_name='pdfs')
+    file = models.FileField(upload_to='classes/pdfs/')
+    name = models.CharField(max_length=255)
+    size = models.PositiveBigIntegerField()
+
+@receiver(post_delete, sender=BoardPDF)
+def delete_board_pdf(sender, instance, **kwargs):
+    if instance.file:
+        storage, name = instance.file.storage, instance.file.name
+        transaction.on_commit(lambda: storage.delete(name))
+
+
+class FeatureAvailability(models.Model):
+    """Temporary rollout switches; independent of classroom and theme data."""
+    themes = models.JSONField(default=dict, blank=True)
+    classes = models.BooleanField(default=True)

@@ -23,6 +23,9 @@ GUIDE = [
 
 # Examples are deliberately inert: placeholders and illustrative IDs, no secrets.
 EXAMPLES = {
+    'api.teaching.boards': {'POST': {'title': 'Deutsch A1 · Lesson 1'}},
+    'api.teaching.board': {'POST': {'batch': '{{eventToken}}', 'revision': 0, 'operations': [{'kind': 'active', 'page': '{{page_id}}'}]}},
+
     'api.site_exports.export_site': {'POST': {'scope':'all','dataset':'learning','identity':'anonymous','visibility':'all','modules':['cards','practice','reading'],'include_media':True,'include_progress':False,'preview':True}, 'response':{'count':1,'counts':[{'model':'cards.card','count':100}],'warnings':[]}},
     'api.deck_management.manage': {'POST':{'request_id':'{{eventToken}}','action':'move','ids':[1],'folder':None},'response':{'operation_id':'UUID','ids':[1],'count':1,'undoable':True}},
     'users.views.interface_language': {'PATCH': {'language': 'vi'}},
@@ -66,6 +69,22 @@ EXAMPLES = {
 }
 
 NOTES = {
+    'api.teaching_public.sharing': 'Class owner only. GET sharing status; POST enabled boolean and optional rotate boolean. Public links default off, are read-only and expose only this lesson/PDFs. Disable/rotate revokes old URLs; restored backups always reset sharing to private.',
+    'api.teaching_public.info': 'Public opt-in lesson link: GET lightweight title/id only. Wrong language, disabled link or inactive teacher returns 404. No class or member data.',
+    'api.teaching_public.board': 'Public read-only snapshot or delta by opaque link token. Only enabled lessons are accessible. Writing is never allowed.',
+    'api.teaching_public.pdf_content': 'Public opted-in lesson PDF, scoped to the same enabled lesson token; disabled/rotated links return 404.',
+    'api.teaching_public.ticket': 'GET read-only guest WebSocket ticket for an enabled lesson token. No registration required. The ticket is bound to the sharing version, expires in 60 seconds and cannot publish events.',
+
+    'api.teaching_realtime.ticket': 'POST class member/owner only. Issues a 60-second room-scoped WebSocket ticket. enabled=false when the independent relay is not configured. Signed save notifications can only broadcast already-committed events; session cookies and database credentials never reach the relay.',
+    'api.teaching.boards': 'Class owner/member only. GET lists lessons; POST {title} creates a lesson (class owner only). Each lesson supports 200 fixed-size pages and 200,000 vector points.',
+    'api.teaching.board': 'GET snapshot or ?since=revision for up to 64 ordered delta batches. Old cursors receive a fresh snapshot. POST (class owner only) requires batch UUID, current revision and 1–128 operations: page, active, ink or visibility. Reuse the exact batch on retry; stale revisions return 409. Each batch is at most 256,000 bytes; stroke chunks at most 2,048 points.',
+    'api.teaching.upload_pdf': 'Class owner only. Multipart file: one unlocked PDF up to 300 MiB, up to 200 total lesson pages. Streamed to temporary disk, parsed and stored privately. Adds fixed PDF pages and returns a new snapshot; existing ink is preserved.',
+    'api.teaching.pdf_content': 'Authenticated PDF binary response. Only the owner or current members of this class can read it. No public file URL is exposed.',
+    'api.reading_management.create_folder': 'POST title and optional parent_id to create an owned reading folder in this language/workspace. Maximum depth 20.',
+    'api.reading_management.folder_detail': 'PATCH an owned reading folder title; DELETE removes its branch. Account and language boundaries are enforced.',
+    'api.reading_management.metadata': 'PATCH reading metadata in the current account, language and content workspace.',
+    'api.reading_management.organize': 'POST a bounded reading organization batch. Source and destination ownership, language and folder cycles are validated.',
+
     'api.deck_management.manage': 'Owner/language-scoped atomic actions move, copy, delete and undo. Send a unique request_id UUID and reuse it only for the identical retry. Up to 100 distinct ids. move/copy require folder (null=root). copy optionally takes names keyed by source ID and copies at most 20,000 cards with fresh IDs and independent progress; publication policy still applies. undo takes operation_id from a move receipt, is valid for 15 minutes and rejects decks changed since that move. Delete permanently removes decks/cards/progress. Requires session and CSRF.',
     'api.deck_management.export': 'GET ?ids=1,2&format=json or csv exports owned decks in the current language as a ZIP with one content file per deck and manifest.json. Up to 100 decks and 20,000 cards. Includes image links and accepted answers, excludes learning progress. CSV formula injection is escaped. No mutation occurs.',
     'api.practice_hub.public_detail': 'Anonymous read-only public exercise/theory/folder; only public children and active owners. No progress or personal data.',
@@ -170,6 +189,7 @@ NOTES = {
 }
 
 MULTIPART = {
+    'api.teaching.upload_pdf': [('file','file','')],
     'api.content_import_api.upload': [('file','file',''),('preview','text','true')],
     'api.content_packages.upload': [('file','file',''),('preview','text','true')],
     'api.admin_restore.restore': [('file','file',''),('preview','text','true')],
@@ -210,14 +230,19 @@ def reference_data():
         if not route.startswith('api/'):
             continue
         view = inspect.unwrap(pattern.callback)
-        key = f'{view.__module__}.{view.__name__}'
-        methods = ['GET']
-        source = ast.parse(textwrap.dedent(inspect.getsource(view)))
-        for decorator in source.body[0].decorator_list:
-            if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Name) and decorator.func.id == 'require_http_methods':
-                methods = ast.literal_eval(decorator.args[0])
-            elif isinstance(decorator, ast.Name) and decorator.id in ('require_POST','require_GET'):
-                methods = [decorator.id.removeprefix('require_')]
+        declaration = getattr(view, '__api_reference__', None)
+        if declaration:
+            key = declaration['source']
+            methods = list(declaration['methods'])
+        else:
+            key = f'{view.__module__}.{view.__name__}'
+            methods = ['GET']
+            source = ast.parse(textwrap.dedent(inspect.getsource(view)))
+            for decorator in source.body[0].decorator_list:
+                if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Name) and decorator.func.id == 'require_http_methods':
+                    methods = ast.literal_eval(decorator.args[0])
+                elif isinstance(decorator, ast.Name) and decorator.id in ('require_POST','require_GET'):
+                    methods = [decorator.id.removeprefix('require_')]
         # Document the intended item/list operations rather than aliases in a
         # shared view which also accepts PATCH on the list URL.
         if key in ('api.views.card', 'api.views.folder', 'api.management_data.records'):

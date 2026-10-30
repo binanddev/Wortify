@@ -339,3 +339,5 @@ My readings owns creation/import, editing and organization. The folder explorer 
 ReadingEditorModal accepts multiple UTF-8 TXT files (2 MB combined), previews every batch, retains per-reading media and saves into the selected folder. It reuses the existing parser, media editor and preview component without changing their Flashcard/Practice consumers. Unsaved close/Back/Forward and pending saves/uploads are guarded. Draft media matching uses content/title uniqueness; ambiguous matches block saving until reassigned or removed. Old /reading/create?folder=ID and /reading/ID/edit links open the same modal flow. The full Reading guide has matching copy/TXT download content.
 
 After building: `node scripts/verify-reading-library.mjs` supports `--themes`, `--mobile`, and `--editor`. Fixtures mock HTTP and open local HTML only. Ship the new backend Reading endpoints with this frontend; no database migration is needed.
+
+Vite bỏ qua thư mục chẩn đoán .interface-preview/ khi theo dõi thay đổi. Các hồ sơ trình duyệt và bộ nhớ đệm kiểm thử trong thư mục này không cần HMR; mã nguồn trong src/ vẫn tự cập nhật bình thường.

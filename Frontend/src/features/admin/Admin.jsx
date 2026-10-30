@@ -1,3 +1,4 @@
+import FeatureSwitches from "./FeatureSwitches.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import LanguageSettings from "../../i18n/LanguageSettings.jsx";
 import History from "./History.jsx";
@@ -128,7 +129,7 @@ export default function Admin({ user }) {
       {tab === "backups" && user.superuser && <EmergencyBackups />}
       {tab === "system" && user.superuser && <SystemOverview />}
       {tab === "api" && user.superuser && <ApiDocs />}
-      {tab === "appearance" && user.superuser && <Appearance />}
+      {tab === "appearance" && user.superuser && <><FeatureSwitches /><Appearance /></>}
         </main>
       </div>
     </div>

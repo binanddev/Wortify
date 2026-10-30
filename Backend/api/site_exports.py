@@ -155,6 +155,10 @@ def plan(opts, users):
             classes=filtered(u.Classroom.objects.filter(owner__in=users),opts)
             add(c.DeckOperation,filtered(c.DeckOperation.objects.filter(user__in=users),opts))
             add(u.Classroom,classes)
+            boards = u.TeachingBoard.objects.filter(classroom__in=classes)
+            add(u.TeachingBoard,boards)
+            add(u.BoardPDF,u.BoardPDF.objects.filter(board__in=boards))
+            add(u.BoardEvent,u.BoardEvent.objects.filter(board__in=boards))
             add(u.ClassroomAssignment,u.ClassroomAssignment.objects.filter(classroom__in=classes,node__in=nodes))
             add(s.SiteAppearance,s.SiteAppearance.objects.all()); add(s.ContentPolicy,s.ContentPolicy.objects.all())
     if opts['dataset'] in ('accounts','full'):

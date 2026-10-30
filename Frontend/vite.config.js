@@ -1,3 +1,4 @@
+import { teachingBoundary } from "./scripts/teaching-boundary.mjs";
 import { frontendAssetAliases } from "./scripts/frontend-assets.mjs";
 import { defineConfig, loadEnv } from "vite";
 import { fileURLToPath } from "node:url";
@@ -23,8 +24,15 @@ export default defineConfig(({ mode }) => {
     root,
     base: "/",
     resolve: { dedupe: ["react", "react-dom"] },
-    plugins: [frontendAssetAliases(), react(), tailwindcss()],
-    server: { host: "127.0.0.1", port: 5173, strictPort: true, proxy },
+    plugins: [frontendAssetAliases(), react(), tailwindcss(), teachingBoundary()],
+    server: {
+      host: "127.0.0.1",
+      port: 5173,
+      strictPort: true,
+      proxy,
+      // Browser QA profiles contain thousands of generated cache files.
+      watch: { ignored: ["**/.interface-preview/**"] },
+    },
     preview: { host: "127.0.0.1", port: 4173, strictPort: true, proxy },
     build: {
       outDir: "dist",
@@ -50,7 +58,7 @@ export default defineConfig(({ mode }) => {
                   )
                     return "ui-runtime";
                   if (/react95|styled-components/.test(id)) return "windows-runtime";
-                  return "vendor";
+                  return null;
                 },
               },
             ],

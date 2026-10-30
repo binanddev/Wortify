@@ -190,3 +190,115 @@ test('CRUD revalidates mounted consumers while review sync only invalidates futu
     else globalThis.window=previousWindow;
   }
 });
+
+test("class creation, settings and assignments revalidate only Class in their own language", async () => {
+  const previousWindow = globalThis.window,
+    events = [];
+  const untouched = [
+    "/api/de/practice-hub/nodes/7/",
+    "/api/de/practice-hub/nodes/?scope=workspace",
+    "/api/de/reading/4/",
+    "/api/de/decks/1/",
+    "/api/de/decks/",
+    "/api/de/study-pack/?filter=due",
+    "/api/en/decks/1/",
+  ];
+  const classKeys = [
+    "/api/de/classes/",
+    "/api/de/classes/?filter=mine",
+    "/api/de/classes/3/",
+    "/api/de/classes/4/",
+  ];
+  globalThis.window = { dispatchEvent: (event) => events.push(event) };
+  try {
+    for (const [mutation, method, data] of [
+      ["/api/de/classes/", "POST", { title: "New class" }],
+      ["/api/de/classes/3/", "PATCH", { title: "Renamed" }],
+      ["/api/de/classes/3/assignments/", "POST", { node: 7 }],
+      ["/api/de/classes/3/assignments/", "DELETE", { id: 5 }],
+    ]) {
+      clearContentCache();
+      events.length = 0;
+      for (const key of untouched) primeContentCache(key, { preserved: true });
+      let reads = 0;
+      globalThis.fetch = async (_, options) => {
+        if (options.method === "GET") reads++;
+        return response({ fresh: true });
+      };
+      await request(mutation, method, data);
+      for (const key of untouched)
+        assert.equal(
+          (await request(key)).preserved,
+          true,
+          `${mutation} must preserve ${key}`,
+        );
+      assert.equal(
+        reads,
+        0,
+        "class operations must not refetch cached learning content",
+      );
+      assert.equal(events.length, 1);
+      for (const key of classKeys)
+        assert.equal(
+          events[0].detail.matches(key),
+          true,
+          `mounted Class consumer ${key} must refresh`,
+        );
+      for (const key of [
+        ...untouched,
+        "/api/en/classes/",
+        "/api/en/classes/3/",
+      ])
+        assert.equal(
+          events[0].detail.matches(key),
+          false,
+          `${mutation} must not refresh ${key}`,
+        );
+    }
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+  }
+});
+
+test("assigning Class content leaves a shared in-flight Practice read usable and cacheable", async () => {
+  const pending = deferred();
+  let reads = 0;
+  globalThis.fetch = (_, options) =>
+    options.method === "GET"
+      ? (reads++, pending.promise)
+      : Promise.resolve(response({ ok: true }));
+  const key = "/api/de/practice-hub/nodes/7/",
+    first = request(key);
+  await request("/api/de/classes/3/assignments/", "POST", { node: 7 });
+  const second = request(key);
+  pending.resolve(response({ version: 1 }));
+  await Promise.all([first, second]);
+  assert.equal((await request(key)).version, 1);
+  assert.equal(reads, 1);
+});
+
+test("board mutations retain their exact-resource matcher instead of refreshing the class", async () => {
+  const previousWindow = globalThis.window,
+    events = [];
+  globalThis.window = { dispatchEvent: (event) => events.push(event) };
+  globalThis.fetch = async () => response({ revision: 1 });
+  try {
+    const board =
+      "/api/de/classes/3/boards/11111111-1111-4111-8111-111111111111/";
+    await request(board, "POST", { batch: "test", operations: [] });
+    const matches = events[0].detail.matches;
+    assert.equal(matches(board + "?since=1"), true);
+    for (const key of [
+      "/api/de/classes/",
+      "/api/de/classes/3/",
+      "/api/de/classes/3/boards/22222222-2222-4222-8222-222222222222/",
+      "/api/en/classes/3/boards/11111111-1111-4111-8111-111111111111/",
+      "/api/de/reading/4/",
+    ])
+      assert.equal(matches(key), false, key);
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+  }
+});

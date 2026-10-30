@@ -32,6 +32,7 @@ export function primeContentCache(path, data) {
   put(path, data);
 }
 function mutationMatches(path, data) {
+  if (/\/classes\/\d+\/boards\//.test(path)) return key => key.split("?")[0] === path.split("?")[0];
   const language = /^\/api\/(en|de)\//.exec(path)?.[1];
   if (!language) return () => true;
   const base = `/api/${language}/`;
@@ -56,6 +57,7 @@ function mutationMatches(path, data) {
     };
   }
   const domain = path.slice(base.length).split('/')[0];
+  if (domain === 'classes') return key => key.startsWith(`${base}classes/`);
   if (['decks','folders'].includes(domain)) {
     const deck = /^decks\/(\d+)\//.exec(path.slice(base.length))?.[1];
     return key => key.startsWith(base) && (
@@ -125,9 +127,9 @@ async function transport(path, method, data, signal) {
       clearContentCache();
       window.dispatchEvent(new Event("session-expired"));
     }
-    throw new Error(
-      json.error || "Unable to complete the request. Please try again.",
-    );
+    const error = new Error(json.error || "Unable to complete the request. Please try again.");
+    error.status = res.status;
+    throw error;
   }
   if (path === "/api/session/" && "user" in json) {
     revisions.clear();

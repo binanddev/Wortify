@@ -1,4 +1,7 @@
+import {publicTeachingRoute} from "../features/teaching/public-route.js";
 export function guestRoute(route) {
+  const lesson=publicTeachingRoute(route);
+  if(lesson)return {kind:"teaching-public",...lesson,needsAccount:false};
   const path = route.split("?")[0].replace(/\/$/, "") || "/";
   if (path === "/") return { kind: "home", lang: "de", needsAccount: false };
   if (path === "/login")

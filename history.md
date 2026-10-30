@@ -1,5 +1,15 @@
 # Change Log
 
+### [v1.15.0] - 2026-10-30 | Administrator switches for themes and classrooms
+
+- Add superuser-only feature switches under Admin > Appearance for Glass, Windows, Retro Arcade, Notebook, MS-DOS and Classes. Studio is always enabled. All features remain enabled by default until an administrator changes the configuration.
+- Disabled themes show a maintenance message and cannot be selected. A disabled active theme renders as Studio without overwriting the saved choice. Disabled classroom pages, public board links and classroom APIs show the maintenance response; code and data remain available for later development.
+- Include the classroom board implementation and its required migrations, PDF dependencies, public board support and isolated realtime integration so the release contains the dependencies used by the classroom routes and frontend.
+- Store switches independently in FeatureAvailability (users migration 0011). Clients refresh every 15 seconds and on focus; classroom APIs check every request. Existing realtime tickets are not revoked. Add EN/VI/DE interface labels and FEATURE_AVAILABILITY.md with deployment and removal instructions.
+- Validation: 240 frontend tests, 38 targeted backend tests, production build and migration consistency checks passed. No application server was started. Run database migrations during deployment before using the controls.
+
+---
+
 ### 2026-10-26 | My readings organization and modal authoring
 
 - Move Reading creation/import/editing into focused My readings dialogs with a fixed selected folder, multiple UTF-8 TXT files, one complete copyable/downloadable guide, sample insertion, preview and per-reading media. Keep old create/edit URLs compatible. Modal close, browser Back/Forward and pending operations guard unsaved drafts; failed saves retain their text and files. Unchanged edits cannot be resaved, preventing unnecessary progress resets.

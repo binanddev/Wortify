@@ -21,7 +21,7 @@ from .common import endpoint, body
 LIMIT = 512 * 1024 * 1024
 JSON_LIMIT = 32 * 1024 * 1024
 TABLES = [u.Theme, u.Profile, c.StudySettings, c.Folder, c.Deck, c.Card,
-          p.PracticeMedia, p.PracticeNode, u.Classroom, u.ClassroomAssignment,
+          p.PracticeMedia, p.PracticeNode, u.Classroom, u.ClassroomAssignment, u.TeachingBoard, u.BoardPDF,
           c.StudyProgress, c.DeckLearningState, p.PracticeProgress,
           c.StudyAttempt, p.PracticeAttempt, c.StudySession, c.LearningEvent,
           c.ImportBatch, c.MatchRound, p.ReadingFolder, p.ReadingLesson]
@@ -34,6 +34,7 @@ def owned_rows(user):
         c.Deck.objects.filter(owner=user), c.Card.objects.filter(deck__owner=user),
         p.PracticeMedia.objects.filter(owner=user), p.PracticeNode.objects.filter(owner=user),
         u.Classroom.objects.filter(owner=user), u.ClassroomAssignment.objects.filter(classroom__owner=user),
+        u.TeachingBoard.objects.filter(classroom__owner=user), u.BoardPDF.objects.filter(board__classroom__owner=user),
         c.StudyProgress.objects.filter(user=user), c.DeckLearningState.objects.filter(user=user),
         p.PracticeProgress.objects.filter(user=user), c.StudyAttempt.objects.filter(user=user),
         p.PracticeAttempt.objects.filter(user=user), c.StudySession.objects.filter(user=user),
@@ -145,7 +146,7 @@ def read_archive(upload):
 def restore_archive(user, archive, records, restore_settings=False):
     mapping, files, deferred, skipped = {}, [], [], 0
     tokens = {str(r['fields']['token']):str(uuid.uuid4()) for r in records if 'token' in r['fields']}
-    media_ids = {str(r['pk']):str(uuid.uuid4()) for r in records if r['model']=='practice.practicemedia'}
+    media_ids = {str(r['pk']):str(uuid.uuid4()) for r in records if r['model'] in ('practice.practicemedia','users.boardpdf')}
     def rewrite(value):
         if isinstance(value,list): return [rewrite(v) for v in value]
         if isinstance(value,dict): return {k:rewrite(v) for k,v in value.items()}
@@ -186,10 +187,12 @@ def restore_archive(user, archive, records, restore_settings=False):
                             if not parent: missing=True
                             else: kwargs['parent_id']=parent.pk
                         if missing: continue
-                        if model == p.PracticeMedia: kwargs['id']=media_ids[str(record['pk'])]
+                        if model in (p.PracticeMedia, u.BoardPDF): kwargs['id']=media_ids[str(record['pk'])]
                         if model == p.PracticeNode: kwargs['visibility']='private'
                         if model == u.Theme: kwargs['shared']=False
                         if model == u.Classroom: kwargs['invite']=uuid.uuid4()
+                        if model == u.TeachingBoard:
+                            kwargs.update(revision=0, public_enabled=False, public_token=uuid.uuid4(), public_version=0)
                         if model == c.Folder:
                             base=kwargs['name']; suffix=1
                             while c.Folder.objects.filter(owner=user,language=kwargs['language'],parent_id=kwargs.get('parent_id'),name=kwargs['name']).exists():
@@ -210,20 +213,26 @@ def restore_archive(user, archive, records, restore_settings=False):
                                 name=fields[field.name]
                                 if not name.startswith('media/') or name not in archive.namelist(): raise ValueError('Missing media file.')
                                 ext=PurePosixPath(name).suffix.lower()
-                                if ext not in ('.jpg','.jpeg','.png','.webp','.gif','.mp3'): raise ValueError('Unsupported media file.')
+                                if ext not in ('.jpg','.jpeg','.png','.webp','.gif','.mp3','.pdf') or (ext == '.pdf' and model != u.BoardPDF): raise ValueError('Unsupported media file.')
                                 raw=archive.read(name)
                                 source=ContentFile(raw,name='backup'+ext)
                                 # Decode explicitly; never allow active HTML, SVG or playlists.
                                 import av
                                 formats={'.jpg':'jpeg_pipe','.jpeg':'jpeg_pipe','.png':'png_pipe','.webp':'webp_pipe','.gif':'gif','.mp3':'mp3'}
                                 try:
-                                    with av.open(io.BytesIO(raw),format=formats[ext]) as container:
-                                        stream=(container.streams.audio if ext=='.mp3' else container.streams.video)[0]
-                                        if ext!='.mp3' and stream.codec_context.width*stream.codec_context.height>40000000: raise ValueError('Image too large.')
-                                        next(container.decode(stream))
+                                    if ext == '.pdf':
+                                        from .teaching import validated_pdf_pages
+                                        validated_pdf_pages(source)
+                                        source.seek(0)
+                                    else:
+                                        with av.open(io.BytesIO(raw),format=formats[ext]) as container:
+                                            stream=(container.streams.audio if ext=='.mp3' else container.streams.video)[0]
+                                            if ext!='.mp3' and stream.codec_context.width*stream.codec_context.height>40000000: raise ValueError('Image too large.')
+                                            next(container.decode(stream))
                                 except Exception as exc: raise ValueError('Invalid media in backup.') from exc
                                 getattr(obj,field.name).save(uuid.uuid4().hex+ext,source,save=False)
                                 files.append((getattr(obj,field.name).storage,getattr(obj,field.name).name))
+                                if model==u.BoardPDF: obj.size=len(raw)
                                 if model==p.PracticeMedia:
                                     obj.size=len(raw)
                                     obj.content_type={'.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.webp':'image/webp','.gif':'image/gif','.mp3':'audio/mpeg'}[ext]

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: wortify-teaching-realtime
+    runtime: node
+    rootDir: Realtime
+    buildCommand: npm ci --omit=dev --ignore-scripts
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: ALLOWED_ORIGINS
+        value: https://wortify-pro.netlify.app
+      - key: TEACHING_REALTIME_SECRET
+        sync: false

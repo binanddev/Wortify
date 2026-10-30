@@ -4,7 +4,7 @@ import {Btn, Glass, Status} from '../../components/ui/ui.jsx';
 import {request, readPreference, savePreference} from '../../lib/core.js';
 import {flushLearning, pendingLearning} from '../learning/learning-sync.js';
 
-const labels = {theme:'Backgrounds',profile:'Profile',studysettings:'Study settings',folder:'Flashcard folders',deck:'Decks',card:'Flashcards',practicemedia:'Exercise files',practicenode:'Practice folders and activities',classroom:'Classes',classroomassignment:'Assignments',studyprogress:'Card progress',decklearningstate:'Deck learning state',practiceprogress:'Practice progress',studyattempt:'Study attempts',practiceattempt:'Practice attempts',studysession:'Study sessions',learningevent:'Learning history',importbatch:'Import history',matchround:'Matching rounds'};
+const labels = {theme:'Backgrounds',profile:'Profile',studysettings:'Study settings',folder:'Flashcard folders',deck:'Decks',card:'Flashcards',practicemedia:'Exercise files',practicenode:'Practice folders and activities',classroom:'Classes',teachingboard:'Teaching studio',boardpdf:'Class PDFs',classroomassignment:'Assignments',studyprogress:'Card progress',decklearningstate:'Deck learning state',practiceprogress:'Practice progress',studyattempt:'Study attempts',practiceattempt:'Practice attempts',studysession:'Study sessions',learningevent:'Learning history',importbatch:'Import history',matchround:'Matching rounds'};
 
 export default function BackupSettings({userId}) {
   useLocale();

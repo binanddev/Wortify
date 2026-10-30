@@ -104,3 +104,28 @@ Cả [CONTENT_AUTHORING.md](docs/authoring/CONTENT_AUTHORING.md) và [WORTIFY_AU
 - Gói JSON hệ thống chỉ gồm `practice` và `reading`. Không chấp nhận `flashcards` kể cả mảng rỗng. Thẻ vẫn nhập trong bộ thẻ cá nhân. Khóa API không thể quản lý người dùng, khôi phục ZIP hay truy cập thẻ cá nhân.
 - Sau khi cập nhật backend cần chạy migrations (deploy hiện có thực hiện bước này) để tạo bảng khóa API. Không thêm biến môi trường hoặc cài dịch vụ ngoài.
 - Hai tài liệu gửi nguyên cho chat nằm trong `docs/authoring/`; hướng dẫn phân biệt nội dung hệ thống và thẻ cá nhân, có quy tắc tạo file và nhập API. Không ghi khóa API vào tài liệu hay Git.
+
+
+### Lớp học và realtime local
+
+Chạy `.\start.ps1` như bình thường. Launcher chuẩn bị Frontend, áp dụng migration rồi chạy Django (8000) và Vite (5173). Class được nạp theo nhu cầu: chỉ khi mở bảng với quyền hợp lệ, bộ điều phối local mới chuẩn bị dependency Realtime và bật WebSocket (8787). Không phải điền secret/URL realtime thủ công ở local; khóa phát triển riêng được lưu trong `.venv/wortify-realtime.secret` và không dùng cấu hình production. Node realtime dùng chế độ theo dõi thay đổi mã khi chạy local.
+
+Nếu đang mở phiên server cũ, dừng đúng cửa sổ đó bằng Ctrl+C rồi chạy lại launcher. Launcher sẽ báo khi cổng web bị dịch vụ khác chiếm, không tự dừng tiến trình khác. Lỗi/cổng bận của realtime chỉ làm Class dùng đồng bộ HTTP dự phòng, không chặn web khởi động. Có thể đổi các cổng qua `WORTIFY_BACKEND_PORT`, `WORTIFY_FRONTEND_PORT`, `WORTIFY_REALTIME_PORT`.
+
+Trong lớp, dùng tab **Bài giảng** và **Bài tập**. Các thao tác tạo/giao bài, mời học viên, thành viên và cài đặt dùng modal. Giáo viên có thể mở bảng → **Chia sẻ bài giảng** để cho phép khách không đăng ký xem trực tiếp. Mặc định mọi bài giảng riêng tư; link công khai chỉ cho xem bảng/PDF của đúng bài giảng, không mở danh sách thành viên/bài tập. Có thể tắt hoặc đổi link; bản khôi phục sao lưu luôn trở lại riêng tư.
+
+
+#### Chuẩn bị thư viện khi chạy local
+
+Launcher kiểm tra các dependency theo `package-lock.json` và thử nạp runtime trước khi chạy. Khi thư viện đã đủ, launcher bỏ qua npm ngay cả khi chưa có stamp cũ. Nếu lần cài trước bị ngắt, chỉ sửa bổ sung; không chạy `npm ci` toàn bộ theo mặc định, không tạo một cache npm mới riêng cho repo. Package có metadata nhưng thiếu tệp nội bộ được giữ bản cũ trong `.development-backups/incomplete-dependencies/` rồi cài lại đúng phiên bản.
+
+Dùng `.\start.ps1` bình thường. Chỉ thêm `-Install` khi chủ động muốn cài sạch. Lượt cần cài có tiến độ mỗi 10 giây và log trong `.development-backups/setup/`; kiểm tra CPU giúp phân biệt đang giải nén với đứng im. Npm im lặng/không hoạt động 90 giây hoặc quá giới hạn tổng thời gian sẽ dừng với log cụ thể. Lệnh npm được gọi qua Node trực tiếp để Ctrl+C không để lại batch job của npm.
+
+
+#### Ranh giới độc lập của Class
+
+Settings và Profile không import mã Class. App chỉ tải trang Class khi vào đường dẫn lớp; tab Bài giảng tải studio và mở bài mới tải bảng. Khi rời bảng, kết nối, lịch đồng bộ, tải PDF và worker được dọn. Build kiểm tra ranh giới import này để tránh hồi quy. Lỗi render riêng Class được giữ trong vùng nội dung, thanh điều hướng vẫn sử dụng được.
+
+Backend khai báo route Class trong `Backend/api/classroom/routes.py`, chỉ import handler khi đúng API được gọi. Dịch vụ `Realtime/` vẫn deploy độc lập; cơ chế tự bật qua loopback có khóa chỉ áp dụng cho launcher local được cấu hình rõ ràng, không khởi chạy process trong production Django. PDF không đi qua WebSocket.
+
+Có thể đặt `WORTIFY_LOCAL_DATA_DIR` thành thư mục dữ liệu local riêng trước khi chạy launcher; cả migration, SQLite và media dùng thư mục đó. Mặc định vẫn dùng dữ liệu hiện tại trong Backend.

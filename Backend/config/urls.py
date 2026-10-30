@@ -1,3 +1,5 @@
+from api import feature_availability
+from api.classroom.routes import routes as classroom_routes
 from api import deck_management
 from api import content_policy
 from api import flashcard_discovery
@@ -14,14 +16,20 @@ from api.common import legacy_json,namespace
 from users.views import session, superuser_registration, interface_language
 from api import card_learning as cards
 def health(request):
-    import hashlib
+    import hashlib,json
     from django.conf import settings
     identity=hashlib.sha256(str(settings.BASE_DIR).lower().encode()).hexdigest()[:16]
     import os
-    response = JsonResponse({'app':'Wortify','workspace':identity,'version':'1.14.0','revision':os.environ.get('RENDER_GIT_COMMIT',''),'features':['guest-learning','flashcard-discovery','content-import','content-policy','flashcard-dictation','flexible-answer-checking','flashcard-library-management','documented-site-export']})
+    response = JsonResponse({'app':'Wortify','workspace':identity,'version':'1.15.0','revision':os.environ.get('RENDER_GIT_COMMIT',''),'features':['guest-learning','flashcard-discovery','content-import','content-policy','flashcard-dictation','flexible-answer-checking','flashcard-library-management','documented-site-export']})
+    if settings.DEBUG:
+        data=json.loads(response.content)
+        data['local_realtime']={'url':settings.TEACHING_REALTIME_URL,'key_id':hashlib.sha256(settings.TEACHING_REALTIME_SECRET.encode()).hexdigest()[:16]}
+        if os.environ.get('WORTIFY_LOCAL_REALTIME_CONTROL'):
+            data['local_realtime']['mode']='on-demand'
+        response=JsonResponse(data)
     response['Cache-Control']='no-store'
     return response
-urlpatterns=[path("api/site/content-policy/",content_policy.current),path("api/manage/content-policy/",content_policy.settings),path("api/import/guide/",content_import_docs.guide),path("api/import/openapi/",content_import_docs.openapi),path("api/manage/import-api/",content_import_api.settings),path("api/import/content/",content_import_api.upload),path('api/me/language/',interface_language),path('api/superuser-registration/<slug:setup_key>/',superuser_registration),path('api/health/',health),path('api/session/',session),
+urlpatterns=[path("api/site/features/",feature_availability.public),path("api/manage/features/",feature_availability.manage),path("api/site/content-policy/",content_policy.current),path("api/manage/content-policy/",content_policy.settings),path("api/import/guide/",content_import_docs.guide),path("api/import/openapi/",content_import_docs.openapi),path("api/manage/import-api/",content_import_api.settings),path("api/import/content/",content_import_api.upload),path('api/me/language/',interface_language),path('api/superuser-registration/<slug:setup_key>/',superuser_registration),path('api/health/',health),path('api/session/',session),
  path('api/health/check/',monitoring.probe),
  path('api/monitor/',monitoring.report),
  path('api/manage/monitor/',monitoring.logs),
@@ -52,9 +60,11 @@ urlpatterns=[path("api/site/content-policy/",content_policy.current),path("api/m
  path('api/manage/users/',management.users),path('api/manage/users/<int:pk>/',management.user_detail),
  path('api/manage/appearance/',management.site_appearance),path('api/site/appearance/',management.public_appearance),path('api/site/appearance/image/',management.site_appearance_image)]
 def route(pattern,view):urlpatterns.append(path('api/<str:language>/'+pattern,namespace(view)))
+# Keep classroom implementation imports outside unrelated request startup.
+for pattern, view in classroom_routes():route(pattern, view)
 for pattern,view in [
  ('system-library/',content_packages.library),('system-library/<uuid:pk>/copy/',content_packages.copy),('reading/discover/',reading_discovery.library),('reading/discover/open/',reading_discovery.detail),('reading/discover/save/',reading_discovery.save),('reading/folders/',reading_management.create_folder),('reading/folders/<int:pk>/',reading_management.folder_detail),('reading/<int:pk>/metadata/',reading_management.metadata),('reading/organize/',reading_management.organize),('reading/<int:pk>/sharing/',reading.sharing),('reading/',reading.library),('reading/<int:pk>/',reading.detail),
- ('profile/',community.profile),('classes/',community.classes),('classes/<int:pk>/',community.classroom),('classes/<int:pk>/assignments/',community.classroom_assignments),
+ ('profile/',community.profile),
  ('practice-hub/nodes/<int:pk>/copy/',practice_copy.copy_collection),
  ('practice-hub/media/',practice_media.upload),('practice-hub/media/<uuid:pk>/',practice_media.content),
  ('practice-hub/public/<int:pk>/',practice_hub.public_detail),('practice-hub/explore/',practice_hub.explore),('practice-hub/nodes/',practice_hub.nodes),('practice-hub/nodes/<int:pk>/',practice_hub.node),('practice-hub/import/',practice_hub.import_nodes),('practice-hub/organize/',practice_hub.organize),

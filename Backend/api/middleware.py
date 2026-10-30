@@ -13,4 +13,7 @@ class PrivateResponsesMiddleware:
                 response = JsonResponse({'error':messages.get(original.status_code,'The server could not process this request.')}, status=original.status_code)
                 if original.has_header('Allow'): response['Allow'] = original['Allow']
             response['Cache-Control'] = 'private, no-store'
+            if '/classes/public/' in request.path:
+                response['X-Robots-Tag'] = 'noindex, nofollow, noarchive'
+                response['Referrer-Policy'] = 'no-referrer'
         return response

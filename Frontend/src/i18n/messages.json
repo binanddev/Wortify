@@ -6664,8 +6664,8 @@
     "de": "Lesetexte oder Ordner suchen"
   },
   "Dismiss": {
-    "vi": "Đóng thông báo",
-    "de": "Meldung schließen"
+    "vi": "Ẩn thông báo",
+    "de": "Schließen"
   },
   "Select readings": {
     "vi": "Chọn bài đọc",
@@ -6794,5 +6794,729 @@
   "Edit one reading at a time.": {
     "vi": "Mỗi lần chỉ sửa một bài đọc.",
     "de": "Bearbeite jeweils nur einen Lesetext."
+  },
+  "Teaching studio": {
+    "vi": "Phòng dạy học",
+    "de": "Unterrichtsstudio"
+  },
+  "LIVE CLASSROOM": {
+    "vi": "LỚP HỌC TRỰC TUYẾN",
+    "de": "LIVE-KLASSENZIMMER"
+  },
+  "TEACHING STUDIO": {
+    "vi": "PHÒNG DẠY HỌC",
+    "de": "UNTERRICHTSSTUDIO"
+  },
+  "A shared board. A focused lesson. Everything in one place.": {
+    "vi": "Bảng chung, bài giảng tập trung. Tất cả trong một không gian.",
+    "de": "Eine gemeinsame Tafel. Alles für deinen Unterricht an einem Ort."
+  },
+  "PDF + Whiteboard": {
+    "vi": "PDF + Bảng trắng",
+    "de": "PDF + Whiteboard"
+  },
+  "Lesson title": {
+    "vi": "Tên bài giảng",
+    "de": "Unterrichtstitel"
+  },
+  "Name your next lesson…": {
+    "vi": "Đặt tên bài giảng mới…",
+    "de": "Nächste Unterrichtsstunde benennen…"
+  },
+  "Creating…": {
+    "vi": "Đang tạo…",
+    "de": "Wird erstellt…"
+  },
+  "New lesson": {
+    "vi": "Bài giảng mới",
+    "de": "Neue Stunde"
+  },
+  "Loading lessons…": {
+    "vi": "Đang tải bài giảng…",
+    "de": "Unterricht wird geladen…"
+  },
+  "Your classroom, ready to teach": {
+    "vi": "Lớp học đã sẵn sàng",
+    "de": "Dein Klassenzimmer ist bereit"
+  },
+  "Create a lesson, write on the board or bring your own PDF.": {
+    "vi": "Tạo bài giảng, viết lên bảng hoặc nhập tài liệu PDF của bạn.",
+    "de": "Erstelle eine Stunde, schreibe an die Tafel oder importiere dein PDF."
+  },
+  "Your teacher’s lessons will appear here.": {
+    "vi": "Bài giảng của giáo viên sẽ xuất hiện ở đây.",
+    "de": "Hier erscheinen die Stunden deiner Lehrkraft."
+  },
+  "Fixed pages · PDF up to 300 MB · Live sharing": {
+    "vi": "Trang cố định · PDF tối đa 300 MB · Chia sẻ trực tiếp",
+    "de": "Feste Seiten · PDF bis 300 MB · Live teilen"
+  },
+  "LESSON": {
+    "vi": "BÀI GIẢNG",
+    "de": "UNTERRICHT"
+  },
+  "Open teaching board": {
+    "vi": "Mở bảng dạy học",
+    "de": "Unterrichtstafel öffnen"
+  },
+  "Join the lesson": {
+    "vi": "Vào xem bài giảng",
+    "de": "Unterricht ansehen"
+  },
+  "Opening board…": {
+    "vi": "Đang mở bảng…",
+    "de": "Tafel wird geöffnet…"
+  },
+  "Pen": {
+    "vi": "Bút mực",
+    "de": "Stift"
+  },
+  "Pencil": {
+    "vi": "Bút chì",
+    "de": "Bleistift"
+  },
+  "Highlighter": {
+    "vi": "Bút tô sáng",
+    "de": "Textmarker"
+  },
+  "Stroke eraser": {
+    "vi": "Tẩy nét vẽ",
+    "de": "Strichradierer"
+  },
+  "Line": {
+    "vi": "Đường thẳng",
+    "de": "Linie"
+  },
+  "Rectangle": {
+    "vi": "Hình chữ nhật",
+    "de": "Rechteck"
+  },
+  "Ellipse": {
+    "vi": "Hình elip",
+    "de": "Ellipse"
+  },
+  "Ink color": {
+    "vi": "Màu mực",
+    "de": "Stiftfarbe"
+  },
+  "Custom color": {
+    "vi": "Chọn màu khác",
+    "de": "Eigene Farbe"
+  },
+  "Size": {
+    "vi": "Cỡ nét",
+    "de": "Stärke"
+  },
+  "Redo": {
+    "vi": "Làm lại",
+    "de": "Wiederholen"
+  },
+  "Clear annotations": {
+    "vi": "Xóa nét viết",
+    "de": "Anmerkungen löschen"
+  },
+  "Import PDF": {
+    "vi": "Nhập PDF",
+    "de": "PDF importieren"
+  },
+  "Export PDF": {
+    "vi": "Xuất PDF",
+    "de": "PDF exportieren"
+  },
+  "Fullscreen": {
+    "vi": "Toàn màn hình",
+    "de": "Vollbild"
+  },
+  "Close board": {
+    "vi": "Đóng bảng",
+    "de": "Tafel schließen"
+  },
+  "Drawing tools": {
+    "vi": "Công cụ viết và vẽ",
+    "de": "Zeichenwerkzeuge"
+  },
+  "View only · your teacher writes on this board": {
+    "vi": "Chế độ xem · giáo viên viết trên bảng này",
+    "de": "Nur ansehen · die Lehrkraft schreibt auf dieser Tafel"
+  },
+  "Follow teacher": {
+    "vi": "Theo trang giáo viên",
+    "de": "Lehrkraft folgen"
+  },
+  "Download recovery copy": {
+    "vi": "Tải bản sao khôi phục",
+    "de": "Wiederherstellungskopie herunterladen"
+  },
+  "Reload saved lesson": {
+    "vi": "Tải lại bài giảng đã lưu",
+    "de": "Gespeicherte Stunde neu laden"
+  },
+  "Lesson pages": {
+    "vi": "Các trang bài giảng",
+    "de": "Unterrichtsseiten"
+  },
+  "PAGES": {
+    "vi": "TRANG",
+    "de": "SEITEN"
+  },
+  "Whiteboard": {
+    "vi": "Bảng trắng",
+    "de": "Whiteboard"
+  },
+  "Grid paper": {
+    "vi": "Giấy ô vuông",
+    "de": "Kariert"
+  },
+  "Ruled paper": {
+    "vi": "Giấy kẻ dòng",
+    "de": "Liniert"
+  },
+  "Blank page": {
+    "vi": "Giấy trắng",
+    "de": "Leere Seite"
+  },
+  "Page format": {
+    "vi": "Khổ trang",
+    "de": "Seitenformat"
+  },
+  "Landscape": {
+    "vi": "Ngang",
+    "de": "Querformat"
+  },
+  "Portrait": {
+    "vi": "Dọc",
+    "de": "Hochformat"
+  },
+  "Paper style": {
+    "vi": "Nền giấy",
+    "de": "Papierart"
+  },
+  "Add page": {
+    "vi": "Thêm trang",
+    "de": "Seite hinzufügen"
+  },
+  "Whiteboard page": {
+    "vi": "Trang bảng trắng",
+    "de": "Tafelseite"
+  },
+  "Fixed-size whiteboard": {
+    "vi": "Bảng trắng khổ cố định",
+    "de": "Whiteboard mit fester Größe"
+  },
+  "Teacher": {
+    "vi": "Giáo viên",
+    "de": "Lehrkraft"
+  },
+  "Student": {
+    "vi": "Học viên",
+    "de": "Lernende"
+  },
+  "Drawing surface": {
+    "vi": "Vùng viết và vẽ",
+    "de": "Zeichenfläche"
+  },
+  "Preparing page…": {
+    "vi": "Đang chuẩn bị trang…",
+    "de": "Seite wird vorbereitet…"
+  },
+  "Fixed pages. Ready for PDF.": {
+    "vi": "Trang cố định. Sẵn sàng xuất PDF.",
+    "de": "Feste Seiten. Bereit für PDF."
+  },
+  "Zoom": {
+    "vi": "Thu phóng",
+    "de": "Zoom"
+  },
+  "Fit page": {
+    "vi": "Vừa khung",
+    "de": "Einpassen"
+  },
+  "Clear all annotations on this page?": {
+    "vi": "Xóa toàn bộ nét viết trên trang này?",
+    "de": "Alle Anmerkungen auf dieser Seite löschen?"
+  },
+  "Changes are still being saved": {
+    "vi": "Thay đổi vẫn đang được lưu",
+    "de": "Änderungen werden noch gespeichert"
+  },
+  "Replace the local draft with the saved lesson?": {
+    "vi": "Thay bản nháp trên máy bằng bài giảng đã lưu?",
+    "de": "Lokalen Entwurf durch die gespeicherte Stunde ersetzen?"
+  },
+  "Your PDF stays in place. You can undo this action.": {
+    "vi": "Tài liệu PDF được giữ lại. Bạn có thể hoàn tác thao tác này.",
+    "de": "Dein PDF bleibt erhalten. Du kannst diese Aktion rückgängig machen."
+  },
+  "Download a recovery copy first if you need to keep the unsaved changes.": {
+    "vi": "Hãy tải bản sao khôi phục trước nếu bạn cần giữ các thay đổi chưa lưu.",
+    "de": "Lade zuerst eine Wiederherstellungskopie herunter, um ungespeicherte Änderungen zu behalten."
+  },
+  "Keep the board open to finish syncing. A recovery draft is also stored on this device.": {
+    "vi": "Giữ bảng mở để đồng bộ xong. Bản nháp khôi phục cũng được lưu trên thiết bị này.",
+    "de": "Lass die Tafel geöffnet, bis alles synchronisiert ist. Ein Entwurf liegt auch auf diesem Gerät."
+  },
+  "Keep teaching": {
+    "vi": "Tiếp tục dạy",
+    "de": "Weiter unterrichten"
+  },
+  "Close with local draft": {
+    "vi": "Đóng và giữ bản nháp",
+    "de": "Mit lokalem Entwurf schließen"
+  },
+  "Connecting…": {
+    "vi": "Đang kết nối…",
+    "de": "Verbindung wird hergestellt…"
+  },
+  "Saving changes…": {
+    "vi": "Đang lưu thay đổi…",
+    "de": "Änderungen werden gespeichert…"
+  },
+  "All changes saved": {
+    "vi": "Đã lưu mọi thay đổi",
+    "de": "Alle Änderungen gespeichert"
+  },
+  "Live · following the classroom": {
+    "vi": "Trực tiếp · đang đồng bộ lớp học",
+    "de": "Live · mit dem Unterricht verbunden"
+  },
+  "Connection lost · retrying": {
+    "vi": "Mất kết nối · đang thử lại",
+    "de": "Verbindung getrennt · neuer Versuch"
+  },
+  "Sync paused · keep your draft": {
+    "vi": "Tạm dừng đồng bộ · bản nháp được giữ lại",
+    "de": "Synchronisierung pausiert · Entwurf behalten"
+  },
+  "Importing PDF…": {
+    "vi": "Đang nhập PDF…",
+    "de": "PDF wird importiert…"
+  },
+  "Exporting PDF…": {
+    "vi": "Đang xuất PDF…",
+    "de": "PDF wird exportiert…"
+  },
+  "PDF files must not exceed 300 MB.": {
+    "vi": "Tệp PDF không được vượt quá 300 MB.",
+    "de": "PDF-Dateien dürfen 300 MB nicht überschreiten."
+  },
+  "Choose a PDF file.": {
+    "vi": "Vui lòng chọn tệp PDF.",
+    "de": "Bitte wähle eine PDF-Datei."
+  },
+  "Unable to load the PDF. Reopen the lesson to retry.": {
+    "vi": "Không tải được PDF. Hãy mở lại bài giảng để thử lại.",
+    "de": "PDF konnte nicht geladen werden. Öffne die Stunde erneut."
+  },
+  "The board changed in another window. Reopen the lesson before continuing.": {
+    "vi": "Bảng đã thay đổi trong cửa sổ khác. Hãy tải lại bài giảng trước khi tiếp tục.",
+    "de": "Die Tafel wurde in einem anderen Fenster geändert. Lade die Stunde neu."
+  },
+  "Device storage is full. Keep this lesson open until changes are saved.": {
+    "vi": "Bộ nhớ thiết bị đã đầy. Hãy giữ bài giảng mở đến khi lưu xong.",
+    "de": "Der Gerätespeicher ist voll. Lass die Stunde bis zum Speichern geöffnet."
+  },
+  "Wait for the board to finish saving before importing a PDF.": {
+    "vi": "Hãy đợi bảng lưu xong trước khi nhập PDF.",
+    "de": "Warte vor dem PDF-Import, bis die Tafel gespeichert ist."
+  },
+  "This lesson is full. Create another lesson to continue.": {
+    "vi": "Bài giảng đã đạt giới hạn. Hãy tạo bài giảng mới để tiếp tục.",
+    "de": "Diese Stunde ist voll. Erstelle eine neue Stunde."
+  },
+  "A lesson supports up to 200 pages.": {
+    "vi": "Mỗi bài giảng hỗ trợ tối đa 200 trang.",
+    "de": "Eine Stunde unterstützt bis zu 200 Seiten."
+  },
+  "Choose one PDF file, up to 300 MB.": {
+    "vi": "Chọn một tệp PDF tối đa 300 MB.",
+    "de": "Wähle eine PDF-Datei bis 300 MB."
+  },
+  "Choose a valid PDF file.": {
+    "vi": "Hãy chọn tệp PDF hợp lệ.",
+    "de": "Wähle eine gültige PDF-Datei."
+  },
+  "Unlock the PDF before importing it.": {
+    "vi": "Hãy gỡ mật khẩu PDF trước khi nhập.",
+    "de": "Entsperre das PDF vor dem Import."
+  },
+  "A PDF supports up to 200 pages.": {
+    "vi": "Tệp PDF hỗ trợ tối đa 200 trang.",
+    "de": "Ein PDF unterstützt bis zu 200 Seiten."
+  },
+  "The PDF is damaged or cannot be read.": {
+    "vi": "Tệp PDF bị hỏng hoặc không đọc được.",
+    "de": "Das PDF ist beschädigt oder nicht lesbar."
+  },
+  "A lesson supports up to 200 pages. Create another lesson for this PDF.": {
+    "vi": "Mỗi bài giảng tối đa 200 trang. Hãy tạo bài giảng mới cho PDF này.",
+    "de": "Eine Stunde unterstützt bis zu 200 Seiten. Erstelle eine neue Stunde für dieses PDF."
+  },
+  "Enter a lesson title (up to 120 characters).": {
+    "vi": "Nhập tên bài giảng (tối đa 120 ký tự).",
+    "de": "Gib einen Unterrichtstitel ein (bis zu 120 Zeichen)."
+  },
+  "Unable to render the PDF page.": {
+    "vi": "Không dựng được trang PDF.",
+    "de": "Die PDF-Seite konnte nicht gerendert werden."
+  },
+  "Unsupported PDF page dimensions.": {
+    "vi": "Khổ trang PDF không được hỗ trợ.",
+    "de": "Nicht unterstützte PDF-Seitengröße."
+  },
+  "Device storage is unavailable. Keep the board open until changes are saved.": {
+    "vi": "Không lưu được bản nháp trên thiết bị. Hãy giữ bảng mở đến khi lưu lên máy chủ xong.",
+    "de": "Lokaler Speicher ist nicht verfügbar. Lass die Tafel bis zum Speichern geöffnet."
+  },
+  "Copy lesson link": {
+    "vi": "Sao chép liên kết bài giảng",
+    "de": "Unterrichtslink kopieren"
+  },
+  "Lesson link copied. Only class members can open it.": {
+    "vi": "Đã sao chép liên kết bài giảng. Chỉ thành viên lớp mới mở được.",
+    "de": "Link kopiert. Nur Klassenmitglieder können ihn öffnen."
+  },
+  "Updates every 10 seconds": {
+    "vi": "Cập nhật mỗi 10 giây",
+    "de": "Aktualisierung alle 10 Sekunden"
+  },
+  "Realtime is unavailable. Changes refresh every 10 seconds.": {
+    "vi": "Chưa kết nối được realtime. Bảng tạm cập nhật mỗi 10 giây.",
+    "de": "Echtzeitverbindung ist nicht verfügbar. Die Tafel wird alle 10 Sekunden aktualisiert."
+  },
+  "A dedicated space for lessons, practice and your class.": {
+    "vi": "Không gian riêng cho bài giảng, bài tập và lớp học của bạn.",
+    "de": "Ein eigener Bereich für Unterricht, Übungen und deine Klasse."
+  },
+  "A place to learn together": {
+    "vi": "Không gian để cùng học tập",
+    "de": "Ein Ort zum gemeinsamen Lernen"
+  },
+  "Add exercises, theory or a folder from Practice Hub.": {
+    "vi": "Thêm bài tập, lý thuyết hoặc thư mục từ Practice Hub.",
+    "de": "Füge Übungen, Theorie oder einen Ordner aus dem Practice Hub hinzu."
+  },
+  "All assignments": {
+    "vi": "Tất cả bài tập",
+    "de": "Alle Aufgaben"
+  },
+  "All classes": {
+    "vi": "Tất cả lớp học",
+    "de": "Alle Klassen"
+  },
+  "Assign learning content and keep deadlines in one place.": {
+    "vi": "Giao nội dung học tập và quản lý thời hạn tại một nơi.",
+    "de": "Verteile Lerninhalte und verwalte alle Fristen an einem Ort."
+  },
+  "Assignment removed.": {
+    "vi": "Đã gỡ bài được giao.",
+    "de": "Aufgabe entfernt."
+  },
+  "Assignments": {
+    "vi": "Bài tập",
+    "de": "Aufgaben"
+  },
+  "Choose content from Practice Hub and set an optional deadline.": {
+    "vi": "Chọn nội dung từ Practice Hub và đặt thời hạn nếu cần.",
+    "de": "Wähle Inhalte aus dem Practice Hub und lege bei Bedarf eine Frist fest."
+  },
+  "Class members": {
+    "vi": "Thành viên lớp",
+    "de": "Klassenmitglieder"
+  },
+  "Class sections": {
+    "vi": "Các mục của lớp học",
+    "de": "Klassenbereiche"
+  },
+  "Class settings": {
+    "vi": "Cài đặt lớp học",
+    "de": "Klasseneinstellungen"
+  },
+  "Create your first class or join a teacher with an invite code.": {
+    "vi": "Tạo lớp học đầu tiên hoặc tham gia lớp của giáo viên bằng mã mời.",
+    "de": "Erstelle deine erste Klasse oder tritt mit einem Einladungscode bei."
+  },
+  "Created by {name}": {
+    "vi": "Được tạo bởi {name}",
+    "de": "Erstellt von {name}"
+  },
+  "Edit assignment": {
+    "vi": "Chỉnh sửa bài được giao",
+    "de": "Aufgabe bearbeiten"
+  },
+  "Edit deadline for {title}": {
+    "vi": "Sửa thời hạn: {title}",
+    "de": "Frist für {title} bearbeiten"
+  },
+  "Find your assigned practice and upcoming deadlines here.": {
+    "vi": "Xem bài tập được giao và các thời hạn sắp tới tại đây.",
+    "de": "Hier findest du deine Aufgaben und anstehenden Fristen."
+  },
+  "Invite code copied.": {
+    "vi": "Đã sao chép mã mời.",
+    "de": "Einladungscode kopiert."
+  },
+  "Invite students": {
+    "vi": "Mời học viên",
+    "de": "Lernende einladen"
+  },
+  "Invite students to learn together in this class.": {
+    "vi": "Mời học viên tham gia và cùng học trong lớp này.",
+    "de": "Lade Lernende zum gemeinsamen Lernen in dieser Klasse ein."
+  },
+  "Lessons": {
+    "vi": "Bài giảng",
+    "de": "Unterricht"
+  },
+  "Loading content…": {
+    "vi": "Đang tải nội dung…",
+    "de": "Inhalte werden geladen…"
+  },
+  "Manage people enrolled in this class.": {
+    "vi": "Quản lý học viên đã tham gia lớp này.",
+    "de": "Verwalte die Mitglieder dieser Klasse."
+  },
+  "Manage the class name and classroom settings.": {
+    "vi": "Quản lý tên và cài đặt lớp học.",
+    "de": "Verwalte den Namen und die Einstellungen der Klasse."
+  },
+  "Members": {
+    "vi": "Thành viên",
+    "de": "Mitglieder"
+  },
+  "No assignments match your filters.": {
+    "vi": "Không có bài tập phù hợp với bộ lọc.",
+    "de": "Keine Aufgaben entsprechen deinen Filtern."
+  },
+  "No classes match your search.": {
+    "vi": "Không tìm thấy lớp học phù hợp.",
+    "de": "Keine Klassen entsprechen deiner Suche."
+  },
+  "No content matches your search.": {
+    "vi": "Không tìm thấy nội dung phù hợp.",
+    "de": "Keine Inhalte entsprechen deiner Suche."
+  },
+  "No deadline": {
+    "vi": "Không có thời hạn",
+    "de": "Keine Frist"
+  },
+  "No members match your search.": {
+    "vi": "Không tìm thấy thành viên phù hợp.",
+    "de": "Keine Mitglieder entsprechen deiner Suche."
+  },
+  "Open class": {
+    "vi": "Mở lớp học",
+    "de": "Klasse öffnen"
+  },
+  "PRACTICE SPACE": {
+    "vi": "KHÔNG GIAN BÀI TẬP",
+    "de": "ÜBUNGSBEREICH"
+  },
+  "Past due": {
+    "vi": "Đã quá hạn",
+    "de": "Überfällig"
+  },
+  "Practice & deadlines": {
+    "vi": "Bài tập và thời hạn",
+    "de": "Übungen und Fristen"
+  },
+  "Remove this assignment?": {
+    "vi": "Gỡ bài được giao này?",
+    "de": "Diese Aufgabe entfernen?"
+  },
+  "Remove this student from the class?": {
+    "vi": "Xóa học viên này khỏi lớp?",
+    "de": "Diese Person aus der Klasse entfernen?"
+  },
+  "Remove {name} from class": {
+    "vi": "Xóa {name} khỏi lớp",
+    "de": "{name} aus der Klasse entfernen"
+  },
+  "Search assignments": {
+    "vi": "Tìm bài tập",
+    "de": "Aufgaben suchen"
+  },
+  "Search classes": {
+    "vi": "Tìm lớp học",
+    "de": "Klassen suchen"
+  },
+  "Search content": {
+    "vi": "Tìm nội dung",
+    "de": "Inhalte suchen"
+  },
+  "Search members": {
+    "vi": "Tìm thành viên",
+    "de": "Mitglieder suchen"
+  },
+  "Share this code with students who want to join the class.": {
+    "vi": "Gửi mã này cho học viên muốn tham gia lớp.",
+    "de": "Teile diesen Code mit Lernenden, die der Klasse beitreten möchten."
+  },
+  "Show": {
+    "vi": "Hiển thị",
+    "de": "Anzeigen"
+  },
+  "The deadline uses your device’s local time.": {
+    "vi": "Thời hạn được tính theo múi giờ của thiết bị.",
+    "de": "Die Frist verwendet die lokale Zeit deines Geräts."
+  },
+  "The original content stays in Practice Hub.": {
+    "vi": "Nội dung gốc vẫn được giữ trong Practice Hub.",
+    "de": "Die ursprünglichen Inhalte bleiben im Practice Hub erhalten."
+  },
+  "This removes the class, its lessons and assignments.": {
+    "vi": "Thao tác này xóa lớp học cùng các bài giảng và bài được giao.",
+    "de": "Dadurch werden die Klasse, ihre Unterrichtsstunden und Aufgaben gelöscht."
+  },
+  "Try another search or deadline filter.": {
+    "vi": "Thử từ khóa hoặc bộ lọc thời hạn khác.",
+    "de": "Versuche einen anderen Suchbegriff oder Fristenfilter."
+  },
+  "Type a content title…": {
+    "vi": "Nhập tên nội dung…",
+    "de": "Titel des Inhalts eingeben…"
+  },
+  "Unassign {title}": {
+    "vi": "Gỡ bài: {title}",
+    "de": "Zuweisung von {title} aufheben"
+  },
+  "Upcoming deadlines": {
+    "vi": "Thời hạn sắp tới",
+    "de": "Anstehende Fristen"
+  },
+  "Whiteboard & PDF": {
+    "vi": "Bảng trắng và PDF",
+    "de": "Whiteboard und PDF"
+  },
+  "Your class is ready for students.": {
+    "vi": "Lớp học đã sẵn sàng đón học viên.",
+    "de": "Deine Klasse ist bereit für Lernende."
+  },
+  "Your teacher will add practice here.": {
+    "vi": "Giáo viên sẽ thêm bài tập ở đây.",
+    "de": "Deine Lehrkraft wird hier Übungen hinzufügen."
+  },
+  "{count} classes": {
+    "vi": "{count} lớp học",
+    "de": "{count} Klassen"
+  },
+  "{count} members": {
+    "vi": "{count} thành viên",
+    "de": "{count} Mitglieder"
+  },
+  "{name} will lose member access to this class.": {
+    "vi": "{name} sẽ mất quyền thành viên của lớp này.",
+    "de": "{name} verliert den Mitgliederzugang zu dieser Klasse."
+  },
+  "Choose a valid assignment deadline.": {
+    "vi": "Vui lòng chọn thời hạn hợp lệ.",
+    "de": "Wähle eine gültige Aufgabenfrist."
+  },
+  "Lesson sharing": {
+    "vi": "Chia sẻ bài giảng",
+    "de": "Unterricht teilen"
+  },
+  "Class members can always view this lesson. Public access is optional and view only.": {
+    "vi": "Thành viên lớp luôn xem được bài giảng. Chia sẻ công khai là tùy chọn và chỉ cho phép xem.",
+    "de": "Klassenmitglieder können diese Stunde sehen. Öffentlicher Zugriff ist optional und nur zum Ansehen."
+  },
+  "Allow anyone with the link to watch live": {
+    "vi": "Cho phép bất kỳ ai có liên kết xem trực tiếp",
+    "de": "Allen mit Link das Live-Zuschauen erlauben"
+  },
+  "No account required. The board and its PDF documents become visible to anyone with this link.": {
+    "vi": "Không cần tài khoản. Bất kỳ ai có liên kết này đều xem được bảng và tài liệu PDF trong bài giảng.",
+    "de": "Kein Konto erforderlich. Alle mit diesem Link können die Tafel und ihre PDF-Dokumente sehen."
+  },
+  "Public lesson link": {
+    "vi": "Liên kết bài giảng công khai",
+    "de": "Öffentlicher Unterrichtslink"
+  },
+  "Copy public link": {
+    "vi": "Sao chép liên kết công khai",
+    "de": "Öffentlichen Link kopieren"
+  },
+  "Create a new public link": {
+    "vi": "Tạo liên kết công khai mới",
+    "de": "Neuen öffentlichen Link erstellen"
+  },
+  "Changing the link makes the previous link stop working.": {
+    "vi": "Liên kết cũ sẽ ngừng hoạt động khi bạn đổi liên kết.",
+    "de": "Beim Ändern des Links wird der bisherige Link ungültig."
+  },
+  "Turning sharing off blocks new access immediately. Connected guests are disconnected on the next update or when their short access ticket expires.": {
+    "vi": "Tắt chia sẻ chặn lượt truy cập mới ngay lập tức. Khách đang xem bị ngắt ở lần cập nhật tiếp theo hoặc khi vé truy cập ngắn hạn hết hạn.",
+    "de": "Das Ausschalten blockiert neue Zugriffe sofort. Verbundene Gäste werden beim nächsten Update oder nach Ablauf ihres kurzen Zugriffstickets getrennt."
+  },
+  "Loading sharing settings…": {
+    "vi": "Đang tải cài đặt chia sẻ…",
+    "de": "Freigabeeinstellungen werden geladen…"
+  },
+  "Save sharing settings": {
+    "vi": "Lưu cài đặt chia sẻ",
+    "de": "Freigabeeinstellungen speichern"
+  },
+  "Sharing settings saved.": {
+    "vi": "Đã lưu cài đặt chia sẻ.",
+    "de": "Freigabeeinstellungen gespeichert."
+  },
+  "Public lesson link copied.": {
+    "vi": "Đã sao chép liên kết bài giảng công khai.",
+    "de": "Öffentlicher Unterrichtslink kopiert."
+  },
+  "PUBLIC LESSON": {
+    "vi": "BÀI GIẢNG CÔNG KHAI",
+    "de": "ÖFFENTLICHER UNTERRICHT"
+  },
+  "Public lesson": {
+    "vi": "Bài giảng công khai",
+    "de": "Öffentlicher Unterricht"
+  },
+  "Watch the teacher’s board live. No account is required.": {
+    "vi": "Xem bảng của giáo viên trực tiếp. Không cần tài khoản.",
+    "de": "Sieh die Tafel der Lehrkraft live an. Kein Konto erforderlich."
+  },
+  "Open public lesson": {
+    "vi": "Mở bài giảng công khai",
+    "de": "Öffentlichen Unterricht öffnen"
+  },
+  "View only. This link does not give access to class members or assignments.": {
+    "vi": "Chỉ được xem. Liên kết này không cho phép truy cập danh sách thành viên hoặc bài tập của lớp.",
+    "de": "Nur ansehen. Dieser Link gewährt keinen Zugriff auf Klassenmitglieder oder Aufgaben."
+  },
+  "This public lesson is unavailable. The teacher may have stopped sharing.": {
+    "vi": "Bài giảng công khai không khả dụng. Giáo viên có thể đã ngừng chia sẻ.",
+    "de": "Diese öffentliche Stunde ist nicht verfügbar. Die Lehrkraft hat die Freigabe möglicherweise beendet."
+  },
+  "Public view · only the teacher can write": {
+    "vi": "Chế độ công khai · chỉ giáo viên được viết",
+    "de": "Öffentliche Ansicht · nur die Lehrkraft kann schreiben"
+  },
+  "Public viewer": {
+    "vi": "Khách xem công khai",
+    "de": "Öffentlicher Gast"
+  },
+  "Lesson access ended": {
+    "vi": "Quyền xem bài giảng đã kết thúc",
+    "de": "Unterrichtszugriff beendet"
+  },
+  "Create lesson": {
+    "vi": "Tạo bài giảng",
+    "de": "Unterricht erstellen"
+  },
+  "Choose whether to enable public lesson sharing.": {
+    "vi": "Chọn có bật chia sẻ công khai bài giảng hay không.",
+    "de": "Wähle, ob die öffentliche Freigabe aktiviert werden soll."
+  },
+  "The system is under development": {
+    "vi": "Hệ thống đang hoàn thiện",
+    "de": "Das System wird noch entwickelt"
+  },
+  "Feature availability": {
+    "vi": "Bật / tắt tính năng",
+    "de": "Funktionsverfügbarkeit"
+  },
+  "Disabled features show a maintenance message. Data is preserved. Studio is always enabled.": {
+    "vi": "Mục bị tắt sẽ hiển thị “Hệ thống đang hoàn thiện”. Dữ liệu được giữ nguyên. Studio luôn bật.",
+    "de": "Deaktivierte Funktionen zeigen einen Wartungshinweis. Daten bleiben erhalten. Studio bleibt aktiviert."
   }
 }
