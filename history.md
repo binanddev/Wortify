@@ -1,5 +1,14 @@
 # Change Log
 
+### 2026-10-31 | A more encouraging learning profile
+
+- Redesign the profile around a learning journey: adaptive encouragement for a fresh start, ongoing practice and a completed daily goal; a prominent daily goal and continuation action; and milestone cards with real progress toward the first session, seven consecutive days and 50 mastered cards.
+- Refresh the profile layout, goal ring, achievement cards and progress metrics with responsive desktop/mobile styling that inherits the selected theme. Retain profile editing, daily-goal editing, activity filters, history pagination, deck links and existing learning data/API behavior.
+- Add English, Vietnamese and German interface copy, encouraging empty states and accessible milestone progress indicators. No new dependencies or backend/schema changes.
+- Validation: all 240 frontend tests and production build passed; desktop/mobile rendering reviewed with illustrative data. The deployed Netlify site was not changed or verified.
+
+---
+
 ### [v1.15.0] - 2026-10-30 | Administrator switches for themes and classrooms
 
 - Add superuser-only feature switches under Admin > Appearance for Glass, Windows, Retro Arcade, Notebook, MS-DOS and Classes. Studio is always enabled. All features remain enabled by default until an administrator changes the configuration.

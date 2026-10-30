@@ -8,7 +8,6 @@ import {
   Link,
   Editor,
   Loading,
-  Status,
   SidebarTools,
 } from "../../components/ui/ui.jsx";
 
@@ -48,7 +47,7 @@ function ProfileContent({ initial, lang }) {
     cards = data.cards;
   const goalRatio = Math.min(
     100,
-    (100 * data.today_questions) / data.daily_goal,
+    (100 * data.today_questions) / Math.max(1, data.daily_goal),
   );
   const timeline = data.timeline.filter(
     (row) =>
@@ -63,12 +62,24 @@ function ProfileContent({ initial, lang }) {
       ? `/${lang}/flashcard/deck/${data.decks[0].id}`
       : `/${lang}/flashcard`);
   const editGoal = () => setEdit("goal");
+  const remaining = Math.max(0, data.daily_goal - data.today_questions);
+  const encouragement = goalRatio >= 100
+    ? ["You showed up. You made progress.", "Today's goal is complete. Take a moment to enjoy what you have learned."]
+    : data.today_questions > 0
+      ? ["Look at you, moving forward.", "Every answer is another step. Keep going at your own pace."]
+      : ["Your next chapter starts today.", "A little practice today is something your future self will thank you for."];
+  const achievements = [
+    { icon: "spark", title: "First study session", value: data.milestones[0]?.earned ? 1 : 0, target: 1, unit: "sessions", hint: "One small beginning. A whole new possibility." },
+    { icon: "calendar", title: "7 consecutive days", value: data.longest_streak, target: 7, unit: "days", hint: "Build a rhythm, one day at a time." },
+    { icon: "trophy", title: "50 mastered cards", value: cards.mastered, target: 50, unit: "cards", hint: "Words you are making your own." },
+  ];
   return (
     <Page>
       <div className="learner-profile">
         <SidebarTools>
           <nav className="profile-index" aria-label={tr("Profile contents")}>
             <a href="#profile-overview">{tr("Overview")}</a>
+            <a href="#profile-achievements">{tr("Milestones")}</a>
             <a href="#profile-progress">{tr("Progress")}</a>
             <a href="#profile-history">{tr("History")}</a>
           </nav>
@@ -97,13 +108,28 @@ function ProfileContent({ initial, lang }) {
             <Icon name="user" />
           </button>
         </header>
+        <section className="profile-journey" aria-labelledby="journey-title">
+          <div className="profile-journey-copy">
+            <span className="profile-kicker"><Icon name="journey" size={16} />{tr("YOUR LEARNING JOURNEY")}</span>
+            <h2 id="journey-title">{tr(encouragement[0])}</h2>
+            <p>{tr(encouragement[1])}</p>
+            <a className="profile-journey-anchor" href="#profile-achievements">{tr("See how far you have come")}<Icon name="chevron_down" size={17} /></a>
+          </div>
+          <div className="profile-journey-art" aria-hidden="true">
+            <span className="profile-art-orbit" />
+            <span className="profile-art-star"><Icon name="spark" size={26} /></span>
+            <span className="profile-art-step step-one"><Icon name="book" size={24} /></span>
+            <span className="profile-art-step step-two"><Icon name="check" size={27} /></span>
+            <span className="profile-art-step step-three"><Icon name="learn" size={35} /></span>
+          </div>
+        </section>
         <div className="profile-focus-grid">
           <section
             className="profile-panel profile-goal"
             aria-labelledby="goal-title"
           >
             <div className="profile-section-title">
-              <h2 id="goal-title">{tr("Today")}</h2>
+              <h2 id="goal-title"><Icon name="target" size={20} />{tr("Your small win today")}</h2>
               <button
                 onClick={editGoal}
                 aria-label={tr("Change daily goal")}
@@ -128,11 +154,14 @@ function ProfileContent({ initial, lang }) {
                 >
                   {goalRatio >= 100
                     ? tr("✓ Goal reached")
-                    : `${Math.max(0, data.daily_goal - data.today_questions)} questions remaining`}
+                    : tr("{count} questions to your daily goal", { count: remaining })}
                 </span>
+                <p className="profile-goal-note">{goalRatio >= 100 ? tr("Rest is part of learning, too.") : tr("One question at a time. You have got this.")}</p>
                 <Link className="btn primary profile-continue" to={next}>
                   {data.resume
                     ? tr("Continue session")
+                    : goalRatio >= 100
+                      ? tr("Keep exploring")
                     : cards.due
                       ? tr("Review due cards")
                       : tr("Continue learning")}
@@ -164,7 +193,7 @@ function ProfileContent({ initial, lang }) {
             </div>
             <div className="profile-week-labels" aria-hidden="true">
               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-                <span key={day}>{day}</span>
+                <span key={day}>{tr(day)}</span>
               ))}
             </div>
             <div
@@ -191,6 +220,23 @@ function ProfileContent({ initial, lang }) {
             </div>
           </section>
         </div>
+        <section className="profile-achievements" id="profile-achievements" aria-labelledby="achievements-title">
+          <div className="profile-section-title">
+            <div><span className="profile-kicker">{tr("SMALL STEPS, REAL GROWTH")}</span><h2 id="achievements-title">{tr("Moments worth celebrating")}</h2></div>
+            <span className="profile-achievement-count"><Icon name="trophy" size={17} />{tr("{count} of {total} achieved", { count: achievements.filter(a => a.value >= a.target).length, total: achievements.length })}</span>
+          </div>
+          <div className="profile-achievement-grid">
+            {achievements.map(a => {
+              const earned = a.value >= a.target;
+              return <article className={`profile-achievement ${earned ? "earned" : ""}`} key={a.title}>
+                <div className="profile-achievement-top"><span className="profile-achievement-icon"><Icon name={a.icon} size={25} /></span><span className="profile-achievement-status">{earned ? <><Icon name="check" size={14} />{tr("Achieved")}</> : tr("In progress")}</span></div>
+                <h3>{tr(a.title)}</h3><p>{tr(a.hint)}</p>
+                <progress value={Math.min(a.value, a.target)} max={a.target} aria-label={tr(a.title)} />
+                <span className="profile-achievement-value">{Math.min(a.value, a.target)} / {a.target} {tr(a.unit)}</span>
+              </article>;
+            })}
+          </div>
+        </section>
         <section className="profile-overview" id="profile-progress">
           <div className="profile-section-title">
             <h2>{tr("Learning progress")}</h2>
@@ -268,18 +314,6 @@ function ProfileContent({ initial, lang }) {
                 </span>
               ))}
             </div>
-            <div className="profile-milestones">
-              {data.milestones.map((m) => (
-                <span
-                  key={m.label}
-                  className={m.earned ? "earned" : ""}
-                  title={m.earned ? tr("Achieved") : tr("Not yet mastered")}
-                >
-                  <Icon name={m.earned ? "check" : "spark"} size={16} />
-                  {m.label}
-                </span>
-              ))}
-            </div>
           </section>
           <section className="profile-panel" aria-labelledby="continue-title">
             <div className="profile-section-title">
@@ -313,7 +347,7 @@ function ProfileContent({ initial, lang }) {
             ) : (
               <div className="profile-empty">
                 <Icon name="cards" size={30} />
-                <p>{tr("No decks yet")}</p>
+                <p>{tr("Your first words are waiting.")}</p><span>{tr("Choose a deck and take your first step.")}</span>
                 <Link className="btn" to={`/${lang}/flashcard`}>{tr("Create deck")}</Link>
               </div>
             )}
@@ -407,7 +441,7 @@ function ProfileContent({ initial, lang }) {
           ) : (
             <div className="profile-empty">
               <Icon name="book" size={30} />
-              <p>{tr("No completed exercises yet")}</p>
+              <p>{tr("A fresh page for your progress.")}</p><span>{tr("Your completed sessions will become a story of how far you have come.")}</span>
               <Link className="btn" to={`/${lang}/practice`}>{tr("Open Practice Hub")}</Link>
             </div>
           )}

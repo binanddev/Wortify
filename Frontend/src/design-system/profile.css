@@ -353,3 +353,75 @@
     @apply text-[12px] p-[7px_8px];
   }
 }
+/* Journey composition stays local to the profile and inherits each theme's tokens. */
+.learner-profile .profile-identity { @apply pb-0; }
+.learner-profile .profile-avatar { @apply rounded-full [border:4px_solid_var(--surface)] [box-shadow:0_0_0_1px_var(--line)]; }
+.learner-profile .profile-name h1 { @apply text-[clamp(24px,3vw,34px)] [letter-spacing:-0.04em]; }
+.profile-journey {
+  @apply relative grid grid-cols-[1fr_230px] items-center gap-6 overflow-hidden rounded-[28px] p-[36px_40px] [border:1px_solid_var(--line)] [background:color-mix(in_srgb,var(--solid)_94%,var(--accent))];
+}
+.profile-journey-copy { @apply relative z-1; }
+.profile-kicker { @apply inline-flex items-center gap-2 text-[11px] [font-weight:700] [letter-spacing:0.13em] text-(--accent); }
+.profile-journey h2 { @apply text-[clamp(26px,3.2vw,42px)] [line-height:1.15] [letter-spacing:-0.045em] max-w-[560px] m-[18px_0_14px] text-(--ink); }
+.profile-journey p { @apply max-w-[500px] text-[15px] [line-height:1.8] text-(--muted) m-0; }
+.profile-journey-anchor { @apply inline-flex items-center gap-2 mt-6 text-[12px] [font-weight:650] text-(--accent) [text-decoration:none]; }
+.profile-journey-art { @apply relative h-[210px] w-[220px] [pointer-events:none]; }
+.profile-art-orbit { @apply absolute inset-3 rounded-full [border:1px_dashed_color-mix(in_srgb,var(--accent)_30%,transparent)] [transform:rotate(-20deg)]; }
+.profile-art-star { @apply absolute top-2 left-9 text-(--accent); }
+.profile-art-step { @apply absolute grid place-items-center rounded-[20px] [border:1px_solid_color-mix(in_srgb,var(--accent)_28%,var(--line))] text-(--accent) [background:var(--solid)] [box-shadow:0_12px_24px_-16px_#0004]; }
+.profile-art-step.step-one { @apply w-[62px] h-[62px] bottom-2 left-0 [transform:rotate(-10deg)]; }
+.profile-art-step.step-two { @apply w-[72px] h-[72px] bottom-[48px] left-[66px] [transform:rotate(8deg)]; }
+.profile-art-step.step-three { @apply w-[94px] h-[94px] top-3 right-0 [background:var(--accent)] text-(--solid) [transform:rotate(-8deg)]; }
+.learner-profile .profile-focus-grid { @apply grid-cols-[1.15fr_1fr] gap-5; }
+.learner-profile .profile-panel { @apply rounded-[22px] [box-shadow:none]; }
+.learner-profile .profile-goal { @apply [border-color:color-mix(in_srgb,var(--accent)_38%,var(--line))]; }
+.profile-section-title h2#goal-title { @apply inline-flex items-center gap-2; }
+.learner-profile .profile-goal-ring { @apply [background:conic-gradient(var(--accent)_var(--goal),color-mix(in_srgb,var(--accent)_12%,transparent)_0)]; }
+.learner-profile .profile-goal-ring strong { @apply text-[42px] [letter-spacing:-0.05em]; }
+.learner-profile .profile-goal-state { @apply text-(--ink) [font-weight:650] [line-height:1.5]; }
+.profile-goal-note { @apply m-0 text-[12px] text-(--muted) [line-height:1.6]; }
+.learner-profile .profile-continue { @apply whitespace-normal text-center min-h-11; }
+.profile-achievement-count { @apply inline-flex gap-2 items-center text-[12px] text-(--muted); }
+.profile-achievements .profile-section-title h2 { @apply mt-2; }
+.profile-achievement-grid { @apply grid grid-cols-3 gap-4; }
+.profile-achievement { @apply p-5 rounded-[20px] [border:1px_solid_var(--line)] [background:var(--surface)] min-w-0; }
+.profile-achievement.earned { @apply [background:color-mix(in_srgb,var(--surface)_94%,var(--accent))] [border-color:color-mix(in_srgb,var(--accent)_30%,var(--line))]; }
+.profile-achievement-top { @apply flex items-center justify-between gap-2 mb-5; }
+.profile-achievement-icon { @apply w-12 h-12 grid place-items-center rounded-[15px] [background:color-mix(in_srgb,var(--accent)_10%,transparent)] text-(--accent); }
+.profile-achievement-status { @apply inline-flex items-center gap-1 text-[11px] text-(--muted); }
+.profile-achievement.earned .profile-achievement-status { @apply text-(--accent); }
+.profile-achievement h3 { @apply m-[0_0_8px] text-[16px] [letter-spacing:-0.02em] text-(--ink); }
+.profile-achievement p { @apply m-[0_0_20px] text-[12px] text-(--muted) [line-height:1.7] min-h-[42px]; }
+.profile-achievement progress { @apply block w-full h-[6px] overflow-hidden rounded-full accent-(--accent) [background:var(--line)]; }
+.profile-achievement progress::-webkit-progress-bar { @apply [background:var(--line)] rounded-full; }
+.profile-achievement progress::-webkit-progress-value { @apply [background:var(--accent)] rounded-full; }
+.profile-achievement progress::-moz-progress-bar { @apply [background:var(--accent)] rounded-full; }
+.profile-achievement-value { @apply block mt-2 text-[11px] text-(--muted) [font-variant-numeric:tabular-nums]; }
+.learner-profile .profile-metric { @apply p-5 [border:0] [border-left:2px_solid_var(--line)] rounded-none [background:transparent] gap-3; }
+.learner-profile .profile-metric strong { @apply text-[34px] [letter-spacing:-0.045em]; }
+.learner-profile .profile-metric > svg { @apply text-(--accent) opacity-70; }
+.learner-profile .profile-empty > span { @apply text-[12px] max-w-[320px] [line-height:1.7]; }
+.learner-profile :is(.profile-deck,.profile-history-row):hover { @apply [background:color-mix(in_srgb,var(--accent)_5%,transparent)]; }
+.learner-profile :is(a,button):focus-visible { @apply outline-2 outline-(--accent) outline-offset-4; }
+@media (max-width: 900px) {
+  .learner-profile .profile-focus-grid { @apply grid-cols-1; }
+  .profile-journey { @apply grid-cols-[1fr_150px] p-7; }
+  .profile-journey-art { @apply [transform:scale(0.75)] [transform-origin:center_right] w-[150px]; }
+  .profile-achievement-grid { @apply gap-3; }
+  .profile-achievement { @apply p-4; }
+  .profile-achievement-top { @apply flex-wrap; }
+}
+@media (max-width: 600px) {
+  .profile-journey { @apply grid-cols-1 p-6; }
+  .profile-journey-art { @apply hidden; }
+  .profile-achievement-grid { @apply grid-cols-1; }
+  .profile-achievement { @apply grid grid-cols-[1fr_auto] gap-x-4; }
+  .profile-achievement-top { @apply col-span-full mb-3; }
+  .profile-achievement p { @apply col-span-full min-h-0 mb-3; }
+  .profile-achievement h3 { @apply col-span-full; }
+  .profile-achievement progress { @apply self-center; }
+  .profile-achievement-value { @apply mt-0; }
+  .profile-achievements > .profile-section-title { @apply flex-wrap; }
+  .learner-profile .profile-goal-body { @apply flex-wrap justify-start; }
+  .learner-profile .profile-goal-ring { @apply w-[116px] h-[116px]; }
+}

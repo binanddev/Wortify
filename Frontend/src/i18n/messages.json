@@ -7518,5 +7518,125 @@
   "Disabled features show a maintenance message. Data is preserved. Studio is always enabled.": {
     "vi": "Mục bị tắt sẽ hiển thị “Hệ thống đang hoàn thiện”. Dữ liệu được giữ nguyên. Studio luôn bật.",
     "de": "Deaktivierte Funktionen zeigen einen Wartungshinweis. Daten bleiben erhalten. Studio bleibt aktiviert."
+  },
+  "YOUR LEARNING JOURNEY": {
+    "vi": "HÀNH TRÌNH HỌC CỦA BẠN",
+    "de": "DEINE LERNREISE"
+  },
+  "You showed up. You made progress.": {
+    "vi": "Bạn đã học. Bạn đã tiến bộ.",
+    "de": "Du warst da. Du bist weitergekommen."
+  },
+  "Today's goal is complete. Take a moment to enjoy what you have learned.": {
+    "vi": "Bạn đã hoàn thành mục tiêu hôm nay. Hãy dành một chút thời gian tận hưởng thành quả.",
+    "de": "Dein Tagesziel ist erreicht. Genieße einen Moment lang, was du gelernt hast."
+  },
+  "Look at you, moving forward.": {
+    "vi": "Bạn đang tiến bộ từng chút một.",
+    "de": "Schau, wie du vorankommst."
+  },
+  "Every answer is another step. Keep going at your own pace.": {
+    "vi": "Mỗi câu trả lời là một bước tiến. Hãy tiếp tục theo nhịp của bạn.",
+    "de": "Jede Antwort ist ein weiterer Schritt. Mach in deinem Tempo weiter."
+  },
+  "Your next chapter starts today.": {
+    "vi": "Chặng đường mới bắt đầu từ hôm nay.",
+    "de": "Dein nächstes Kapitel beginnt heute."
+  },
+  "A little practice today is something your future self will thank you for.": {
+    "vi": "Một chút luyện tập hôm nay là món quà dành cho chính bạn trong tương lai.",
+    "de": "Für ein wenig Übung heute wird dir dein zukünftiges Ich danken."
+  },
+  "See how far you have come": {
+    "vi": "Nhìn lại những bước tiến của bạn",
+    "de": "Sieh, wie weit du gekommen bist"
+  },
+  "Your small win today": {
+    "vi": "Một thành quả nhỏ hôm nay",
+    "de": "Dein kleiner Erfolg heute"
+  },
+  "{count} questions to your daily goal": {
+    "vi": "Còn {count} câu để đạt mục tiêu hôm nay",
+    "de": "Noch {count} Fragen bis zu deinem Tagesziel"
+  },
+  "Rest is part of learning, too.": {
+    "vi": "Nghỉ ngơi cũng là một phần của việc học.",
+    "de": "Auch Pausen gehören zum Lernen."
+  },
+  "One question at a time. You have got this.": {
+    "vi": "Từng câu một thôi. Bạn làm được mà.",
+    "de": "Eine Frage nach der anderen. Du schaffst das."
+  },
+  "Keep exploring": {
+    "vi": "Khám phá thêm",
+    "de": "Weiter entdecken"
+  },
+  "SMALL STEPS, REAL GROWTH": {
+    "vi": "TỪNG BƯỚC NHỎ, TIẾN BỘ THẬT",
+    "de": "KLEINE SCHRITTE, ECHTER FORTSCHRITT"
+  },
+  "Moments worth celebrating": {
+    "vi": "Những cột mốc đáng tự hào",
+    "de": "Momente zum Feiern"
+  },
+  "{count} of {total} achieved": {
+    "vi": "Đã đạt {count}/{total} cột mốc",
+    "de": "{count} von {total} erreicht"
+  },
+  "In progress": {
+    "vi": "Đang chinh phục",
+    "de": "In Arbeit"
+  },
+  "One small beginning. A whole new possibility.": {
+    "vi": "Một khởi đầu nhỏ, mở ra những điều mới.",
+    "de": "Ein kleiner Anfang. Ganz neue Möglichkeiten."
+  },
+  "Build a rhythm, one day at a time.": {
+    "vi": "Xây dựng thói quen, từng ngày một.",
+    "de": "Finde deinen Rhythmus, Tag für Tag."
+  },
+  "Words you are making your own.": {
+    "vi": "Những từ vựng đang trở thành vốn riêng của bạn.",
+    "de": "Wörter, die du dir zu eigen machst."
+  },
+  "Your first words are waiting.": {
+    "vi": "Những từ vựng đầu tiên đang chờ bạn.",
+    "de": "Deine ersten Wörter warten auf dich."
+  },
+  "Choose a deck and take your first step.": {
+    "vi": "Chọn một bộ thẻ và bắt đầu bước đầu tiên.",
+    "de": "Wähle ein Kartenset und mache den ersten Schritt."
+  },
+  "A fresh page for your progress.": {
+    "vi": "Một trang mới cho hành trình của bạn.",
+    "de": "Eine neue Seite für deinen Fortschritt."
+  },
+  "Your completed sessions will become a story of how far you have come.": {
+    "vi": "Mỗi buổi học hoàn thành sẽ ghi lại một bước tiến của bạn.",
+    "de": "Deine abgeschlossenen Lerneinheiten erzählen bald von deinem Fortschritt."
+  },
+  "sessions": {
+    "vi": "buổi học",
+    "de": "Lerneinheiten"
+  },
+  "cards": {
+    "vi": "thẻ",
+    "de": "Karten"
+  },
+  "Milestones": {
+    "vi": "Cột mốc",
+    "de": "Meilensteine"
+  },
+  "First study session": {
+    "vi": "Buổi học đầu tiên",
+    "de": "Erste Lerneinheit"
+  },
+  "7 consecutive days": {
+    "vi": "7 ngày liên tiếp",
+    "de": "7 Tage in Folge"
+  },
+  "50 mastered cards": {
+    "vi": "Nắm vững 50 thẻ",
+    "de": "50 Karten gemeistert"
   }
 }
