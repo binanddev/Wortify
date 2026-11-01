@@ -55,16 +55,34 @@ def decks(request):
     for row in rows:
         counts = per_deck.get(row['id'], {})
         row.update(mastered=counts.get('mastered',0), due=counts.get('due',0))
-    candidates = list(StudySession.objects.filter(user=request.user,language=request.language,completed_at__isnull=True).order_by('-created_at'))
+    candidates = StudySession.objects.filter(user=request.user,language=request.language,completed_at__isnull=True).order_by('-created_at', '-pk').only('pk', 'token', 'tokens', 'created_at')
     visible_decks = Deck.objects.filter(owner=content_owner(request), language=request.language, archived=False).exclude(folder_id__in=hidden)
-    pending_tokens = set(str(token) for token in StudyAttempt.objects.filter(user=request.user, card__deck__in=visible_decks, completed_at__isnull=True, token__in=[token for session in candidates for token in session.tokens]).values_list('token', flat=True))
-    recent = next((session for session in candidates if any(token in pending_tokens for token in session.tokens)), None)
+    # Scan bounded batches, stopping as soon as a resumable session is found.
+    # Do not cap the history: older valid sessions must remain resumable.
+    recent = None
+    before = None
+    while recent is None:
+        batch_query = candidates
+        if before is not None:
+            batch_query = batch_query.filter(Q(created_at__lt=before.created_at) | Q(created_at=before.created_at, pk__lt=before.pk))
+        batch = list(batch_query[:25])
+        if not batch:
+            break
+        pending_tokens = set(str(token) for token in StudyAttempt.objects.filter(user=request.user, card__deck__in=visible_decks, completed_at__isnull=True, token__in=[token for session in batch for token in session.tokens]).values_list('token', flat=True))
+        recent = next((session for session in batch if any(token in pending_tokens for token in session.tokens)), None)
+        before = batch[-1]
     return JsonResponse({'decks':rows, 'folders':folders, 'due':progress.filter(due_at__lte=timezone.now()).count(), 'resume':str(recent.token) if recent else None})
 
 @endpoint
 @require_http_methods(['GET', 'PATCH', 'DELETE'])
-@transaction.atomic
 def deck(request, pk):
+    if request.method == 'GET':
+        return _deck(request, pk)
+    with transaction.atomic():
+        return _deck(request, pk)
+
+
+def _deck(request, pk):
     if request.method != 'GET':
         from django.contrib.auth import get_user_model
         get_user_model().objects.select_for_update().get(pk=content_owner(request).pk)
@@ -82,10 +100,29 @@ def deck(request, pk):
         if item.archived != archived:
             item.archived = archived
             item.save(update_fields=['archived', 'updated_at'])
+    # Management loads just one page; study clients retain the full-deck contract.
+    if request.method == 'GET' and 'cards_page' in request.GET:
+        try:
+            page = max(1, int(request.GET['cards_page']))
+            size = max(1, min(100, int(request.GET.get('page_size', '50'))))
+        except (ValueError, TypeError):
+            raise ValueError('Invalid card page.')
+        cards = item.cards.order_by('position', 'pk')
+        query = request.GET.get('q', '').strip()[:100]
+        if query:
+            cards = cards.filter(Q(german_text__icontains=query) | Q(vietnamese_meaning__icontains=query))
+        count = cards.count()
+        page = min(page, max(1, (count + size - 1) // size))
+        start = (page - 1) * size
+        return JsonResponse({'deck': model_to_dict(item, exclude=['owner']),
+            'cards': [model_to_dict(card) for card in cards[start:start + size]],
+            'pagination': {'page': page, 'size': size, 'count': count}})
     from cards.models import DeckLearningState, LearningEvent
     from .learning_sync import state_payload
-    state,_=DeckLearningState.objects.get_or_create(user=request.user,deck=item)
-    preferences,_=StudySettings.objects.get_or_create(user=request.user,language=request.language)
+    # A first read must not upgrade a SQLite read transaction to a write lock.
+    # Defaults are persisted by the corresponding mutation/sync endpoints.
+    state = DeckLearningState.objects.filter(user=request.user, deck=item).first() or DeckLearningState(user=request.user, deck=item)
+    preferences = StudySettings.objects.filter(user=request.user, language=request.language).first() or StudySettings(user=request.user, language=request.language)
     return JsonResponse({'difficult_cards':list(StudyProgress.objects.filter(user=request.user,card__deck=item).filter(Q(state='weak')|Q(memory__rating=2)).values_list('card_id',flat=True)), 'study_defaults':model_to_dict(preferences,exclude=['id','user','language']), 'learning':{**state_payload(state),'applied':[str(t) for t in LearningEvent.objects.filter(user=request.user,language=request.language,payload__deck=pk).order_by('-id').values_list('token',flat=True)[:100]]}, 'deck': model_to_dict(item, exclude=['owner']), 'cards': [model_to_dict(c) for c in item.cards.all()], 'folders': list(Folder.objects.filter(owner=content_owner(request), language=request.language).values('id', 'name', 'parent_id'))})
 
 @endpoint

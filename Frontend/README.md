@@ -35,14 +35,16 @@ src/
 - Component được nhiều tính năng sử dụng nằm trong `components/`. Không chuyển logic nghiệp vụ vào đây chỉ vì có JSX.
 - Logic học tập được flashcard và bài tập cùng sử dụng nằm trong `features/learning/`. Tiện ích hạ tầng không gắn nghiệp vụ nằm trong `lib/`.
 - `features/appearance/background-library.jsx` quản lý hành vi tải lên/chọn/xóa ảnh nền dùng chung. `themes/` định nghĩa cách theme hiển thị và lưu tùy chỉnh; hai phần có vai trò khác nhau.
-- `app/App.jsx` ghép các tính năng và điều phối session/routing. Hiện form đăng nhập vẫn nằm ở đây; hồ sơ/lớp học nằm trong `features/account/`. Không nhân bản form hoặc logic tài khoản theo theme.
+- `app/App.jsx` ghép các tính năng và điều phối session/routing. Form đăng nhập dùng chung nằm tại `features/account/Login.jsx`; hồ sơ/lớp học nằm trong `features/account/`. Không nhân bản form hoặc logic tài khoản theo theme.
 - Khi sửa tính năng, sửa module chung của tính năng một lần. Chỉ sửa folder theme nếu thay đổi màu, font, bề mặt, icon hoặc quy tắc riêng của giao diện.
+
+`features/flashcards/flashcard-question.jsx` sở hữu phần hiển thị câu hỏi và phản hồi ví dụ; studio giữ việc điều phối phiên học.
 
 ### Import và phụ thuộc
 
 Dùng import tương đối tới module thực tế; không giữ file chuyển tiếp ở đường dẫn cũ. `app` ghép các feature; feature sử dụng component, tiện ích và theme. Không để component dùng chung import ngược trang hoặc `App`. Tránh vòng phụ thuộc và các file barrel xuất lại toàn bộ thư mục. Khi hai feature cần cùng logic, cân nhắc đưa phần đó vào `features/learning` hoặc `lib` theo đúng trách nhiệm.
 
-Đợt sắp xếp này giữ tên module và hành vi hiện có, không viết lại nội dung từng module lớn. CSS component vẫn được quản lý tập trung tại `design-system` để giữ cascade; không import thêm CSS tùy ý từ từng trang. Hướng dẫn theme: [src/themes/README.md](src/themes/README.md).
+Đợt sắp xếp này giữ tên module và hành vi hiện có, không viết lại nội dung từng module lớn. CSS component vẫn được quản lý tập trung tại `design-system` để giữ cascade; font chung nằm ở `design-system/fonts.css`, còn font riêng của theme giữ vị trí import hiện có; không import thêm CSS tùy ý từ từng trang. Hướng dẫn theme: [src/themes/README.md](src/themes/README.md).
 
 ### Thêm hoặc sửa tính năng
 

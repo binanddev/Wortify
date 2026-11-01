@@ -5,27 +5,33 @@ import CardImage from "./card-image.jsx";
 import AutoCardImages from "./auto-card-images.jsx";
 import {useState, useMemo} from "react";
 import {t as tr, useLocale} from "../../i18n/index.js";
-import {Btn, Field, Editor, Confirm} from "../../components/ui/ui.jsx";
+import {Btn, Field, Editor, Confirm, Status} from "../../components/ui/ui.jsx";
 import {PracticeModal} from "../practice/practice-workspace.jsx";
-import {endpoint, request} from "../../lib/core.js";
+import {endpoint, request, useResource} from "../../lib/core.js";
 import {cardFields} from "./card-fields.js";
 import QuickCardEditor from "./quick-card-editor.jsx";
 import {ImportCards} from "./library.jsx";
 
-export default function CardManager({lang,deckId,cards,onClose,onUpdated,onCardsChanged}) {
+export default function CardManager({lang,deckId,cards,onClose,onUpdated,onCardsChanged,remote}) {
   useLocale();
   const [imagesOpen,setImagesOpen]=useState(false);
-  const [query,setQuery]=useState("");
+  const [localQuery,setLocalQuery]=useState("");
+  const query=remote ? remote.query : localQuery;
+  const setQuery=remote ? remote.setQuery : setLocalQuery;
   const [editing,setEditing]=useState(null);
   const [adding,setAdding]=useState(false);
   const [removing,setRemoving]=useState(null);
   const [importing,setImporting]=useState(false);
+  const imageResource=useResource(imagesOpen&&remote ? endpoint(lang,`decks/${deckId}/`) : null);
   const api=(path,method,data,signal)=>request(endpoint(lang,path),method,data,signal);
-  const reload=async()=>{const data=await api(`decks/${deckId}/`);onCardsChanged(data.cards);};
-  const visible=useMemo(()=>cards.filter(c=>`${c.german_text} ${c.vietnamese_meaning}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())),[cards,query]);
-  const pagination=usePagination(visible.length,query);
-  const pageCards=visible.slice(pagination.start,pagination.end);
-  if(imagesOpen)return <AutoCardImages cards={cards} lang={lang} deckId={deckId} onClose={()=>setImagesOpen(false)} onSaved={updated=>onCardsChanged(cards.map(card=>updated.find(item=>item.id===card.id)||card))}/>;
+  const reload=async()=>{if(remote){remote.reload();return;}const data=await api(`decks/${deckId}/`);onCardsChanged(data.cards);};
+  const visible=useMemo(()=>remote ? cards : cards.filter(c=>`${c.german_text} ${c.vietnamese_meaning}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())),[cards,query,remote]);
+  const localPagination=usePagination(visible.length,query);
+  const pagination=remote ? {page:remote.page,pages:Math.max(1,Math.ceil(remote.count/remote.size)),start:(remote.page-1)*remote.size,end:Math.min(remote.page*remote.size,remote.count),setPage:remote.setPage} : localPagination;
+  const pending=Boolean(remote?.pending || remote?.error);
+  const pageCards=remote ? visible : visible.slice(pagination.start,pagination.end);
+  if(imagesOpen&&remote&&!imageResource.data)return <PracticeModal title={tr("Suggest images")} onClose={()=>setImagesOpen(false)}><Status error={imageResource.error}>{tr("Loading deck…")}</Status></PracticeModal>;
+  if(imagesOpen)return <AutoCardImages cards={remote ? imageResource.data.cards : cards} lang={lang} deckId={deckId} onClose={()=>setImagesOpen(false)} onSaved={updated=>remote ? remote.reload() : onCardsChanged(cards.map(card=>updated.find(item=>item.id===card.id)||card))}/>;
   if(adding) return <Editor title={tr("Add card")} fields={cardFields} onClose={()=>setAdding(false)} onSave={async(values,signal)=>{
     const result=await api(`decks/${deckId}/cards/`,"POST",values,signal);
     onCardsChanged([...cards,{...values,id:result.id}]);
@@ -37,13 +43,14 @@ export default function CardManager({lang,deckId,cards,onClose,onUpdated,onCards
     onCardsChanged(cards.filter(c=>c.id!==removing.id));setRemoving(null);
   }}/>;
   return <PracticeModal title={tr("Manage cards")} onClose={onClose}>
-    <div className="toolbar"><Btn primary icon="plus" onClick={()=>setAdding(true)}>{tr("Add card")}</Btn><Btn onClick={()=>setImporting(true)}>{tr("Import")}</Btn><Btn isDisabled={!cards.some(card=>!card.image_url)} onClick={()=>setImagesOpen(true)}>{tr("Suggest images")}</Btn></div>
+    <div className="toolbar"><Btn primary icon="plus" isDisabled={pending} onClick={()=>setAdding(true)}>{tr("Add card")}</Btn><Btn isDisabled={pending} onClick={()=>setImporting(true)}>{tr("Import")}</Btn><Btn isDisabled={pending||(!remote&&!cards.some(card=>!card.image_url))} onClick={()=>setImagesOpen(true)}>{tr("Suggest images")}</Btn></div>
     <Field label={tr("Search cards")} value={query} onChange={setQuery}/>
-    <div className="grid gap-3">{pageCards.map(card=><div key={card.id} className="flex items-center gap-3 border-b pb-3">
+    <Status error={remote?.error}>{remote?.pending ? tr("Loading deck…") : ""}</Status>
+    <div className="grid gap-3" aria-busy={remote?.pending || undefined}>{pageCards.map(card=><div key={card.id} className="flex items-center gap-3 border-b pb-3">
       <CardImage card={card} compact/><div className="min-w-0 flex-1 break-words"><strong>{card.german_text}</strong><p>{card.vietnamese_meaning}</p></div>
-      <Btn icon="edit" aria-label={`${tr("Edit card")}: ${card.german_text}`} onClick={()=>setEditing(card)}>{tr("Edit")}</Btn>
-      <Btn icon="trash" aria-label={`${tr("Delete")}: ${card.german_text}`} onClick={()=>setRemoving(card)}>{tr("Delete")}</Btn>
+      <Btn icon="edit" isDisabled={pending} aria-label={`${tr("Edit card")}: ${card.german_text}`} onClick={()=>setEditing(card)}>{tr("Edit")}</Btn>
+      <Btn icon="trash" isDisabled={pending} aria-label={`${tr("Delete")}: ${card.german_text}`} onClick={()=>setRemoving(card)}>{tr("Delete")}</Btn>
     </div>)}{!visible.length&&<p>{tr("No matching cards.")}</p>}</div>
-    <Pagination pagination={pagination} count={visible.length}/>
+    <Pagination pagination={pagination} count={remote ? remote.count : visible.length}/>
   </PracticeModal>;
 }

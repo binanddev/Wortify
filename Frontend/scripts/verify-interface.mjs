@@ -124,6 +124,8 @@ const probe=document.createElement('button');probe.textContent='Auto contrast';d
 for(const color of ['#ffffff','#111111']) {
  probe.style.setProperty('background',color,'important');
  root.dataset.interface='studio';
+ // Inline probe changes use the same refresh event as application theme changes.
+ window.dispatchEvent(new Event('theme-styles-loaded'));
  await new Promise(resolve=>setTimeout(resolve,100));
  const c=getComputedStyle(probe).color;
  if(c !== (color==='#ffffff'?'rgb(0, 0, 0)':'rgb(255, 255, 255)')) errors.push('auto foreground '+color+': '+c);

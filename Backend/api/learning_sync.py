@@ -41,7 +41,10 @@ def grade_payload(payload, submitted):
 @endpoint
 @require_http_methods(['POST'])
 def sync(request):
-    events=body(request).get('events')
+    data = body(request)
+    if 'account_id' in data and (type(data['account_id']) is not int or data['account_id'] != request.user.pk):
+        return JsonResponse({'error': 'Your signed-in account has changed. Sign in to the original account to sync these changes.', 'code': 'account_changed'}, status=409)
+    events=data.get('events')
     if not isinstance(events,list) or not 1<=len(events)<=100:
         raise ValueError('Send 1–100 changes per batch.')
     accepted=[];errors=[]

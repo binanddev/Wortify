@@ -1,24 +1,14 @@
+/* Single entry point. Import order is part of the visual contract.
+   Component rules precede theme refinements; final accessibility fixes stay last. */
 @import "tailwindcss";
-@import "@fontsource/montserrat/latin-400.css";
-@import "@fontsource/montserrat/vietnamese-400.css";
-@import "@fontsource/montserrat/latin-500.css";
-@import "@fontsource/montserrat/vietnamese-500.css";
-@import "@fontsource/montserrat/latin-600.css";
-@import "@fontsource/montserrat/vietnamese-600.css";
-@import "@fontsource/montserrat/latin-700.css";
-@import "@fontsource/montserrat/vietnamese-700.css";
-@import "@fontsource/cormorant-garamond/latin-500.css";
-@import "@fontsource/cormorant-garamond/vietnamese-500.css";
-@import "@fontsource/cormorant-garamond/latin-500-italic.css";
-@import "@fontsource/cormorant-garamond/vietnamese-500-italic.css";
-@import "@fontsource/cormorant-garamond/latin-600.css";
-@import "@fontsource/cormorant-garamond/vietnamese-600.css";
+@import "./fonts.css";
 @plugin "../hero.js";
 @source "../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
 @custom-variant dark (&:is(.dark *));
 @theme {
   --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+/* 1. Shared tokens, components and layout. */
 @import "./tokens.css";
 @import "./profile.css";
 @import "./reading-workspace.css";
@@ -54,11 +44,12 @@
 @import "./readability.css";
 @import "./exercise-refinements.css";
 
-/* Final interaction and contrast rules must follow every theme. */
+/* 2. Interaction defaults, followed by theme-specific refinements. */
 @import "./crisp-interface.css";
 
 @import "../themes/glass/styles.css";
 
+/* 3. Theme identities and their existing ordered refinements. */
 @import "../themes/identity.css";
 @import "./home.css";
 @import "../themes/shared/backgrounds.css";
@@ -78,6 +69,7 @@
 
 @import "../themes/rpg/terminal.css";
 
+/* 4. Feature refinements and final touch/accessibility adjustments. */
 @import "./admin.css";
 
 @import "./lesson-markup.css";

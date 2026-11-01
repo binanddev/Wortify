@@ -17,10 +17,10 @@ Tài liệu kiến trúc hiện tại. Yêu cầu trực tiếp của người d
 - Django backend cổng8000; Vite frontend5173. Vite proxy `/api` sang backend; frontend tự phục vụ static asset.
 - `tools/run_local.py` kiểm tra cổng trước khi khởi động; nhận diện đúng Wortify qua health + workspace fingerprint. Dùng lại dịch vụ đúng, không tắt dịch vụ lạ. Có biến WORTIFY_BACKEND_PORT/WORTIFY_FRONTEND_PORT.
 - `start.ps1`/`start.sh`: kiểm tra, cài thư viện, migrate, build, chạy dịch vụ. Không tự sinh migrations.
-- `Frontend/src/App.jsx`: tài khoản, routing EN/DE, shell. `ui.jsx`: primitives/form một lớp focus. `glass.css`: lớp theme cuối cùng.
+- `Frontend/src/app/App.jsx`: session, routing EN/DE, shell; form tài khoản dùng chung ở `features/account/Login.jsx`. `ui.jsx`: primitives/form một lớp focus. `glass.css`: lớp theme cuối cùng.
 - Sidebar trước điều hướng chính, sau công cụ theo trang. Header cố định có Brand, icon xoay và thu gọn/ghim. Sidebar liền khối352px, hỗ trợ vuốt ngang (ngưỡng65px, bỏ cử chỉ cuộn dọc) và hover mép trái khi thu gọn. navPinned lưu vào preferences server. `SidebarTools` portal vào mặt sau. Không có topbar, chữ quảng bá hoặc hướng dẫn thường trực. Practice Hub tự mở mặt cây: ＋ ở root/folder, folder tạo inline chỉ nhập tên, bài/theory nhận parent hiện tại. Di chuyển dùng hộp thoại riêng; cây hiển thị icon, nhánh và đường nối.
 - `practice-hub.jsx`: cây, CRUD, JSON, đọc lý thuyết; `exercise-authoring.jsx`: tạo câu; `practice-activity.jsx`: luyện và chấm tại máy; `exercise-interactions.jsx`: chín dạng tương tác.
-- `flashcard-studio.jsx` + `flashcard-engine.js`: Flashcards/Learn/Test cho bộ thẻ; chọn choice/truefalse chấm ngay, written dùng Enter/↵, matching chấm khi đủ. Test tự lưu khi mọi câu được trả lời. Phản hồi có vùng giữ sẵn, xanh/đỏ và ký hiệu đúng/sai. Gắn sao không reset thứ tự/index; `study.jsx`: ôn liên bộ bằng StudySession và luyện thêm. Luyện nói thu âm/nghe lại tại máy, không chấm phát âm tự động.
+- `flashcard-studio.jsx` + `flashcard-engine.js` (giao diện câu hỏi và phản hồi ví dụ ở `flashcard-question.jsx`): Flashcards/Learn/Test cho bộ thẻ; chọn choice/truefalse chấm ngay, written dùng Enter/↵, matching chấm khi đủ. Test tự lưu khi mọi câu được trả lời. Phản hồi có vùng giữ sẵn, xanh/đỏ và ký hiệu đúng/sai. Gắn sao không reset thứ tự/index; `study.jsx`: ôn liên bộ bằng StudySession và luyện thêm. Luyện nói thu âm/nghe lại tại máy, không chấm phát âm tự động.
 - `learning.jsx`: Settings; `community.jsx`: hồ sơ/lớp. `Frontend/src/admin/`: Admin.jsx quản trị người dùng/dashboard hệ thống, UserData.jsx quản lý dữ liệu từng người dùng, Appearance.jsx nền hệ thống dành superuser.
 - `Soundscape.jsx`: Web Audio sinh âm nền/tương tác, không tải âm khi bấm. TTS phụ thuộc giọng trình duyệt.
 
@@ -39,7 +39,7 @@ Tài liệu kiến trúc hiện tại. Yêu cầu trực tiếp của người d
 
 `core.js` cache nội dung RAM10phút, mutation làm mất hiệu lực; sync chỉ bỏ cache trạng thái bộ thẻ. Tải metadata trước và tải ngầm toàn Practice Hub sau150ms. Media được preload, phụ thuộc browser cache. Đây không phải PWA offline qua lần khởi động mới.
 
-`learning-sync.js` gom cài đặt/sao trong khoảng1,2giây; review5giây, tối đa20 thay đổi gửi ngay. Hàng đợi UUID localStorage riêng tài khoản/ngôn ngữ, fallback RAM nếu storage bị chặn. Chu kỳ15giây chỉ gửi khi có dữ liệu; online, chuyển trang/ẩn trang và kết thúc buổi học kích hoạt flush. Lỗi mạng giữ queue tự retry; server từ chối từng mục được hiển thị. Không có nút đồng bộ thủ công. Lật/chuyển thẻ và phản hồi đúng/sai không chờ API. Nộp Practice/Test lưu kết quả server.
+`learning-sync.js` gom cài đặt/sao trong khoảng1,2giây; review5giây, tối đa20 thay đổi gửi ngay. Hàng đợi UUID riêng tài khoản/ngôn ngữ do `learning-queue-store.js` quản lý: ghi localStorage đồng bộ, sao lưu và khôi phục IndexedDB theo thứ tự. Thay đổi mới trong lúc khôi phục được giữ lại. Khi cả hai nơi lưu không khả dụng, giữ RAM kèm cảnh báo trong trạng thái sync và cảnh báo rời trang khi còn tiến độ chưa gửi. Không bảo đảm lưu sau khi đóng trang nếu trình duyệt chặn mọi nơi lưu. App chờ khôi phục hàng đợi EN/DE trước khi khởi tạo workspace, để snapshot sao/tiến độ/cài đặt nhìn thấy các thay đổi chưa gửi. Batch mới gửi `account_id`; backend trả 409 trước khi xử lý nếu khác tài khoản phiên, client giữ UUID/hàng đợi để retry đúng tài khoản. Client cũ chưa có trường này vẫn tương thích. Chu kỳ15giây chỉ gửi khi có dữ liệu; online, chuyển trang/ẩn trang và kết thúc buổi học kích hoạt flush. Lỗi mạng giữ queue tự retry; server từ chối từng mục được hiển thị. Không có nút đồng bộ thủ công. Lật/chuyển thẻ và phản hồi đúng/sai không chờ API. Nộp Practice/Test lưu kết quả server.
 
 Cài đặt tài khoản là nguồn dữ liệu chính khi đăng nhập. Overlay queue chưa gửi giúp thao tác không bị mất khi reload; preferences hợp nhất từng trường theo timestamp. StudySettings là mặc định cho bộ thẻ chưa tùy chỉnh; options từng bộ có ưu tiên cao hơn.
 
@@ -95,3 +95,11 @@ Backend và Frontend có dependency, env, deploy và README riêng. Backend khô
 - Validate with backend tests, frontend test/build and static verify-staff-workspace/verify-content-library fixtures. Never start a server, test deployment or commit/push without the user's current authorization.
 
 Staff use the same learning and authoring flows as regular users. Extra bulk/publishing actions are placed in the existing SidebarTools page-tools area, with no separate staff toolbar or alternate learning screen.
+
+
+## Kiểm tra tự động và tài liệu bắt đầu (2026-11-01)
+
+- `.github/workflows/checks.yml` chạy kiểm tra backend, migration drift, frontend/realtime unit tests, build và Playwright khi có pull request hoặc push vào nhánh cấu hình.
+- `Frontend/e2e/` và `Frontend/playwright.config.mjs` kiểm tra với backend thật trên database/media tạm riêng. Chạy qua `npm --prefix Frontend run test:e2e`; xem `Frontend/e2e/README.md` để cài trình duyệt và chọn Python. Không dùng database local hoặc production làm fixture.
+- `README.md` là hướng dẫn bắt đầu ngắn; `PROJECT_NOTES.md` giữ ghi chú lịch sử, không xác nhận trạng thái hạ tầng. `DEPLOY.md` vẫn là hướng dẫn triển khai.
+- CSS vẫn có một entry tại `design-system/index.css`. Font chung được tách sang `fonts.css`; thứ tự cascade giữ nguyên, không cập nhật baseline để che lỗi refactor.

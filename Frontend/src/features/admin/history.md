@@ -1,5 +1,15 @@
 # Change Log
 
+### [v1.15.1] - 2026-11-01 | Reliable progress recovery and lighter card management
+
+- Back up learning queues to IndexedDB, recover unsent progress before workspace initialization, and warn before leaving when browser storage is unavailable. Preserve pending UUIDs and reject batches sent under a different signed-in account.
+- Load card management in server-filtered pages of 50 (maximum 100), preserve full-deck study compatibility and scan resumable sessions in bounded batches. Make deck GET read-only to avoid first-open SQLite write-lock races; keep mutations atomic.
+- Add isolated live-browser regression tests for study/reload/account boundaries, paged card management and import, public lesson revocation, and recovery when localStorage is full. Add GitHub CI for backend checks/tests, migration drift, frontend tests/build, realtime and browser tests.
+- Extract shared login and flashcard question components, organize shared font imports without changing the CSS cascade, and refresh the interface test probe through the existing theme event. Simplify the project README, archive historical setup notes and complete API documentation.
+- Validation: 399 backend tests, 246 frontend tests, 16 realtime tests and all 4 live-browser scenarios passed. Production build, interface checks, migration consistency and Django system checks passed. Browser fixtures use isolated temporary data; no local database migration or production verification was performed.
+
+---
+
 ### 2026-10-31 | A more encouraging learning profile
 
 - Redesign the profile around a learning journey: adaptive encouragement for a fresh start, ongoing practice and a completed daily goal; a prominent daily goal and continuation action; and milestone cards with real progress toward the first session, seven consecutive days and 50 mastered cards.

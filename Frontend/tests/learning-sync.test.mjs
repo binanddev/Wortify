@@ -56,7 +56,9 @@ test("offline batch retains IDs, retries without loss, and isolates accounts", a
   await flushLearning(1, "en");
   assert.equal(pendingLearning(1, "en")[0].token, token);
   globalThis.fetch = async (path, options) => {
-    const events = JSON.parse(options.body).events;
+    const batch = JSON.parse(options.body);
+    assert.equal(batch.account_id, 1);
+    const events = batch.events;
     assert.equal(events[0].token, token);
     return {
       ok: true,
@@ -159,4 +161,31 @@ test("obsolete unavailable receipts leave the retry queue and remain recoverable
   await flushLearning(701, "en");
   assert.deepEqual(pendingLearning(701, "en"), []);
   assert.equal(JSON.parse(stored.get(`${key}:unavailable`)).length, 2);
+});
+
+test("a changed server account retains the original account queue for later retry", async () => {
+  const stored = new Map();
+  globalThis.localStorage = {
+    getItem: (key) => stored.get(key) || null,
+    setItem: (key, value) => stored.set(key, value),
+  };
+  globalThis.window = new EventTarget();
+  globalThis.document = { cookie: "" };
+  const token = enqueueLearning(811, "en", "preferences", { textSize: 20 });
+  globalThis.fetch = async (path, options) => {
+    const batch = JSON.parse(options.body);
+    assert.equal(batch.account_id, 811);
+    return {
+      ok: false,
+      status: 409,
+      json: async () => ({
+        error: "Your signed-in account has changed.",
+        code: "account_changed",
+      }),
+    };
+  };
+  await flushLearning(811, "en");
+  assert.equal(pendingLearning(811, "en")[0].token, token);
+  assert.equal(pendingLearning(811, "en")[0].error, undefined);
+  assert.deepEqual(pendingLearning(812, "en"), []);
 });

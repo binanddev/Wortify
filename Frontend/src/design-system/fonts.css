@@ -1,0 +1,15 @@
+/* Shared self-hosted font subsets. Theme-specific fonts keep their cascade positions. */
+@import "@fontsource/montserrat/latin-400.css";
+@import "@fontsource/montserrat/vietnamese-400.css";
+@import "@fontsource/montserrat/latin-500.css";
+@import "@fontsource/montserrat/vietnamese-500.css";
+@import "@fontsource/montserrat/latin-600.css";
+@import "@fontsource/montserrat/vietnamese-600.css";
+@import "@fontsource/montserrat/latin-700.css";
+@import "@fontsource/montserrat/vietnamese-700.css";
+@import "@fontsource/cormorant-garamond/latin-500.css";
+@import "@fontsource/cormorant-garamond/vietnamese-500.css";
+@import "@fontsource/cormorant-garamond/latin-500-italic.css";
+@import "@fontsource/cormorant-garamond/vietnamese-500-italic.css";
+@import "@fontsource/cormorant-garamond/latin-600.css";
+@import "@fontsource/cormorant-garamond/vietnamese-600.css";

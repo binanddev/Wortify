@@ -1,6 +1,6 @@
 {
   "name": "@wortify/frontend",
-  "version": "1.15.0",
+  "version": "1.15.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,7 +14,8 @@
     "test:styles": "node --test tests/design-system.test.mjs",
     "prebuild": "node scripts/sync-history.mjs",
     "predev": "node scripts/sync-history.mjs",
-    "sync:history": "node scripts/sync-history.mjs"
+    "sync:history": "node scripts/sync-history.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "5.3.0",
@@ -38,6 +39,7 @@
     "xp.css": "0.2.6"
   },
   "devDependencies": {
+    "@playwright/test": "1.58.2",
     "@tailwindcss/node": "4.3.3",
     "@tailwindcss/vite": "^4.0.0",
     "@vitejs/plugin-react": "^6.1.1",

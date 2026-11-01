@@ -1,5 +1,5 @@
 import { workspaceUrl } from "../../lib/staff-workspace.js";
-import { useState, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import { endpoint, useResource, useAction } from "../../lib/core.js";
 import { Btn, Field, Select, Status } from "../../components/ui/ui.jsx";
@@ -146,13 +146,22 @@ export function DeckExportDialog({ lang, decks, onClose }) {
   );
 }
 export function LibraryCardsDialog({ lang, deck, onClose, onChanged }) {
-  const resource = useResource(endpoint(lang, `decks/${deck.id}/`)),
-    [cards, setCards] = useState(null);
-  const update = (items) => {
-    setCards(items);
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    const timer = setTimeout(() => { setSearch(query); setPage(1); }, 250);
+    return () => clearTimeout(timer);
+  }, [query]);
+  const resource = useResource(endpoint(lang, `decks/${deck.id}/?cards_page=${page}&page_size=50&q=${encodeURIComponent(search)}`));
+  const previous = useRef(null);
+  if (resource.data) previous.current = resource.data;
+  const data = resource.data ?? previous.current;
+  const update = () => {
+    resource.reload();
     onChanged();
   };
-  return resource.data ? (
+  return data ? (
     <Suspense
       fallback={
         <PracticeModal title={tr("Manage cards")} onClose={onClose}>
@@ -163,16 +172,11 @@ export function LibraryCardsDialog({ lang, deck, onClose, onChanged }) {
       <CardManager
         lang={lang}
         deckId={deck.id}
-        cards={cards ?? resource.data.cards}
+        cards={data.cards}
+        remote={{...data.pagination, setPage, query, setQuery, reload: update, pending:resource.loading, error:resource.error}}
         onClose={onClose}
         onCardsChanged={update}
-        onUpdated={(card) =>
-          update(
-            (cards ?? resource.data.cards).map((item) =>
-              item.id === card.id ? card : item,
-            ),
-          )
-        }
+        onUpdated={update}
       />
     </Suspense>
   ) : (

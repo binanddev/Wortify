@@ -73,6 +73,9 @@ export function fingerprint(css) {
 }
 export async function compileDesign() {
   let input = (await fs.readFile(path.join(designRoot, "index.css"), "utf8")).replace(/\r\n/g, '\n');
+  // Expand the shared font entry before normalizing subsets for the baseline.
+  input = input.replace('@import "./fonts.css";',
+    (await fs.readFile(path.join(designRoot, "fonts.css"), "utf8")).replace(/\r\n/g, '\n'));
   input = input.replace('@import "./tokens.css";', [
     '@import "../vendor/retro-libraries.css";',
     '@import "../vendor/windows-libraries.css";',
