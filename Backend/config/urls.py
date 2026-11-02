@@ -1,3 +1,4 @@
+from api import practice_feedback
 from api import feature_availability
 from api.classroom.routes import routes as classroom_routes
 from api import deck_management
@@ -65,6 +66,8 @@ for pattern, view in classroom_routes():route(pattern, view)
 for pattern,view in [
  ('system-library/',content_packages.library),('system-library/<uuid:pk>/copy/',content_packages.copy),('reading/discover/',reading_discovery.library),('reading/discover/open/',reading_discovery.detail),('reading/discover/save/',reading_discovery.save),('reading/folders/',reading_management.create_folder),('reading/folders/<int:pk>/',reading_management.folder_detail),('reading/<int:pk>/metadata/',reading_management.metadata),('reading/organize/',reading_management.organize),('reading/<int:pk>/sharing/',reading.sharing),('reading/',reading.library),('reading/<int:pk>/',reading.detail),
  ('profile/',community.profile),
+ ('practice-hub/feedback/<int:pk>/',practice_feedback.proposals),
+ ('practice-hub/feedback/<int:pk>/<uuid:proposal_id>/',practice_feedback.review),
  ('practice-hub/nodes/<int:pk>/copy/',practice_copy.copy_collection),
  ('practice-hub/media/',practice_media.upload),('practice-hub/media/<uuid:pk>/',practice_media.content),
  ('practice-hub/public/<int:pk>/',practice_hub.public_detail),('practice-hub/explore/',practice_hub.explore),('practice-hub/nodes/',practice_hub.nodes),('practice-hub/nodes/<int:pk>/',practice_hub.node),('practice-hub/import/',practice_hub.import_nodes),('practice-hub/organize/',practice_hub.organize),

@@ -22,6 +22,8 @@
 .practice-content-heading { @apply flex items-start justify-between gap-4; }
 .practice-content-heading > .heading { @apply flex-1 min-w-0; }
 .practice-content-heading > .btn { @apply w-10 min-w-10 h-10 min-h-10 p-0; }
+.practice-heading-actions { @apply flex shrink-0 items-center gap-2; }
+:root[data-interface] body .practice-exercise-heading > .heading h1 { @apply text-[clamp(22px,2.5vw,32px)] leading-tight; }
 :root body .practice-discover-tools { @apply border-0 p-0 gap-2; }
 @media (pointer:coarse), (max-width:760px) {
   :root body .context-panel .practice-context-actions .btn,.practice-context-actions .btn,.practice-context-link { @apply min-h-11; }

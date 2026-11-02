@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { spawnSync } from "node:child_process";
+import { chromium } from "@playwright/test";
 import { THEME_ICONS } from "../src/themes/icons.js";
 import { ICON_COMPONENTS } from "../src/components/ui/icon-catalog.js";
 import { createElement } from "react";
@@ -105,7 +105,7 @@ for(const mode of ['studio','glass']) {
     if(s.filter!=='none'||s.backdropFilter!=='none') errors.push(mode+' '+target.className+' filter='+s.filter+' backdrop='+s.backdropFilter);
    }
   }
-  if(mode==='studio' && getComputedStyle(face).backgroundColor!=='rgb(252, 250, 244)') errors.push('Studio surface is not opaque ivory');
+  if(mode==='studio' && getComputedStyle(face).backgroundColor!=='rgb(255, 254, 250)') errors.push('Studio surface is not opaque ivory');
  }
  if(new Set(colors).size!==1) errors.push(mode+' icons change with glass alpha');
 }
@@ -126,7 +126,8 @@ for(const color of ['#ffffff','#111111']) {
  root.dataset.interface='studio';
  // Inline probe changes use the same refresh event as application theme changes.
  window.dispatchEvent(new Event('theme-styles-loaded'));
- await new Promise(resolve=>setTimeout(resolve,100));
+ // Contrast is painted on the next frame; inspect only after that paint.
+ await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
  const c=getComputedStyle(probe).color;
  if(c !== (color==='#ffffff'?'rgb(0, 0, 0)':'rgb(255, 255, 255)')) errors.push('auto foreground '+color+': '+c);
 }
@@ -157,38 +158,27 @@ try {
   const fixture = path.join(temp, "interface.html");
   await fs.writeFile(fixture, html);
   const screenshot = process.env.INTERFACE_SCREENSHOT;
-  const result = spawnSync(
-    browser,
-    [
-      "--headless",
-      "--disable-gpu",
-      "--disable-background-networking",
-      "--no-first-run",
-      "--no-default-browser-check",
-      `--user-data-dir=${path.join(temp, "profile")}`,
-      "--window-size=1366,960",
-      "--virtual-time-budget=1200",
-      ...(screenshot ? [`--screenshot=${path.resolve(screenshot)}`] : []),
-      "--dump-dom",
-      pathToFileURL(fixture).href,
-    ],
-    {
-      encoding: "utf8",
-      windowsHide: true,
-      timeout: 30000,
-      maxBuffer: 8 * 1024 * 1024,
-    },
-  );
-  if (result.error) throw result.error;
-  const match = result.stdout.match(
-    /<pre id="results" hidden="">([^<]+)<\/pre>/,
-  );
-  if (!match)
-    throw new Error(
-      "Headless renderer did not return test results: " +
-        result.stderr.slice(-1000),
+  // Virtual-time dump-dom can advance timers without running the scheduled
+  // animation frame. Use the real render loop and wait for explicit completion.
+  const instance = await chromium.launch({
+    executablePath: browser,
+    headless: true,
+    args: ["--disable-background-networking", "--no-first-run", "--no-default-browser-check"],
+  });
+  let errors;
+  try {
+    const page = await instance.newPage({ viewport: { width: 1366, height: 960 } });
+    await page.goto(pathToFileURL(fixture).href);
+    await page.waitForFunction(
+      () => Boolean(document.getElementById("results")?.textContent),
+      null,
+      { timeout: 30000 },
     );
-  const { errors } = JSON.parse(match[1]);
+    ({ errors } = JSON.parse(await page.locator("#results").textContent()));
+    if (screenshot) await page.screenshot({ path: path.resolve(screenshot) });
+  } finally {
+    await instance.close();
+  }
   if (errors.length) throw new Error([...new Set(errors)].join("; "));
   console.log(
     "Browser CSS checks passed: both interfaces, clear hover/icons, fixed nav height at 50-150%, automatic contrast and exercise controls.",

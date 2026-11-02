@@ -43,6 +43,9 @@ jobs:
       - run: npm run test:e2e --prefix Frontend
         env:
           E2E_PYTHON: python
+      - run: npm run test:e2e:clean-start --prefix Frontend
+        env:
+          E2E_PYTHON: python
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

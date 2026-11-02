@@ -1,5 +1,17 @@
 # Wortify Frontend
 
+## Practice Hub sessions
+
+Practice Hub has eight creation types; legacy True/False/Not Given exercises can still be opened, edited and imported. Word-bank gaps and per-gap selections remain separate. Shared word banks display up to six questions per group; question-scoped banks retain their single-question grouping. Tap placement/removal and pointer drag are available, including repeated words. Checked correct gaps/categories stay fixed while incorrect entries are retried.
+
+Practice mode provides feedback, optional authored hints after a first attempt, answer reveal and weak-question retries. Self-check collects all answers before grading and permits backward navigation. Sessions are saved locally by account, language, node and revision, including typed answers. Switching mode starts a new attempt after confirmation when answers exist. The result summary distinguishes independent first-try success, correct after support/retry, revealed and incorrect questions. Completed runs use stable UUID receipts with the normal learning queue; the server grades answers independently. Interaction counts are reported learning telemetry, not a secure examination system.
+
+Optional `HINT` and `DISTRACTOR_EXPLANATION` fields round-trip in authoring text. Missing hints do not block old lessons. Free-text answer suggestions are stored for explicit owner/shared-editor review; acceptance adds an alternative answer without retroactively changing scores. Reading keeps its existing activity flow. The new `practice.0011_answer_proposals` migration is required on deployment; development tests use isolated databases and must not migrate the user's working data.
+
+The edit dialog uses the structured question editor for sentence-order exercises with distractors and legacy multi-answer exercises, preserving fields the concise text format cannot represent. Sentence-order checks require the answer's token count, not every distractor in the bank.
+
+Browser regression coverage lives in `e2e/practice.spec.mjs`, `e2e/correction-restore.spec.mjs`, `e2e/answer-proposals.spec.mjs` and `e2e/practice-audit.spec.mjs`, alongside the existing learning checks. These cover text creation, legacy lessons, grouped gaps, mode settings, restored answers, explicit proposal review, matching, categories, ordering with distractors, and revealed-answer result persistence.
+
 React/Vite độc lập, giao tiếp với Backend qua `/api/`. Cấu trúc dưới đây là nơi tham chiếu chính khi thêm hoặc sửa mã nguồn.
 
 ## Cấu trúc mã nguồn
@@ -146,7 +158,7 @@ Practice Hub section links now live in the shared SidebarTools portal (back navi
 
 Multiple-choice options are shuffled only in the question renderer, with stable ordering while answering. Authoring/import/export retain stored order and accepted answer text. Inline gap choices are also shuffled per question. True/False/Not given retains semantic order. Elimination is an optional, ungraded crossing-out aid; the selected answer is graded normally.
 
-Drag-fill exercises share the union of all question word banks, distractors, and gap choices on every sentence. Repeated words keep the maximum required multiplicity across questions. Each sentence starts with the full bank; previously completed sentences do not consume it. Authoring preserves imported WORDS and automatically includes gap answers.
+Shared drag-fill exercises display up to six questions together with one bank built from the exercise word banks, distractors and gap choices. The active group receives enough copies of repeated accepted words to fill its gaps. Placing a token consumes that copy within the group; the next group starts with its own bank. Question-scoped banks show one question at a time. Authoring preserves imported WORDS and includes gap answers.
 
 Authors can select Word bank scope: Separate choices for each question or Shared choices for the whole exercise. Legacy exercises default to shared. Text import/export uses BANK_SCOPE: question/exercise before QUESTION. Inline multiple choice offers Choose and reveal (STYLE: fall_away): incorrect alternatives disappear after successful checking. Example: QUESTION: She {{1}} a teacher. and BLANK: is => is | are | am.
 

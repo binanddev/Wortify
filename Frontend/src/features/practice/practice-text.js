@@ -50,9 +50,11 @@ Repeat a token in WORDS when multiple blanks need it. If omitted, the bank uses 
 For sentence_building, WORDS must list every token in the correct answer order; duplicate words are allowed.
 PREFIX: beginning of the answer for short_answer. Every accepted answer must include that prefix.
 COMMENT: exercise-wide note before the first QUESTION, shown after a correct answer or reveal.
+HINT: optional clue available after a first incorrect attempt in Practice mode, up to 4000 characters; do not reveal the answer. Hints are not shown in Self-check mode.
+DISTRACTOR_EXPLANATION: optional explanation of why other choices are wrong, up to 12000 characters. These two fields are for Practice questions.
 EXPLANATION: optional explanation for any question or matching pair after answering correctly or revealing. EXAMPLE: yes/no after QUESTION marks a practice example.
 Blank lines and # comment lines are ignored. Use > at the start of a continuation line after QUESTION,
-INSTRUCTIONS, CONTEXT or EXPLANATION. Other fields must stay on one line.
+INSTRUCTIONS, CONTEXT, HINT, DISTRACTOR_EXPLANATION or EXPLANATION. Other fields must stay on one line.
 Do not put | or => inside an individual item. Repeat EXERCISE to import multiple exercises.
 Each field occurs once per exercise/question except BLANK, which repeats for each blank.
 Limits per import: 100 exercises, 100 questions per exercise, 2 MB total UTF-8 text.
@@ -69,7 +71,7 @@ Open the Formatting guide in Create for supported commands and copyable examples
 Use **bold text**, *italic text*, and [color=blue]colored text[/color].
 Available colors: red, rose, pink, magenta, purple, violet, indigo, blue, sky, cyan,
 teal, emerald, green, lime, yellow, amber, orange, coral, slate, gray.
-Formatting is supported in INSTRUCTIONS, CONTEXT, EXPLANATION and display QUESTION text.
+Formatting is supported in INSTRUCTIONS, CONTEXT, HINT, DISTRACTOR_EXPLANATION, EXPLANATION and display QUESTION text.
 Keep QUESTION plain for error_correction: its words are editable answer data.
 Keep ANSWER, BLANK, WORDS, PREFIX, GROUPS and titles plain (no formatting markers).
 Formatting may wrap blanks such as {{1}}; interactive blanks also work inside tables and alignment blocks.
@@ -80,6 +82,7 @@ You can combine color with bold or italic; do not nest colors. HTML is supported
 TYPES AND STYLES
 cloze_drag_drop: drag_drop (move word tiles), tap_fill (tap words to fill blanks).
 error_correction: click_edit (edit incorrect text), cross_out (remove extra words).
+  State the exact number of errors or extra words in INSTRUCTIONS or QUESTION.
   ANSWER is the entire corrected sentence. For cross_out, only remove words; do not add or reorder them.
 matching: tap_match (match cards). Each QUESTION is one card; ANSWER is exactly one unique partner. Never reuse a partner across questions.
 sentence_building: tap_build (arrange tokens). WORDS defines the correct token order.
@@ -89,16 +92,19 @@ inline_selection: pill_toggle (toggle choices), inline_select (select a choice),
 BANK_SCOPE: question or exercise for cloze_drag_drop; exercise uses a shared word bank (default).
 multiple_choice: dialogue_reply or elimination; these styles require a single correct answer.
   OPTIONS: at least two distinct choices separated by |. ANSWER must be the exact text of one choice, never its letter or index.
-true_false_not_given: evidence_judge. Use CONTEXT for the passage, OPTIONS: TRUE | FALSE | NOT_GIVEN and exactly one ANSWER: TRUE, FALSE or NOT_GIVEN. FALSE contradicts the passage; NOT_GIVEN is not established by it.
+true_false_not_given (legacy import/edit only; do not choose for new exercises): evidence_judge. Use CONTEXT for the passage, OPTIONS: TRUE | FALSE | NOT_GIVEN and exactly one ANSWER: TRUE, FALSE or NOT_GIVEN. FALSE contradicts the passage; NOT_GIVEN is not established by it.
 short_answer: partial_input (complete a required PREFIX), sentence_rewrite (write the whole answer).
   partial_input requires a nonempty PREFIX. Every accepted ANSWER must begin with that exact PREFIX.
   ANSWER always contains the entire sentence, including PREFIX when provided.
+  State the required tense, keyword, preserved meaning and word limit in QUESTION. List equivalent accepted answers with |.
 
 WORKSPACE AND EDITING
 Only owners can edit, rename, move or delete their content. Use the folder cards and content tools on the Create main screen for these actions.
 Drag items into folders, or use the move/group tools to organize a selection.
 Download the current .txt before editing if you want a backup. Editing questions starts a new progress revision.
-Learners answer one question at a time, retry incorrect answers and save progress rather than scores.
+Practice mode gives feedback and permits retries; shared word-bank exercises display up to six questions per group. Question-scoped banks display one question at a time.
+Open Exercise settings to choose Practice or Self-check. Self-check withholds feedback until submission. Changing mode starts a new attempt after confirmation when answers exist.
+Completed attempts save submitted answers and server-graded results; progress also records completed questions. Interaction counts are learner-reported learning telemetry, not secure exam scores.
 Preview does not change learning progress. Workspace pins include the highest accessible parent folder.
 
 ALL SUPPORTED TYPES AND STYLES: complete importable samples follow. Lines beginning with # are documentation.`;
@@ -143,7 +149,21 @@ export function textTemplate(
     mode === "error_correction" && style === "cross_out"
       ? "QUESTION: They discussed about the project yesterday.\nANSWER: They discussed the project yesterday."
       : samples[mode];
-  return `EXERCISE: ${EXERCISE_TYPES.find((t) => t[0] === mode)?.[1] || "Practice exercise"}\nTYPE: ${mode}\nSTYLE: ${style}\nINSTRUCTIONS: Complete the sentences below.\n${sample}\n`;
+  const instruction = {
+    reading: "Read the passage and answer its questions.",
+    multiple_choice: "Choose the best response to each question.",
+    true_false_not_given: "Read the passage. Decide whether each statement is true, false or not given.",
+    cloze_drag_drop: "Fill each gap using a word from the word bank.",
+    error_correction: style === "cross_out"
+      ? "Remove exactly one extra word from each sentence. Do not add or reorder words."
+      : "Correct exactly one incorrect word in each sentence. Keep the other words unchanged.",
+    matching: "Match each word with its translation.",
+    sentence_building: "Arrange all the words to form a correct sentence.",
+    categorization: "Place each item in the correct category.",
+    inline_selection: "Choose the correct word at each gap within the sentence.",
+    short_answer: "Rewrite using the present perfect and begin with He has. Keep the original meaning and write the full sentence.",
+  }[mode] || "Complete the exercise.";
+  return `EXERCISE: ${EXERCISE_TYPES.find((t) => t[0] === mode)?.[1] || "Practice exercise"}\nTYPE: ${mode}\nSTYLE: ${style}\nINSTRUCTIONS: ${instruction}\n${sample}\n`;
 }
 export function exerciseToText(e) {
   const mode = e.presentation?.interaction;
@@ -184,6 +204,8 @@ export function exerciseToText(e) {
     if (mode === "cloze_drag_drop" && q.presentation?.word_bank?.length)
       lines.push(`WORDS: ${q.presentation.word_bank.join(" | ")}`);
     if (q.presentation?.prefix) lines.push(`PREFIX: ${q.presentation.prefix}`);
+    if (q.presentation?.hint) lines.push(`HINT: ${q.presentation.hint}`);
+    if (q.presentation?.distractor_explanation) lines.push(`DISTRACTOR_EXPLANATION: ${q.presentation.distractor_explanation}`);
     if (q.presentation?.explanation)
       lines.push(`EXPLANATION: ${q.presentation.explanation}`);
   }
@@ -329,6 +351,14 @@ export function parsePracticeText(text) {
       case "PREFIX":
         q.presentation.prefix = value;
         break;
+      case "HINT":
+        q.presentation.hint = value;
+        continuation = [q.presentation, "hint"];
+        break;
+      case "DISTRACTOR_EXPLANATION":
+        q.presentation.distractor_explanation = value;
+        continuation = [q.presentation, "distractor_explanation"];
+        break;
       case "EXPLANATION":
         q.presentation.explanation = value;
         continuation = [q.presentation, "explanation"];
@@ -365,8 +395,9 @@ export function parsePracticeText(text) {
       fail("Each exercise requires 1–100 questions.");
     if (e.questions.every((q) => q.example))
       fail("At least one practice question, not an EXAMPLE, is required.");
-    const pairs = e.questions.map((q) => q.accepted_answers[0]);
-    if (mode === "matching" && new Set(pairs).size !== pairs.length)
+    const pairs = [...new Set(e.questions.map((q) => q.accepted_answers[0]))];
+    const activePairs = e.questions.filter(q => !q.example).map(q => q.accepted_answers[0]);
+    if (mode === "matching" && new Set(activePairs).size !== activePairs.length)
       fail("Matching requires distinct answers.");
     for (const [i, question] of e.questions.entries()) {
       q = question;
@@ -374,6 +405,8 @@ export function parsePracticeText(text) {
       delete q._line;
       q.id = String(i + 1);
       q.position = i + 1;
+      if ((q.presentation.hint || "").length > 4000) fail("HINT must contain no more than 4000 characters.");
+      if ((q.presentation.distractor_explanation || "").length > 12000) fail("DISTRACTOR_EXPLANATION must contain no more than 12000 characters.");
       if (mode === "reading" && [q.prompt, ...q.options, ...q.accepted_answers, q.presentation?.explanation || ""].some(v => /<\/?[a-z][^>]*>/i.test(v))) fail("HTML belongs only in CONTEXT. Use text for reading questions, options, answers and explanations.");
       q.kind = mode === "reading" && q.accepted_answers.length > 1 ? "multi" : e.kind;
       if (mode === "reading" && (q.options.length < 2 || q.options.length > 12 || new Set(q.options).size !== q.options.length || !q.accepted_answers.length || new Set(q.accepted_answers).size !== q.accepted_answers.length || q.accepted_answers.some(a => !q.options.includes(a)))) fail("Reading questions need 2–12 distinct OPTIONS and one or more unique ANSWER choices from them.");

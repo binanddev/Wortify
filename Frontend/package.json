@@ -15,7 +15,8 @@
     "prebuild": "node scripts/sync-history.mjs",
     "predev": "node scripts/sync-history.mjs",
     "sync:history": "node scripts/sync-history.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:clean-start": "playwright test --config playwright.clean-start.config.mjs"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "5.3.0",

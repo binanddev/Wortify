@@ -6,12 +6,29 @@ MODES={'reading':'choice','error_correction':'text','cloze_drag_drop':'cloze','i
 def validate_presentation(q,mode):
     p=q.presentation
     if not isinstance(p,dict):raise ValidationError('presentation must be an object.')
+    if mode != 'reading':
+        for field, limit in (('hint', 4000), ('distractor_explanation', 12000)):
+            if field in p and (not isinstance(p[field], str) or len(p[field]) > limit):
+                raise ValidationError(f'{field} must be text up to {limit} characters.')
+    if mode == 'short_answer':
+        prefix = p.get('prefix', '')
+        style = getattr(q.exercise, 'presentation', {}).get('style')
+        if not isinstance(prefix, str):
+            raise ValidationError('PREFIX must be text.')
+        if style == 'partial_input' and not prefix.strip():
+            raise ValidationError('Partial input requires a nonempty PREFIX.')
+        if prefix and any(not answer.startswith(prefix) for answer in q.accepted_answers):
+            raise ValidationError('Each accepted answer must start with PREFIX.')
     if mode in ('sentence_building','inline_error_identification'):
         tokens=p.get('tokens',[])
         if not isinstance(tokens,list) or not tokens or any(not isinstance(t,dict) or not isinstance(t.get('id'),str) or not isinstance(t.get('text'),str) or not t['text'].strip() for t in tokens):raise ValidationError('Word tokens require an id and text.')
         ids=[t['id'] for t in tokens]
         if len(ids)!=len(set(ids)) or not set(q.accepted_answers).issubset(ids):raise ValidationError('Invalid word token IDs or answers.')
         if len(q.accepted_answers)!=len(set(q.accepted_answers)):raise ValidationError('Answer IDs must not repeat.')
+    if mode in ('cloze_drag_drop', 'inline_selection') and not q.blanks:
+        raise ValidationError('Gap exercises require at least one blank.')
+    if mode == 'matching' and not q.example and len(q.accepted_answers) != 1:
+        raise ValidationError('Each matching question requires exactly one answer.')
     if mode=='inline_selection':
         for b in q.blanks:
             opts=b.get('options',[])

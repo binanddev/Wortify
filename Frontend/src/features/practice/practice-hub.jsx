@@ -27,6 +27,7 @@ import {
   Icon,
 } from "../../components/ui/ui.jsx";
 import { PracticeActivity } from "./practice-activity.jsx";
+import {AnswerProposal, AnswerProposalReview} from './answer-proposals.jsx';
 import { TheoryActivity } from "./practice-theory.jsx";
 import { useLearningSync } from "../learning/learning-sync.js";
 import { previewData } from "./exercise-types.js";
@@ -136,7 +137,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
     ...(!node.can_edit ? [{key:"pin",icon:isPinned(node)?"close":"plus",label:isPinned(node)?"Remove from workspace":"Add to workspace",run:()=>togglePin(node)}] : []),
     ...(node.can_edit ? [{key:"delete",icon:"trash",label:"Delete permanently",danger:true,run:()=>nodeAction("delete",node)}] : []),
   ]}/>;
-  const lessonHeading = <div className="practice-content-heading"><Heading title={current?.title}/>{current?.can_edit && <Btn aria-label={tr("Edit content")} onClick={()=>current.kind === "exercise" ? openImport(nodes.find(node=>node.id===current.parent),current) : navigate(`/${lang}/create/${current.id}/edit?return=learn`)}><Icon name="edit" size={18}/></Btn>}</div>;
+  const lessonHeading = (settings = null) => <div className={`practice-content-heading${current?.kind === 'exercise' ? ' practice-exercise-heading' : ''}`}><Heading title={current?.title}/><div className="practice-heading-actions">{settings}{current?.can_edit && <Btn isIconOnly aria-label={tr("Edit content")} onClick={()=>current.kind === "exercise" ? openImport(nodes.find(node=>node.id===current.parent),current) : navigate(`/${lang}/create/${current.id}/edit?return=learn`)}><Icon name="edit" size={18}/></Btn>}</div></div>;
   const library = items => <PracticeLibrary items={items} nodes={nodes} lang={lang} parent={all?null:current?.id} routeBase="practice" pending={action.pending} error={action.error} searching={Boolean((all?catalogQuery:query).trim())}
     onOrganize={organize} onRename={(node,title)=>patchNode(node,{title})}
     onOpen={node=>navigate(`${practiceRoutes(lang).learn}/${node.id}`)} onPreview={node=>setPreviewId(node.id)}
@@ -270,8 +271,8 @@ export function PracticeHub({ lang, id, userId, sound }) {
         </section>
       ) : current?.kind === "exercise" && current.payload ? (
         <>
-          {lessonHeading}
           <PracticeActivity
+            renderHeader={settings => <>{lessonHeading(settings)}{current.can_edit && ['short_answer','error_correction','audio_dictation'].includes(current.payload.presentation?.interaction) && <AnswerProposalReview nodeId={current.id} lang={lang} onChanged={() => resource.reload()}/>}</>}
             key={`${userId}:${current.id}:${current.updated_at}`}
             data={{
               ...previewData(current.payload),
@@ -281,6 +282,11 @@ export function PracticeHub({ lang, id, userId, sound }) {
             userId={userId}
             lang={lang}
             sound={sound}
+            proposalSlot={['short_answer','error_correction','audio_dictation'].includes(current.payload.presentation?.interaction) ? (question, answer) => <AnswerProposal nodeId={current.id} lang={lang} question={question} answer={answer} revision={current.updated_at}/> : undefined}
+            onResult={({token, ...result}) => {
+              sync.enqueue('practice_result', {node: current.id, revision: current.updated_at, ...result}, token);
+              sync.flush();
+            }}
             onNext={() => {
               const exercises = (
                 workspace.some((node) => node.id === current.id)
@@ -310,7 +316,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
         </>
       ) : current?.kind === "theory" && current.payload ? (
         <>
-          {lessonHeading}
+          {lessonHeading()}
           <TheoryActivity payload={current.payload} />
         </>
       ) : (

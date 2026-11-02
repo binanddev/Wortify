@@ -417,8 +417,9 @@ export function Categories({
   const [picked, setPicked] = useState(null);
   const groups =
     exercise.presentation?.categories || questions[0]?.options || [];
+  const locked = (id) => rows.some(row => row.key === String(id) && row.correct === true);
   const move = (category, id = picked) => {
-    if (disabled || !id || !questions.some((q) => String(q.id) === id)) return;
+    if (disabled || !id || locked(id) || !questions.some((q) => String(q.id) === id)) return;
     onAnswer(id, category);
     setPicked(null);
   };
@@ -462,8 +463,8 @@ export function Categories({
                     result={
                       rows.find((row) => row.key === String(q.id))?.correct
                     }
-                    disabled={disabled}
-                    onClick={() => onAnswer(String(q.id), "")}
+                    disabled={disabled || locked(q.id)}
+                    onClick={() => { if (!locked(q.id)) onAnswer(String(q.id), ""); }}
                   >
                     <PracticeRichText>{q.prompt}</PracticeRichText>
                   </Chip>
@@ -495,11 +496,15 @@ function CorrectSentence({ q, value, onChange, disabled, uiStyle, revealed }) {
   useLocale();
   const original = q.prompt.split(/\s+/);
   const [words, setWords] = useState(() => original);
+  // A saved full sentence cannot reliably reconstruct deleted or multiword tokens.
+  // Edit the controlled answer directly after remount instead of losing those edits.
+  const [restored, setRestored] = useState(() => Boolean(value));
   const [active, setActive] = useState(null);
   const [draft, setDraft] = useState("");
   useEffect(() => {
     setWords(original);
     setActive(null);
+    setRestored(Boolean(value));
   }, [q.id]);
   const apply = (index, text) => {
     if (disabled) return;
@@ -509,6 +514,12 @@ function CorrectSentence({ q, value, onChange, disabled, uiStyle, revealed }) {
     onChange(next.filter(Boolean).join(" "));
     setActive(null);
   };
+  if (restored) return (
+    <div className="correction-work">
+      <p className="work-prompt"><PracticeRichText>{q.prompt}</PracticeRichText></p>
+      <AutoTextarea label={tr("Answer")} value={value || ""} onChange={onChange} disabled={disabled}/>
+    </div>
+  );
   return (
     <div className="correction-work">
       <p className="exercise-instruction">

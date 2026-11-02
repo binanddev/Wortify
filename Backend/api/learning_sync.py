@@ -93,6 +93,9 @@ def apply_event(request,event):
         form=SettingsForm({**model_to_dict(settings),**data},instance=settings)
         if not form.is_valid():raise ValueError(form.errors.as_text())
         form.save();result={'saved':True}
+    elif kind == 'practice_result':
+        from .practice_feedback import save_result
+        result = save_result(request, data, token)
     elif kind in ('practice_progress','practice'):
         accessible=get_object_or_404(visible(request, include_personal=True),pk=data.get('node'),kind='exercise')
         node=PracticeNode.objects.select_for_update().get(pk=accessible.pk)

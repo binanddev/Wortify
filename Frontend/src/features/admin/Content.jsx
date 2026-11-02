@@ -7,7 +7,7 @@ import { request, useResource, useAction } from "../../lib/core.js";
 import { Btn, Field, Select, Loading, Status } from "../../components/ui/ui.jsx";
 import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { ExerciseForm, prepareExercise } from "../practice/exercise-authoring.jsx";
-import { EXERCISE_TYPES, newExercise, previewData } from "../practice/exercise-types.js";
+import { CREATABLE_EXERCISE_TYPES, newExercise, previewData } from "../practice/exercise-types.js";
 import { PracticeActivity } from "../practice/practice-activity.jsx";
 import { TheoryActivity } from "../practice/practice-theory.jsx";
 import { MediaEditor } from "../practice/exercise-media.jsx";
@@ -395,7 +395,7 @@ export default function Content() {
             <Btn onClick={() => create("theory")}>{tr("Theory")}</Btn>
           </div>
           <Select label={tr("Exercise type")} value={mode} onChange={setMode}>
-            {EXERCISE_TYPES.map(([key, label]) => (
+            {CREATABLE_EXERCISE_TYPES.map(([key, label]) => (
               <option key={key} value={key}>
                 {label}
               </option>

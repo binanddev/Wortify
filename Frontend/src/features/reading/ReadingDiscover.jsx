@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { t as tr, useLocale } from "../../i18n/index.js";
 import { request, useResource, useNavigate } from "../../lib/core.js";
-import { Btn, Field, Select, Loading, Status, Glass, Icon } from "../../components/ui/ui.jsx";
+import { Btn, Field, Select, Loading, Status, Glass, Icon, Link } from "../../components/ui/ui.jsx";
 import { PracticeModal } from "../practice/practice-workspace.jsx";
 import { PracticeActivity } from "../practice/practice-activity.jsx";
 import { previewData } from "../practice/exercise-types.js";
@@ -79,7 +79,16 @@ export default function ReadingDiscover({lang, userId, onRequireAccount, initial
     </div>
     <Status error={opened ? '' : error}/>{notice&&<p className="reading-discover-notice" role="status"><Icon name="check" size={16}/>{tr(notice)}</p>}
     <Loading resource={resource}>{data=><>
-      {!data.lessons.length && <div className="reading-discover-empty"><Icon name="search" size={26}/><p>{tr("No readings match these filters.")}</p>{active.length>0&&<Btn onClick={clear}>{tr("Clear filters")}</Btn>}</div>}
+      {!data.lessons.length && <div className="reading-discover-empty">
+        <Icon name="search" size={26}/>
+        <p>{tr(active.length ? "No readings match these filters." : "No public readings in this language yet.")}</p>
+        {active.length > 0 ? <Btn onClick={clear}>{tr("Clear filters")}</Btn> : <>
+          <p>{tr("Try another learning activity, or return when new content is published.")}</p>
+          <Link className="btn" to={`/${lang}/flashcard/discover`}>{tr("Flashcards")}</Link>
+          <Link className="btn" to={`/${lang}/explore`}>{tr("Exercises")}</Link>
+          {!onRequireAccount && <Link className="btn" to={`/${lang}/reading`}>{tr("My readings")}</Link>}
+        </>}
+      </div>}
       <div className="reading-discover-grid">{data.lessons.map(item=><Glass as="article" className="reading-discover-card" key={item.key}>
         <div className="reading-discover-card-top"><span className="reading-discover-icon"><Icon name="book" size={21}/></span><span className="reading-discover-source">{item.source==='system'?'Wortify':tr('Community')}</span>{item.level&&<span className="reading-discover-level">{item.level}</span>}</div>
         <button type="button" className="reading-discover-title" title={item.title} aria-label={tr("Preview {name}",{name:item.title})} disabled={busy} onClick={()=>previewReading(item)}>{item.title}</button>

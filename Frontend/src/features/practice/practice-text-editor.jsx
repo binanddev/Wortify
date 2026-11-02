@@ -6,7 +6,7 @@ import { PracticeModal } from "./practice-workspace.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Btn, Field, Select, Status, SidebarTools, Icon } from "../../components/ui/ui.jsx";
 import {
-  EXERCISE_TYPES,
+  CREATABLE_EXERCISE_TYPES,
   exerciseStylesOf,
   previewData,
 } from "./exercise-types.js";
@@ -227,7 +227,7 @@ export function PracticeTextEditor({
             </label>
             {files.length > 0 && <p>{files.join(" · ")}</p>}
             <details>
-              <summary>{tr("Templates for ")}{EXERCISE_TYPES.length}{tr(" exercise types")}</summary>
+              <summary>{tr("Templates for ")}{CREATABLE_EXERCISE_TYPES.length}{tr(" exercise types")}</summary>
               <Select
                 label={tr("Sample exercise type")}
                 value={mode}
@@ -237,7 +237,7 @@ export function PracticeTextEditor({
                   setStyle(exerciseStylesOf(value)[0][0]);
                 }}
               >
-                {EXERCISE_TYPES.map(([key, title]) => (
+                {CREATABLE_EXERCISE_TYPES.map(([key, title]) => (
                   <option key={key} value={key}>
                     {tr(title)}
                   </option>

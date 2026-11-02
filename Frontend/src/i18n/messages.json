@@ -1,4 +1,75 @@
 {
+  "Exercise settings": {"vi":"Cài đặt bài tập", "de":"Übungseinstellungen"},
+  "Word bank gaps": {"vi":"Điền từ từ kho", "de":"Lücken mit Wortbank"},
+  "Choose words in sentences": {"vi":"Chọn từ trong câu", "de":"Wörter in Sätzen auswählen"},
+  "Optional hint · available after a first attempt": {"vi":"Gợi ý tùy chọn · xem sau lần thử đầu tiên", "de":"Optionaler Hinweis · nach dem ersten Versuch verfügbar"},
+  "Why the other choices are incorrect · optional": {"vi":"Vì sao các lựa chọn khác sai · tùy chọn", "de":"Warum die anderen Antworten falsch sind · optional"},
+  "State the required tense, keyword, meaning and word limit in the prompt. Add every acceptable equivalent answer on a separate line.": {"vi":"Nêu rõ thì, từ khóa, ý nghĩa cần giữ và giới hạn số từ trong đề. Nhập mỗi đáp án tương đương được chấp nhận trên một dòng riêng.", "de":"Nenne Zeitform, Schlüsselwort, Bedeutung und Wortgrenze in der Aufgabe. Trage jede zulässige Antwort in eine eigene Zeile ein."},
+  "State exactly how many errors to correct or words to remove. Keep the task limited to those changes and include the full corrected sentence as the answer.": {"vi":"Nêu rõ số lỗi cần sửa hoặc từ cần bỏ. Chỉ yêu cầu những thay đổi đó và nhập cả câu đã sửa làm đáp án.", "de":"Gib die Anzahl der Fehler oder überflüssigen Wörter an. Beschränke die Aufgabe auf diese Änderungen und gib den vollständigen korrigierten Satz als Antwort an."},
+  "Study mode": {"vi":"Chế độ học", "de":"Lernmodus"},
+  "Self-check": {"vi":"Tự kiểm tra", "de":"Selbsttest"},
+  "Answer every question, then submit to see your results.": {"vi":"Trả lời hết các câu rồi nộp bài để xem kết quả.", "de":"Beantworte alle Fragen und gib ab, um dein Ergebnis zu sehen."},
+  "Try, get feedback and use hints when you need them.": {"vi":"Làm bài, nhận phản hồi và dùng gợi ý khi cần.", "de":"Übe, erhalte Rückmeldungen und nutze bei Bedarf Hinweise."},
+  "Changing mode starts a new attempt. Your saved progress is kept.": {"vi":"Đổi chế độ sẽ bắt đầu lượt làm mới. Tiến độ đã lưu được giữ lại.", "de":"Ein Moduswechsel startet einen neuen Versuch. Dein gespeicherter Fortschritt bleibt erhalten."},
+  "Start new attempt": {"vi":"Bắt đầu lượt mới", "de":"Neuen Versuch starten"},
+  "Correct on first try": {"vi":"Đúng ngay lần đầu", "de":"Beim ersten Versuch richtig"},
+  "Correct after support or retry": {"vi":"Đúng sau hỗ trợ hoặc thử lại", "de":"Nach Hilfe oder erneutem Versuch richtig"},
+  "Answers revealed": {"vi":"Đã xem đáp án", "de":"Lösung angesehen"},
+  "Needs more practice": {"vi":"Cần luyện thêm", "de":"Weiter üben"},
+  "Question {number}": {"vi":"Câu {number}", "de":"Frage {number}"},
+  "Practice weak questions": {"vi":"Luyện lại câu cần củng cố", "de":"Unsichere Fragen erneut üben"},
+  "Next exercise": {"vi":"Bài tập tiếp theo", "de":"Nächste Übung"},
+  "Group {current} of {total}": {"vi":"Nhóm {current}/{total}", "de":"Gruppe {current} von {total}"},
+  "Select all correct answers, then check.": {"vi":"Chọn tất cả đáp án đúng rồi kiểm tra.", "de":"Wähle alle richtigen Antworten und prüfe dann."},
+  "Show hint": {"vi":"Xem gợi ý", "de":"Hinweis anzeigen"},
+  "Submit answers": {"vi":"Nộp bài", "de":"Antworten abgeben"},
+  "Suggest another answer": {"vi":"Đề xuất đáp án khác", "de":"Andere Antwort vorschlagen"},
+  "Suggestion sent for review. Your score and accepted answers have not changed.": {"vi":"Đã gửi đề xuất để duyệt. Điểm và đáp án được chấp nhận chưa thay đổi.", "de":"Vorschlag zur Prüfung gesendet. Punktzahl und akzeptierte Antworten bleiben unverändert."},
+  "Proposed answer": {"vi":"Đáp án đề xuất", "de":"Vorgeschlagene Antwort"},
+  "Why should this answer be accepted? (optional)": {"vi":"Vì sao đáp án này nên được chấp nhận? (tùy chọn)", "de":"Warum sollte diese Antwort gelten? (optional)"},
+  "The content owner will review your suggestion before changing the answer key.": {"vi":"Chủ nội dung sẽ duyệt đề xuất trước khi thay đổi đáp án.", "de":"Der Inhaltsinhaber prüft deinen Vorschlag, bevor der Lösungsschlüssel geändert wird."},
+  "Send suggestion": {"vi":"Gửi đề xuất", "de":"Vorschlag senden"},
+  "Review answer suggestions": {"vi":"Duyệt đề xuất đáp án", "de":"Antwortvorschläge prüfen"},
+  "Only the content owner can review these suggestions.": {"vi":"Chỉ người quản lý nội dung có thể duyệt các đề xuất này.", "de":"Nur die Inhaltsverwaltung kann diese Vorschläge prüfen."},
+  "No answer suggestions yet.": {"vi":"Chưa có đề xuất đáp án.", "de":"Noch keine Antwortvorschläge."},
+  "Pending review": {"vi":"Chờ duyệt", "de":"Prüfung ausstehend"},
+  "Approved": {"vi":"Đã chấp nhận", "de":"Genehmigt"},
+  "Rejected": {"vi":"Đã từ chối", "de":"Abgelehnt"},
+  "The exercise changed. Review this suggestion manually; approval is unavailable.": {"vi":"Bài tập đã thay đổi. Cần kiểm tra lại đề xuất trước khi thêm đáp án.", "de":"Die Übung wurde geändert. Prüfe den Vorschlag manuell; eine Genehmigung ist nicht verfügbar."},
+  "Approve and add answer": {"vi":"Chấp nhận và thêm đáp án", "de":"Genehmigen und Antwort hinzufügen"},
+  "Reject suggestion": {"vi":"Từ chối đề xuất", "de":"Vorschlag ablehnen"},
+  "No flashcards in your library yet.": {
+    "vi": "Thư viện của bạn chưa có thẻ từ.",
+    "de": "In deiner Bibliothek sind noch keine Lernkarten."
+  },
+  "Explore available decks or add your own. Progress appears after you study.": {
+    "vi": "Khám phá các bộ thẻ có sẵn hoặc thêm bộ thẻ của bạn. Tiến độ sẽ xuất hiện sau khi bạn học.",
+    "de": "Entdecke verfügbare Kartensätze oder füge eigene hinzu. Dein Fortschritt erscheint, sobald du lernst."
+  },
+  "Choose where to begin.": {
+    "vi": "Chọn nơi bắt đầu học.",
+    "de": "Wähle, womit du beginnen möchtest."
+  },
+  "Explore flashcards, exercises or readings in your selected language.": {
+    "vi": "Khám phá thẻ từ, bài tập hoặc bài đọc bằng ngôn ngữ học đã chọn.",
+    "de": "Entdecke Lernkarten, Übungen oder Lesetexte in deiner gewählten Lernsprache."
+  },
+  "No public readings in this language yet.": {
+    "vi": "Chưa có bài đọc công khai cho ngôn ngữ này.",
+    "de": "Für diese Sprache gibt es noch keine öffentlichen Lesetexte."
+  },
+  "Try another learning activity, or return when new content is published.": {
+    "vi": "Thử hoạt động học khác hoặc quay lại khi có nội dung mới được xuất bản.",
+    "de": "Probiere eine andere Lernaktivität aus oder schau wieder vorbei, wenn neue Inhalte veröffentlicht wurden."
+  },
+  "No official packages in this language yet.": {
+    "vi": "Chưa có gói nội dung chính thức cho ngôn ngữ này.",
+    "de": "Für diese Sprache gibt es noch keine offiziellen Inhaltspakete."
+  },
+  "You can create your own content or explore other published activities.": {
+    "vi": "Bạn có thể tạo nội dung riêng hoặc khám phá các hoạt động đã xuất bản khác.",
+    "de": "Du kannst eigene Inhalte erstellen oder andere veröffentlichte Aktivitäten entdecken."
+  },
   "App language": {
     "vi": "Ngôn ngữ ứng dụng",
     "de": "App-Sprache"

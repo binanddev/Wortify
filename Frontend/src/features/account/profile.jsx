@@ -1,6 +1,7 @@
 import { t as tr, useLocale, dateLocale } from "../../i18n/index.js";
 import { useEffect, useState } from "react";
 import { endpoint, request, useResource } from "../../lib/core.js";
+import { profileNextStep } from "./profile-next-step.js";
 import {
   Page,
   Btn,
@@ -56,11 +57,7 @@ function ProfileContent({ initial, lang }) {
         ? row.kind === "practice"
         : row.kind !== "practice"),
   );
-  const next =
-    data.resume ||
-    (data.decks[0]
-      ? `/${lang}/flashcard/deck/${data.decks[0].id}`
-      : `/${lang}/flashcard`);
+  const next = profileNextStep(data, lang);
   const editGoal = () => setEdit("goal");
   const remaining = Math.max(0, data.daily_goal - data.today_questions);
   const encouragement = goalRatio >= 100
@@ -157,14 +154,8 @@ function ProfileContent({ initial, lang }) {
                     : tr("{count} questions to your daily goal", { count: remaining })}
                 </span>
                 <p className="profile-goal-note">{goalRatio >= 100 ? tr("Rest is part of learning, too.") : tr("One question at a time. You have got this.")}</p>
-                <Link className="btn primary profile-continue" to={next}>
-                  {data.resume
-                    ? tr("Continue session")
-                    : goalRatio >= 100
-                      ? tr("Keep exploring")
-                    : cards.due
-                      ? tr("Review due cards")
-                      : tr("Continue learning")}
+                <Link className="btn primary profile-continue" to={next.to}>
+                  {tr(next.label)}
                   <Icon name="arrow" />
                 </Link>
                 {cards.due > 0 && (
@@ -282,6 +273,7 @@ function ProfileContent({ initial, lang }) {
                 <Icon name="arrow" />
               </Link>
             </div>
+            {cards.total > 0 ? <>
             <div className="profile-mastery-number">
               <strong>{cards.mastered}</strong>
               <span>/ {cards.total}{tr(" mastered cards")}</span>
@@ -296,7 +288,7 @@ function ProfileContent({ initial, lang }) {
                   className={stage}
                   key={stage}
                   style={{
-                    width: `${cards.total ? (100 * cards[stage]) / cards.total : stage === "new" ? 100 : 0}%`,
+                    width: `${(100 * cards[stage]) / cards.total}%`,
                   }}
                 />
               ))}
@@ -314,10 +306,17 @@ function ProfileContent({ initial, lang }) {
                 </span>
               ))}
             </div>
+            </> : <div className="profile-empty">
+              <Icon name="cards" size={30} />
+              <p>{tr("No flashcards in your library yet.")}</p>
+              <span>{tr("Explore available decks or add your own. Progress appears after you study.")}</span>
+              <Link className="btn" to={`/${lang}/flashcard/discover`}>{tr("Discover")}</Link>
+              <Link className="btn" to={`/${lang}/flashcard`}>{tr("Create deck")}</Link>
+            </div>}
           </section>
           <section className="profile-panel" aria-labelledby="continue-title">
             <div className="profile-section-title">
-              <h2 id="continue-title">{tr("Continue learning")}</h2>
+              <h2 id="continue-title">{tr(data.decks.length ? "Continue learning" : "Start learning")}</h2>
               <Icon name="cards" />
             </div>
             {data.decks.length ? (
@@ -347,8 +346,10 @@ function ProfileContent({ initial, lang }) {
             ) : (
               <div className="profile-empty">
                 <Icon name="cards" size={30} />
-                <p>{tr("Your first words are waiting.")}</p><span>{tr("Choose a deck and take your first step.")}</span>
-                <Link className="btn" to={`/${lang}/flashcard`}>{tr("Create deck")}</Link>
+                <p>{tr("Choose where to begin.")}</p><span>{tr("Explore flashcards, exercises or readings in your selected language.")}</span>
+                <Link className="btn" to={`/${lang}/flashcard/discover`}>{tr("Flashcards")}</Link>
+                <Link className="btn" to={`/${lang}/explore`}>{tr("Exercises")}</Link>
+                <Link className="btn" to={`/${lang}/reading/discover`}>{tr("Reading")}</Link>
               </div>
             )}
             <Link className="profile-practice-link" to={`/${lang}/practice`}>

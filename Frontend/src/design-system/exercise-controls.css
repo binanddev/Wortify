@@ -289,3 +289,31 @@
 .exercise-workspace .work-submit .btn {
   @apply min-w-[145px];
 }
+
+/* Shared cloze groups keep the bank visible without obstructing the questions. */
+.exercise-workspace .grouped-gap-questions {
+  @apply grid gap-5;
+}
+.exercise-workspace .grouped-gap-question {
+  @apply grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3;
+}
+.exercise-workspace .grouped-gap-number {
+  @apply pt-2 text-sm font-semibold opacity-70;
+}
+.exercise-workspace .grouped-gap-bank {
+  @apply sticky bottom-0 z-[2] flex flex-wrap items-center gap-2 max-h-[30vh] overflow-y-auto border border-[var(--line)] bg-[var(--solid)] p-3;
+}
+.exercise-workspace .grouped-gap .gap-bank-token {
+  @apply min-h-11 rounded-lg border border-[var(--line)] px-3 py-2;
+}
+.exercise-workspace .pair-assigned {
+  @apply mt-2 block text-sm font-normal;
+}
+@media (max-width: 640px) {
+  .exercise-workspace .grouped-gap-bank {
+    @apply max-h-[24vh] gap-2 p-2;
+  }
+  .exercise-workspace .grouped-gap .gap-bank-token {
+    @apply min-h-11;
+  }
+}

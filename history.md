@@ -1,5 +1,15 @@
 # Change Log
 
+### 2026-11-02 | Practice Hub sessions, safer authoring and clean-start readiness
+
+- Keep eight exercise types for new Practice Hub content while retaining legacy True/False/Not Given lessons. Group shared word-bank gaps, preserve repeated tokens, lock correct answers during retries, and distinguish word banks from per-gap selections. Move study mode and audio controls into a settings dialog beside Edit and reduce exercise heading size.
+- Add Practice and Self-check sessions with restored answers, server-graded results, stable sync receipts, first-attempt/retry/reveal summaries and weak-question practice. Add authored hints and distractor explanations, plus alternative-answer suggestions requiring explicit owner/editor approval.
+- Align authoring guides and templates with current behavior. Reject impossible matching/gap payloads and unreachable prefixed answers; preserve matching examples. Fix repeated-answer checks, revealed whitespace submissions and ordering with distractors. Use structured editing when text conversion would lose distractors or legacy multiple-answer data.
+- Improve empty-library guidance and profile next steps; strengthen import validation and preserve omitted metadata. Add isolated clean-install browser coverage and CI checks for bootstrapping, publishing content, account creation and persisted learning progress without seeded data.
+- Validation: 431 backend tests and 266 frontend tests passed. Across initial runs and targeted rechecks, all 16 regular browser scenarios and the clean-install scenario passed; production build, interface checks and migration consistency passed. Tests used isolated data; no local database migration or deployment was performed. Apply practice migration 0011_answer_proposals during deployment.
+
+---
+
 ### [v1.15.1] - 2026-11-01 | Reliable progress recovery and lighter card management
 
 - Back up learning queues to IndexedDB, recover unsent progress before workspace initialization, and warn before leaving when browser storage is unavailable. Preserve pending UUIDs and reject batches sent under a different signed-in account.

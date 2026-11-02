@@ -77,6 +77,8 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
         value={e.instruction}
         onChange={(instruction) => onChange({ instruction })}
       />
+      {mode === "short_answer" && <p>{tr("State the required tense, keyword, meaning and word limit in the prompt. Add every acceptable equivalent answer on a separate line.")}</p>}
+      {mode === "error_correction" && <p>{tr("State exactly how many errors to correct or words to remove. Keep the task limited to those changes and include the full corrected sentence as the answer.")}</p>}
       {["cloze_drag_drop", "inline_selection"].includes(mode) && (
         <div className="form-columns">
           <Select
@@ -86,8 +88,8 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
               onChange({ presentation: { ...e.presentation, interaction } })
             }
           >
-            <option value="cloze_drag_drop">{tr("Drag / select words")}</option>
-            <option value="inline_selection">{tr("Select within the sentence")}</option>
+            <option value="cloze_drag_drop">{tr("Word bank gaps")}</option>
+            <option value="inline_selection">{tr("Choose words in sentences")}</option>
           </Select>
         </div>
       )}
@@ -218,6 +220,10 @@ export function ExerciseForm({ exercise: e, onChange, onUpload }) {
               categories={e.presentation.categories || []}
               onUpload={onUpload}
             />
+            {mode !== "reading" && <>
+              <AutoTextarea label={tr("Optional hint · available after a first attempt")} value={q.presentation?.hint || ""} onChange={hint=>update(i,{presentation:{...q.presentation,hint}})}/>
+              {["multiple_choice", "cloze_drag_drop", "inline_selection", "true_false_not_given"].includes(mode) && <AutoTextarea label={tr("Why the other choices are incorrect · optional")} value={q.presentation?.distractor_explanation || ""} onChange={distractor_explanation=>update(i,{presentation:{...q.presentation,distractor_explanation}})}/>}
+            </>}
             <AutoTextarea label={tr("Explanation / comment · shown after this answer")} value={q.presentation?.explanation || ""} onChange={explanation=>update(i,{presentation:{...q.presentation,explanation}})}/>
           </section>
         ))}

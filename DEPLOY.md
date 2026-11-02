@@ -64,6 +64,18 @@ Sau lần thiết lập đầu, push vào nhánh được kết nối sẽ kích
 
 ## Trạng thái chuẩn bị
 
+### Bắt đầu với kho nội dung trống
+
+Không cần nạp dữ liệu demo. Sau khi tạo quản trị viên và xóa setup key, vào công cụ nhập nội dung để xem trước một gói đúng ngôn ngữ/phạm vi, kiểm tra lỗi rồi xác nhận xuất bản. Có thể bắt đầu chỉ với một ngôn ngữ hoặc một loại nội dung; các phần còn trống không cần dữ liệu giả. Các mục `flashcards`, `practice`, `reading` không dùng có thể bỏ qua; gói hoàn toàn trống bị từ chối. Thông tin cấp độ/chủ đề vẫn tùy chọn để tương thích file cũ.
+
+Gói nội dung dùng UUID ổn định khi thử lại cùng một lần nhập; nội dung thay đổi cần UUID mới. Chế độ `append` thêm vào thư viện chung, `upsert` thêm hoặc cập nhật theo đường dẫn, `update` chỉ cập nhật nội dung tồn tại. Xem trước lại sau khi sửa nội dung hoặc thư viện chung thay đổi. Giữ các trường cấp độ/chủ đề/mô tả khi muốn chủ động cập nhật chúng; không cần điền lại để chỉ sửa thẻ. Kiểm tra bằng cửa sổ khách rằng nội dung đã công khai, không chỉ lưu trong thư viện cá nhân.
+
+Trước khi mở cho học viên: đăng ký một tài khoản thường, tìm bài vừa xuất bản, lưu bản riêng, học rồi tải lại để xác nhận tiến độ còn nguyên. Thử cả ngôn ngữ chưa nhập bài. Kiểm tra media riêng trên hosting vì kiểm thử cục bộ không xác minh được object storage/proxy thực tế.
+
+Kiểm thử tự động cho vòng đời này: `python Backend/manage.py test api.test_clean_start --noinput` và `npm run test:e2e:clean-start --prefix Frontend`. Cả hai dùng cơ sở dữ liệu thử riêng; không reset hoặc migrate cơ sở dữ liệu đang sử dụng để chạy kiểm thử.
+
+Nhập lại nội dung vào hệ thống mới không phục hồi tài khoản, tiến độ hoặc quan hệ lớp học cũ. Nếu muốn giữ lịch sử, sử dụng quy trình sao lưu/khôi phục trong [ADMIN_BACKUPS.md](ADMIN_BACKUPS.md), kèm database và media phù hợp.
+
 Code hỗ trợ PostgreSQL qua psycopg và media S3 qua django-storages. Chưa triển khai dịch vụ thực tế khi chưa điền thông tin Object Storage và kết nối repo với hai hosting. Không coi build/test local là bằng chứng upload media production thành công.
 
 Hướng dẫn từng trường cấu hình: [Backend README](Backend/README.md), [Frontend README](Frontend/README.md).

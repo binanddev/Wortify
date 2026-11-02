@@ -19,6 +19,8 @@ MAX_BYTES = 50 * 1024 * 1024
 from cards.image_links import IMAGE_FIELDS, validate_image_fields
 CARD_FIELDS = {"german_text":500,"vietnamese_meaning":500,"example_german":2000,"example_vietnamese":2000,"part_of_speech":50, **IMAGE_FIELDS}
 
+class ContentValidationError(ValueError):
+    """A package error with the exact location an author must correct."""
 
 
 def validate_document(data):
@@ -26,65 +28,75 @@ def validate_document(data):
         raise ValueError('Unknown package fields.')
     if data.get('format')!='wortify-content' or data.get('version')!=1:
         raise ValueError('Use wortify-content version 1.')
+    data=deepcopy(data)
     try: data['id']=str(uuid.UUID(data['id']))
     except (ValueError, KeyError, TypeError, AttributeError): raise ValueError('Package id must be a UUID. Keep it unchanged when retrying.')
     def title(value,limit=200):
         if not isinstance(value,str) or not value.strip() or len(value)>limit: raise ValueError(f'Title must contain 1–{limit} characters.')
         return value.strip()
-    data=deepcopy(data); data['title']=title(data.get('title'))
+    data['title']=title(data.get('title'))
     if data.get('language') not in ('de','en'): raise ValueError('Language must be de or en.')
     if data.get('mode') is not None and data['mode'] not in ('append','upsert','update'): raise ValueError('Invalid import mode.')
     counts=Counter(); total=0
-    def walk(nodes,section,depth=0):
+    def walk(nodes,section,depth=0,path=None):
         nonlocal total
-        if not isinstance(nodes,list): raise ValueError(f'{section} must be a list.')
+        path = path or section
+        if not isinstance(nodes,list): raise ContentValidationError(f'{path}: must be a list.')
         siblings=set()
-        for node in nodes:
-            total+=1
-            if total>5000: raise ValueError('Maximum 5000 content nodes.')
-            if not isinstance(node,dict): raise ValueError('Each node must be an object.')
-            kind=node.get('kind'); node['title']=title(node.get('title'),100 if section=='flashcards' and kind=='folder' else 150 if kind=='deck' else 200)
-            if node['title'].casefold() in siblings: raise ValueError('Duplicate sibling title: '+node['title'])
-            siblings.add(node['title'].casefold())
-            if kind=='folder':
-                if set(node)-{'kind','title','children'}: raise ValueError('Folder only accepts kind, title, children.')
-                if depth>=10: raise ValueError('Maximum 10 folder levels.')
-                counts[section+'_folders']+=1
-                walk(node.get('children',[]),section,depth+1)
-            elif section=='flashcards' and kind=='deck':
-                if set(node)-{'kind','title','level','topic','description','cards'}: raise ValueError('Unknown deck fields.')
-                if node.get('level','A2') not in ('A1','A2','B1','B2','C1','C2'): raise ValueError('Invalid CEFR level.')
-                for field,limit in [('topic',100),('description',5000)]:
-                    if not isinstance(node.get(field,''),str) or len(node.get(field,''))>limit: raise ValueError('Invalid '+field)
-                cards=node.get('cards')
-                if not isinstance(cards,list) or not 1<=len(cards)<=2000: raise ValueError('Each deck needs 1–2000 cards.')
-                counts['cards']+=len(cards); counts['decks']+=1
-                if counts['cards']>100000: raise ValueError('Maximum 100000 cards per package.')
-                terms=set()
-                for card in cards:
-                    if not isinstance(card,dict) or set(card)-set(CARD_FIELDS): raise ValueError('Use supported card text and image-link fields.')
-                    for field in CARD_FIELDS:
-                        if field not in IMAGE_FIELDS: card.setdefault(field,'')
-                    for field,limit in CARD_FIELDS.items():
-                        if not isinstance(card.get(field,''),str) or len(card.get(field,''))>limit: raise ValueError('Invalid card field: '+field)
-                    if not card['german_text'].strip() or not card['vietnamese_meaning'].strip(): raise ValueError('Term and meaning are required.')
-                    validate_image_fields(card)
-                    term=card['german_text'].strip().casefold()
-                    if term in terms: raise ValueError('Duplicate term in deck: '+card['german_text'])
-                    terms.add(term)
-            elif (section=='practice' and kind in ('exercise','theory')) or (section=='reading' and kind=='reading'):
-                if set(node)-({'kind','title','payload','level','topic'} if kind=='reading' else {'kind','title','payload'}): raise ValueError('Unknown lesson fields.')
-                if kind=='reading':
-                    from .reading import metadata
-                    node.update(metadata(node))
-                if section=='practice' and kind=='exercise' and depth==0: raise ValueError('Practice exercises require a folder.')
-                payload=node.get('payload',{})
-                if payload.get('attachments'): raise ValueError('JSON packages do not embed uploaded media. Omit attachments.')
-                payload=validate_payload('exercise' if kind=='reading' else kind,payload)
-                is_reading=payload.get('presentation',{}).get('interaction')=='reading'
-                if (kind=='reading')!=is_reading: raise ValueError('Reading lessons belong in the reading section.')
-                node['payload']=payload; counts[kind]+=1
-            else: raise ValueError('Invalid kind for '+section)
+        for index, node in enumerate(nodes):
+            location = f'{path}[{index}]'
+            try:
+                total+=1
+                if total>5000: raise ValueError('Maximum 5000 content nodes.')
+                if not isinstance(node,dict): raise ValueError('Each node must be an object.')
+                kind=node.get('kind'); node['title']=title(node.get('title'),100 if section=='flashcards' and kind=='folder' else 150 if kind=='deck' else 200)
+                if node['title'].casefold() in siblings: raise ValueError('Duplicate sibling title: '+node['title'])
+                siblings.add(node['title'].casefold())
+                if kind=='folder':
+                    if set(node)-{'kind','title','children'}: raise ValueError('Folder only accepts kind, title, children.')
+                    if depth>=10: raise ValueError('Maximum 10 folder levels.')
+                    counts[section+'_folders']+=1
+                    walk(node.get('children',[]),section,depth+1,f'{location}.children')
+                elif section=='flashcards' and kind=='deck':
+                    if set(node)-{'kind','title','level','topic','description','cards'}: raise ValueError('Unknown deck fields.')
+                    if node.get('level','A2') not in ('A1','A2','B1','B2','C1','C2'): raise ValueError('Invalid CEFR level.')
+                    for field,limit in [('topic',100),('description',5000)]:
+                        if not isinstance(node.get(field,''),str) or len(node.get(field,''))>limit: raise ValueError('Invalid '+field)
+                    cards=node.get('cards')
+                    if not isinstance(cards,list) or not 1<=len(cards)<=2000: raise ValueError('Each deck needs 1–2000 cards.')
+                    counts['cards']+=len(cards); counts['decks']+=1
+                    if counts['cards']>100000: raise ValueError('Maximum 100000 cards per package.')
+                    terms=set()
+                    for card_index, card in enumerate(cards, start=1):
+                        if not isinstance(card,dict) or set(card)-set(CARD_FIELDS): raise ValueError('Use supported card text and image-link fields.')
+                        for field in CARD_FIELDS:
+                            if field not in IMAGE_FIELDS: card.setdefault(field,'')
+                        for field,limit in CARD_FIELDS.items():
+                            if not isinstance(card.get(field,''),str) or len(card.get(field,''))>limit: raise ValueError(f'Card {card_index}: invalid field {field}.')
+                        if not card['german_text'].strip() or not card['vietnamese_meaning'].strip(): raise ValueError(f'Card {card_index}: term and meaning are required.')
+                        validate_image_fields(card)
+                        term=card['german_text'].strip().casefold()
+                        if term in terms: raise ValueError('Duplicate term in deck: '+card['german_text'])
+                        terms.add(term)
+                elif (section=='practice' and kind in ('exercise','theory')) or (section=='reading' and kind=='reading'):
+                    if set(node)-({'kind','title','payload','level','topic'} if kind=='reading' else {'kind','title','payload'}): raise ValueError('Unknown lesson fields.')
+                    if kind=='reading':
+                        from .reading import metadata
+                        node.update(metadata(node))
+                    if section=='practice' and kind=='exercise' and depth==0: raise ValueError('Practice exercises require a folder.')
+                    payload=node.get('payload',{})
+                    if not isinstance(payload,dict): raise ValueError('payload must be a JSON object.')
+                    if payload.get('attachments'): raise ValueError('JSON packages do not embed uploaded media. Omit attachments.')
+                    payload=validate_payload('exercise' if kind=='reading' else kind,payload)
+                    is_reading=payload.get('presentation',{}).get('interaction')=='reading'
+                    if (kind=='reading')!=is_reading: raise ValueError('Reading lessons belong in the reading section.')
+                    node['payload']=payload; counts[kind]+=1
+                else: raise ValueError('Invalid kind for '+section)
+            except ContentValidationError:
+                raise
+            except ValueError as exc:
+                label = f" ({node.get('title')})" if isinstance(node,dict) and isinstance(node.get('title'),str) else ''
+                raise ContentValidationError(f'{location}{label}: {exc}') from exc
     for section in ('flashcards','practice','reading'): walk(data.setdefault(section,[]),section)
     if not total: raise ValueError('The package is empty.')
     counts['nodes']=total

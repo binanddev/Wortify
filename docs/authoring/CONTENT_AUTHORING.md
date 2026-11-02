@@ -175,9 +175,11 @@ Repeat a token in WORDS when multiple blanks need it. If omitted, the bank uses 
 For sentence_building, WORDS must list every token in the correct answer order; duplicate words are allowed.
 PREFIX: beginning of the answer for short_answer. Every accepted answer must include that prefix.
 COMMENT: exercise-wide note before the first QUESTION, shown after a correct answer or reveal.
+HINT: optional clue available after a first incorrect attempt in Practice mode, up to 4000 characters; do not reveal the answer. Hints are not shown in Self-check mode.
+DISTRACTOR_EXPLANATION: optional explanation of why other choices are wrong, up to 12000 characters. These two fields are for Practice questions.
 EXPLANATION: optional explanation for any question or matching pair after answering correctly or revealing. EXAMPLE: yes/no after QUESTION marks a practice example.
 Blank lines and # comment lines are ignored. Use > at the start of a continuation line after QUESTION,
-INSTRUCTIONS, CONTEXT or EXPLANATION. Other fields must stay on one line.
+INSTRUCTIONS, CONTEXT, HINT, DISTRACTOR_EXPLANATION or EXPLANATION. Other fields must stay on one line.
 Do not put | or => inside an individual item. Repeat EXERCISE to import multiple exercises.
 Each field occurs once per exercise/question except BLANK, which repeats for each blank.
 For this system package: 5000 total nodes (folders + lessons), 100 questions per lesson, 50 MB UTF-8 per file.
@@ -194,7 +196,7 @@ Open the Formatting guide in Create for supported commands and copyable examples
 Use **bold text**, *italic text*, and [color=blue]colored text[/color].
 Available colors: red, rose, pink, magenta, purple, violet, indigo, blue, sky, cyan,
 teal, emerald, green, lime, yellow, amber, orange, coral, slate, gray.
-Formatting is supported in INSTRUCTIONS, CONTEXT, EXPLANATION and display QUESTION text.
+Formatting is supported in INSTRUCTIONS, CONTEXT, HINT, DISTRACTOR_EXPLANATION, EXPLANATION and display QUESTION text.
 Keep QUESTION plain for error_correction: its words are editable answer data.
 Keep ANSWER, BLANK, WORDS, PREFIX, GROUPS and titles plain (no formatting markers).
 Formatting may wrap blanks such as {{1}}; interactive blanks also work inside tables and alignment blocks.
@@ -205,6 +207,7 @@ You can combine color with bold or italic; do not nest colors. HTML is supported
 TYPES AND STYLES
 cloze_drag_drop: drag_drop (move word tiles), tap_fill (tap words to fill blanks).
 error_correction: click_edit (edit incorrect text), cross_out (remove extra words).
+  State the exact number of errors or extra words in INSTRUCTIONS or QUESTION.
   ANSWER is the entire corrected sentence. For cross_out, only remove words; do not add or reorder them.
 matching: tap_match (match cards). Each QUESTION is one card; ANSWER is exactly one unique partner. Never reuse a partner across questions.
 sentence_building: tap_build (arrange tokens). WORDS defines the correct token order.
@@ -214,10 +217,11 @@ inline_selection: pill_toggle (toggle choices), inline_select (select a choice),
 BANK_SCOPE: question or exercise for cloze_drag_drop; exercise uses a shared word bank (default).
 multiple_choice: dialogue_reply or elimination; these styles require a single correct answer.
   OPTIONS: at least two distinct choices separated by |. ANSWER must be the exact text of one choice, never its letter or index.
-true_false_not_given: evidence_judge. Use CONTEXT for the passage, OPTIONS: TRUE | FALSE | NOT_GIVEN and exactly one ANSWER: TRUE, FALSE or NOT_GIVEN. FALSE contradicts the passage; NOT_GIVEN is not established by it.
+true_false_not_given (legacy import/edit only; do not choose for new exercises): evidence_judge. Use CONTEXT for the passage, OPTIONS: TRUE | FALSE | NOT_GIVEN and exactly one ANSWER: TRUE, FALSE or NOT_GIVEN. FALSE contradicts the passage; NOT_GIVEN is not established by it.
 short_answer: partial_input (complete a required PREFIX), sentence_rewrite (write the whole answer).
   partial_input requires a nonempty PREFIX. Every accepted ANSWER must begin with that exact PREFIX.
   ANSWER always contains the entire sentence, including PREFIX when provided.
+  State the required tense, keyword, preserved meaning and word limit in QUESTION. List equivalent accepted answers with |.
 
 
 READING LESSONS
@@ -264,7 +268,7 @@ ALL PRACTICE TYPES AND STYLES (insert under SECTION practice with FOLDER):
 EXERCISE: Choose a response
 TYPE: multiple_choice
 STYLE: dialogue_reply
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the best response to each question.
 QUESTION: What would you like?
 OPTIONS: Tea, please. | Yesterday. | At home.
 ANSWER: Tea, please.
@@ -272,7 +276,7 @@ ANSWER: Tea, please.
 EXERCISE: Choose a response
 TYPE: multiple_choice
 STYLE: elimination
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the best response to each question.
 QUESTION: What would you like?
 OPTIONS: Tea, please. | Yesterday. | At home.
 ANSWER: Tea, please.
@@ -280,25 +284,25 @@ ANSWER: Tea, please.
 EXERCISE: Read and judge
 TYPE: true_false_not_given
 STYLE: evidence_judge
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Read the passage. Decide whether each statement is true, false or not given.
 CONTEXT: Mia lives in Berlin.
 QUESTION: Mia lives in Berlin.
 OPTIONS: TRUE | FALSE | NOT_GIVEN
 ANSWER: TRUE
 
-EXERCISE: Fill in the gap
+EXERCISE: Word bank gaps
 TYPE: cloze_drag_drop
 STYLE: drag_drop
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Fill each gap using a word from the word bank.
 QUESTION: I {{1}} coffee in the {{2}}.
 BLANK: drink => drink | eat
 BLANK: morning => morning | evening
 WORDS: morning | drink | eat
 
-EXERCISE: Fill in the gap
+EXERCISE: Word bank gaps
 TYPE: cloze_drag_drop
 STYLE: tap_fill
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Fill each gap using a word from the word bank.
 QUESTION: I {{1}} coffee in the {{2}}.
 BLANK: drink => drink | eat
 BLANK: morning => morning | evening
@@ -307,21 +311,21 @@ WORDS: morning | drink | eat
 EXERCISE: Find and correct mistakes
 TYPE: error_correction
 STYLE: click_edit
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Correct exactly one incorrect word in each sentence. Keep the other words unchanged.
 QUESTION: He do not like sports.
 ANSWER: He does not like sports.
 
 EXERCISE: Find and correct mistakes
 TYPE: error_correction
 STYLE: cross_out
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Remove exactly one extra word from each sentence. Do not add or reorder words.
 QUESTION: They discussed about the project yesterday.
 ANSWER: They discussed the project yesterday.
 
 EXERCISE: Match answers
 TYPE: matching
 STYLE: tap_match
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Match each word with its translation.
 QUESTION: cat
 ANSWER: mèo
 QUESTION: dog
@@ -330,45 +334,45 @@ ANSWER: chó
 EXERCISE: Arrange sentence
 TYPE: sentence_building
 STYLE: tap_build
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Arrange all the words to form a correct sentence.
 QUESTION: Arrange the words into a correct sentence.
 WORDS: She | is | reading | a book.
 
 EXERCISE: Categorize
 TYPE: categorization
 STYLE: drag_sort
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Place each item in the correct category.
 GROUPS: Fruit | Animals
 QUESTION: apple
 ANSWER: Fruit
 QUESTION: cat
 ANSWER: Animals
 
-EXERCISE: Inline multiple choice
+EXERCISE: Choose words in sentences
 TYPE: inline_selection
 STYLE: pill_toggle
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the correct word at each gap within the sentence.
 QUESTION: She {{1}} a doctor.
 BLANK: is => is | are
 
-EXERCISE: Inline multiple choice
+EXERCISE: Choose words in sentences
 TYPE: inline_selection
 STYLE: inline_select
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the correct word at each gap within the sentence.
 QUESTION: She {{1}} a doctor.
 BLANK: is => is | are
 
-EXERCISE: Inline multiple choice
+EXERCISE: Choose words in sentences
 TYPE: inline_selection
 STYLE: fall_away
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the correct word at each gap within the sentence.
 QUESTION: She {{1}} a doctor.
 BLANK: is => is | are
 
 EXERCISE: Rewrite sentence
 TYPE: short_answer
 STYLE: partial_input
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Rewrite using the present perfect and begin with He has. Keep the original meaning and write the full sentence.
 QUESTION: Rewrite: He began learning English two years ago.
 PREFIX: He has
 ANSWER: He has learned English for two years. | He has been learning English for two years.
@@ -376,7 +380,7 @@ ANSWER: He has learned English for two years. | He has been learning English for
 EXERCISE: Rewrite sentence
 TYPE: short_answer
 STYLE: sentence_rewrite
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Rewrite using the present perfect and begin with He has. Keep the original meaning and write the full sentence.
 QUESTION: Rewrite: He began learning English two years ago.
 PREFIX: He has
 ANSWER: He has learned English for two years. | He has been learning English for two years.
@@ -536,6 +540,8 @@ Return only importable exercise text, without Markdown code fences, a preamble o
 
 Use natural contexts, varied questions and plausible distractors. Avoid ambiguous questions. Verify every answer. Include EXPLANATION for each question and COMMENT only when a shared note is useful.
 
+Do not create true_false_not_given exercises; this type remains supported only for legacy content. Add an optional HINT that helps after a first incorrect attempt in Practice mode without revealing the answer (hints are not shown in Self-check mode), and DISTRACTOR_EXPLANATION when explaining incorrect alternatives is useful. For rewrites specify constraints and include all accepted equivalents. For error correction state the exact error count.
+
 Choose only supported TYPE and STYLE values. Keep fields and syntax in English. Follow the requested language for learning content and explanations.
 
 For sentence_building, WORDS must be in correct sentence order: the app shuffles them. For other choices, vary the position of the correct answer.
@@ -546,7 +552,7 @@ Never invent uploaded media URLs. Use an existing URL supplied by me or omit the
 
 Before returning, check all numbered blanks, option membership, required fields, unique matching partners and import limits. Do not claim the result has been tested in Wortify.
 
-If I request THEORY instead: return a separate Markdown document with the supported lesson markup. Do not wrap theory in EXERCISE fields or mix it into an exercise import. I will paste it into Create > Theory.
+If I request THEORY instead: return a separate Markdown document with the supported lesson markup. Do not wrap theory in EXERCISE fields or mix it into an exercise import. Keep it separate from the exercise text import.
 
 
 COMPLETE EXERCISE RULES AND ALL TEMPLATES
@@ -569,9 +575,11 @@ COMPLETE EXERCISE RULES AND ALL TEMPLATES
 # For sentence_building, WORDS must list every token in the correct answer order; duplicate words are allowed.
 # PREFIX: beginning of the answer for short_answer. Every accepted answer must include that prefix.
 # COMMENT: exercise-wide note before the first QUESTION, shown after a correct answer or reveal.
+# HINT: optional clue available after a first incorrect attempt in Practice mode, up to 4000 characters; do not reveal the answer. Hints are not shown in Self-check mode.
+# DISTRACTOR_EXPLANATION: optional explanation of why other choices are wrong, up to 12000 characters. These two fields are for Practice questions.
 # EXPLANATION: optional explanation for any question or matching pair after answering correctly or revealing. EXAMPLE: yes/no after QUESTION marks a practice example.
 # Blank lines and # comment lines are ignored. Use > at the start of a continuation line after QUESTION,
-# INSTRUCTIONS, CONTEXT or EXPLANATION. Other fields must stay on one line.
+# INSTRUCTIONS, CONTEXT, HINT, DISTRACTOR_EXPLANATION or EXPLANATION. Other fields must stay on one line.
 # Do not put | or => inside an individual item. Repeat EXERCISE to import multiple exercises.
 # Each field occurs once per exercise/question except BLANK, which repeats for each blank.
 # Limits per import: 100 exercises, 100 questions per exercise, 2 MB total UTF-8 text.
@@ -588,7 +596,7 @@ COMPLETE EXERCISE RULES AND ALL TEMPLATES
 # Use **bold text**, *italic text*, and [color=blue]colored text[/color].
 # Available colors: red, rose, pink, magenta, purple, violet, indigo, blue, sky, cyan,
 # teal, emerald, green, lime, yellow, amber, orange, coral, slate, gray.
-# Formatting is supported in INSTRUCTIONS, CONTEXT, EXPLANATION and display QUESTION text.
+# Formatting is supported in INSTRUCTIONS, CONTEXT, HINT, DISTRACTOR_EXPLANATION, EXPLANATION and display QUESTION text.
 # Keep QUESTION plain for error_correction: its words are editable answer data.
 # Keep ANSWER, BLANK, WORDS, PREFIX, GROUPS and titles plain (no formatting markers).
 # Formatting may wrap blanks such as {{1}}; interactive blanks also work inside tables and alignment blocks.
@@ -599,6 +607,7 @@ COMPLETE EXERCISE RULES AND ALL TEMPLATES
 # TYPES AND STYLES
 # cloze_drag_drop: drag_drop (move word tiles), tap_fill (tap words to fill blanks).
 # error_correction: click_edit (edit incorrect text), cross_out (remove extra words).
+#   State the exact number of errors or extra words in INSTRUCTIONS or QUESTION.
 #   ANSWER is the entire corrected sentence. For cross_out, only remove words; do not add or reorder them.
 # matching: tap_match (match cards). Each QUESTION is one card; ANSWER is exactly one unique partner. Never reuse a partner across questions.
 # sentence_building: tap_build (arrange tokens). WORDS defines the correct token order.
@@ -608,16 +617,19 @@ COMPLETE EXERCISE RULES AND ALL TEMPLATES
 # BANK_SCOPE: question or exercise for cloze_drag_drop; exercise uses a shared word bank (default).
 # multiple_choice: dialogue_reply or elimination; these styles require a single correct answer.
 #   OPTIONS: at least two distinct choices separated by |. ANSWER must be the exact text of one choice, never its letter or index.
-# true_false_not_given: evidence_judge. Use CONTEXT for the passage, OPTIONS: TRUE | FALSE | NOT_GIVEN and exactly one ANSWER: TRUE, FALSE or NOT_GIVEN. FALSE contradicts the passage; NOT_GIVEN is not established by it.
+# true_false_not_given (legacy import/edit only; do not choose for new exercises): evidence_judge. Use CONTEXT for the passage, OPTIONS: TRUE | FALSE | NOT_GIVEN and exactly one ANSWER: TRUE, FALSE or NOT_GIVEN. FALSE contradicts the passage; NOT_GIVEN is not established by it.
 # short_answer: partial_input (complete a required PREFIX), sentence_rewrite (write the whole answer).
 #   partial_input requires a nonempty PREFIX. Every accepted ANSWER must begin with that exact PREFIX.
 #   ANSWER always contains the entire sentence, including PREFIX when provided.
+#   State the required tense, keyword, preserved meaning and word limit in QUESTION. List equivalent accepted answers with |.
 #
 # WORKSPACE AND EDITING
 # Only owners can edit, rename, move or delete their content. Use the folder cards and content tools on the Create main screen for these actions.
 # Drag items into folders, or use the move/group tools to organize a selection.
 # Download the current .txt before editing if you want a backup. Editing questions starts a new progress revision.
-# Learners answer one question at a time, retry incorrect answers and save progress rather than scores.
+# Practice mode gives feedback and permits retries; shared word-bank exercises display up to six questions per group. Question-scoped banks display one question at a time.
+# Open Exercise settings to choose Practice or Self-check. Self-check withholds feedback until submission. Changing mode starts a new attempt after confirmation when answers exist.
+# Completed attempts save submitted answers and server-graded results; progress also records completed questions. Interaction counts are learner-reported learning telemetry, not secure exam scores.
 # Preview does not change learning progress. Workspace pins include the highest accessible parent folder.
 #
 # ALL SUPPORTED TYPES AND STYLES: complete importable samples follow. Lines beginning with # are documentation.
@@ -626,7 +638,7 @@ COMPLETE EXERCISE RULES AND ALL TEMPLATES
 EXERCISE: Choose a response
 TYPE: multiple_choice
 STYLE: dialogue_reply
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the best response to each question.
 QUESTION: What would you like?
 OPTIONS: Tea, please. | Yesterday. | At home.
 ANSWER: Tea, please.
@@ -635,7 +647,7 @@ ANSWER: Tea, please.
 EXERCISE: Choose a response
 TYPE: multiple_choice
 STYLE: elimination
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the best response to each question.
 QUESTION: What would you like?
 OPTIONS: Tea, please. | Yesterday. | At home.
 ANSWER: Tea, please.
@@ -644,27 +656,27 @@ ANSWER: Tea, please.
 EXERCISE: Read and judge
 TYPE: true_false_not_given
 STYLE: evidence_judge
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Read the passage. Decide whether each statement is true, false or not given.
 CONTEXT: Mia lives in Berlin.
 QUESTION: Mia lives in Berlin.
 OPTIONS: TRUE | FALSE | NOT_GIVEN
 ANSWER: TRUE
 
 # cloze_drag_drop / drag_drop
-EXERCISE: Fill in the gap
+EXERCISE: Word bank gaps
 TYPE: cloze_drag_drop
 STYLE: drag_drop
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Fill each gap using a word from the word bank.
 QUESTION: I {{1}} coffee in the {{2}}.
 BLANK: drink => drink | eat
 BLANK: morning => morning | evening
 WORDS: morning | drink | eat
 
 # cloze_drag_drop / tap_fill
-EXERCISE: Fill in the gap
+EXERCISE: Word bank gaps
 TYPE: cloze_drag_drop
 STYLE: tap_fill
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Fill each gap using a word from the word bank.
 QUESTION: I {{1}} coffee in the {{2}}.
 BLANK: drink => drink | eat
 BLANK: morning => morning | evening
@@ -674,7 +686,7 @@ WORDS: morning | drink | eat
 EXERCISE: Find and correct mistakes
 TYPE: error_correction
 STYLE: click_edit
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Correct exactly one incorrect word in each sentence. Keep the other words unchanged.
 QUESTION: He do not like sports.
 ANSWER: He does not like sports.
 
@@ -682,7 +694,7 @@ ANSWER: He does not like sports.
 EXERCISE: Find and correct mistakes
 TYPE: error_correction
 STYLE: cross_out
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Remove exactly one extra word from each sentence. Do not add or reorder words.
 QUESTION: They discussed about the project yesterday.
 ANSWER: They discussed the project yesterday.
 
@@ -690,7 +702,7 @@ ANSWER: They discussed the project yesterday.
 EXERCISE: Match answers
 TYPE: matching
 STYLE: tap_match
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Match each word with its translation.
 QUESTION: cat
 ANSWER: mèo
 QUESTION: dog
@@ -700,7 +712,7 @@ ANSWER: chó
 EXERCISE: Arrange sentence
 TYPE: sentence_building
 STYLE: tap_build
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Arrange all the words to form a correct sentence.
 QUESTION: Arrange the words into a correct sentence.
 WORDS: She | is | reading | a book.
 
@@ -708,7 +720,7 @@ WORDS: She | is | reading | a book.
 EXERCISE: Categorize
 TYPE: categorization
 STYLE: drag_sort
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Place each item in the correct category.
 GROUPS: Fruit | Animals
 QUESTION: apple
 ANSWER: Fruit
@@ -716,26 +728,26 @@ QUESTION: cat
 ANSWER: Animals
 
 # inline_selection / pill_toggle
-EXERCISE: Inline multiple choice
+EXERCISE: Choose words in sentences
 TYPE: inline_selection
 STYLE: pill_toggle
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the correct word at each gap within the sentence.
 QUESTION: She {{1}} a doctor.
 BLANK: is => is | are
 
 # inline_selection / inline_select
-EXERCISE: Inline multiple choice
+EXERCISE: Choose words in sentences
 TYPE: inline_selection
 STYLE: inline_select
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the correct word at each gap within the sentence.
 QUESTION: She {{1}} a doctor.
 BLANK: is => is | are
 
 # inline_selection / fall_away
-EXERCISE: Inline multiple choice
+EXERCISE: Choose words in sentences
 TYPE: inline_selection
 STYLE: fall_away
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Choose the correct word at each gap within the sentence.
 QUESTION: She {{1}} a doctor.
 BLANK: is => is | are
 
@@ -743,7 +755,7 @@ BLANK: is => is | are
 EXERCISE: Rewrite sentence
 TYPE: short_answer
 STYLE: partial_input
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Rewrite using the present perfect and begin with He has. Keep the original meaning and write the full sentence.
 QUESTION: Rewrite: He began learning English two years ago.
 PREFIX: He has
 ANSWER: He has learned English for two years. | He has been learning English for two years.
@@ -752,7 +764,7 @@ ANSWER: He has learned English for two years. | He has been learning English for
 EXERCISE: Rewrite sentence
 TYPE: short_answer
 STYLE: sentence_rewrite
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Rewrite using the present perfect and begin with He has. Keep the original meaning and write the full sentence.
 QUESTION: Rewrite: He began learning English two years ago.
 PREFIX: He has
 ANSWER: He has learned English for two years. | He has been learning English for two years.
@@ -818,7 +830,7 @@ Upload images with the existing Media tool and keep them attached; use their pro
 EXERCISE: Practice exercise
 TYPE: reading
 STYLE: split_reading
-INSTRUCTIONS: Complete the sentences below.
+INSTRUCTIONS: Read the passage and answer its questions.
 CONTEXT_FORMAT: html
 CONTEXT: <h2>A greener school</h2>
 > <p>Every Friday, Mia and Tom cycle to school. Their school garden grows carrots and tomatoes. On Monday, the students water the plants.</p>

@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './e2e',
+  testIgnore: '**/clean-start.spec.mjs',
   timeout: 60000,
   expect: { timeout: 15000 },
   forbidOnly: Boolean(process.env.CI),

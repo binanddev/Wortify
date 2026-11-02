@@ -9,8 +9,9 @@ export function readyToCheck(q, answers) {
     const value = answers[String(q.id)];
     return (
       Array.isArray(value) &&
-      value.length === q.presentation.tokens.length &&
-      new Set(value).size === value.length
+      value.length === q.accepted_answers.length &&
+      new Set(value).size === value.length &&
+      value.every(id => q.presentation.tokens.some(token => token.id === id))
     );
   }
   return questionKeys(q).every(

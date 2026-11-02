@@ -55,7 +55,7 @@ def validate_payload(kind,payload):
         payload['check_mode']='auto_check'
         questions=payload.get('questions',[])
         if not isinstance(questions,list) or not 1<=len(questions)<=100:raise ValueError('Each exercise requires 1–100 questions.')
-        e=SimpleNamespace(kind=question_kind,check_mode=payload['check_mode'])
+        e=SimpleNamespace(kind=question_kind,check_mode=payload['check_mode'],presentation=payload.get('presentation', {}))
         cleaned=[]
         for i,data in enumerate(questions,1):
             if not isinstance(data,dict):raise ValueError('A question must be an object.')
@@ -75,6 +75,10 @@ def validate_payload(kind,payload):
                 q.kind = 'multi' if len(q.accepted_answers) > 1 else 'choice'
             validate_question(q);validate_presentation(q,mode)
             cleaned.append({'id':str(i),'position':i,'kind':q.kind,'prompt':q.prompt,'accepted_answers':q.accepted_answers,'options':q.options,'blanks':q.blanks,'presentation':q.presentation,'example':q.example,'blank_count':len(q.blanks),'blank_options':[b.get('options',[]) for b in q.blanks]})
+        if mode == 'matching':
+            partners = [q['accepted_answers'][0] for q in cleaned if not q.get('example')]
+            if len(partners) != len(set(partners)):
+                raise ValueError('Matching partners must be unique across non-example questions.')
         payload['questions']=cleaned
     return payload
 

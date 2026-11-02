@@ -5,6 +5,15 @@ import {
   flushLearning,
   pendingLearning,
 } from "../src/features/learning/learning-sync.js";
+test('restored finished practice run reuses its receipt without duplicate queued attempts', () => {
+  const stored = new Map();
+  globalThis.localStorage = {getItem:k=>stored.get(k)||null,setItem:(k,v)=>stored.set(k,v)};
+  globalThis.window = new EventTarget();
+  const token = crypto.randomUUID(), payload = {node:98,revision:'a',mode:'practice',answers:{'1':'yes'}};
+  enqueueLearning(989,'en','practice_result',payload,token);
+  enqueueLearning(989,'en','practice_result',payload,token);
+  assert.equal(pendingLearning(989,'en').filter(event=>event.token===token).length,1);
+});
 test("offline practice progress coalesces without losing completed questions", () => {
   const stored = new Map();
   globalThis.localStorage = {

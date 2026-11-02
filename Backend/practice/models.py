@@ -112,3 +112,21 @@ class PackageReceipt(models.Model):
     result = models.JSONField(default=dict)
     class Meta:
         constraints = [models.UniqueConstraint(fields=['package','user'], name='unique_package_user')]
+
+
+class AnswerProposal(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    node = models.ForeignKey(PracticeNode, on_delete=models.CASCADE, related_name='answer_proposals')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='answer_proposals')
+    question_id = models.CharField(max_length=32)
+    revision = models.CharField(max_length=64)
+    question_prompt = models.TextField()
+    answer = models.CharField(max_length=2000)
+    reason = models.CharField(max_length=2000, blank=True)
+    status = models.CharField(max_length=12, default='pending', choices=[('pending','Pending'),('approved','Approved'),('rejected','Rejected')])
+    reviewed_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='reviewed_answer_proposals')
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

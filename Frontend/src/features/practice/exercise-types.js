@@ -1,14 +1,16 @@
 export const EXERCISE_TYPES = [
   ["multiple_choice", "Choose a response", "08", "choice"],
   ["true_false_not_given", "Read and judge", "09", "choice"],
-  ["cloze_drag_drop", "Fill in the gap", "01", "cloze"],
+  ["cloze_drag_drop", "Word bank gaps", "01", "cloze"],
   ["error_correction", "Find and correct mistakes", "02", "text"],
   ["matching", "Match answers", "03", "matching"],
   ["sentence_building", "Arrange sentence", "04", "order"],
   ["categorization", "Categorize", "05", "choice"],
-  ["inline_selection", "Inline multiple choice", "06", "cloze"],
+  ["inline_selection", "Choose words in sentences", "06", "cloze"],
   ["short_answer", "Rewrite sentence", "07", "text"],
 ];
+// Legacy types remain readable and importable, but are not offered for new content.
+export const CREATABLE_EXERCISE_TYPES = EXERCISE_TYPES.filter(([mode]) => mode !== "true_false_not_given");
 export const EXERCISE_STYLES = {
   reading: [["split_reading", "Read & answer", "Read the passage alongside its questions. Choose one or more answers."]],
   multiple_choice: [["dialogue_reply", "Dialogue replies", "Read the situation and choose your reply."], ["elimination", "Eliminate and decide", "Cross out distractors, then choose the best answer."]],

@@ -28,6 +28,7 @@ import {
 } from "../../components/ui/ui.jsx";
 import { DestinationPicker, PracticeLibrary } from "./practice-library.jsx";
 import { PracticeTextEditor } from "./practice-text-editor.jsx";
+import PracticeStructuredEditor, {needsStructuredEditor} from './practice-structured-editor.jsx';
 import { PracticeActivity } from "./practice-activity.jsx";
 import { TheoryActivity } from "./practice-theory.jsx";
 import { previewData } from "./exercise-types.js";
@@ -51,6 +52,7 @@ export function ExerciseStudio({
   const action = useAction();
   const nodes = ownedPracticeNodes(resource.data?.nodes || []);
   const current = nodes.find((node) => String(node.id) === String(id));
+  const Editor = edit && current?.payload && needsStructuredEditor(current.payload) ? PracticeStructuredEditor : PracticeTextEditor;
   const roots = nodes.filter((node) => node.kind === "folder" && !node.parent);
   const parent = create
     ? nodes.find(
@@ -304,7 +306,7 @@ export function ExerciseStudio({
             />
           </>
         ) : (create && parent) || (edit && current?.kind === "exercise") ? (
-          <PracticeTextEditor
+          <Editor
             key={create ? `new:${parent}` : `edit:${current.id}`}
             lang={lang}
             exercise={

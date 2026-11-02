@@ -4,6 +4,7 @@ import { endpoint, request, useAction, useResource } from "../../lib/core.js";
 import { Confirm, Icon, Status } from "../../components/ui/ui.jsx";
 import { PracticeModal } from "./practice-workspace.jsx";
 import { PracticeTextEditor } from "./practice-text-editor.jsx";
+import PracticeStructuredEditor, {needsStructuredEditor} from './practice-structured-editor.jsx';
 
 export default function PracticeImportModal({ lang, folder, node, onClose, onSaved }) {
   useLocale();
@@ -23,12 +24,13 @@ export default function PracticeImportModal({ lang, folder, node, onClose, onSav
     onSaved(items.length); onClose();
   });
   const loaded = detail.data?.node;
+  const Editor = loaded && needsStructuredEditor(loaded.payload) ? PracticeStructuredEditor : PracticeTextEditor;
   return <>
     <PracticeModal title={tr(node ? "Edit exercise" : "Import exercises")} className="practice-import-dialog" size="4xl" pending={pending} onClose={close}>
       <div data-practice-import>
         <div className="practice-import-destination"><Icon name="folder" size={18}/><span>{folder?.title || tr("My practice")}</span></div>
         <Status error={action.error || detail.error}/>
-        {node && !loaded ? (!detail.error && <Status>{tr("Loading…")}</Status>) : <PracticeTextEditor key={node ? `${node.id}:${loaded.updated_at}` : folder.id} compact lang={lang} exercise={node ? {...loaded.payload,title:loaded.title} : undefined} pending={action.pending} onBusyChange={setBusy} onDirtyChange={setDirty} onApply={save}/>}
+        {node && !loaded ? (!detail.error && <Status>{tr("Loading…")}</Status>) : <Editor key={node ? `${node.id}:${loaded.updated_at}` : folder.id} compact lang={lang} exercise={node ? {...loaded.payload,title:loaded.title} : undefined} pending={action.pending} onBusyChange={setBusy} onDirtyChange={setDirty} onApply={save}/>}
       </div>
     </PracticeModal>
     {discard && <Confirm title={tr("Discard unsaved changes?")} description={tr("Your draft has not been saved. Keep editing or discard it.")} cancelLabel="Keep editing" confirmLabel="Discard changes" onClose={()=>setDiscard(false)} onConfirm={onClose}/>}

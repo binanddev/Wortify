@@ -70,7 +70,10 @@ def parse_lesson(lines):
         elif key in ('ANSWER','OPTIONS'): q['accepted_answers' if key == 'ANSWER' else 'options'] = items(value)
         elif key == 'WORDS': q['presentation']['word_bank'] = items(value)
         elif key == 'PREFIX': q['presentation']['prefix'] = value
-        elif key == 'EXPLANATION': q['presentation']['explanation'] = value; continuation = (q['presentation'], 'explanation')
+        elif key in ('EXPLANATION', 'HINT', 'DISTRACTOR_EXPLANATION'):
+            field = key.lower()
+            q['presentation'][field] = value
+            continuation = (q['presentation'], field)
         elif key == 'BLANK':
             parts = value.split('=>')
             if len(parts) > 2: fail('Use at most one => in BLANK.')
@@ -85,7 +88,10 @@ def parse_lesson(lines):
     questions = payload['questions']
     if not questions or all(q.get('example') for q in questions): fail('At least one non-example question is required.')
     pairs = [q['accepted_answers'][0] if q['accepted_answers'] else '' for q in questions]
-    if mode == 'matching' and len(set(pairs)) != len(pairs): fail('Matching partners must be unique.')
+    if mode == 'matching':
+        active_pairs = [q['accepted_answers'][0] if q['accepted_answers'] else '' for q in questions if not q.get('example')]
+        if len(set(active_pairs)) != len(active_pairs): fail('Matching partners must be unique across non-example questions.')
+        pairs = list(dict.fromkeys(pairs))
     for q in questions:
         qp = q['presentation']
         if mode == 'sentence_building':

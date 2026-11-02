@@ -43,11 +43,12 @@ export function pendingLearning(user, lang) {
 function announce() {
   window.dispatchEvent(new Event("learning-sync-change"));
 }
-export function enqueueLearning(user, lang, kind, payload) {
+export function enqueueLearning(user, lang, kind, payload, eventToken) {
   const key = queueKey(user, lang);
-  const token = crypto.randomUUID(),
+  const token = eventToken || crypto.randomUUID(),
     at = new Date().toISOString();
   const updated = queueStore.update(key, (queue) => {
+    if (queue.some(event => event.token === token)) return queue;
     let eventPayload = payload;
     if (kind === "practice_progress") {
       const previous = queue.filter(
@@ -189,7 +190,7 @@ export function useLearningSync(user, lang) {
       ? "Your progress is not saved on this device. Keep this page open until syncing finishes, or enable browser storage."
       : "";
   return {
-    enqueue: (kind, payload) => enqueueLearning(user, lang, kind, payload),
+    enqueue: (kind, payload, token) => enqueueLearning(user, lang, kind, payload, token),
     flush: () => flushLearning(user, lang),
     message: errors.length
       ? `${errors.length} unsaved items: ${errors[0].error}`

@@ -1,4 +1,5 @@
 import { t as tr, useLocale } from "../../i18n/index.js";
+import PracticeHubActivity from './practice-hub-activity.jsx';
 import { ReadingLayout } from "./reading-layout.jsx";
 import {visibleExerciseComments} from "./exercise-comments.js";
 import { sharedGapQuestions } from "./gap-bank.js";
@@ -24,7 +25,7 @@ import {
 
 export function PracticeActivity(props) {
   useLocale();
-  return modeOf(props.data.exercise) === "reading" ? <ReadingLayout exercise={props.data.exercise} onProgress={props.onProgress} progress={props.data.progress} preview={props.preview}><PracticeActivityBody {...props}/></ReadingLayout> : <PracticeActivityBody {...props}/>;
+  return modeOf(props.data.exercise) === "reading" ? <>{props.renderHeader?.()}<ReadingLayout exercise={props.data.exercise} onProgress={props.onProgress} progress={props.data.progress} preview={props.preview}><PracticeActivityBody {...props}/></ReadingLayout></> : <PracticeHubActivity {...props}/>;
 }
 function PracticeActivityBody({
   data,

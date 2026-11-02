@@ -9,15 +9,19 @@ mkdirSync(scratch, { recursive: true });
 const data = mkdtempSync(path.join(scratch, 'e2e-'));
 const emptyEnv = path.join(data, '.env');
 writeFileSync(emptyEnv, '');
+const cleanStart = process.env.E2E_CLEAN_START === '1';
 // Explicit values override developer/production env. Never migrate the normal DB.
 const env = { ...process.env, WORTIFY_ENV_FILE: emptyEnv, DJANGO_ENV: 'development', DJANGO_DEBUG: '1',
   RENDER: '', DATABASE_URL: '', DJANGO_DATABASE_ENGINE: 'sqlite', DJANGO_DB_PATH: path.join(data, 'test.sqlite3'),
   DJANGO_MEDIA_ROOT: path.join(data, 'media'), MEDIA_STORAGE: 'local', FRONTEND_ORIGIN: '',
   DJANGO_ALLOWED_HOSTS: 'localhost,127.0.0.1', TEACHING_REALTIME_URL: '', TEACHING_REALTIME_SECRET: '',
+  SUPERUSER_SETUP_KEY: cleanStart ? 'isolated-e2e-setup-key-not-for-production-2026' : '',
   DJANGO_CSRF_TRUSTED_ORIGINS: 'http://127.0.0.1:15173', DJANGO_DEV_ORIGIN: 'http://127.0.0.1:18000' };
 const python = process.env.E2E_PYTHON || (process.platform === 'win32' ? path.join(root, '.venv', 'Scripts', 'python.exe') : 'python3');
 const manage = path.join(root, 'Backend', 'manage.py');
-for (const args of [[manage, 'migrate', '--noinput'], [manage, 'shell', '-c', `exec(open(${JSON.stringify(path.join(frontend, 'e2e', 'fixtures.py'))}, encoding='utf-8').read())`]]) {
+const setupCommands = [[manage, 'migrate', '--noinput']];
+if (!cleanStart) setupCommands.push([manage, 'shell', '-c', `exec(open(${JSON.stringify(path.join(frontend, 'e2e', 'fixtures.py'))}, encoding='utf-8').read())`]);
+for (const args of setupCommands) {
   const result = spawnSync(python, args, { cwd: root, env, stdio: 'inherit', windowsHide: true });
   if (result.error) throw result.error;
   if (result.status !== 0) process.exit(result.status || 1);

@@ -100,6 +100,11 @@ test("automatic grading waits until every blank or token is filled", () => {
   assert.equal(readyToCheck(order, { 1: ["1", "2"] }), false);
   assert.equal(readyToCheck(order, { 1: ["1", "2", "3", "4"] }), true);
   assert.equal(readyToCheck(order, { 1: ["1", "2", "3", "3"] }), false);
+  order.presentation.tokens.push({id:'noise',text:'unused'});
+  assert.equal(readyToCheck(order, {1:['1','2','3','4']}),true);
+  assert.equal(readyToCheck(order, {1:['1','2','3','noise']}),true);
+  assert.equal(readyToCheck(order, {1:['1','2','3','unknown']}),false);
+  assert.equal(readyToCheck(order, {1:['1','2','3','4','noise']}),false);
 });
 test("progress merges across devices, excludes examples and obsolete IDs", () => {
   const qs = [{ id: "1" }, { id: "2" }, { id: "3", example: true }];

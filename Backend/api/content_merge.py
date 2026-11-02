@@ -129,7 +129,13 @@ def apply(document, user, changes):
                 fields={'owner':user,'language':document['language'],parent_field:parent}
                 fields['name' if model==Folder else 'title']=node['title']
                 if model==PracticeNode: fields.update(kind=kind,payload=node.get('payload',{}),visibility='public')
-                elif model==Deck: fields.update(level=node.get('level','A2'),topic=node.get('topic',''),description=node.get('description',''),visibility='public')
+                elif model==Deck:
+                    # Optional metadata omitted from an incremental update is unchanged.
+                    # Explicit empty topic/description still clears those values.
+                    fields.update(visibility='public')
+                    fields.update({key: node.get(key, default) for key,default in
+                                   (('level','A2'),('topic',''),('description',''))
+                                   if key in node or obj is None})
                 elif model==ReadingLesson: fields.update(payload=node['payload'],level=node.get('level',''),topic=node.get('topic',''),visibility='public')
                 if obj:
                     for key,value in fields.items(): setattr(obj,key,value)
