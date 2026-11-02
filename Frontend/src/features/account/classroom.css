@@ -793,3 +793,26 @@
     transform: none;
   }
 }
+
+/* Keep class filtering alongside the navigation actions. */
+:root[data-interface] body .nav-face .context-panel .classroom-nav-search .native-field-wrap {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+  border-radius: 8px;
+  min-height: 40px;
+  padding-inline: 12px;
+  gap: 8px;
+}
+:root[data-interface] body .nav-face .context-panel .classroom-nav-search.native-field .native-field-wrap input {
+  background: transparent !important;
+  color: var(--ink) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  min-height: 40px;
+  font-size: 14px;
+}
+:root[data-interface] body .nav-face .context-panel .classroom-nav-search svg {
+  flex-shrink: 0;
+  color: currentColor;
+}

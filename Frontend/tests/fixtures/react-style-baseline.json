@@ -1,7 +1,7 @@
 {
   "--accent": {
     "count": 17,
-    "sha256": "134b9ee729ba34078176489f89bb29ec2abd13b814412eac8371ed22a2d56730"
+    "sha256": "1a4c9632f0ab54ba36b9c779237b14b879458d96a993cdef0b13fd0adee3c983"
   },
   "--admin-bg": {
     "count": 2,
@@ -113,7 +113,7 @@
   },
   "--ink": {
     "count": 15,
-    "sha256": "e1ae1dabdd291824a354e7dbcecc8af6cd22317dfe264b1c64f04beb439f8cfc"
+    "sha256": "822b56b6e2b65c20c6761459af7d5c8e7ec1e9f773066337baea0ebceba9ae5a"
   },
   "--input-style": {
     "count": 1,
@@ -125,7 +125,7 @@
   },
   "--line": {
     "count": 21,
-    "sha256": "32d4473b6edac5809d1a45a532875bda0e7f23e6d510f99c3ffaf07156635e09"
+    "sha256": "a27324ade81d179920afd8f4b1274eafe9493a5f9b2c66d87e94ac09886c258d"
   },
   "--material-alpha": {
     "count": 3,
@@ -145,11 +145,11 @@
   },
   "--muted": {
     "count": 16,
-    "sha256": "00ad44dbcb3cd3ef5eb1d7a9a46084f1eb384f5105da954b717ac8ed7bfdb2fe"
+    "sha256": "6cad9dc29c34d3bbdbc138a7db0324ce63245a6c1b7dd2cf679b75c59e19604d"
   },
   "--page-bg": {
     "count": 8,
-    "sha256": "ac0330078b8ec8b2c0227dcefdce42cae030b70f4333b644e4dc484f8cb43a57"
+    "sha256": "2ba983b2eea3d7df0e8728840a299b5c04f865af4b8340244d02ff60db07d407"
   },
   "--page-width": {
     "count": 1,
@@ -193,11 +193,11 @@
   },
   "--solid": {
     "count": 20,
-    "sha256": "abd6d404135534fd938a7e76f8cd831d8e53109c25fbdbd82b665f24baa2b1e9"
+    "sha256": "65e97c9746037513f23fbd5064c0ef103405725f5cb1b7bd4f3324c5de371f29"
   },
   "--surface": {
     "count": 20,
-    "sha256": "a2484eb7913f52ecd33efb632b4d6ba668c50fcdece189f7c4c271d4a15973c2"
+    "sha256": "e774cc81f74a69297e516248776e1481e1ba0877cf01cb62a63097f2f2416cec"
   },
   "--tw-backdrop-blur": {
     "count": 5,
@@ -428,8 +428,8 @@
     "sha256": "90f6b17f87fd6dfead5b0830a4eab51acc4eb3597e258f5ebd114fe586f79d43"
   },
   "--tw-shadow": {
-    "count": 131,
-    "sha256": "650b6755f50c720c88315351d2fb9be5d432944b082623e79d98f855f39ce8ec"
+    "count": 132,
+    "sha256": "b2cbb1c3879c4b4bc40ea0f2a60778b6b10208c9188a3c4f1fb2719ad0fa26d9"
   },
   "--tw-shadow-alpha": {
     "count": 1,
@@ -472,8 +472,8 @@
     "sha256": "bc06905d21bc15d537a87e7276a9eed5075a57a7f29dfdf2d3b73b337d162bc4"
   },
   "alignment": {
-    "count": 506,
-    "sha256": "8c732cf19f24a40510352319c436dca8b0a79c7732cdaf4bf269063414aaa1cb"
+    "count": 508,
+    "sha256": "cdd6c4bf84dd8c5ee7fbc145967c7c897f0f592e33bf78c4822f37930cb73422"
   },
   "animation": {
     "count": 42,
@@ -496,16 +496,16 @@
     "sha256": "997eac53a14e6a84b1ff2ff1d56776fa39879c0e4c5f12f38136717f32ec8028"
   },
   "background": {
-    "count": 1003,
-    "sha256": "afb67e1c8023a55198a708a73afb4b78eb5f35998e7d33bddd0d72ed9c537741"
+    "count": 1007,
+    "sha256": "4f3a1e8a92445361675356da3a9d982681f2c7b3fabe87dcefe5d9f647c0be72"
   },
   "border": {
-    "count": 1724,
-    "sha256": "35c78e3244e1a2c054ed68ca304074277c68bf0c1d27b63a93f8f38c9f0d6e0f"
+    "count": 1735,
+    "sha256": "17f273b5df4d4ac47685b8855cfee175b55a4c6f1411faa8c7e23e9572bccbac"
   },
   "box": {
-    "count": 361,
-    "sha256": "d046bebdaea36709fd0884631d3b0947c712154f19d20912b10e0157c9d68c6c"
+    "count": 362,
+    "sha256": "428952540010a3d2fc2137557f20d473bd25d780b53eecf536cf64bf524a601a"
   },
   "break": {
     "count": 1,
@@ -516,8 +516,8 @@
     "sha256": "42b5da9e8d92a5bcb57662d69c47657825cde1947a299444123b36d5e1ff49f9"
   },
   "color": {
-    "count": 829,
-    "sha256": "a865a7f584e1a858dc5b23f9d4cdfd0942fd0565f47f01a013b4e9d36022f999"
+    "count": 833,
+    "sha256": "2590e81aec5cfc0d8c57f0aef3ab71171a1cdc91095180eff5c748b957c0256a"
   },
   "contain": {
     "count": 1,
@@ -532,12 +532,12 @@
     "sha256": "418f5de911c49c60f257eb1466ff889b1a59fc2f84effaf72a6a590b1356aac4"
   },
   "cursor": {
-    "count": 74,
-    "sha256": "e552bdbb3ae37dc4c955b6e4f8321f72da510a3ea37ff0e3f775e18f9103e85c"
+    "count": 75,
+    "sha256": "94a289ed870f6220b6503e3db769bd24e26ccff337ce64d62ca6e26e9a97b595"
   },
   "display": {
-    "count": 767,
-    "sha256": "3f8caf0ec5beb2c8875eae6d1e3b840c7cb01571a5032655ed9f30fafbc763f0"
+    "count": 768,
+    "sha256": "dd2e5f073f1ef6f778897acef62a6aa72538d797408a5343231cd7d6bfcd464d"
   },
   "fill": {
     "count": 1,
@@ -548,28 +548,28 @@
     "sha256": "e3608a7f92a4114c2b2969a3b3ca039d2debe54c389f849519811867eb070f99"
   },
   "flex": {
-    "count": 283,
-    "sha256": "a925bb2cbf504944b1a79cea9ee2cccce5eb4bbcb1b1dcb5581ba0a899f88b61"
+    "count": 284,
+    "sha256": "d639084293ea6675e7e7763dc2d1b6d6f9dce1beadcf85d5e95802d466913dde"
   },
   "float": {
     "count": 3,
     "sha256": "b6c3cbb00525689a2701b0c1da85ed57e9d31844afece0c1271f30b823f4dd12"
   },
   "font": {
-    "count": 1584,
-    "sha256": "2556a7c1a93132c98140be5257c0a8cf90c3bcebba998c05768ea22e82ddff6a"
+    "count": 1586,
+    "sha256": "efcab2c7383ab08fbf175716f8831c0fbc63ac2c631145778e09a8499841468d"
   },
   "gap": {
-    "count": 582,
-    "sha256": "751962d2723eb5e7869a166415913b8f3ad7903e024b6745e0b6eca39dcb34bd"
+    "count": 583,
+    "sha256": "6e2a93cae4c875b679d0b98650727f1b98bed4825a5939b22fd3b41ca267e3d0"
   },
   "grid": {
     "count": 184,
     "sha256": "ee4d40c8a76cc261637cadf5c80faf3601295b7c3ee681e6d9a517ef58b8f2b1"
   },
   "height": {
-    "count": 269,
-    "sha256": "0fbb649bb20873700a6bcfa5d80f76660d7f910f0ba48c00970359f18cf8a23d"
+    "count": 270,
+    "sha256": "01c688974fba3b4ee20c140eb3ce01ee1493bf28773ad4e542907ced6643254d"
   },
   "image": {
     "count": 1,
@@ -640,8 +640,8 @@
     "sha256": "cef4b5eb959a030bdf809361560378909439c9b3fe3b3653cc470e0af79d4b0f"
   },
   "min": {
-    "count": 488,
-    "sha256": "535a40a7c7a7e8cbc6a4e96fdc395f78822a65a9b3c41561269a375fdb7fdb9f"
+    "count": 492,
+    "sha256": "524f860238cde811e84ffa0638ea2bf9c9d4dbba2ba3c1df4bc9a2aed521fdab"
   },
   "object": {
     "count": 5,
@@ -661,7 +661,7 @@
   },
   "outline": {
     "count": 159,
-    "sha256": "e830aaa2f61ac632646c2f72887b5e101d271df4227b58d08692ec1e9172e845"
+    "sha256": "bed8461b4791c52aaf5569aa5630f13d7ec69e63bc6c5289099e983d759cfbb2"
   },
   "overflow": {
     "count": 153,
@@ -672,8 +672,8 @@
     "sha256": "266a2f1bf68950fc7123bb53a7620940ab01e37b8a81c74dae526847d7858190"
   },
   "padding": {
-    "count": 781,
-    "sha256": "6c44fe3b6209b0d3142951e89c80aabb33dc64f0e08e1e0bb8bdbde74cecf21c"
+    "count": 784,
+    "sha256": "e9f0f202991601037e38c60c243c878de05a5eee8d993119e9b4730c0643dfbc"
   },
   "perspective": {
     "count": 3,
@@ -772,8 +772,8 @@
     "sha256": "8664025605c8d7ee20f6ebe9528bc64b6f2dda520c3ca889927aa9f562e6e15d"
   },
   "width": {
-    "count": 342,
-    "sha256": "51bd06452f219c65952653b51719287c91f9abdfe377b930a1cace6e7e8a0170"
+    "count": 343,
+    "sha256": "0bc39bdfce2048cb3af817fd15a81e0f5df4124f6d8447c2134f313c99c65f92"
   },
   "word": {
     "count": 4,

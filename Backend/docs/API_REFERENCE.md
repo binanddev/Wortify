@@ -844,7 +844,7 @@ Body POST:
 
 **Permission:** Signed-in users
 
-Submit 1–100 events, each with a UUID token, kind and payload. Supported kinds: preferences, study_settings, practice_progress, practice, review, test, star, options. Preferences require an ISO8601 at timestamp with a timezone. Payload supports interface=studio/glass/xp/retro/space (default Studio), navScale=50–150, ambient boolean, volume=0–1, and ambientTrack=morning/marimba/picnic/bubbles/cafe/garden/puzzle/clouds/starlight/steps/bounce/ghost/begin/ukulele/island/tropical/sunshine/arcade/dew/hearth. Retrying the same token is idempotent. HTTP 200 may include per-item errors.
+Submit 1–100 events, each with a UUID token, kind and payload. Supported kinds: preferences, study_settings, practice_progress, practice, review, test, star, options. Preferences require an ISO8601 at timestamp with a timezone. Payload supports interface=studio/glass/xp/retro/space (default Studio), navScale=50–150, studioPageColor/studioNavColor/studioAccentColor as six-digit hex colors or auto (also supported in appearanceProfiles), ambient boolean, volume=0–1, and ambientTrack=morning/marimba/picnic/bubbles/cafe/garden/puzzle/clouds/starlight/steps/bounce/ghost/begin/ukulele/island/tropical/sunshine/arcade/dew/hearth. Retrying the same token is idempotent. HTTP 200 may include per-item errors.
 
 Body POST:
 

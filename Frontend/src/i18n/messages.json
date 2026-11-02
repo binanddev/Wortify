@@ -7709,5 +7709,30 @@
   "50 mastered cards": {
     "vi": "Nắm vững 50 thẻ",
     "de": "50 Karten gemeistert"
+  },
+  "Studio colors": {
+    "en": "Studio colors",
+    "vi": "Màu Studio",
+    "de": "Studio-Farben"
+  },
+  "Reset Studio colors": {
+    "en": "Reset Studio colors",
+    "vi": "Khôi phục màu mặc định",
+    "de": "Studio-Farben zurücksetzen"
+  },
+  "Default background color": {
+    "en": "Default background color",
+    "vi": "Màu nền mặc định",
+    "de": "Standard-Hintergrundfarbe"
+  },
+  "Navigation color": {
+    "en": "Navigation color",
+    "vi": "Màu thanh điều hướng",
+    "de": "Navigationsfarbe"
+  },
+  "Accent color": {
+    "en": "Accent color",
+    "vi": "Màu nhấn",
+    "de": "Akzentfarbe"
   }
 }

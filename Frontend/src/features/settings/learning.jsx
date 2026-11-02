@@ -1,3 +1,4 @@
+import { studioColor, studioColorDefaults } from "../../themes/studio/colors.js";
 import { useAvailability, themeEnabled, MAINTENANCE_MESSAGE } from "../feature-availability.jsx";
 import RefreshApp from "./refresh-app.jsx";
 import { t as tr, useLocale } from "../../i18n/index.js";
@@ -185,6 +186,14 @@ function SettingsContent({
             <Glass>
               <h2>{tr("Appearance")}</h2>
               <Status error={appearance?.warning} />
+              {prefs.interface === "studio" && (
+                <section className="studio-color-settings grid gap-3 mb-6 pb-5 border-b border-(--line)" aria-label={tr("Studio colors")}>
+                  <div className="flex flex-wrap items-center justify-between gap-3"><h3>{tr("Studio colors")}</h3><Btn onClick={()=>setPrefs({...prefs,...Object.fromEntries(Object.keys(studioColorDefaults).map(key=>[key,"auto"]))})}>{tr("Reset Studio colors")}</Btn></div>
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {[["studioPageColor","Default background color"],["studioNavColor","Navigation color"],["studioAccentColor","Accent color"]].map(([key,label])=><Field key={key} className="studio-color-field" label={tr(label)} aria-label={tr(label)} type="color" value={studioColor(prefs,key)} endContent={<span className="text-xs font-mono">{studioColor(prefs,key).toUpperCase()}</span>} onChange={value=>setPrefs({...prefs,[key]:value})}/>)}
+                  </div>
+                </section>
+              )}
               {prefs.interface !== "glass" && (
                 <>
                   <div className="flex items-center gap-3">

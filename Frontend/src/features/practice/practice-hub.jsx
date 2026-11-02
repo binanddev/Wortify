@@ -62,7 +62,6 @@ export function PracticeHub({ lang, id, userId, sound }) {
   const openImport = (folder, node = null) => setTimeout(()=>setImporting({folder,node}),0);
   const nodeAction = (action, node) => setNodeOperation({action,node});
   const [previewId, setPreviewId] = useState(null);
-  const [catalogQuery, setCatalogQuery] = useState("");
   const [catalogPage, setCatalogPage] = useState(1);
   const all = !id || id === "all";
   useEffect(() => { if (!id) navigate(`${practiceRoutes(lang).learn}/all`); }, [id, lang, navigate]);
@@ -104,7 +103,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
   };
   const current = withDetail(nodesById.get(String(id)));
   const workspace = useMemo(() => myPracticeNodes(nodes, pinned), [nodes,pinned]);
-  const catalog = useMemo(() => catalogRoots(ownedPracticeNodes(nodes), catalogQuery), [nodes,catalogQuery]);
+  const catalog = useMemo(() => catalogRoots(ownedPracticeNodes(nodes), query), [nodes,query]);
   const pageCount = Math.max(1, Math.ceil(catalog.length / 15));
   const page = Math.max(1, Math.min(catalogPage, pageCount));
   const visibleCatalog = catalog.slice((page - 1) * 15, page * 15);
@@ -138,7 +137,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
     ...(node.can_edit ? [{key:"delete",icon:"trash",label:"Delete permanently",danger:true,run:()=>nodeAction("delete",node)}] : []),
   ]}/>;
   const lessonHeading = (settings = null) => <div className={`practice-content-heading${current?.kind === 'exercise' ? ' practice-exercise-heading' : ''}`}><Heading title={current?.title}/><div className="practice-heading-actions">{settings}{current?.can_edit && <Btn isIconOnly aria-label={tr("Edit content")} onClick={()=>current.kind === "exercise" ? openImport(nodes.find(node=>node.id===current.parent),current) : navigate(`/${lang}/create/${current.id}/edit?return=learn`)}><Icon name="edit" size={18}/></Btn>}</div></div>;
-  const library = items => <PracticeLibrary items={items} nodes={nodes} lang={lang} parent={all?null:current?.id} routeBase="practice" pending={action.pending} error={action.error} searching={Boolean((all?catalogQuery:query).trim())}
+  const library = items => <PracticeLibrary items={items} nodes={nodes} lang={lang} parent={all?null:current?.id} routeBase="practice" pending={action.pending} error={action.error} searching={Boolean(query.trim())}
     onOrganize={organize} onRename={(node,title)=>patchNode(node,{title})}
     onOpen={node=>navigate(`${practiceRoutes(lang).learn}/${node.id}`)} onPreview={node=>setPreviewId(node.id)}
     onEdit={node=>node.kind === "exercise" ? openImport(nodes.find(folder=>folder.id===node.parent),node) : navigate(`/${lang}/create/${node.id}/edit?return=learn`)}
@@ -152,7 +151,7 @@ export function PracticeHub({ lang, id, userId, sound }) {
       <SidebarTools navOnly>
         <div className="learning-navigation flash-nav">
           <div className="workspace-search">
-            <Field className="practice-nav-search" label={tr("Search folders or exercises")} value={query} onChange={setQuery} startContent={<Icon name="search"/>} />
+            <Field className="practice-nav-search" label={tr("Search folders or exercises")} value={query} onChange={value=>{setQuery(value);setCatalogPage(1);}} startContent={<Icon name="search"/>} />
           </div>
           <Status error={resource.error} />
           <nav aria-label={tr("Lesson list")}>
@@ -259,7 +258,6 @@ export function PracticeHub({ lang, id, userId, sound }) {
       ) : all ? (
         <section className="practice-catalog">
           <div className="practice-content-heading"><Heading title={tr("My practice")}/><div className="practice-folder-toolbar"><Btn aria-label={tr("New folder")} onClick={()=>setNodeOperation({action:"create",parent:null})}><Icon name="folder_add" size={18}/><span>{tr("New folder")}</span></Btn></div></div>
-          <Field label={tr("Search all content")} value={catalogQuery} onChange={value=>{setCatalogQuery(value);setCatalogPage(1);}}/>
           {library(visibleCatalog)}
           {pageCount > 1 && <nav className="practice-pagination" aria-label={tr("Folder pages")}><Btn isDisabled={page===1} onClick={()=>setCatalogPage(page-1)}>{tr("Previous")}</Btn><span>{page} / {pageCount}</span><Btn isDisabled={page===pageCount} onClick={()=>setCatalogPage(page+1)}>{tr("Next")}</Btn></nav>}
         </section>

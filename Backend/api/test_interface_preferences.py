@@ -24,11 +24,22 @@ class InterfacePreferenceValidationTests(SimpleTestCase):
                 validate_preferences(invalid)
 
 
+    def test_studio_colors_are_safe_and_supported_in_profiles(self):
+        colors={'studioPageColor':'#f5faf6','studioNavColor':'#abcdef','studioAccentColor':'auto'}
+        self.assertEqual(validate_preferences(colors),colors)
+        self.assertEqual(validate_preferences({'appearanceProfiles':{'default:studio:mist':colors}})['appearanceProfiles']['default:studio:mist'],colors)
+        for key in colors:
+            for value in ('red','url(https://example.com)', '#123', '#ffffff00', None, True, {}):
+                with self.subTest(key=key,value=value), self.assertRaises(ValueError):
+                    validate_preferences({key:value})
+
+
+
 class InterfacePreferenceSyncTests(TestCase):
     def test_preferences_persist_for_another_login_without_touching_other_settings(self):
         user = get_user_model().objects.create_user('interface-user')
         self.client.force_login(user)
-        values = {'appearanceSelections':{'default':{'interface':'glass','background':'night'}}, 'appearanceProfiles':{'default:studio:mist':{'textColor':'#ffffff','navScale':75},'default:glass:mist':{'textColor':'#000000'}}, 'interface':'glass', 'navScale':50, 'ambientTrack':'marimba', 'ambient':True, 'volume':0.2}
+        values = {'studioPageColor':'#eeeaff','studioNavColor':'#15264a','studioAccentColor':'#674ac4','appearanceSelections':{'default':{'interface':'glass','background':'night'}}, 'appearanceProfiles':{'default:studio:mist':{'textColor':'#ffffff','navScale':75},'default:glass:mist':{'textColor':'#000000'}}, 'interface':'glass', 'navScale':50, 'ambientTrack':'marimba', 'ambient':True, 'volume':0.2}
         response = self.client.post('/api/en/learning/sync/', json.dumps({'events':[
             {'token':str(uuid.uuid4()), 'kind':'preferences', 'at':timezone.now().isoformat(), 'payload':values}
         ]}), content_type='application/json')

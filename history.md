@@ -1,5 +1,14 @@
 # Change Log
 
+### [v1.16.0] - 2026-11-02 | Personal Studio colors and cleaner workspace navigation
+
+- Add Studio default-background, navigation and accent color controls in Appearance with immediate preview and one-step reset. Persist colors through the existing account preferences and per-interface/background profiles; validate six-digit colors or auto on the server. Keep personal background images independent. Automatically choose contrasting text for navigation and primary buttons, including light and dark custom palettes.
+- Refresh Studio with lighter emerald/ivory defaults. Replace the W artwork with an original open-book/spark vector mark, browser favicon and Apple touch icon. Keep icon-only reading actions centred with translated labels/tooltips; fix Reading navigation search contrast.
+- Keep only the navigation search in My practices, with matching content filtering and pagination reset. Move class search into navigation without changing its filtering behavior.
+- User authorized this version commit and push. No application server, local database migration or deployed-site test was used. Validation: 270 frontend tests, 20 targeted backend tests and production build passed; static browser fixtures passed for Studio color controls/reload/reset/image priority/theme isolation/mobile layout, Reading mobile, both Studio nav faces and global interface/contrast controls.
+
+---
+
 ### 2026-11-02 | Practice Hub sessions, safer authoring and clean-start readiness
 
 - Keep eight exercise types for new Practice Hub content while retaining legacy True/False/Not Given lessons. Group shared word-bank gaps, preserve repeated tokens, lock correct answers during retries, and distinguish word banks from per-gap selections. Move study mode and audio controls into a settings dialog beside Edit and reduce exercise heading size.

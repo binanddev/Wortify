@@ -69,7 +69,7 @@ export default function ReadingLibrary({lang,route,userId,initialCreate=false,in
   return <Page className="reading-personal-page reading-library-page">
     <SidebarTools navOnly><div className="reading-library-navigation flash-nav">
       <nav className="reading-personal-links"><Link to={`/${lang}/reading/discover`}><Icon name="explore" size={18}/><span>{tr("Explore")}</span></Link></nav>
-      <Field label={tr("Search readings or folders")} value={query} onChange={setQuery} startContent={<Icon name="search" size={18}/>}/>
+      <Field className="reading-nav-search" label={tr("Search readings or folders")} value={query} onChange={setQuery} startContent={<Icon name="search" size={18}/>}/>
       <nav className="flash-folder-list" aria-label={tr("Reading folders")}>
         <div className="flash-tree-row flash-root-row" {...dropProps(null)}><button type="button" className="flash-root-folder" onClick={()=>go(null)} aria-current={!folderId?"page":undefined}><Icon name="home" size={18}/><span>{tr("My readings")}</span><small>{lessons.length}</small></button><ActionMenu quiet label={tr("Library actions")} items={[{key:"create",icon:"plus",label:"Create reading",run:()=>openEditor(null)},{key:"folder",icon:"folder_add",label:"New folder",run:()=>openOp({action:"create",parent:null})}]}/></div>
         <FolderTree folders={tree} selected={String(folderId??"")} expandAll={!!needle} onSelect={id=>go(Number(id))} renderActions={folder=>menu({...folders.find(item=>item.id===folder.id),kind:"folder"})} dropProps={dropProps}/>
@@ -91,7 +91,7 @@ export default function ReadingLibrary({lang,route,userId,initialCreate=false,in
         <div className="reading-personal-card-top"><span className="reading-personal-card-icon"><Icon name="book" size={21}/></span>{item.level&&<small>{item.level}</small>}{selecting&&<label className="reading-select-box"><input type="checkbox" checked={ids.includes(item.id)} aria-label={tr("Select {name}",{name:item.title})} onChange={e=>choose(e.target.checked?[...ids,item.id]:ids.filter(id=>id!==item.id))}/></label>}{menu({...item,kind:"reading"})}</div>
         <Link className="reading-personal-title" to={`/${lang}/reading/${item.id}`}>{item.title}</Link>
         <p className="reading-personal-meta">{needle&&item.folder_id?path(mapped.find(folder=>folder.id===item.folder_id)):item.topic||tr("Reading content")}</p>
-        <div className="reading-personal-card-actions"><Link className="btn" to={`/${lang}/reading/${item.id}`}>{tr("Read lesson")}<Icon name="arrow" size={17}/></Link><Btn icon="eye" onClick={()=>setPreview(item)}>{tr("Preview reading")}</Btn></div>
+        <div className="reading-personal-card-actions"><Link className="btn reading-start-action" to={`/${lang}/reading/${item.id}`} aria-label={tr("Read lesson")} title={tr("Read lesson")}><Icon name="arrow" size={19}/></Link><Btn icon="eye" onClick={()=>setPreview(item)}>{tr("Preview reading")}</Btn></div>
       </Glass>)}</div>
       {!visibleFolders.length&&!filtered.length&&<div className="reading-library-empty"><Icon name={needle?"search":"book"} size={28}/><p>{tr(needle?"No matching results.":"No readings yet.")}</p>{!needle&&<Btn primary onClick={()=>openEditor()}>{tr("Create reading")}</Btn>}</div>}
       <div className="reading-library-pagination"><Pagination pagination={pagination} count={filtered.length}/></div>

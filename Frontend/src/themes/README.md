@@ -51,3 +51,7 @@ Icon rendering uses one SVG per glyph. `use-interface.js` observes the root them
 ## Staff scope
 
 Staff accounts that are not superusers use Studio only. App initializes and updates their appearance with interface=studio; Settings hides the theme picker. The session and preference-sync API enforce the same rule, including legacy saved appearance selections. Do not add staff-specific variants to the other themes. Superuser and learner theme selection remains unchanged. Staff fixtures cover Studio; shared feature components still serve the normal themes for other accounts.
+
+## Studio colors
+
+Appearance exposes default page, navigation and accent colors. `studio/colors.js` resolves safe values and readable foregrounds; `apply.js` clears Studio variables on theme changes. The existing account preference queue persists these values and appearance profiles isolate interface/background selections. Reset changes only the three Studio colors. Personal background images still take precedence over the default plane.

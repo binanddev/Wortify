@@ -1,6 +1,9 @@
 import { interfaceName } from "./registry.js";
 import { glassPolicy } from "./glass/policy.js";
 export const visualDefaults = {
+  studioPageColor: "auto",
+  studioNavColor: "auto",
+  studioAccentColor: "auto",
   navScale: 70,
   font: 36,
   transparency: 25,
@@ -36,7 +39,7 @@ export function updateAppearance(previous, requested, theme) {
   const next =
     oldKey === newKey
       ? requested
-      : { ...requested, ...(profiles[newKey] || visualDefaults) };
+      : { ...requested, ...visualDefaults, ...profiles[newKey] };
   const fixed = glassPolicy(next);
   return {
     ...fixed,

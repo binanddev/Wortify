@@ -368,9 +368,9 @@ function Brand() {
     <Link to="/" className="brand">
       <img
         className="brand-logo"
-        src="/brand/wortify-logo.png"
+        src="/brand/wortify-mark.svg"
         alt=""
-        width="44"
+        width="36"
         height="36"
       />
       wortify<span className="brand-dot">.</span>

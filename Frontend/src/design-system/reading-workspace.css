@@ -145,7 +145,7 @@
 .reading-personal-meta { @apply text-xs text-(--muted) m-0 truncate; }
 .reading-personal-card-actions { @apply flex items-center justify-between gap-2 mt-auto pt-3; }
 :root body .reading-personal-card-actions > .btn { @apply h-10 min-h-10 text-sm gap-2; }
-:root body .reading-personal-card-actions > button.btn { @apply w-10 min-w-10 p-0; }
+:root body .reading-personal-card-actions > :is(button.btn,a.reading-start-action) { @apply inline-flex items-center justify-center w-10 min-w-10 p-0; }
 .reading-select-box { @apply w-8 h-8 grid place-items-center cursor-pointer; }
 .reading-select-box > input { @apply w-4 h-4 accent-(--accent); }
 .reading-selection-bar { @apply flex flex-wrap items-center gap-2 p-3 mb-4 rounded-xl border border-(--line) bg-(--surface) text-sm; }
@@ -199,3 +199,8 @@
 .reading-orphan-media > div { @apply flex flex-wrap items-center gap-2; }
 .reading-orphan-media > div > span { @apply flex-1 min-w-0 wrap-anywhere; }
 .reading-orphan-media .btn { @apply min-h-9 text-sm; }
+
+/* Match the Reading search to its navigation surface, including native input text. */
+:root[data-interface] body .nav-face .context-panel .reading-nav-search .native-field-wrap { @apply bg-(--surface)! text-(--ink)! border-(--line)! rounded-lg min-h-10 px-3 gap-2; }
+:root[data-interface] body .nav-face .context-panel .reading-nav-search.native-field .native-field-wrap input { @apply bg-transparent! text-(--ink)! border-0! shadow-none! min-h-10 text-sm; }
+:root[data-interface] body .nav-face .context-panel .reading-nav-search svg { @apply text-current; }

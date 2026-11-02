@@ -14,8 +14,8 @@ from users.preferences import validate_preferences
 from content.models import SiteAppearance
 from .common import endpoint, body
 
-DEFAULT_DISPLAY = {'interface': 'studio', 'background': 'mist', 'transparency': 25, 'textSize': 18, 'font': 36, 'textWeight': 500, 'textContrast': 80, 'textColor': 'auto', 'curvature': 18, 'glassLens': 40}
-DISPLAY_KEYS = {'interface', 'background', 'transparency', 'textSize', 'font', 'textWeight', 'textContrast', 'textColor', 'curvature', 'glassLens'}
+DEFAULT_DISPLAY = {'interface': 'studio', 'background': 'mist', 'transparency': 25, 'textSize': 18, 'font': 36, 'textWeight': 500, 'textContrast': 80, 'textColor': 'auto', 'curvature': 18, 'glassLens': 40, 'studioPageColor': 'auto', 'studioNavColor': 'auto', 'studioAccentColor': 'auto'}
+DISPLAY_KEYS = {'interface', 'background', 'transparency', 'textSize', 'font', 'textWeight', 'textContrast', 'textColor', 'curvature', 'glassLens', 'studioPageColor', 'studioNavColor', 'studioAccentColor'}
 
 def visible(user):
     return Theme.objects.filter(Q(owner=user) | Q(shared=True))

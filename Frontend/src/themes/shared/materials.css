@@ -21,7 +21,7 @@
   --glass-edge-bottom: rgb(0 10 28 / 0.4);
 }
 .brand-logo {
-  @apply h-9 w-11 shrink-0 object-contain;
+  @apply h-9 w-9 shrink-0 object-contain;
 }
 @media screen {
   :is(

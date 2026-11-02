@@ -21,27 +21,27 @@
   @apply [transition:background-color_160ms_ease,_color_160ms_ease];
 }
 :root[data-interface="studio"] body .nav-link.active {
-  @apply [box-shadow:inset_3px_0_0_#879d70];
+  @apply [box-shadow:inset_3px_0_0_#69ad87];
 }
 :root[data-interface="studio"] body :is(.library-card, .deck-tile, .hub-tile) {
   @apply [border-width:1px]!;
 }
 :root[data-interface="studio"] body :is(.library-card, .deck-tile, .hub-tile):hover {
-  @apply [border-color:#adbba0]!;
-  @apply [box-shadow:0_10px_32px_-16px_#232c2530]!;
+  @apply [border-color:#a5cdb8]!;
+  @apply [box-shadow:0_10px_32px_-16px_#294b4030]!;
 }
 :root[data-interface="studio"] body .studio-masthead {
-  @apply [border-color:#dce0d3];
+  @apply [border-color:#d6e6dc];
 }
 :root[data-interface="studio"] body .studio-kicker {
-  @apply [color:#6b7265];
+  @apply [color:#62766d];
   @apply [font-weight:600];
   @apply [letter-spacing:0.1em];
 }
 :root[data-interface="studio"] body .studio-session-badge {
-  @apply [background:#e8edde];
-  @apply [color:#4c6240];
-  @apply [border:1px_solid_#d8e0cd];
+  @apply [background:#e5f5eb];
+  @apply [color:#2b7051];
+  @apply [border:1px_solid_#c9e7d4];
 }
 @media (prefers-reduced-motion: reduce) {
   :root[data-interface="studio"] body .nav-link { @apply [transition:none]; }
@@ -62,31 +62,31 @@
   @apply italic font-normal;
 }
 :root[data-interface="studio"] body :is(.deck-tile,.library-card,.hub-tile) {
-  @apply rounded-[14px] p-6 border-[#d6ddcb]! bg-[#fcfaf4]!;
+  @apply rounded-[14px] p-6 border-[#d6e6dc]! bg-[#fffefa]!;
 }
 :root[data-interface="studio"] body :is(.deck-tile,.library-card,.hub-tile) h3 {
   @apply [font-family:system-ui,'Segoe_UI',Arial,sans-serif] font-semibold tracking-[-0.025em] leading-snug;
 }
 :root[data-interface="studio"] body :is(.tile-icon,.tile-icon .app-icon) {
-  @apply bg-transparent text-[#526447];
+  @apply bg-transparent text-[var(--studio-accent,#26735b)];
 }
 :root[data-interface="studio"] body .deck-tile :is(.pill,small) {
-  @apply rounded-full bg-[#e9edde] text-[#4c5d40] text-xs px-3 py-1;
+  @apply rounded-full bg-[var(--studio-accent-soft,#e5f5eb)] text-[var(--studio-accent-strong,#2b7051)] text-xs px-3 py-1;
 }
 :root[data-interface="studio"] body .deck-tile small {
   @apply inline-block self-start;
 }
 :root[data-interface="studio"] body .thin-progress {
-  @apply bg-[#e5e8dc];
+  @apply bg-[#deeee3];
 }
 :root[data-interface="studio"] body .thin-progress > span {
-  @apply bg-[#809369];
+  @apply bg-[var(--studio-accent,#4ba579)];
 }
 :root[data-interface="studio"] body .nav-face {
-  @apply bg-[#232c25]/95! backdrop-blur-xl!;
+  @apply bg-[var(--studio-nav,#294b40)]! backdrop-blur-xl!;
 }
 :root[data-interface="studio"] body .default-background {
-  @apply bg-[#f7f1e5] [background-image:radial-gradient(ellipse_at_90%_10%,#e8e6d8,transparent_48%),radial-gradient(ellipse_at_15%_90%,#eee5d5,transparent_48%)];
+  @apply bg-[var(--studio-page,#f5faf6)] [background-image:radial-gradient(ellipse_at_90%_10%,var(--studio-glow,#e1f3e8),transparent_48%),radial-gradient(ellipse_at_15%_90%,color-mix(in_srgb,var(--studio-page,#f5faf6)_85%,#fff2db),transparent_48%)];
 }
 
 :root[data-interface="studio"] .ambient-symbols { @apply hidden; }
@@ -103,4 +103,17 @@
 }
 :root[data-interface="studio"] body .heading h1 {
   @apply font-medium leading-[1.12];
+}
+
+/* Large native swatches keep the operating-system color picker accessible. */
+:root[data-interface="studio"] body .studio-color-field.native-field .native-field-wrap input[type="color"] {
+  @apply w-10! min-w-10! h-8! min-h-8! p-0! cursor-pointer shrink-0 rounded-md;
+}
+:root[data-interface="studio"] body .studio-color-field input[type="color"]::-webkit-color-swatch-wrapper { @apply p-0; }
+:root[data-interface="studio"] body .studio-color-field input[type="color"]::-webkit-color-swatch { @apply border-0 rounded-md; }
+:root[data-interface="studio"] body .studio-color-field input[type="color"]::-moz-color-swatch { @apply border-0 rounded-md; }
+
+:root[data-interface="studio"] body .nav-face .btn.primary:not(:disabled):hover,
+:root[data-interface="studio"] body .nav-face .nav-link.active:hover {
+  @apply bg-[var(--studio-nav-active,#c7ecd5)]! text-[var(--studio-nav-active-ink,#294b40)]!;
 }

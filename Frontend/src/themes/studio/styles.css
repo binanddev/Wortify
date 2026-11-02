@@ -1,16 +1,16 @@
-/* Studio: quiet ivory canvas, slate navigation, restrained indigo accents. */
+/* Studio: fresh ivory canvas, emerald navigation and clear green accents. */
 :root[data-interface="studio"] {
-  --accent: #526447;
-  --ink: #30372e;
-  --muted: #6b7265;
-  --line: #dce0d3;
-  --surface: #fcfaf4;
-  --solid: #f5f3eb;
-  --page-bg: #f7f1e5;
+  --accent: var(--studio-accent,#26735b);
+  --ink: #253d34;
+  --muted: #62766d;
+  --line: #d6e6dc;
+  --surface: #fffefa;
+  --solid: #f2f8f3;
+  --page-bg: var(--studio-page,#f5faf6);
   --control-radius: 14px;
 }
 :root[data-interface="studio"] body {
-  @apply bg-[#f7f1e5]! [background-image:none]!;
+  @apply bg-[var(--studio-page,#f5faf6)]! [background-image:none]!;
 }
 :root[data-interface="studio"] body::before,
 :root[data-interface="studio"] body::after {
@@ -37,7 +37,7 @@
     [data-slot="popover-content"],
     [data-slot="listbox-wrapper"]
   ) {
-  @apply bg-[#fcfaf4]! bg-none! backdrop-filter-none! border border-[#dce0d3]! rounded-[18px] text-(--ink) [box-shadow:0_2px_4px_#28332203,0_12px_36px_-16px_#28332224]!;
+  @apply bg-[#fffefa]! bg-none! backdrop-filter-none! border border-[#d6e6dc]! rounded-[18px] text-(--ink) [box-shadow:0_2px_4px_#28332203,0_12px_36px_-16px_#28332224]!;
 }
 :root[data-interface="studio"]
   body
@@ -58,25 +58,25 @@
 :root[data-interface="studio"]
   body
   :is(.btn, .choice, .pair-card, .match-tile, .word-chip) {
-  @apply rounded-xl border border-[#dce0d3] bg-white text-(--ink) min-h-11 [transition:background-color_140ms,border-color_140ms,box-shadow_140ms];
+  @apply rounded-xl border border-[#d6e6dc] bg-white text-(--ink) min-h-11 [transition:background-color_140ms,border-color_140ms,box-shadow_140ms];
 }
 :root[data-interface="studio"] body .btn.primary {
-  @apply bg-[#526447]! text-white! border-[#526447]! shadow-[0_2px_6px_#52644726];
+  @apply bg-[var(--studio-accent,#26735b)]! text-[var(--studio-accent-ink,#ffffff)]! border-[var(--studio-accent,#26735b)]! shadow-[0_2px_6px_#26735b26];
 }
 :root[data-interface="studio"]
   body
   :is(.btn, .choice, .pair-card, .match-tile, .nav-link):not(:disabled):not(
     [aria-disabled="true"]
   ):hover {
-  @apply bg-[#e9eddf] border-[#b7c3a9] shadow-[0_2px_8px_#30372e08];
+  @apply bg-[var(--studio-accent-soft,#e4f3e9)] border-[#a5cdb8] shadow-[0_2px_8px_#253d3408];
 }
 :root[data-interface="studio"] body :is(.btn.primary):not(:disabled):hover {
-  @apply bg-[#3e5035]!;
+  @apply bg-[var(--studio-accent-hover,#1d604b)]!;
 }
 :root[data-interface="studio"]
   body
   :is(button, a, input, textarea, select, [role="button"]):focus-visible {
-  @apply outline-2 outline-[#526447] outline-offset-4;
+  @apply outline-2 outline-[var(--studio-accent,#26735b)] outline-offset-4;
 }
 :root[data-interface="studio"]
   body
@@ -86,7 +86,7 @@
     [aria-selected="true"],
     button[aria-pressed="true"]
   ):not(.flip-stage) {
-  @apply border-[#526447] bg-[#e5eadb] text-[#3d5034] [box-shadow:inset_0_0_0_1px_#5264471a];
+  @apply border-[var(--studio-accent,#26735b)] bg-[var(--studio-accent-soft,#ddf2e5)] text-[var(--studio-accent-strong,#245d47)] [box-shadow:inset_0_0_0_1px_#26735b1a];
 }
 :root[data-interface="studio"] body :is(.answer-correct, .learning-complete) {
   @apply bg-[#e4f6ed]! text-[#176445]! border-[#78bd9d]!;
@@ -103,37 +103,37 @@
     .native-field-wrap,
     [data-slot="input-wrapper"]
   ) {
-  @apply bg-[#faf9f3]! border border-[#dce0d3] rounded-xl text-(--ink);
+  @apply bg-[#f7fbf8]! border border-[#d6e6dc] rounded-xl text-(--ink);
 }
 :root[data-interface="studio"] body .nav-face {
-  --ink: #f4f4e9;
-  --muted: #bdc6b6;
-  --line: #515e4f;
-  --surface: #333f34;
-  --solid: #333f34;
-  --accent: #c4d0b5;
-  @apply bg-[#232c25]! border-[#232c25]! rounded-[20px] shadow-none!;
+  --ink: var(--studio-nav-ink,#f2fbf5);
+  --muted: var(--studio-nav-muted,#c4ddcf);
+  --line: var(--studio-nav-line,#567c69);
+  --surface: var(--studio-nav-surface,#355b4b);
+  --solid: var(--studio-nav-surface,#355b4b);
+  --accent: var(--studio-nav-active,#bce8cd);
+  @apply bg-[var(--studio-nav,#294b40)]! border-[var(--studio-nav,#294b40)]! rounded-[20px] shadow-none!;
 }
 :root[data-interface="studio"]
   body
   .nav-flip
   :is(.sidebar, .workspace-context) {
-  @apply bg-transparent! text-[#f4f4e9]! border-0! shadow-none!;
+  @apply bg-transparent! text-[var(--studio-nav-ink,#f2fbf5)]! border-0! shadow-none!;
 }
 :root[data-interface="studio"] body .nav-static {
-  @apply border-[#515e4f];
+  @apply border-[var(--studio-nav-line,#567c69)];
 }
 :root[data-interface="studio"] body .workspace-select {
-  @apply bg-[#333f34]! text-[#f4f4e9] border-[#515e4f];
+  @apply bg-[var(--studio-nav-surface,#355b4b)]! text-[var(--studio-nav-ink,#f2fbf5)] border-[var(--studio-nav-line,#567c69)];
 }
 :root[data-interface="studio"] body .nav-link {
-  @apply text-[#dfe5d7] rounded-xl;
+  @apply text-[var(--studio-nav-ink,#e1f2e7)] rounded-xl;
 }
 :root[data-interface="studio"] body .nav-link.active {
-  @apply bg-[#c9d5b8]! text-[#232c25] [box-shadow:none];
+  @apply bg-[var(--studio-nav-active,#c7ecd5)]! text-[var(--studio-nav-active-ink,#294b40)] [box-shadow:none];
 }
 :root[data-interface="studio"] body .nav-link:hover {
-  @apply bg-[#414d3e] text-white shadow-none;
+  @apply bg-[var(--studio-nav-hover,#416e59)] text-[var(--studio-nav-ink,#f2fbf5)] shadow-none;
 }
 :root[data-interface="studio"]
   body
@@ -146,28 +146,28 @@
     .native-field-wrap,
     [data-slot="input-wrapper"]
   ) {
-  @apply bg-[#333f34]! text-[#f4f4e9]! border-[#687660];
+  @apply bg-[var(--studio-nav-surface,#355b4b)]! text-[var(--studio-nav-ink,#f2fbf5)]! border-[var(--studio-nav-line,#6b9380)];
 }
 :root[data-interface="studio"] body .nav-face .btn.primary {
-  @apply bg-[#c9d5b8]! text-[#232c25]! border-[#c9d5b8]!;
+  @apply bg-[var(--studio-nav-active,#c7ecd5)]! text-[var(--studio-nav-active-ink,#294b40)]! border-[var(--studio-nav-active,#c7ecd5)]!;
 }
 :root[data-interface="studio"]
   body
   .nav-face
   :is(.flash-folder-row, .hub-tree-row, .practice-tree-row):hover {
-  @apply bg-[#414d3e];
+  @apply bg-[var(--studio-nav-hover,#416e59)];
 }
 :root[data-interface="studio"] body .heading h1 {
   @apply text-[clamp(28px,3.5vw,44px)] tracking-[-0.035em] leading-[1.15] font-bold;
 }
 :root[data-interface="studio"] body .eyebrow {
-  @apply text-[#687b59] tracking-[0.12em] font-bold;
+  @apply text-[var(--studio-accent-strong,#3d8060)] tracking-[0.12em] font-bold;
 }
 :root[data-interface="studio"] body .flip-face {
-  @apply bg-[#fcfaf4]! border! border-[#dce0d3]! [box-shadow:0_16px_48px_-20px_#232c2530]!;
+  @apply bg-[#fffefa]! border! border-[#d6e6dc]! [box-shadow:0_16px_48px_-20px_#294b4030]!;
 }
 :root[data-interface="studio"] body .flip-back {
-  @apply bg-[#edf1e5]! border-[#cfdac3]! [box-shadow:0_16px_48px_-20px_#232c2530]!;
+  @apply bg-[#eaf7ee]! border-[#c7e6d2]! [box-shadow:0_16px_48px_-20px_#294b4030]!;
 }
 .studio-masthead {
   @apply flex items-center justify-between gap-4 flex-wrap max-w-[1280px] mx-auto mb-7 pb-5 pt-4 border-b border-[#dedee7];
@@ -176,7 +176,7 @@
   @apply grid gap-1;
 }
 .studio-masthead strong {
-  @apply text-xl font-bold text-[#232c25];
+  @apply text-xl font-bold text-[var(--studio-nav-active-ink,#294b40)];
 }
 .studio-kicker {
   @apply text-[10px] tracking-[0.16em] text-[#65708b] font-bold;
@@ -185,7 +185,7 @@
   @apply inline-flex items-center gap-2 rounded-full bg-[#e6f2e9] px-4 py-2 text-sm text-[#24624d];
 }
 .studio-appearance-link {
-  @apply inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-[#526447];
+  @apply inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-[var(--studio-accent,#26735b)];
 }
 .interface-picker {
   @apply grid grid-cols-2 gap-4 mb-8;
@@ -203,10 +203,10 @@
   @apply grid grid-cols-[1fr_2fr] grid-rows-2 gap-2 rounded-xl p-3 bg-[#f5f3ed] h-24;
 }
 .interface-sample > span:first-child {
-  @apply row-span-2 rounded-lg bg-[#232c25];
+  @apply row-span-2 rounded-lg bg-[var(--studio-nav,#294b40)];
 }
 .interface-sample > span:not(:first-child) {
-  @apply rounded-lg bg-white border border-[#dce0d3];
+  @apply rounded-lg bg-white border border-[#d6e6dc];
 }
 .interface-option-glass .interface-sample {
   @apply bg-[linear-gradient(120deg,#b7daef,#d8c3ea)];

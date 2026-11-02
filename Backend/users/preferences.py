@@ -20,7 +20,7 @@ def validate_preferences(data):
                 value[name] = validate_preferences(settings)
         elif key=='appearanceProfiles':
             import re
-            allowed = {'navScale','font','transparency','textSize','textWeight','textContrast','textColor','curvature','glassLens'}
+            allowed = {'navScale','font','transparency','textSize','textWeight','textContrast','textColor','curvature','glassLens','studioPageColor','studioNavColor','studioAccentColor'}
             if not isinstance(value,dict) or len(value)>300:raise ValueError('Invalid appearance settings.')
             for name, settings in value.items():
                 if not isinstance(name,str) or not re.fullmatch(r'(default|[0-9]+):(studio|glass|xp|retro|space|notebook|rpg):(mist|paper|night)',name):raise ValueError('Invalid theme.')
@@ -32,7 +32,7 @@ def validate_preferences(data):
         elif key=='backgroundByInterface':
             if not isinstance(value,dict) or set(value)-{'studio','glass','xp','retro','notebook','rpg'}: raise ValueError('Invalid background settings.')
             if any(v is not None and (type(v) is not int or v < 0) for v in value.values()): raise ValueError('Invalid background.')
-        elif key=='textColor':
+        elif key in ('textColor','studioPageColor','studioNavColor','studioAccentColor'):
             import re
             if not isinstance(value,str) or (value != 'auto' and not re.fullmatch(r'#[0-9a-fA-F]{6}', value)):raise ValueError('Invalid text color.')
         elif key=='background':

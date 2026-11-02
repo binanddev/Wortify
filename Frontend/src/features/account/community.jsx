@@ -34,6 +34,7 @@ import {
 } from "../../lib/core.js";
 import {
   Page,
+  SidebarTools,
   Heading,
   Btn,
   Field,
@@ -193,19 +194,15 @@ function Content({ lang, id, data, reload }) {
           ) : null
         }
       />
+      {!id && !!data.classes.length && (
+        <SidebarTools navOnly>
+          <Field className="classroom-nav-search" label={tr("Search classes")} value={query} onChange={setQuery} startContent={<Search size={17} />} />
+        </SidebarTools>
+      )}
       {!id ? (
         <>
           {!!data.classes.length && (
             <div className="classroom-list-tools">
-              <label className="classroom-search">
-                <Search size={17} />
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  aria-label={tr("Search classes")}
-                  placeholder={tr("Search classes")}
-                />
-              </label>
               <span>
                 {tr("{count} classes", { count: data.classes.length })}
               </span>
