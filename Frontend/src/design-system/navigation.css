@@ -241,3 +241,16 @@ button[aria-pressed="true"] {
     @apply overflow-hidden;
   }
 }
+
+.learn-sidebar-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .35rem .75rem;
+  margin-block: .25rem;
+}
+.learn-sidebar-info details { flex: 1 1 8rem; min-width: 0; }
+.learn-sidebar-info summary { padding-block: .5rem; font-weight: 650; cursor: pointer; overflow-wrap: anywhere; }
+.learn-sidebar-info details[open] { flex-basis: 100%; }
+.learn-sidebar-info p, .learn-sidebar-stages { font-size: .875rem; }
+.learn-sidebar-stages > div { display: flex; gap: .5rem; align-items: baseline; }
