@@ -206,7 +206,7 @@ def import_cards(request, pk):
     text = data.get('text', '')
     if not isinstance(text, str) or len(text) > 500000:
         raise ValueError('Content is too long.')
-    rows = parse_cards(text, data.get('separator', ','))
+    rows = parse_cards(text, data.get('separator', ','), parent.language)
     batch = ImportBatch.objects.create(deck=parent, rows=rows)
     return JsonResponse({'token': str(batch.token), 'count': len(rows), 'preview': rows[:10]})
 

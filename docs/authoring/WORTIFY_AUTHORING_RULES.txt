@@ -394,7 +394,7 @@ Validate the whole package with Preview. Correct reported errors and preview aga
 
 === PERSONAL FLASHCARDS ONLY: GERMAN ===
 
-WORTIFY FLASHCARD IMPORT — AI INSTRUCTIONS
+WORTIFY GERMAN FLASHCARD IMPORT — AI INSTRUCTIONS
 
 Ask me for the topic, level and number of cards. Create a complete, ready-to-study deck of accurate, original German vocabulary and useful phrases, with Vietnamese meanings.
 
@@ -412,11 +412,11 @@ Prepare cards for active recall and sentence production: include useful phrases/
 
 FIELDS (use these exact keys):
 
-german_text: Term or phrase — up to 500 characters.
+german_text: German term or phrase — up to 500 characters.
 
 vietnamese_meaning: Vietnamese meaning — up to 500 characters.
 
-example_german: Example sentence in the learning language — up to 2000 characters.
+example_german: Example sentence in German — up to 2000 characters.
 
 example_vietnamese: Vietnamese translation of the example — up to 2000 characters.
 
@@ -424,35 +424,37 @@ part_of_speech: Part of speech — up to 50 characters.
 
 OPTIONAL IMAGE LINKS: image_url is a direct public HTTPS image URL (max 2000). Optional attribution: image_source_url (source page, 2000), image_credit (author, 500), image_license (100), image_license_url (2000). All values are strings. Never embed base64, files or binary data. Never invent image URLs. Omit these fields unless the user supplies verified links or you have verified an openly licensed image and its attribution. Without verified links leave cards without images; Wortify can suggest free Commons images later.
 
-Examples and translations must match. Prefer useful phrases and collocations, avoid duplicate cards, include the article in the term itself for German nouns when appropriate.
+Write the terms and example sentences in German. Capitalize nouns and include their definite article. Keep reflexive pronouns with verbs and show separable prefixes in their natural sentence position. Label each term by its use in the example.
 
 Do not add IDs, accepted_answers, accepted_examples or extra columns; these are not part of this import format.
 
-EXAMPLE OBJECTS (place these objects inside one JSON array, separated by commas):
+EXAMPLE JSON ARRAY:
 
-{
-  "german_text": "eine Pause",
-  "vietnamese_meaning": "nghỉ giải lao",
-  "example_german": "Nach der Arbeit mache ich eine Pause.",
-  "example_vietnamese": "Sau giờ làm tôi nghỉ giải lao.",
-  "part_of_speech": "verb phrase"
-}
+[
+  {
+    "german_text": "eine Pause machen",
+    "vietnamese_meaning": "nghỉ giải lao",
+    "example_german": "Nach der Arbeit mache ich eine Pause.",
+    "example_vietnamese": "Sau giờ làm tôi nghỉ giải lao.",
+    "part_of_speech": "verb phrase"
+  },
 
-{
-  "german_text": "Bescheid sagen",
-  "vietnamese_meaning": "báo cho biết",
-  "example_german": "Kannst du mir bitte rechtzeitig Bescheid sagen?",
-  "example_vietnamese": "Bạn có thể báo cho tôi kịp thời không?",
-  "part_of_speech": "verb phrase"
-}
+  {
+    "german_text": "Bescheid sagen",
+    "vietnamese_meaning": "báo cho biết",
+    "example_german": "Kannst du mir bitte rechtzeitig Bescheid sagen?",
+    "example_vietnamese": "Bạn có thể báo cho tôi kịp thời không?",
+    "part_of_speech": "verb phrase"
+  },
 
-{
-  "german_text": "der Bahnhof",
-  "vietnamese_meaning": "nhà ga",
-  "example_german": "Der Bahnhof ist in der Nähe.",
-  "example_vietnamese": "Nhà ga ở gần đây.",
-  "part_of_speech": "noun"
-}
+  {
+    "german_text": "der Bahnhof",
+    "vietnamese_meaning": "nhà ga",
+    "example_german": "Der Bahnhof ist in der Nähe.",
+    "example_vietnamese": "Nhà ga ở gần đây.",
+    "part_of_speech": "noun"
+  }
+]
 
 FINAL CHECK BEFORE OUTPUT: 5 named text fields plus optional image-link/attribution string fields; valid JSON; unique phrases and meanings; each example has 3–40 words and contains its target expression; accurate translations; correct grammar. Do not include this checklist in the output.
 
@@ -460,7 +462,7 @@ Review grammar and translations before returning. I will paste your output into 
 
 === PERSONAL FLASHCARDS ONLY: ENGLISH ===
 
-WORTIFY FLASHCARD IMPORT — AI INSTRUCTIONS
+WORTIFY ENGLISH FLASHCARD IMPORT — AI INSTRUCTIONS
 
 Ask me for the topic, level and number of cards. Create a complete, ready-to-study deck of accurate, original English vocabulary and useful phrases, with Vietnamese meanings.
 
@@ -478,11 +480,11 @@ Prepare cards for active recall and sentence production: include useful phrases/
 
 FIELDS (use these exact keys):
 
-german_text: Term or phrase — up to 500 characters.
+english_text: English term or phrase — up to 500 characters.
 
 vietnamese_meaning: Vietnamese meaning — up to 500 characters.
 
-example_german: Example sentence in the learning language — up to 2000 characters.
+example_english: Example sentence in English — up to 2000 characters.
 
 example_vietnamese: Vietnamese translation of the example — up to 2000 characters.
 
@@ -490,35 +492,37 @@ part_of_speech: Part of speech — up to 50 characters.
 
 OPTIONAL IMAGE LINKS: image_url is a direct public HTTPS image URL (max 2000). Optional attribution: image_source_url (source page, 2000), image_credit (author, 500), image_license (100), image_license_url (2000). All values are strings. Never embed base64, files or binary data. Never invent image URLs. Omit these fields unless the user supplies verified links or you have verified an openly licensed image and its attribution. Without verified links leave cards without images; Wortify can suggest free Commons images later.
 
-Examples and translations must match. Prefer useful phrases and collocations, avoid duplicate cards, include the article in the term itself for German nouns when appropriate.
+Write the terms and example sentences in English, including the values of english_text and example_english. Use natural English collocations. Keep phrasal verbs together and label each term by its use in the example.
 
 Do not add IDs, accepted_answers, accepted_examples or extra columns; these are not part of this import format.
 
-EXAMPLE OBJECTS (place these objects inside one JSON array, separated by commas):
+EXAMPLE JSON ARRAY:
 
-{
-  "german_text": "take a break",
-  "vietnamese_meaning": "nghỉ giải lao",
-  "example_german": "Let's take a break after this exercise.",
-  "example_vietnamese": "Hãy nghỉ giải lao sau bài tập này.",
-  "part_of_speech": "verb phrase"
-}
+[
+  {
+    "english_text": "take a break",
+    "vietnamese_meaning": "nghỉ giải lao",
+    "example_english": "Let's take a break after this exercise.",
+    "example_vietnamese": "Hãy nghỉ giải lao sau bài tập này.",
+    "part_of_speech": "verb phrase"
+  },
 
-{
-  "german_text": "make a decision",
-  "vietnamese_meaning": "đưa ra quyết định",
-  "example_german": "We need to make a decision before Friday.",
-  "example_vietnamese": "Chúng ta cần quyết định trước thứ Sáu.",
-  "part_of_speech": "verb phrase"
-}
+  {
+    "english_text": "make a decision",
+    "vietnamese_meaning": "đưa ra quyết định",
+    "example_english": "We need to make a decision before Friday.",
+    "example_vietnamese": "Chúng ta cần quyết định trước thứ Sáu.",
+    "part_of_speech": "verb phrase"
+  },
 
-{
-  "german_text": "station",
-  "vietnamese_meaning": "nhà ga",
-  "example_german": "The station is near my house.",
-  "example_vietnamese": "Nhà ga ở gần nhà tôi.",
-  "part_of_speech": "noun"
-}
+  {
+    "english_text": "station",
+    "vietnamese_meaning": "nhà ga",
+    "example_english": "The station is near my house.",
+    "example_vietnamese": "Nhà ga ở gần nhà tôi.",
+    "part_of_speech": "noun"
+  }
+]
 
 FINAL CHECK BEFORE OUTPUT: 5 named text fields plus optional image-link/attribution string fields; valid JSON; unique phrases and meanings; each example has 3–40 words and contains its target expression; accurate translations; correct grammar. Do not include this checklist in the output.
 

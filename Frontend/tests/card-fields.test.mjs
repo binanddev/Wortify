@@ -10,6 +10,9 @@ test('card forms and copied examples share five ordinary fields',()=>{
  for(const lang of ['en','de']) {
   const examples=flashcardAiGuide(lang).match(/\{[^{}]+\}/g).map(JSON.parse);
   assert.equal(examples.length,3);
-  for(const example of examples)assert.deepEqual(Object.keys(example),fields);
+  const expected = lang === 'en'
+    ? ['english_text','vietnamese_meaning','example_english','example_vietnamese','part_of_speech']
+    : fields;
+  for(const example of examples)assert.deepEqual(Object.keys(example),expected);
  }
 });

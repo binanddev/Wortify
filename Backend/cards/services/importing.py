@@ -8,20 +8,28 @@ FIELDS = ['german_text', 'vietnamese_meaning', 'example_german', 'example_vietna
 JSON_FIELDS = FIELDS + list(IMAGE_FIELDS)
 
 
-def parse_cards(text, separator):
+def parse_cards(text, separator, language="de"):
     from cards.forms import CardForm
     if separator not in (',', '\t', ';', '|'):
         raise ValidationError('Invalid separator.')
     normalized = text.lstrip('\ufeff').strip()
-    if normalized.startswith('['):
+    if normalized.startswith(('[', '{')):
         try:
             cards = json.loads(normalized)
         except (ValueError, RecursionError):
             raise ValidationError('Invalid JSON. Paste the complete array of cards.')
+        if isinstance(cards, dict):
+            cards = [cards]
         if not isinstance(cards, list) or not 1 <= len(cards) <= 2000:
             raise ValidationError('Enter between 1 and 2000 cards.')
         rows, errors = [], []
         for index, card in enumerate(cards, 1):
+            if language == 'en' and isinstance(card, dict):
+                for alias, field in [('english_text', 'german_text'), ('example_english', 'example_german')]:
+                    if alias in card:
+                        if field in card and card[field] != card[alias]:
+                            raise ValidationError(f'Card {index}: conflicting values for {alias} and {field}.')
+                        card[field] = card.pop(alias)
             if not isinstance(card, dict) or set(card) - set(JSON_FIELDS) or any(not isinstance(value, str) for value in card.values()):
                 errors.append(f'Card {index}: use the named fields from the guide with text values.')
                 continue
@@ -61,5 +69,5 @@ def parse_cards(text, separator):
     if errors:
         raise ValidationError(errors[:20])
     if not rows:
-        raise ValidationError('Enter at least one line containing a German term and Vietnamese meaning.')
+        raise ValidationError('Enter at least one line containing a term and Vietnamese meaning.')
     return rows

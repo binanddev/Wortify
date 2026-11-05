@@ -1043,7 +1043,7 @@ export function ImportCards({ api, id, reload, onClose, lang }) {
           <div className="grid gap-4">
             <FlashcardAiHelp lang={lang} separator={v.separator} />
             <Field
-              label={tr("Paste cards from AI, Quizlet or your spreadsheet")}
+              aria-label={tr("Paste cards from AI, Quizlet or your spreadsheet")}
               multiline
               rows={8}
               isRequired
