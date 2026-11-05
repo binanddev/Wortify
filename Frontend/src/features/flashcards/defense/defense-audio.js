@@ -1,3 +1,4 @@
+import { cardUtterance } from "../../../lib/card-speech.js";
 // Procedural, layered sound design: no downloads, no external audio service.
 // Every voice has a short envelope and a limiter keeps overlapping effects comfortable.
 export function defenseAudio() {
@@ -232,8 +233,7 @@ export function defenseAudio() {
       fx.gain.cancelScheduledValues(context.currentTime);
       fx.gain.setTargetAtTime(0.22, context.currentTime, 0.03);
     }
-    const utterance = new SpeechSynthesisUtterance(card.answer);
-    utterance.lang = card.language;
+    const utterance = cardUtterance(card.answer, card.language);
     utterance.rate = 0.85;
     utterance.volume = volume;
     const ended = () => {

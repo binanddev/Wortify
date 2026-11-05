@@ -11,16 +11,15 @@ import {
   createDefense,
   prepareCards,
   DEFAULT_OPTIONS,
-  glyphs,
 } from "./defense-engine.js";
-import { createFlight } from "./flight-engine.js";
-import { bindGameInput } from "./game-input.js";
+import { createBalloon } from "./balloon-engine.js";
+import { bindGameInput, gameTypingKey } from "./game-input.js";
 import { defenseAudio } from "./defense-audio.js";
 import css from "./defense.css?inline";
 
 const labelMap = {
   defense: "Flashcard Defense",
-  flight: "Word Flight",
+  balloon: "Word Balloon",
   guided: "Guided target",
   free: "Free targeting",
   classic: "Classic",
@@ -33,9 +32,31 @@ const labelMap = {
   meaning: "Term → definition",
   audio: "Listen → type",
 };
+const settingTips = {
+  defense: "Complete words to shoot falling cards and protect your shields.",
+  balloon:
+    "Practise one word at a time. Each correct letter lifts the balloon.",
+  classic: "Start with three shields. Falling cards speed up over time.",
+  time: "Score as many points as possible in 60 seconds.",
+  zen: "Practise at a steady speed without losing shields.",
+  guided: "Follow the highlighted card. Use Tab to switch.",
+  free: "Start typing to lock a matching card.",
+  easy: "Up to one card at a time, with the slowest fall.",
+  normal: "Up to two cards at a time, at a moderate speed.",
+  hard: "Up to four cards at a time, with the fastest fall.",
+  balloon_easy: "Slow descent gives you more time to recall each word.",
+  balloon_normal: "Moderate descent rewards a steady typing rhythm.",
+  balloon_hard: "Fast descent calls for quick recall.",
+  term: "Read the Vietnamese meaning and type the foreign word.",
+  meaning: "Read the foreign word and type its Vietnamese meaning.",
+  audio: "Listen to the word and type what you hear. Sound stays on.",
+  deck: "Select one or more decks. Their words appear together in the game.",
+  case: "Enable this to practise capitalisation exactly as written on the card.",
+  sound:
+    "Auto listen repeats words. Sound controls speech and effects, and volume adjusts both. Press Space to hear the selected card again.",
+};
 const snapshot = (s) => ({
-  quiz: s.quiz,
-  round: s.round,
+  height: s.height,
   score: s.score,
   hp: s.hp,
   combo: s.combo,
@@ -65,7 +86,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
     const saved = readPreference(settingsKey, {}),
       value = { ...DEFAULT_OPTIONS, ...saved };
     for (const [key, allowed] of Object.entries({
-      game: ["defense", "flight"],
+      game: ["defense", "balloon"],
       targeting: ["guided", "free"],
       mode: ["classic", "time", "zen"],
       difficulty: ["easy", "normal", "hard"],
@@ -103,29 +124,38 @@ function Defense({ lang, userId, initialDeck, onClose }) {
       input.current.value = value;
     setDraft(value);
   };
+  function replayTarget() {
+    const state = engine.current?.state;
+    const card = state?.rocks.find((r) => r.id === state.target)?.card;
+    if (card) audio.current.speak(card, true);
+  }
+  function acceptText(value) {
+    const game = engine.current;
+    const previousLength =
+      game.state.rocks.find((rock) => rock.id === game.state.target)?.typed
+        .length || 0;
+    const accepted = game.input(value);
+    audio.current.typing(value.length < previousLength);
+    setDraft(accepted);
+    setHud(snapshot(engine.current.state));
+    return accepted;
+  }
   useEffect(() => {
     if (phase !== "play" || !ready || !input.current) return;
     return bindGameInput(input.current, {
       active: () =>
         !!engine.current &&
         !engine.current.state.paused &&
-        !engine.current.state.ended &&
-        (options.game !== "flight" || engine.current.state.quiz),
+        !engine.current.state.ended,
       composing: (value) => {
         composition.current = value;
       },
-      accept: (value) => {
-        audio.current.typing(
-          value.length <
-            (engine.current.state.rocks.find(
-              (r) => r.id === engine.current.state.target,
-            )?.typed.length || 0),
-        );
-        const accepted = engine.current.input(value);
-        setDraft(accepted);
-        setHud(snapshot(engine.current.state));
-        return accepted;
-      },
+      current: () =>
+        engine.current.state.rocks.find(
+          (r) => r.id === engine.current.state.target,
+        )?.typed || "",
+      replayTarget,
+      accept: acceptText,
     });
   }, [phase, ready, options.game]);
   useEffect(() => {
@@ -193,8 +223,8 @@ function Defense({ lang, userId, initialDeck, onClose }) {
     if (phase !== "play") return;
     let cancelled = false,
       dispose;
-    (options.game === "flight"
-      ? import("./flight-scene.js")
+    (options.game === "balloon"
+      ? import("./balloon-scene.js")
       : import("./defense-scene.js")
     )
       .then(({ launchDefense }) => {
@@ -203,11 +233,12 @@ function Defense({ lang, userId, initialDeck, onClose }) {
           audio: audio.current,
           labels: {
             target: tr("Type this card"),
-            gate: tr("Vocabulary gate"),
-            storm: tr("Storm sector"),
+
             freeze: tr("Freeze"),
-            nuke: tr("Nuke"),
-            health: tr("Health"),
+            pulse: tr("Repulsor wave"),
+            beacon: tr("Hint beacon"),
+            nuke: tr("Nova burst"),
+            health: tr("Shield +1"),
             boss: tr("Boss"),
             listen: tr("Tap to listen"),
           },
@@ -244,55 +275,67 @@ function Defense({ lang, userId, initialDeck, onClose }) {
     focus();
     const type = (event) => {
       if (
-        options.game === "flight" &&
-        !engine.current.state.quiz &&
-        event.code === "Space"
+        event.defaultPrevented ||
+        engine.current.state.paused ||
+        engine.current.state.ended
+      )
+        return;
+      if (
+        event.key === " " &&
+        !event.isComposing &&
+        !composition.current &&
+        !event.ctrlKey &&
+        !event.altKey &&
+        !event.metaKey &&
+        !event.target?.closest?.("button")
       ) {
         event.preventDefault();
-        if (!event.repeat) engine.current.flap();
+        if (!event.repeat) replayTarget();
         return;
       }
-      if (event.key === "ArrowRight" && options.game === "defense") {
+      if (
+        !event.shiftKey &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        (event.key === "ArrowRight" || event.key === "Tab") &&
+        options.game === "defense"
+      ) {
         event.preventDefault();
+        event.stopPropagation();
+        focus();
         engine.current.nextTarget();
         syncInput(engine.current.state);
         setHud(snapshot(engine.current.state));
         return;
       }
-      if (
-        event.ctrlKey ||
-        event.metaKey ||
-        event.altKey ||
-        event.key === "Escape" ||
-        event.key === "Tab"
-      )
-        return;
-      if (
-        event.isComposing ||
-        composition.current ||
-        ["Dead", "Process", "Unidentified"].includes(event.key)
-      ) {
-        focus();
-        return;
-      }
-      if (event.key.length === 1 || event.key === "Backspace") {
-        if (event.key === " " && event.target?.closest?.("button")) return;
+      const state = engine.current.state;
+      const target = state.rocks.find((rock) => rock.id === state.target);
+      const key = gameTypingKey(event, target?.card.answer);
+      if (key !== null) {
         event.preventDefault();
-        if (options.game === "flight" && !engine.current.state.quiz) return;
-        const current =
-          engine.current.state.rocks.find(
-            (r) => r.id === engine.current.state.target,
-          )?.typed || "";
-        const next =
-          event.key === "Backspace"
-            ? glyphs(current).slice(0, -1).join("")
-            : current + event.key;
-        audio.current.typing(event.key === "Backspace");
-        const accepted = engine.current.input(next);
-        if (input.current) input.current.value = accepted;
-        setDraft(accepted);
-        setHud(snapshot(engine.current.state));
+        event.stopPropagation();
+        focus();
+        const previous = target?.typed || "";
+        input.current.value = acceptText(
+          key === "Backspace"
+            ? Array.from(previous).slice(0, -1).join("")
+            : previous + key,
+        );
+        return;
       }
+      if (event.isComposing || composition.current) return;
+      if (
+        !event.ctrlKey &&
+        !event.altKey &&
+        !event.metaKey &&
+        event.target !== input.current &&
+        (event.key === "Backspace" ||
+          event.key === "Dead" ||
+          event.key.length === 1) &&
+        !(event.key === " " && event.target?.closest?.("button"))
+      )
+        focus();
     };
     window.addEventListener("keydown", type, true);
     return () => window.removeEventListener("keydown", type, true);
@@ -310,6 +353,8 @@ function Defense({ lang, userId, initialDeck, onClose }) {
   }
   async function start() {
     if (busy || !selected.length) return;
+    if (!document.fullscreenElement)
+      document.documentElement.requestFullscreen?.().catch(() => {});
     setBusy(true);
     setError("");
     if (options.direction === "audio" && !window.speechSynthesis) {
@@ -347,8 +392,8 @@ function Defense({ lang, userId, initialDeck, onClose }) {
       const cards = prepareCards(collected, options);
       if (!cards.length) throw new Error(tr("No playable cards."));
       engine.current =
-        options.game === "flight"
-          ? createFlight(cards, options)
+        options.game === "balloon"
+          ? createBalloon(cards, options)
           : createDefense(cards, options);
       setHud(snapshot(engine.current.state));
       setReady(false);
@@ -419,6 +464,25 @@ function Defense({ lang, userId, initialDeck, onClose }) {
   const visible = decks.filter((d) =>
     d.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
   );
+  const fields = [
+    ["game", "Game", ["defense", "balloon"]],
+    ...(options.game === "defense"
+      ? [["mode", "Game mode", ["classic", "time", "zen"]]]
+      : []),
+    ...(options.game === "defense"
+      ? [["targeting", "Target selection", ["guided", "free"]]]
+      : []),
+    ["difficulty", "Difficulty", ["easy", "normal", "hard"]],
+    ["direction", "Direction", ["term", "meaning", "audio"]],
+  ];
+  const tip = (key, value) =>
+    tr(
+      settingTips[
+        key === "difficulty" && options.game === "balloon"
+          ? "balloon_" + value
+          : value
+      ],
+    );
   return (
     <div
       className="fd-shell"
@@ -431,12 +495,21 @@ function Defense({ lang, userId, initialDeck, onClose }) {
           <span className="fd-emblem">✦</span>
           <div>
             <b>
-              {options.game === "flight" ? "WORD FLIGHT" : "FLASHCARD DEFENSE"}
+              {options.game === "balloon"
+                ? tr("Word Balloon")
+                : "FLASHCARD DEFENSE"}
             </b>
             <small>WORTIFY · {tr("Vocabulary defense")}</small>
           </div>
         </div>
         <div className="fd-top-actions">
+          {document.fullscreenEnabled &&
+            button("Fullscreen", () => {
+              if (document.fullscreenElement)
+                document.exitFullscreen().catch(() => {});
+              else document.documentElement.requestFullscreen().catch(() => {});
+              focus();
+            })}
           {button("How to play", () => {
             if (phase === "play") {
               engine.current.pause(true);
@@ -453,23 +526,10 @@ function Defense({ lang, userId, initialDeck, onClose }) {
         <div className="fd-help" role="dialog" aria-label={tr("How to play")}>
           <div>
             <h2>{tr("How to play")}</h2>
-            {options.game === "flight" ? (
+            {options.game === "balloon" ? (
               <ol>
-                <li>
-                  {tr(
-                    "Press Space or tap Flap to stay in the air. Avoid walls and drones.",
-                  )}
-                </li>
-                <li>
-                  {tr(
-                    "At a vocabulary gate, flight pauses. Type the answer to open it.",
-                  )}
-                </li>
-                <li>
-                  {tr(
-                    "Every fifth gate brings a storm. Correct answers grant a short shield.",
-                  )}
-                </li>
+                <li>{tr("Each correct letter lifts the balloon.")}</li>
+                <li>{tr("Touch the ground and the game ends.")}</li>{" "}
               </ol>
             ) : (
               <ol>
@@ -481,9 +541,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
                   )}
                 </li>
                 <li>
-                  {tr(
-                    "Click another card or press Right Arrow to change target.",
-                  )}
+                  {tr("Click another card or press Tab to change target.")}
                 </li>
                 <li>
                   {tr(
@@ -493,6 +551,33 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               </ol>
             )}
             <p>{tr("Esc pauses. Backspace corrects your typing.")}</p>
+            <p>{tr(settingTips.deck)}</p>
+            {fields.map(([key, label, values]) => (
+              <details
+                key={key}
+                className="fd-setting-guide"
+                open={key === "mode"}
+              >
+                <summary>
+                  {tr(label)} · {tr(labelMap[options[key]])}
+                </summary>
+                <dl>
+                  {values.map((value) => (
+                    <div key={value}>
+                      <dt>{tr(labelMap[value])}</dt>
+                      <dd>{tip(key, value)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
+            ))}
+            <details className="fd-setting-guide">
+              <summary>
+                {tr("Case sensitive")} · {tr("Sound")}
+              </summary>
+              <p>{tr(settingTips.case)}</p>
+              <p>{tr(settingTips.sound)}</p>
+            </details>
             {button("Close", () => setHelp(false), true)}
           </div>
         </div>
@@ -503,11 +588,11 @@ function Defense({ lang, userId, initialDeck, onClose }) {
             <div className="fd-orbit" />
             <span className="fd-kicker">{tr("Your words. Your defense.")}</span>
             <h1>
-              {tr(options.game === "flight" ? "Take flight" : "Turn knowledge")}
+              {tr(options.game === "balloon" ? "Stay aloft" : "Turn knowledge")}
               <br />
               <em>
                 {tr(
-                  options.game === "flight"
+                  options.game === "balloon"
                     ? "with every word."
                     : "into firepower.",
                 )}
@@ -515,13 +600,13 @@ function Defense({ lang, userId, initialDeck, onClose }) {
             </h1>
             <p>
               {tr(
-                options.game === "flight"
-                  ? "Fly through gates. Unlock them with words."
+                options.game === "balloon"
+                  ? "Each correct letter lifts the balloon."
                   : "Type to lock. Finish to destroy.",
               )}
             </p>
             <div
-              className={`fd-illustration ${options.game === "flight" ? "fd-flight-preview" : ""}`}
+              className={`fd-illustration ${options.game === "balloon" ? "fd-balloon-preview" : ""}`}
               aria-hidden="true"
             >
               <div className="fd-preview-rock fd-preview-one">
@@ -537,15 +622,17 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               <div className="fd-beam" />
               <div className="fd-turret">✦</div>
             </div>
-            <div className="fd-power-legend">
-              <span>
-                ❄ {tr("Freeze")} <small>5s</small>
-              </span>
-              <span>✹ {tr("Nuke")}</span>
-              <span>
-                ✚ {tr("Health")} <small>+1</small>
-              </span>
-            </div>
+            {options.game === "defense" && (
+              <div className="fd-power-legend">
+                <span>
+                  ❄ {tr("Freeze")} <small>5s</small>
+                </span>
+                <span>✹ {tr("Nova burst")}</span>
+                <span>↟ {tr("Repulsor wave")}</span>
+                <span>✧ {tr("Hint beacon")}</span>
+                <span>✚ {tr("Shield +1")}</span>
+              </div>
+            )}
           </section>
           <section className="fd-config">
             <div className="fd-section-title">
@@ -585,15 +672,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               <h2>{tr("Mission settings")}</h2>
             </div>
             <div className="fd-options">
-              {[
-                ["game", "Game", ["defense", "flight"]],
-                ["mode", "Game mode", ["classic", "time", "zen"]],
-                ...(options.game === "defense"
-                  ? [["targeting", "Target selection", ["guided", "free"]]]
-                  : []),
-                ["difficulty", "Difficulty", ["easy", "normal", "hard"]],
-                ["direction", "Direction", ["term", "meaning", "audio"]],
-              ].map(([key, label, values]) => (
+              {fields.map(([key, label, values]) => (
                 <label key={key}>
                   {tr(label)}
                   <select
@@ -615,6 +694,9 @@ function Defense({ lang, userId, initialDeck, onClose }) {
                       </option>
                     ))}
                   </select>
+                  <small className="fd-setting-tip">
+                    {tip(key, options[key])}
+                  </small>
                 </label>
               ))}
             </div>
@@ -632,6 +714,20 @@ function Defense({ lang, userId, initialDeck, onClose }) {
                   }
                 />
                 {tr("Case sensitive")}
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={options.autoListen}
+                  onChange={(e) =>
+                    setOptions({
+                      ...options,
+                      autoListen: e.target.checked,
+                      sound: e.target.checked || options.sound,
+                    })
+                  }
+                />
+                {tr("Auto listen")}
               </label>
               <label>
                 <input
@@ -667,11 +763,13 @@ function Defense({ lang, userId, initialDeck, onClose }) {
             </label>
             <p className="fd-mode-note">
               {tr(
-                options.mode === "classic"
-                  ? "3 HP · Increasing speed"
-                  : options.mode === "time"
-                    ? "60 seconds · Maximum score"
-                    : "No HP · Steady pace",
+                options.game === "balloon"
+                  ? "Touch the ground and the game ends."
+                  : options.mode === "classic"
+                    ? "3 HP · Increasing speed"
+                    : options.game === "defense" && options.mode === "time"
+                      ? "60 seconds · Maximum score"
+                      : "No HP · Steady pace",
               )}
             </p>
             {error && (
@@ -680,7 +778,9 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               </p>
             )}
             {button(
-              options.game === "flight" ? "Start flight" : "Launch defense",
+              options.game === "balloon"
+                ? "Start balloon game"
+                : "Launch defense",
               start,
               true,
               {
@@ -699,11 +799,15 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               <b>{hud?.score.toLocaleString()}</b>
             </div>
             <div>
-              <small>{tr("Base shield")}</small>
+              <small>
+                {tr(options.game === "balloon" ? "Altitude" : "Base shield")}
+              </small>
               <b className="fd-health">
-                {options.mode === "classic"
-                  ? "♥".repeat(hud?.hp || 0) + "♡".repeat(3 - (hud?.hp || 0))
-                  : "∞"}
+                {options.game === "balloon"
+                  ? Math.round(hud.height * 100) + "%"
+                  : options.mode === "classic"
+                    ? "♥".repeat(hud?.hp || 0) + "♡".repeat(3 - (hud?.hp || 0))
+                    : "∞"}
               </b>
             </div>
             <div>
@@ -712,13 +816,17 @@ function Defense({ lang, userId, initialDeck, onClose }) {
             </div>
             <div>
               <small>
-                {tr(options.mode === "time" ? "Remaining" : "Time")}
+                {tr(
+                  options.game === "defense" && options.mode === "time"
+                    ? "Remaining"
+                    : "Time",
+                )}
               </small>
               <b>
                 {Math.max(
                   0,
                   Math.ceil(
-                    options.mode === "time"
+                    options.game === "defense" && options.mode === "time"
                       ? 60 - (hud?.time || 0)
                       : hud?.time || 0,
                   ),
@@ -746,24 +854,19 @@ function Defense({ lang, userId, initialDeck, onClose }) {
             )}
           </div>
           <div className="fd-console">
-            {options.game === "flight" &&
-              !hud?.quiz &&
-              button(
-                "Flap",
-                () => {
-                  engine.current.flap();
-                  focus();
-                },
-                true,
-              )}
-            <div className="fd-target" aria-live="polite">
+            <div
+              className={
+                options.game === "defense" ? "fd-sr-only" : "fd-target"
+              }
+              aria-live="polite"
+            >
               <span className={hud?.target ? "fd-locked" : ""}>
                 ●{" "}
                 {tr(
                   hud?.target
                     ? "Type this card"
-                    : options.game === "flight"
-                      ? "Space / tap to fly"
+                    : options.game === "balloon"
+                      ? "Touch the ground and the game ends."
                       : "Awaiting target",
                 )}
               </span>
@@ -780,16 +883,22 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               </span>
             </div>
             {hud?.rock && options.direction !== "audio" && (
-              <p className="fd-target-copy">{hud.rock.card.prompt}</p>
+              <p
+                className={`fd-target-copy ${options.game === "defense" ? "fd-sr-only" : ""}`}
+              >
+                {hud.rock.card.prompt}
+              </p>
             )}
-            <output className="fd-live-answer" aria-label={tr("Your typing")}>
+            <output
+              className={`fd-live-answer ${options.game === "defense" ? "fd-sr-only" : ""}`}
+              aria-label={tr("Your typing")}
+            >
               {draft || (hud?.target ? "＿" : "")}
             </output>
             <div className="fd-input-row">
-              {(options.game !== "flight" || hud?.quiz) &&
-                button("Keyboard", focus, false, {
-                  className: "fd-button fd-touch-keyboard",
-                })}
+              {button("Keyboard", focus, false, {
+                className: "fd-button fd-touch-keyboard",
+              })}
               <input
                 ref={input}
                 className="fd-keyboard-capture"
@@ -809,26 +918,26 @@ function Defense({ lang, userId, initialDeck, onClose }) {
                   setHud(snapshot(engine.current.state));
                   focus();
                 })}
-              {(options.game !== "flight" || hud?.quiz) &&
-                button("Listen", () => {
-                  const s = engine.current.state,
-                    r =
-                      s.rocks.find((r) => r.id === s.target) ||
-                      [...s.rocks].sort((a, b) => b.y - a.y)[0];
-                  if (r) audio.current.speak(r.card, true);
-                  focus();
-                })}
+              {button("Listen", () => {
+                const s = engine.current.state,
+                  r =
+                    s.rocks.find((r) => r.id === s.target) ||
+                    [...s.rocks].sort((a, b) => b.y - a.y)[0];
+                if (r) audio.current.speak(r.card, true);
+                focus();
+              })}
             </div>
             <div className="fd-bottom-note">
               <span>
                 {tr(
-                  options.game === "flight"
-                    ? "Space / tap to fly"
-                    : "Right Arrow: next target · Esc: pause",
+                  options.game === "balloon"
+                    ? "Space: listen again"
+                    : "Type to fire · Tab: next target · Space: listen again · Orange: type this letter",
                 )}
               </span>
               <span>
-                {tr(labelMap[options.mode])} ·{" "}
+                {options.game === "defense" &&
+                  tr(labelMap[options.mode]) + " · "}
                 {tr(labelMap[options.difficulty])}
               </span>
             </div>

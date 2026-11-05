@@ -1,0 +1,26 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createBalloon } from "../src/features/flashcards/defense/balloon-engine.js";
+test("accent composition, lift, backspace, pause and ground contact", () => {
+  const game = createBalloon([{ answer: "mèo" }]);
+  const s = game.state;
+  game.input("m");
+  const height = s.height;
+  game.input("");
+  game.input("m");
+  assert.equal(s.height, height);
+  assert.equal(game.input("me"), "me");
+  assert.equal(s.height, height);
+  game.input("me\u0300");
+  assert.ok(s.height > height);
+  game.input("mèo");
+  assert.equal(s.cleared, 1);
+  game.pause(true);
+  const before = s.height;
+  game.tick(0.1);
+  assert.equal(s.height, before);
+  game.pause(false);
+  for (let i = 0; i < 500; i++) game.tick(0.1);
+  assert.equal(s.ended, true);
+  assert.equal(s.height, 0);
+});

@@ -1,7 +1,10 @@
+import { paintGalaxy } from "./galaxy.js";
 import Phaser from "phaser";
-import { DIFFICULTIES, mask } from "./defense-engine.js";
+import { DIFFICULTIES, letterSlots } from "./defense-engine.js";
 const colors = {
   normal: 0x70e1ff,
+  pulse: 0x9e94ff,
+  beacon: 0xffdb80,
   freeze: 0x8bdcff,
   nuke: 0xffbd68,
   health: 0x72f3bb,
@@ -21,6 +24,10 @@ export function launchDefense(
       this.lastFrame = 0;
     }
     create() {
+      const texture = this.textures.createCanvas("deep-space", 1280, 720);
+      paintGalaxy(texture.context, 1280, 720);
+      texture.refresh();
+      this.sky = this.add.image(0, 0, "deep-space").setOrigin(0);
       this.background = this.add.graphics();
       this.starlight = this.add.graphics();
       this.base = this.add.graphics();
@@ -58,26 +65,7 @@ export function launchDefense(
       const { width: w, height: h } = this.scale;
       const g = this.background;
       g.clear();
-      g.fillGradientStyle(0x070d24, 0x11112c, 0x0c2338, 0x071525, 1).fillRect(
-        0,
-        0,
-        w,
-        h,
-      );
-      // Distant orbital body, atmospheric rings and layered mountain silhouettes.
-      const px = w * 0.77,
-        py = h * 0.12,
-        pr = Math.min(w * 0.14, 110);
-      for (let r = pr + 55; r > pr; r -= 5)
-        g.fillStyle(0x1f4162, 0.025).fillCircle(px, py, r);
-      g.fillGradientStyle(0x31405f, 0x4a4762, 0x15283f, 0x19233c, 1).fillCircle(
-        px,
-        py,
-        pr,
-      );
-      g.lineStyle(1, 0x8196bb, 0.12);
-      for (let i = 0; i < 5; i++)
-        g.strokeEllipse(px - 15, py + 10, pr * 3 + i * 8, pr * 0.65 + i * 4);
+      this.sky.setDisplaySize(w, h);
       for (let layer = 0; layer < 3; layer++) {
         const points = [{ x: 0, y: h }];
         for (let x = 0; x <= w + 50; x += 50)
@@ -97,6 +85,15 @@ export function launchDefense(
       }
       for (let y = h - 95; y < h; y += 20) g.lineBetween(0, y, w, y);
       this.paintBase();
+    }
+    aim(point) {
+      const x = this.scale.width / 2,
+        y = this.scale.height - 43;
+      const angle = point
+        ? Math.atan2(point.y - y, point.x - x)
+        : (this.aimAngle ?? -Math.PI / 2);
+      this.aimAngle = angle;
+      return { x: x + 54 * Math.cos(angle), y: y + 54 * Math.sin(angle) };
     }
     paintBase() {
       const { width: w, height: h } = this.scale,
@@ -127,8 +124,13 @@ export function launchDefense(
       );
       g.fillStyle(0x17364a).fillCircle(x, y - 8, 25);
       g.lineStyle(2, 0x83dceb, 0.8).strokeCircle(x, y - 8, 25);
-      g.fillStyle(0x426579).fillRoundedRect(x - 9, y - 62, 18, 49, 3);
-      g.fillStyle(0x80edff).fillRect(x - 5, y - 62, 10, 10);
+      const target = engine.state.rocks.find(
+        (r) => r.id === engine.state.target,
+      );
+      const muzzle = this.aim(target && this.position(target));
+      g.lineStyle(17, 0x426579).lineBetween(x, y - 8, muzzle.x, muzzle.y);
+      g.lineStyle(4, 0x80edff).lineBetween(x, y - 8, muzzle.x, muzzle.y);
+      g.fillStyle(0xa4f0ff).fillCircle(muzzle.x, muzzle.y, 5);
       for (let i = -2; i <= 2; i++)
         g.fillStyle(i + 3 <= engine.state.hp ? 0x77ecc8 : 0x243848).fillRect(
           x + i * 23 - 6,
@@ -195,18 +197,12 @@ export function launchDefense(
           },
         )
         .setOrigin(0.5, 0);
-      const slots = this.add
-        .text(0, 20, "", {
-          fontFamily: font,
-          fontSize: 17,
-          fontStyle: "bold",
-          color: "#81e4ff",
-          align: "center",
-          wordWrap: { width: p.width - 22 },
-          maxLines: 3,
-        })
-        .setOrigin(0.5, 0);
-      container.add([badge, clue, slots]);
+      const slots = letterSlots(rock).map(() =>
+        this.add
+          .text(0, 0, "", { fontFamily: font, fontSize: 17, fontStyle: "bold" })
+          .setOrigin(0.5, 0),
+      );
+      container.add([badge, clue, ...slots]);
       container.setSize(p.width, 124).setInteractive();
       container.on("pointerdown", () => {
         if (engine.state.paused || engine.state.ended) return;
@@ -226,15 +222,36 @@ export function launchDefense(
       v.container.setPosition(p.x, p.y);
       v.container.setAlpha(engine.state.target && !locked ? 0.55 : 1);
       v.badge.setText(
-        `${rock.lane + 1} · ${locked ? labels.target : rock.kind === "normal" ? "" : labels[rock.kind]}`,
+        `${rock.lane + 1} · ${rock.kind !== "normal" ? (locked ? "◆ " : "") + labels[rock.kind] : locked ? labels.target : ""}`,
       );
-      v.slots.setColor(rock.typed ? "#b4ffe0" : "#81e4ff");
-      v.clue.setWordWrapWidth(p.width - 24);
-      v.slots.setWordWrapWidth(p.width - 24);
-      const hintText = mask(rock);
-      if (v.slots.text !== hintText) v.slots.setText(hintText);
-      v.slots.setY(-13 + v.clue.height);
-      const height = Math.max(104, 40 + v.clue.height + v.slots.height);
+      const layout = [p.width, rock.typed, rock.hints].join("|");
+      if (v.layout !== layout) {
+        v.layout = layout;
+        v.clue.setWordWrapWidth(p.width - 24);
+        const columns = Math.max(1, Math.floor((p.width - 24) / 20));
+        const colors = {
+          typed: "#b4ffe0",
+          hint: "#ffad64",
+          empty: "#81e4ff",
+          space: "#81e4ff",
+        };
+        letterSlots(rock).forEach(({ text, state }, i) => {
+          const row = Math.floor(i / columns);
+          const count = Math.min(columns, v.slots.length - row * columns);
+          v.slots[i]
+            .setText(text)
+            .setColor(colors[state])
+            .setPosition(
+              ((i % columns) - (count - 1) / 2) * 20,
+              -13 + v.clue.height + row * 22,
+            );
+        });
+        v.height = Math.max(
+          104,
+          40 + v.clue.height + Math.ceil(v.slots.length / columns) * 22,
+        );
+      }
+      const height = v.height;
       v.container.setSize(p.width, height);
       const g = v.body;
       g.clear();
@@ -308,20 +325,102 @@ export function launchDefense(
           height - 52,
         );
     }
-    pulse(rock, kind) {
+    pulse(rock, kind, letterValue, index) {
       if (!rock) return;
       const p = this.position(rock),
         color = colors[rock.kind];
-      if (kind === "hit" || kind === "lock") {
+      if (["pulse", "health", "freeze", "beacon", "nuke"].includes(kind)) {
+        const name = this.add
+          .text(p.x, Math.max(30, p.y - 35), labels[rock.kind], {
+            fontFamily: "system-ui",
+            fontSize: "17px",
+            fontStyle: "bold",
+            color: hex(color),
+            stroke: "#091628",
+            strokeThickness: 4,
+          })
+          .setOrigin(0.5)
+          .setDepth(29);
+        this.tweens.add({
+          targets: name,
+          y: name.y - (reducedMotion ? 0 : 24),
+          alpha: 0,
+          delay: 350,
+          duration: 380,
+          onComplete: () => name.destroy(),
+        });
+        if (!reducedMotion && (kind === "pulse" || kind === "nuke")) {
+          const wave = this.add
+            .circle(p.x, p.y, 15)
+            .setStrokeStyle(2, color)
+            .setDepth(24);
+          this.tweens.add({
+            targets: wave,
+            scale: kind === "pulse" ? 22 : 12,
+            alpha: 0,
+            duration: 440,
+            onComplete: () => wave.destroy(),
+          });
+        }
+      }
+      if (kind === "hit") {
+        const origin = this.aim(p);
         this.laser
           .clear()
           .lineStyle(6, 0x64e6ff, 0.12)
-          .lineBetween(this.scale.width / 2, this.scale.height - 97, p.x, p.y);
+          .lineBetween(origin.x, origin.y, p.x, p.y);
         this.laser
           .lineStyle(1.5, 0xb4faff, 0.85)
-          .lineBetween(this.scale.width / 2, this.scale.height - 97, p.x, p.y);
+          .lineBetween(origin.x, origin.y, p.x, p.y);
         this.laser.alpha = 1;
         this.tweens.add({ targets: this.laser, alpha: 0, duration: 140 });
+        if (kind === "hit" && !reducedMotion && rock.typed) {
+          const shot = (index + 1) % 3;
+          if (shot === 1) {
+            const orb = this.add
+              .circle(origin.x, origin.y, 6, 0xba83ff)
+              .setStrokeStyle(3, 0xe9ceff)
+              .setDepth(25);
+            this.tweens.add({
+              targets: orb,
+              x: p.x,
+              y: p.y,
+              scale: 0.55,
+              duration: 130,
+              onComplete: () => orb.destroy(),
+            });
+          } else if (shot === 2) {
+            for (const side of [-1, 1]) {
+              const bolt = this.add
+                .triangle(origin.x, origin.y, 0, 12, 3, 0, 6, 12, 0xffcb67)
+                .setDepth(25);
+              bolt.setRotation(
+                Math.atan2(p.y - origin.y, p.x - origin.x) + Math.PI / 2,
+              );
+              this.tweens.add({
+                targets: bolt,
+                x: p.x + side * 4,
+                y: p.y,
+                duration: 100,
+                onComplete: () => bolt.destroy(),
+              });
+            }
+          }
+          const letter = this.add
+            .text(origin.x, origin.y, letterValue, {
+              fontSize: "21px",
+              color: "#b4ffe0",
+            })
+            .setOrigin(0.5)
+            .setDepth(26);
+          this.tweens.add({
+            targets: letter,
+            x: p.x,
+            y: p.y,
+            duration: 150,
+            onComplete: () => letter.destroy(),
+          });
+        }
         this.particles.setParticleTint(color);
         this.particles.explode(5, p.x, p.y + 35);
         return;
@@ -340,18 +439,6 @@ export function launchDefense(
         });
         this.particles.setParticleTint(color);
         this.particles.explode(reducedMotion ? 8 : 32, p.x, p.y);
-        if (kind === "destroy") {
-          const missile = this.add
-            .circle(this.scale.width / 2, this.scale.height - 97, 4, 0xffd18a)
-            .setDepth(24);
-          this.tweens.add({
-            targets: missile,
-            x: p.x,
-            y: p.y,
-            duration: 120,
-            onComplete: () => missile.destroy(),
-          });
-        }
       }
     }
     update(time, delta) {
@@ -376,12 +463,13 @@ export function launchDefense(
           onEnd(state);
         }
         if (
+          !state.options.autoListen &&
           state.options.direction !== "audio" &&
           e.type === "hint" &&
           e.level === 2
         )
           audio.speak(e.rock.card);
-        this.pulse(e.rock, e.type);
+        this.pulse(e.rock, e.type, e.letter, e.index);
         if (e.type !== "spawn" && e.type !== "hint") audio.tone(e.type);
         if (["wrong", "impact"].includes(e.type) && !reducedMotion)
           this.cameras.main.flash(100, 140, 25, 55, false);
@@ -391,7 +479,7 @@ export function launchDefense(
       if (
         !state.paused &&
         !state.ended &&
-        state.options.direction === "audio"
+        (state.options.autoListen || state.options.direction === "audio")
       ) {
         audio.repeat(
           state.rocks.map((r) => r.card),

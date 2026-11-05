@@ -194,3 +194,40 @@ test("guided targeting highlights one stable target and switches explicitly", ()
   g.tick(0.1);
   assert.equal(g.state.target, first);
 });
+
+test("spaces skip slots and either spelling completes a phrase", () => {
+  for (const phrase of ["die Situation", "dieSituation"]) {
+    const game = createDefense([{ id: 1, answer: "die Situation" }]);
+    for (let i = 0; i < 10; i++) game.tick(0.1);
+    assert.equal(game.input("die "), "die");
+    game.input("die S");
+    assert.ok(mask(game.state.rocks[0]).includes("S"));
+    game.nextTarget();
+    assert.equal(game.state.rocks[0].typed, "dieS");
+    game.input(phrase);
+    assert.equal(game.state.cleared, 1);
+    assert.equal(game.state.errors, 0);
+  }
+});
+
+test("idle fall factor persists across selection and only a confirmed hit engages a card", () => {
+  const g = game({ mode: "zen", targeting: "guided" }, [
+    card("1", "Katze"),
+    card("2", "Worte"),
+  ]);
+  step(g, 5);
+  const [first, second] = g.state.rocks;
+  function displacement(rock) {
+    const y = rock.y;
+    g.tick(0.1);
+    return rock.y - y;
+  }
+  const slow = displacement(first);
+  g.input(first.card.answer[0]);
+  const full = displacement(first);
+  assert.ok(Math.abs(slow / full - 0.7) < 1e-9);
+  g.select(second.id);
+  assert.ok(Math.abs(displacement(first) - slow) < 1e-9);
+  g.input("!");
+  assert.ok(Math.abs(displacement(second) - slow) < 1e-9);
+});

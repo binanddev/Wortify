@@ -11,14 +11,27 @@ export const DEFAULT_OPTIONS = {
   direction: "term",
   caseSensitive: false,
   sound: true,
+  autoListen: true,
   volume: 0.55,
 };
+const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 export const glyphs = (text) =>
-  [
-    ...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(
-      String(text).normalize("NFC"),
-    ),
-  ].map((x) => x.segment);
+  [...segmenter.segment(String(text).normalize("NFC"))].map((x) => x.segment);
+// Some keyboards deliver the base letter before replacing it with its accented form.
+export function composingPrefix(answer, typed) {
+  const fold = (value) =>
+    value
+      .normalize("NFD")
+      .replace(/\p{M}/gu, "")
+      .replaceAll("đ", "d")
+      .replaceAll("Đ", "D");
+  return (
+    fold(answer).startsWith(fold(typed)) &&
+    answer.slice(0, typed.length) !== typed
+  );
+}
+export const answerLetters = (text) =>
+  String(text).normalize("NFC").replace(/\s+/gu, "");
 export const clean = (text) =>
   String(text || "")
     .normalize("NFC")
@@ -91,6 +104,8 @@ export function createDefense(cards, options = {}, random = Math.random) {
       : a.toLocaleLowerCase() === b.toLocaleLowerCase();
   const event = (type, rock, extra = {}) =>
     s.events.push({ type, rock: rock ? { ...rock } : null, ...extra });
+  let beaconReady = false;
+  let engagedTarget = null;
   function spawn() {
     const available = cards.filter(
       (c) => !s.rocks.some((r) => r.card.id === c.id),
@@ -99,15 +114,24 @@ export function createDefense(cards, options = {}, random = Math.random) {
     const card = available[Math.floor(random() * available.length)];
     const boss = card.hard || (s.missed.get(card.id) || 0) >= 2;
     const roll = random(),
-      kind = boss
-        ? "boss"
-        : roll < 0.12
-          ? "freeze"
-          : roll < 0.22
-            ? "nuke"
-            : roll < 0.32
-              ? "health"
-              : "normal";
+      kind =
+        opts.mode === "classic" &&
+        s.hp === 1 &&
+        !s.rocks.some((r) => r.kind === "health")
+          ? "health"
+          : boss
+            ? "boss"
+            : roll < 0.12
+              ? "freeze"
+              : roll < 0.22
+                ? "nuke"
+                : roll < 0.32
+                  ? "health"
+                  : roll < 0.43
+                    ? "pulse"
+                    : roll < 0.51
+                      ? "beacon"
+                      : "normal";
     const used = new Set(s.rocks.map((r) => r.lane));
     const lanes = Array.from({ length: difficulty.cap }, (_, i) => i).filter(
       (i) => !used.has(i),
@@ -119,14 +143,19 @@ export function createDefense(cards, options = {}, random = Math.random) {
       lane: lanes[Math.floor(random() * lanes.length)],
       y: 0,
       typed: "",
+      liftedLetters: 0,
+      idleFallFactor: 0.6 + random() * 0.2,
       armor: boss ? 2 : 1,
-      hints: 0,
+      hints: beaconReady ? 1 : 0,
     };
+    beaconReady = false;
     s.rocks.push(rock);
     event("spawn", rock);
   }
   function select(id) {
     if (s.paused || s.ended || !s.rocks.some((r) => r.id === id)) return;
+    if (s.target === id) return;
+    engagedTarget = null;
     for (const rock of s.rocks) rock.typed = "";
     s.target = id;
     event(
@@ -158,9 +187,31 @@ export function createDefense(cards, options = {}, random = Math.random) {
       s.hp = Math.min(3, s.hp + 1);
       event("health", rock);
     }
+    if (rock.kind === "pulse") {
+      for (const other of s.rocks) other.y = Math.max(0, other.y - 0.16);
+      event("pulse", rock);
+    }
+    if (rock.kind === "beacon") {
+      for (const other of s.rocks) other.hints = Math.max(other.hints, 1);
+      beaconReady = true;
+      event("beacon", rock);
+    }
     if (rock.kind === "nuke") {
-      // Collateral clears the field but earns no vocabulary points/mastery.
-      for (const other of [...s.rocks]) {
+      // Measure proximity in lane and fall coordinates; only the closest two
+      // within reach burst, regardless of their order in the spawn queue.
+      const cap = difficulty.cap;
+      const nearby = s.rocks
+        .map((other) => ({
+          other,
+          distance: Math.hypot(
+            (other.lane - rock.lane) / cap,
+            other.y - rock.y,
+          ),
+        }))
+        .filter((entry) => entry.distance <= 0.62)
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 2);
+      for (const { other } of nearby) {
         remove(other);
         event("blast", other);
       }
@@ -169,9 +220,10 @@ export function createDefense(cards, options = {}, random = Math.random) {
   }
   function input(value) {
     if (s.paused || s.ended) return "";
-    const typed = String(value).normalize("NFC");
+    const typed = answerLetters(value);
     let target = s.rocks.find((r) => r.id === s.target);
     if (!typed) {
+      engagedTarget = null;
       if (target) target.typed = "";
       if (opts.targeting !== "guided") s.target = null;
       return "";
@@ -181,13 +233,39 @@ export function createDefense(cards, options = {}, random = Math.random) {
     if (!target) {
       target = [...s.rocks]
         .sort((a, b) => b.y - a.y)
-        .find((r) => prefix(r.card.answer, typed));
+        .find((r) => prefix(answerLetters(r.card.answer), typed));
       if (target) {
         s.target = target.id;
         event("lock", target);
       }
     }
-    if (!target || !prefix(target.card.answer, typed)) {
+    if (!target && opts.targeting !== "guided") {
+      target = s.rocks.find(
+        (r) =>
+          composingPrefix(
+            answerLetters(r.card.answer).toLowerCase(),
+            typed.toLowerCase(),
+          ) && /[^\x00-\x7f]/u.test(answerLetters(r.card.answer)),
+      );
+      if (target) {
+        s.target = target.id;
+        event("lock", target);
+      }
+    }
+    if (
+      target &&
+      !prefix(answerLetters(target.card.answer), typed) &&
+      composingPrefix(
+        opts.caseSensitive
+          ? answerLetters(target.card.answer)
+          : answerLetters(target.card.answer).toLocaleLowerCase(),
+        opts.caseSensitive ? typed : typed.toLocaleLowerCase(),
+      )
+    ) {
+      target.typed = typed;
+      return typed;
+    }
+    if (!target || !prefix(answerLetters(target.card.answer), typed)) {
       s.errors++;
       s.combo = 0;
       if (target)
@@ -195,21 +273,33 @@ export function createDefense(cards, options = {}, random = Math.random) {
       event("wrong", target);
       return target?.typed || "";
     }
-    const added = Math.max(
-      0,
-      glyphs(typed).length - glyphs(target.typed).length,
+    const letters = glyphs(typed);
+    const previous = glyphs(target.typed);
+    const unchanged = letters.findIndex(
+      (letter, i) => !equal(letter, previous[i] || ""),
     );
     target.typed = typed;
-    s.shots += added;
-    if (added) event("hit", target);
-    if (equal(target.card.answer, typed)) {
+    if (unchanged >= 0) {
+      engagedTarget = target.id;
+      for (let i = unchanged; i < letters.length; i++) {
+        if (i >= target.liftedLetters) {
+          target.y = Math.max(0, target.y - 0.025);
+          target.liftedLetters = i + 1;
+        }
+        s.shots++;
+        event("hit", target, { letter: letters[i], index: i });
+      }
+    }
+    if (equal(answerLetters(target.card.answer), typed)) {
       target.armor--;
       if (target.armor > 0) {
         target.typed = "";
+        target.liftedLetters = 0;
         event("armor", target);
         return "";
       }
       kill(target);
+      guide();
       return "";
     }
     return typed;
@@ -233,7 +323,7 @@ export function createDefense(cards, options = {}, random = Math.random) {
       const lengthFactor =
         1 + Math.max(0, glyphs(rock.card.answer).length - 9) * 0.055;
       rock.y +=
-        (move * speed) /
+        (move * speed * (rock.id === engagedTarget ? 1 : rock.idleFallFactor)) /
         (difficulty.fall * lengthFactor * (rock.kind === "boss" ? 1.45 : 1));
       const hint =
         rock.y >= 0.88 ? 3 : rock.y >= 0.66 ? 2 : rock.y >= 0.33 ? 1 : 0;
@@ -268,7 +358,7 @@ export function createDefense(cards, options = {}, random = Math.random) {
     select,
     nextTarget() {
       const ordered = [...s.rocks].sort((a, b) => a.lane - b.lane);
-      if (ordered.length)
+      if (ordered.length && (ordered.length > 1 || s.target !== ordered[0].id))
         select(
           ordered[
             (ordered.findIndex((r) => r.id === s.target) + 1) % ordered.length
@@ -276,6 +366,7 @@ export function createDefense(cards, options = {}, random = Math.random) {
         );
     },
     unlock() {
+      engagedTarget = null;
       s.target = null;
       for (const r of s.rocks) r.typed = "";
     },
@@ -291,18 +382,27 @@ export function createDefense(cards, options = {}, random = Math.random) {
     },
   };
 }
-export function mask(rock) {
+export function letterSlots(rock) {
   const letters = glyphs(rock.card.answer),
-    typed = glyphs(rock.typed).length;
+    typed = glyphs(rock.typed);
   const hint =
     rock.hints >= 3
       ? Math.max(2, Math.ceil(letters.length * 0.35))
       : rock.hints >= 1
         ? 1
         : 0;
-  return letters
-    .map((char, i) =>
-      /\s/u.test(char) ? "  " : i < Math.max(typed, hint) ? char : "＿",
-    )
+  let slot = 0;
+  return letters.map((char) => {
+    if (/\s/u.test(char)) return { text: "  ", state: "space" };
+    const i = slot++;
+    if (typed[i]?.toLocaleLowerCase() === char.toLocaleLowerCase())
+      return { text: char, state: "typed" };
+    if (i < hint) return { text: char, state: "hint" };
+    return { text: "＿", state: "empty" };
+  });
+}
+export function mask(rock) {
+  return letterSlots(rock)
+    .map((slot) => slot.text)
     .join(" ");
 }

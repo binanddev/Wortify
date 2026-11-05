@@ -803,46 +803,22 @@ input[type="checkbox"] {
   min-height: 42px;
   padding: 4px 12px;
 }
-.fd-flight-preview .fd-preview-rock,
-.fd-flight-preview .fd-beam {
+.fd-balloon-preview .fd-preview-rock,
+.fd-balloon-preview .fd-beam {
   display: none;
 }
-.fd-flight-preview {
+.fd-balloon-preview {
   background: radial-gradient(circle at 70% 35%, #ffcd6f22, transparent 35%);
 }
-.fd-flight-preview::before,
-.fd-flight-preview::after {
-  content: "";
-  position: absolute;
-  right: 15%;
-  width: 28px;
-  height: 32%;
-  border: 2px solid #75e5de;
-  border-radius: 8px;
-  background: repeating-linear-gradient(
-    35deg,
-    #1a3e50 0px,
-    #1a3e50 12px,
-    #254a60 13px,
-    #254a60 15px
-  );
-}
-.fd-flight-preview::before {
-  top: 0;
-}
-.fd-flight-preview::after {
-  bottom: 0;
-}
-.fd-flight-preview .fd-turret {
-  left: 30%;
-  bottom: 40%;
-  transform: rotate(-12deg);
+.fd-balloon-preview .fd-turret {
+  left: 45%;
+  bottom: 35%;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  color: #08213b;
-  background: #7ce7fa;
-  box-shadow: 0 0 30px #5ddaff66;
+  color: transparent;
+  background: radial-gradient(circle at 30% 26%, #ffdbac, #ff956d 42%, #ca614d);
 }
-
 html,
 body,
 #game-root {
@@ -851,3 +827,33 @@ body,
   height: 100%;
   overflow: hidden;
 }
+
+.fd-console .fd-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.fd-shell[data-phase="play"] .fd-play {
+  width: 100%;
+  max-width: none;
+  padding-inline: 0;
+}
+.fd-shell[data-phase="play"] .fd-hud,
+.fd-shell[data-phase="play"] .fd-console {
+  padding-inline: clamp(10px, 2vw, 32px);
+}
+.fd-shell[data-phase="play"] .fd-stage-wrap {
+  border-inline: 0;
+  border-radius: 0;
+}
+
+.fd-setting-tip, .fd-setting-guide dd { color: #b9cbe0; font-size: 12px; line-height: 1.5; }
+.fd-setting-guide { border-top: 1px solid #37506b; padding: 10px 0; }
+.fd-setting-guide summary { cursor: pointer; color: #cdf4ee; }
+.fd-setting-guide dt { font-weight: 600; margin-top: 8px; }
+.fd-setting-guide dd { margin: 2px 0 0; }
+.fd-setting-guide:last-of-type { margin-bottom: 12px; }

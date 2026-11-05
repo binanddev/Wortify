@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { bindGameInput } from "../src/features/flashcards/defense/game-input.js";
+import {
+  bindGameInput,
+  gameTypingKey,
+} from "../src/features/flashcards/defense/game-input.js";
 import { createDefense } from "../src/features/flashcards/defense/defense-engine.js";
 test("native input displays accepted typing, rejects wrong letters, and cleans up", () => {
   const el = new EventTarget();
@@ -57,4 +60,33 @@ test("IME commits once, including browser trailing input after compositionend", 
   assert.equal(calls, 1);
   assert.equal(el.value, "");
   dispose();
+});
+
+test("Windows Process keys advance prepare one letter and emit only confirmed shots", () => {
+  const game = createDefense([{ id: 1, answer: "prepare" }]);
+  for (let i = 0; i < 10; i++) game.tick(0.1);
+  assert.ok(game.drain().every((e) => e.type !== "hit"));
+  game.input("x");
+  assert.ok(game.drain().every((e) => e.type !== "hit"));
+  let typed = "";
+  for (const letter of "prepare") {
+    const key = gameTypingKey(
+      {
+        key: "Process",
+        code: "Key" + letter.toUpperCase(),
+        keyCode: 229,
+        isComposing: true,
+      },
+      "prepare",
+    );
+    typed = game.input(typed + key);
+    assert.deepEqual(
+      game
+        .drain()
+        .filter((e) => e.type === "hit")
+        .map((e) => e.letter),
+      [letter],
+    );
+  }
+  assert.equal(game.state.cleared, 1);
 });
