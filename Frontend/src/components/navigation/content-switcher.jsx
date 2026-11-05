@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Search, Layers, BookOpen, ChevronRight, Check } from 'lucide-react';
+
 import { useResource } from '../../lib/core.js';
-import { Btn, Link, Loading } from '../ui/ui.jsx';
+import { Btn, Field, Icon, Link, Loading } from '../ui/ui.jsx';
 import { PracticeModal } from '../../features/practice/practice-workspace.jsx';
 import { t as tr, useLocale } from '../../i18n/index.js';
 
@@ -19,7 +19,7 @@ export default function ContentSwitcher({ lang, kind, currentId }) {
 }
 
 function searchable(text) {
-  return text.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase().replaceAll('đ', 'd').trim();
+  return text.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase().replaceAll(String.fromCharCode(0x111), 'd').trim();
 }
 
 function Choices({ lang, kind, currentId, onClose }) {
@@ -28,14 +28,11 @@ function Choices({ lang, kind, currentId, onClose }) {
   const decks = kind === 'decks';
   const resource = useResource(`/api/${lang}/${decks ? 'decks' : 'reading'}/`);
   const placeholder = tr(decks ? 'Search decks' : 'Search readings');
-  const ItemIcon = decks ? Layers : BookOpen;
+  const itemIcon = decks ? 'cards' : 'book';
   const term = searchable(query);
   return <>
-    <label className="picker-search">
-      <Search size={18} aria-hidden="true" />
-      <input autoFocus type="search" aria-label={placeholder} placeholder={placeholder}
-        value={query} onChange={e => setQuery(e.target.value)} />
-    </label>
+    <Field autoFocus type="search" aria-label={placeholder} placeholder={placeholder}
+      value={query} onChange={setQuery} />
     <div className="picker-results" key={term}>
       <Loading resource={resource}>{data => {
         const items = (data[decks ? 'decks' : 'lessons'] || []).filter(item => searchable(item.title).includes(term));
@@ -43,12 +40,12 @@ function Choices({ lang, kind, currentId, onClose }) {
         const current = items.find(isCurrent);
         return <>
           {current && <div className="picker-row picker-current" aria-current="page">
-            <ItemIcon size={18} aria-hidden="true" /><span>{current.title}</span>
-            <small><Check size={14} aria-hidden="true" />{tr('Selected')}</small>
+            <Icon name={itemIcon} size={18} /><span>{current.title}</span>
+            <small><Icon name="check" size={14} />{tr('Selected')}</small>
           </div>}
           {items.filter(item => !isCurrent(item)).map(item => (
-            <Link key={item.id} className="picker-row" to={`/${lang}/${decks ? 'flashcard/deck' : 'reading'}/${item.id}`} onClick={onClose}>
-              <ItemIcon size={18} aria-hidden="true" /><span>{item.title}</span><ChevronRight size={16} aria-hidden="true" />
+            <Link key={item.id} className="btn picker-row" to={`/${lang}/${decks ? 'flashcard/deck' : 'reading'}/${item.id}`} onClick={onClose}>
+              <Icon name={itemIcon} size={18} /><span>{item.title}</span>
             </Link>
           ))}
           {!items.length && <p role="status" className="picker-empty">{tr('No matching records.')}</p>}

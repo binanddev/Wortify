@@ -230,3 +230,5 @@
     @apply hidden!;
   }
 }
+
+:root[data-interface="studio"] .content-picker .picker-current { @apply bg-(--solid) border-s-3 border-(--accent); }

@@ -272,3 +272,5 @@
 :root[data-interface="glass"] body .written-feedback :is(ins, del, .needs-retry) {
   @apply bg-red-900! text-white!;
 }
+
+:root[data-interface="glass"] .content-picker .picker-current { @apply bg-(--surface) border border-(--line); }

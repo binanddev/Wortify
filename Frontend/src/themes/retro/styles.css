@@ -64,3 +64,5 @@
 :root[data-interface="retro"] .icon-retro {
   @apply block;
 }
+
+:root[data-interface="retro"] .content-picker .picker-current { @apply border-2 border-current shadow-[2px_2px_currentColor]; }

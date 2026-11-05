@@ -63,3 +63,5 @@
 :root[data-interface="xp"] .icon-xp {
   @apply block;
 }
+
+:root[data-interface="xp"] .content-picker .picker-current { @apply bg-[Highlight] text-[HighlightText]; }

@@ -40,3 +40,5 @@
 :root[data-interface="rpg"] body .btn { @apply inline-flex items-center justify-center gap-2 px-4 py-2 min-h-11; }
 :root[data-interface="rpg"] body .nav-link.active::before { @apply hidden; }
 :root[data-interface="rpg"] body .flip-face { @apply rounded-none border-4 border-double; }
+
+:root[data-interface="rpg"] .content-picker .picker-current { @apply border border-dashed border-current; }

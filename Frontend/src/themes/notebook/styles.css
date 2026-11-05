@@ -82,3 +82,5 @@
 
 :root[data-interface="notebook"] body :is(h1,h2,h3,.notebook-ink-action,.nav-link) { @apply [font-family:system-ui,'Segoe_UI',Arial,sans-serif] tracking-normal; }
 :root[data-interface="notebook"] body :is(.work-paper,[role="dialog"]) { @apply [border-radius:18px_5px_16px_6px/5px_18px_6px_16px]; }
+
+:root[data-interface="notebook"] .content-picker .picker-current { @apply border-b-2 border-dashed border-current; }

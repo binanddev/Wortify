@@ -14,58 +14,10 @@
   @apply min-w-0 min-h-0 overflow-y-auto overscroll-contain;
 }
 
-#modal-root .content-picker { max-width: 32rem; }
-#modal-root .content-picker .app-modal-body {
-  display: flex;
-  flex-direction: column;
-  gap: .75rem;
-  overflow: hidden;
-  padding: 0 1rem 1rem;
-}
-.content-picker .picker-search {
-  display: flex;
-  align-items: center;
-  gap: .6rem;
-  padding-inline: .8rem;
-  flex: none;
-  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
-  border-radius: .65rem;
-}
-.content-picker .picker-search:focus-within { outline: 2px solid currentColor; }
-.content-picker .picker-search input {
-  flex: 1;
-  width: 0;
-  min-width: 0;
-  min-height: 42px;
-  margin: 0;
-  border: 0;
-  padding: .4rem 0;
-  background: transparent;
-  outline: none;
-  box-shadow: none;
-}
-.content-picker .picker-results {
-  min-height: 0;
-  max-height: min(48dvh, 22rem);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-.content-picker .picker-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: .75rem;
-  min-height: 46px;
-  padding: .5rem .75rem;
-  color: inherit;
-  text-decoration: none;
-  border-radius: .5rem;
-}
-.content-picker .picker-row span { overflow-wrap: anywhere; }
-.content-picker .picker-row small { display: inline-flex; align-items: center; gap: .25rem; }
-.content-picker .picker-current { background: color-mix(in srgb, currentColor 8%, transparent); font-weight: 600; }
-.content-picker a.picker-row:hover, .content-picker a.picker-row:focus-visible {
-  background: color-mix(in srgb, currentColor 6%, transparent);
-}
-.content-picker a.picker-row:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
-.content-picker .picker-empty { text-align: center; padding: 1rem; }
+#modal-root .content-picker { @apply max-w-lg; }
+#modal-root .content-picker .app-modal-body { @apply flex flex-col gap-3 overflow-hidden px-4 pt-0 pb-4; }
+.content-picker .picker-results { @apply grid gap-1 min-h-0 max-h-[min(48dvh,22rem)] overflow-y-auto overscroll-contain p-1; }
+.content-picker .picker-row { @apply flex items-center justify-start gap-2.5 min-h-11 h-auto py-2 px-3 whitespace-normal text-start; }
+.content-picker .picker-row > span { @apply min-w-0 wrap-anywhere; }
+.content-picker .picker-current small { @apply ms-auto inline-flex items-center gap-1; }
+.content-picker .picker-empty { @apply text-center p-4; }
