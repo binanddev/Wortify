@@ -10,12 +10,28 @@ export const gateWidth = 0.065;
 export function createFallenBird(cards, options = {}, random = Math.random) {
   if (!cards.length) throw new Error("No playable cards.");
   const settings = { ...DEFAULT_OPTIONS, ...options };
-  const fall = { easy: 0.034, normal: 0.045, hard: 0.058 }[settings.difficulty];
+  const flight = {
+    easy: { fall: 0.034, gravity: 0.045, jump: 0.055, speed: 0.045, gap: 0.84 },
+    normal: {
+      fall: 0.045,
+      gravity: 0.054,
+      jump: 0.055,
+      speed: 0.06,
+      gap: 0.72,
+    },
+    hard: { fall: 0.48, gravity: 0.85, jump: 0.34, speed: 0.21, gap: 0.34 },
+  }[settings.difficulty];
+  const arcade = settings.difficulty === "hard";
   const state = {
     options: settings,
     height: 0.68,
     velocity: 0,
-    gate: { x: 1.14, bottom: 0.12, top: 0.9, brushed: false },
+    gate: {
+      x: 1.14,
+      bottom: 0.5 - flight.gap / 2,
+      top: 0.5 + flight.gap / 2,
+      brushed: false,
+    },
     featherUntil: 0,
     target: 0,
     rocks: [],
@@ -47,6 +63,9 @@ export function createFallenBird(cards, options = {}, random = Math.random) {
     settings.caseSensitive ? text : text.toLocaleLowerCase();
   return {
     state,
+    flap() {
+      if (arcade && !state.paused && !state.ended) state.velocity = flight.jump;
+    },
     input(value) {
       const rock = state.rocks[0];
       if (state.paused || state.ended) return rock.typed;
@@ -76,7 +95,7 @@ export function createFallenBird(cards, options = {}, random = Math.random) {
       const gained = Math.max(0, length - bestPrefix);
       bestPrefix = Math.max(bestPrefix, length);
       if (gained) {
-        state.velocity = 0.055;
+        state.velocity = flight.jump;
         state.height = Math.min(1, state.height + 0.018 * gained);
       }
       state.shots += gained;
@@ -96,28 +115,30 @@ export function createFallenBird(cards, options = {}, random = Math.random) {
         state.time - state.flyingLetters[0].time > 0.22
       )
         state.flyingLetters.shift();
-      state.velocity = Math.max(-fall, state.velocity - dt * 0.054);
+      state.velocity = Math.max(
+        -flight.fall,
+        state.velocity - dt * flight.gravity,
+      );
       state.height = Math.max(
         0,
         Math.min(1, state.height + state.velocity * dt),
       );
       if (state.height === 1) state.velocity = Math.min(0, state.velocity);
       const gate = state.gate;
-      gate.x -= dt * 0.055;
+      gate.x -= dt * flight.speed;
       if (
         !gate.brushed &&
         Math.abs(gate.x - birdX) <= gateWidth / 2 + 0.018 &&
         (state.height < gate.bottom + 0.02 || state.height > gate.top - 0.02)
       ) {
         gate.brushed = true;
+        if (arcade) state.ended = true;
         state.combo = 0;
         state.featherUntil = state.time + 1;
       }
       if (gate.x < -gateWidth) {
-        const middle = 0.48 + random() * 0.12;
-        const gap = { easy: 0.84, normal: 0.78, hard: 0.72 }[
-          settings.difficulty
-        ];
+        const middle = arcade ? 0.28 + random() * 0.44 : 0.48 + random() * 0.12;
+        const gap = flight.gap;
         state.gate = {
           x: 1.08,
           bottom: middle - gap / 2,
@@ -125,7 +146,7 @@ export function createFallenBird(cards, options = {}, random = Math.random) {
           brushed: false,
         };
       }
-      state.ended = state.height === 0;
+      state.ended ||= state.height === 0;
     },
     finish() {
       state.ended = true;

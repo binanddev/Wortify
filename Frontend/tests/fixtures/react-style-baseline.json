@@ -248,8 +248,8 @@
     "sha256": "21a25cd69dcdd623859fde9a830bef7cd5563cb43da51e39b7fe099557f4ef56"
   },
   "--tw-border-style": {
-    "count": 28,
-    "sha256": "51bd796a99377ff3d323b1a88896c93dc6fb2ebac59d0c98bd6c15c67a53e745"
+    "count": 29,
+    "sha256": "a7ea69b7df32420e4cfb1852dce1be762625230c92956e096df8bbfc76293b7b"
   },
   "--tw-brightness": {
     "count": 2,
@@ -356,8 +356,8 @@
     "sha256": "d564670bbc560d4afc03f471eebff604fcda32dfdd2713abaf6788d78b5e4d43"
   },
   "--tw-leading": {
-    "count": 57,
-    "sha256": "039120edb60e29b283964ae21c25ec1ce8dba20c5ee55074b545caf487ab8f42"
+    "count": 59,
+    "sha256": "37b7149bef27be81a40ad2c40266ab7f4b1659f642167519c094580a566f785d"
   },
   "--tw-numeric-figure": {
     "count": 1,
@@ -500,8 +500,8 @@
     "sha256": "82313f2f7e69b0e41b2bae3f096352b3baa3525c4d1e6786dae1a995380ad0bb"
   },
   "border": {
-    "count": 1755,
-    "sha256": "65aee61e552e4fe443087ce6f297b38a37194d507e07201ba0be1a4800c51331"
+    "count": 1757,
+    "sha256": "264812d81dfcf3ec80498d3300bd835f632947268967201f253517314f629dc6"
   },
   "box": {
     "count": 363,
@@ -560,8 +560,8 @@
     "sha256": "da583accef8397e729f6ad265d0ec0544a944bb7c03a55e12c87d1e783d70137"
   },
   "gap": {
-    "count": 589,
-    "sha256": "0c7ecfbafb0716db2eee313648027bcb2a6e3bac556473182887d076afee8a22"
+    "count": 591,
+    "sha256": "f32a935652ff9874599da057c6b442b4348632bf05ed3434f41c2d0c0cf74b89"
   },
   "grid": {
     "count": 184,
@@ -629,7 +629,7 @@
   },
   "margin": {
     "count": 584,
-    "sha256": "336517f6de9af774681b8b05de2fcff529927f5eaef3d113c99dbc7cdc99c55d"
+    "sha256": "4f9c4c5bd026458f63d8f4e426ee9ae137ec63b01c3540a62158d8a5208c20c2"
   },
   "mask": {
     "count": 1,
@@ -641,7 +641,7 @@
   },
   "min": {
     "count": 498,
-    "sha256": "eb182835bc09a462cae5660f7c62c361bb37e93d02a39b2fa957e88011404bdb"
+    "sha256": "7c1fd13663f5b5f08741d071772a47db13c03d50da5fea29fe40a259f9fb5fee"
   },
   "object": {
     "count": 5,
@@ -672,8 +672,8 @@
     "sha256": "df9bfca5358785630de54c26b917e4827c21a93d13f7e630e34247549e760f13"
   },
   "padding": {
-    "count": 793,
-    "sha256": "c63f014a8dc0b1973e4232d1c2e6724e5775cd3282bb93d4b911a6e139cf8291"
+    "count": 794,
+    "sha256": "ad7766e1fb28afe7186e3a31b6c0c659593986a0d4b07f3ddae6103d60e0054b"
   },
   "perspective": {
     "count": 3,
@@ -733,7 +733,7 @@
   },
   "text": {
     "count": 201,
-    "sha256": "2048fa486ad15d07d4e1d450db21029111b0a62f95c39bfc7abd819877282a16"
+    "sha256": "0eb612e2f64d06a7092a57c7cab99f1cec173129d2ae33f71fdbf836b3c8a766"
   },
   "touch": {
     "count": 12,

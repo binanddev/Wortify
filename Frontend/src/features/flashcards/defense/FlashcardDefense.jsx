@@ -45,7 +45,8 @@ const settingTips = {
   hard: "Up to four cards at a time, with the fastest fall.",
   balloon_easy: "Slow descent gives you more time to recall each word.",
   balloon_normal: "Moderate descent rewards a steady typing rhythm.",
-  balloon_hard: "Fast descent calls for quick recall.",
+  balloon_hard:
+    "Narrow gaps and strong gravity. Tap Up to flap. Hitting a pillar ends the run.",
   term: "Read the Vietnamese meaning and type the foreign word.",
   meaning: "Read the foreign word and type its Vietnamese meaning.",
   audio: "Listen to the word and type what you hear. Sound stays on.",
@@ -279,6 +280,17 @@ function Defense({ lang, userId, initialDeck, onClose }) {
         engine.current.state.ended
       )
         return;
+      if (
+        event.key === "ArrowUp" &&
+        options.game === "balloon" &&
+        options.difficulty === "hard" &&
+        !event.isComposing &&
+        !composition.current
+      ) {
+        event.preventDefault();
+        if (!event.repeat) engine.current.flap();
+        return;
+      }
       if (
         event.key === " " &&
         !event.isComposing &&
@@ -542,7 +554,9 @@ function Defense({ lang, userId, initialDeck, onClose }) {
                 <li>{tr("Each correct letter lifts the bird.")}</li>
                 <li>
                   {tr(
-                    "Fly through wide gaps. Brushing a pillar resets only your combo.",
+                    options.difficulty === "hard"
+                      ? settingTips.balloon_hard
+                      : "Fly through wide gaps. Brushing a pillar resets only your combo.",
                   )}
                 </li>
                 <li>{tr("Touch the ground and the game ends.")}</li>{" "}
@@ -862,6 +876,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
                 <h2>{tr(ready ? "Paused" : "Loading…")}</h2>
                 {ready && button("Resume", pause, true)}
                 {ready && button("Choose another game", chooseGame)}
+                {ready && button("Back to deck", onClose)}
               </div>
             )}
             {hud?.frozen > 0 && (
@@ -943,7 +958,9 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               <span>
                 {tr(
                   options.game === "balloon"
-                    ? "Space: listen again"
+                    ? options.difficulty === "hard"
+                      ? "Up: flap · Space: listen again"
+                      : "Space: listen again"
                     : "Type to fire · Tab: next target · Space: listen again · Orange: type this letter",
                 )}
               </span>
@@ -970,6 +987,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               true,
             )}
             {button("Choose another game", chooseGame)}
+            {button("Back to deck", onClose)}
             {button("Finish", () => {
               engine.current.finish();
               setHud(snapshot(engine.current.state));

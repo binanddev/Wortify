@@ -128,9 +128,66 @@ export function launchDefense(
         (r) => r.id === engine.state.target,
       );
       const muzzle = this.aim(target && this.position(target));
-      g.lineStyle(17, 0x426579).lineBetween(x, y - 8, muzzle.x, muzzle.y);
-      g.lineStyle(4, 0x80edff).lineBetween(x, y - 8, muzzle.x, muzzle.y);
-      g.fillStyle(0xa4f0ff).fillCircle(muzzle.x, muzzle.y, 5);
+      const axisX = Math.cos(this.aimAngle),
+        axisY = Math.sin(this.aimAngle);
+      const point = (forward, side) => ({
+        x: x + axisX * forward - axisY * side,
+        y: y - 8 + axisY * forward + axisX * side,
+      });
+      const armor = (outline, color) =>
+        g.fillStyle(color).fillPoints(
+          outline.map(([f, s]) => point(f, s)),
+          true,
+        );
+      // Twin magnetic rails share a central firing channel and rotate as one unit.
+      for (const side of [-1, 1]) {
+        armor(
+          [
+            [-16, side * 8],
+            [-9, side * 21],
+            [14, side * 19],
+            [23, side * 11],
+            [45, side * 10],
+            [54, side * 6],
+            [53, side * 3],
+            [4, side * 4],
+          ],
+          0x263d55,
+        );
+        armor(
+          [
+            [-8, side * 17],
+            [2, side * 19],
+            [18, side * 13],
+            [42, side * 9],
+            [53, side * 5],
+            [17, side * 9],
+          ],
+          0x91b1be,
+        );
+        armor(
+          [
+            [8, side * 6],
+            [48, side * 4],
+            [52, side * 3],
+            [10, side * 4],
+          ],
+          0x62f4ef,
+        );
+        for (let i = 0; i < 3; i++)
+          armor(
+            [
+              [-9 + i * 5, side * 12],
+              [-7 + i * 5, side * 16],
+              [-5 + i * 5, side * 15],
+              [-7 + i * 5, side * 11],
+            ],
+            0xffad68,
+          );
+      }
+      g.fillStyle(0x0a1b31).fillCircle(x, y - 8, 10);
+      g.lineStyle(2, 0x75c7d1).strokeCircle(x, y - 8, 9);
+      g.fillStyle(0xb4ffff).fillCircle(muzzle.x, muzzle.y, 3);
       for (let i = -2; i <= 2; i++)
         g.fillStyle(i + 3 <= engine.state.hp ? 0x77ecc8 : 0x243848).fillRect(
           x + i * 23 - 6,

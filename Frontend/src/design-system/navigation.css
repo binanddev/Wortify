@@ -243,31 +243,14 @@ button[aria-pressed="true"] {
 }
 
 .flashcard-workspace .learn-summary {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  min-height: 36px;
-  padding-block: 2px;
-  border-bottom: 1px solid currentColor;
-  border-color: color-mix(in srgb, currentColor 14%, transparent);
-  font-size: .8125rem;
-  line-height: 1.35;
+  @apply flex items-center flex-wrap gap-y-[4px] gap-x-[14px] min-h-[36px] py-[2px] border-b border-solid [border-color:color-mix(in_srgb,currentColor_14%,transparent)] text-[.8125rem] leading-[1.35];
 }
 .flashcard-workspace .learn-summary h1 {
-  flex: 1 1 8rem;
-  min-width: 0;
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.4;
-  text-align: start;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @apply flex-[1_1_8rem] min-w-0 m-0 text-[1rem] leading-[1.4] text-start truncate;
 }
-.learn-summary-stages { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.learn-summary-stages {
+  @apply flex flex-wrap gap-y-[4px] gap-x-[12px];
+}
 .flashcard-workspace .learn-summary button {
-  min-height: 32px;
-  padding: 4px 10px;
-  font-size: inherit;
+  @apply min-h-[32px] py-[4px] px-[10px] [font-size:inherit];
 }

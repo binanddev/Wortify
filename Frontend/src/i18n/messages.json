@@ -7774,9 +7774,10 @@
     "vi": "Chim hạ vừa phải, phù hợp để luyện nhịp gõ đều.",
     "de": "Der Vogel sinkt mit mittlerem Tempo."
   },
-  "Fast descent calls for quick recall.": {
-    "vi": "Chim hạ nhanh nhất, dành cho bộ từ bạn đã thuộc.",
-    "de": "Der Vogel sinkt am schnellsten. Für vertrauten Wortschatz."
+  "Up: flap · Space: listen again": {"vi":"↑ Vỗ cánh · Phím cách nghe lại","de":"↑ Flügelschlag · Leertaste: anhören"},
+  "Narrow gaps and strong gravity. Tap Up to flap. Hitting a pillar ends the run.": {
+    "vi": "Khe hẹp, trọng lực mạnh. Nhấn ↑ từng nhịp để vỗ cánh. Chạm cột là kết thúc ván.",
+    "de": "Enge Lücken und starke Schwerkraft. Mit ↑ flattern. Bei Säulenkontakt endet die Runde."
   },
   "Read the Vietnamese meaning and type the foreign word.": {
     "vi": "Nhìn nghĩa tiếng Việt, tự nhớ và gõ từ tiếng Anh hoặc tiếng Đức của thẻ.",

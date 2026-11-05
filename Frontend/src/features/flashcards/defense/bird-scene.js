@@ -147,41 +147,120 @@ export function launchDefense(
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(radius, radius);
-    const wing = reducedMotion
-      ? 0.1
-      : 0.28 * Math.sin(s.time * (s.velocity > 0 ? 18 : 7));
-    ctx.fillStyle = "#29455c";
-    ctx.beginPath();
-    ctx.moveTo(-0.55, 0);
-    ctx.lineTo(-1.65, -0.37);
-    ctx.lineTo(-1.2, 0.22);
-    ctx.lineTo(-0.4, 0.36);
-    ctx.fill();
-    ctx.fillStyle = "#f6bc75";
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 1, 0.65, -0.12, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#cf754d";
-    ctx.beginPath();
-    ctx.arc(0.59, -0.39, 0.52, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#ffde8b";
-    ctx.beginPath();
-    ctx.moveTo(0.98, -0.46);
-    ctx.lineTo(1.48, -0.31);
-    ctx.lineTo(1, -0.19);
-    ctx.fill();
-    ctx.fillStyle = "#213447";
-    ctx.beginPath();
-    ctx.arc(0.76, -0.49, 0.105, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.rotate(wing);
-    ctx.fillStyle = "#428391";
-    ctx.beginPath();
-    ctx.moveTo(0.28, -0.1);
-    ctx.quadraticCurveTo(-0.4, -0.7, -1.03, -0.52);
-    ctx.quadraticCurveTo(-0.55, 0.65, 0.28, -0.1);
-    ctx.fill();
+    // Swept tail, overlapping flight feathers and a hooked falcon beak.
+    ctx.rotate(Math.max(-0.24, Math.min(0.35, -s.velocity * 0.7)));
+    function plate(points, fill) {
+      ctx.beginPath();
+      points.forEach(([px, py], i) =>
+        i ? ctx.lineTo(px, py) : ctx.moveTo(px, py),
+      );
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+    const alloy = ctx.createLinearGradient(0, -0.85, 0, 0.72);
+    alloy.addColorStop(0, "#b8e1e9");
+    alloy.addColorStop(0.42, "#4b7791");
+    alloy.addColorStop(0.55, "#263d58");
+    alloy.addColorStop(1, "#101d31");
+    plate(
+      [
+        [-0.42, -0.12],
+        [-1.85, -0.56],
+        [-1.5, -0.06],
+        [-1.76, 0.18],
+        [-0.55, 0.38],
+      ],
+      "#25394f",
+    );
+    plate(
+      [
+        [-1.7, -0.45],
+        [-0.57, -0.12],
+        [-1.29, -0.18],
+      ],
+      "#86e4dd",
+    );
+    plate(
+      [
+        [-1.08, 0],
+        [-0.54, -0.47],
+        [0.25, -0.54],
+        [0.49, -0.89],
+        [0.97, -0.7],
+        [1.18, -0.39],
+        [0.78, 0.04],
+        [0.45, 0.42],
+        [-0.2, 0.54],
+      ],
+      alloy,
+    );
+    plate(
+      [
+        [0.95, -0.48],
+        [1.57, -0.34],
+        [1.38, -0.01],
+        [1.34, -0.2],
+        [0.91, -0.17],
+      ],
+      "#ffbe67",
+    );
+    plate(
+      [
+        [0.47, -0.55],
+        [1.12, -0.5],
+        [0.86, -0.23],
+        [0.6, -0.26],
+      ],
+      "#132139",
+    );
+    plate(
+      [
+        [0.61, -0.48],
+        [1.02, -0.46],
+        [0.79, -0.35],
+      ],
+      "#82fff3",
+    );
+    ctx.save();
+    ctx.rotate(
+      reducedMotion
+        ? 0.05
+        : 0.22 * Math.sin(s.time * (s.velocity > 0 ? 19 : 8)),
+    );
+    plate(
+      [
+        [0.25, -0.27],
+        [-0.47, -0.75],
+        [-1.57, -1.14],
+        [-1.18, -0.48],
+        [-1.34, -0.58],
+        [-0.99, -0.05],
+        [-1.1, -0.08],
+        [-0.66, 0.35],
+        [-0.19, 0.41],
+      ],
+      alloy,
+    );
+    plate(
+      [
+        [-1.42, -1],
+        [-0.3, -0.6],
+        [0.1, -0.33],
+        [-0.52, -0.56],
+      ],
+      "#9bf3ed",
+    );
+    plate(
+      [
+        [-0.85, -0.46],
+        [-0.23, -0.22],
+        [-0.02, -0.05],
+        [-0.61, -0.27],
+      ],
+      "#ec9b5c",
+    );
+    ctx.restore();
     ctx.restore();
     if (s.featherUntil > s.time) {
       ctx.strokeStyle = "#ffdfad";

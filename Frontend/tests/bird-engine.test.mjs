@@ -39,3 +39,21 @@ test("wide gates forgive collisions and keep the current word", () => {
   assert.equal(s.rocks[0].typed, "p");
   assert.ok(s.velocity > 0);
 });
+
+test("hard mode uses narrow lethal gates and manual flaps respect pause", () => {
+  const game = createFallenBird([{ answer: "prepare" }], {
+    difficulty: "hard",
+  });
+  const s = game.state;
+  assert.ok(s.gate.top - s.gate.bottom < 0.4);
+  game.pause(true);
+  game.flap();
+  assert.equal(s.velocity, 0);
+  game.pause(false);
+  game.flap();
+  assert.ok(s.velocity > 0);
+  s.height = 0.94;
+  s.gate.x = 0.53;
+  game.tick(0.01);
+  assert.equal(s.ended, true);
+});

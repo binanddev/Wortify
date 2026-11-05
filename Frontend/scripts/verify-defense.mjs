@@ -21,7 +21,7 @@ setLanguage('vi');
 const prepareCheck = ${process.argv.includes('--prepare')};
 const cards=(prepareCheck ? [['prepare','chuẩn bị']] : [['Bahnhof','nhà ga'],['Abenteuer','cuộc phiêu lưu'],['Sonne','mặt trời'],['Wasser','nước'],['Freundschaft','tình bạn'],['Wald','khu rừng']]).map(([german_text,vietnamese_meaning],i)=>({id:i+1,german_text,vietnamese_meaning}));
 const data={deck:{id:1,title:'Deutsch · Alltag A2',language:'de'},cards,learning:{progress:{2:{misses:4}}},difficult_cards:[2]};
-localStorage.setItem('wortify:defense:1:de',JSON.stringify({game:'defense',targeting:'guided',mode:'zen',difficulty:'hard',direction:'term',sound:true}));
+localStorage.setItem('wortify:defense:1:de',JSON.stringify({game:'defense',targeting:'guided',mode:'zen',difficulty:'normal',direction:'term',sound:true}));
 let writes=0;window.fetch=async(url,opts)=>{if(opts?.method && opts.method!=='GET')writes++;return new Response(JSON.stringify({decks:[{...data.deck,count:6}]}),{headers:{'Content-Type':'application/json'}});};
 window.addEventListener('error',e=>document.getElementById('result').textContent='FAIL: '+e.message);
 window.addEventListener('unhandledrejection',e=>document.getElementById('result').textContent='FAIL: '+e.reason);
