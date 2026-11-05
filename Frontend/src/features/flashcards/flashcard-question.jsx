@@ -38,7 +38,7 @@ export function QuestionUI({
       onFocusCapture={listening ? e=>{if(e.target.matches("input,textarea"))speech.onFocus();} : undefined}
       className={`flash-question ${checked ? (feedback ? "answer-right" : "answer-error") : ""}`}
     >
-      <h2>{q.type === "dictation" ? tr("Listen and write") : q.prompt}</h2>
+      <h2>{q.type === "dictation" ? tr("Listen and write") : q.prompt}</h2>{q.card.part_of_speech && <small className="block">{q.card.part_of_speech}</small>}
       {listening && <div className="question-audio">
         <Btn icon="sound" isDisabled={!active || disabled} onClick={speech.play}>{tr("Play term")}</Btn>
         <span>{tr("Listen to the term")}</span>

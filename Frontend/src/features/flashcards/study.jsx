@@ -285,6 +285,7 @@ function SessionContent({ initial, lang, token, sound }) {
                 <Glass id={`session-test-${i}`} tabIndex={-1}>
                   <span className="eyebrow">{tr("QUESTION ")}{i + 1}</span>
                   <h2 className="question-text">{question.prompt}</h2>
+                  {question.part_of_speech && <small>{question.part_of_speech}</small>}
                   <Answer
                     question={question}
                     value={
@@ -385,6 +386,7 @@ function SessionContent({ initial, lang, token, sound }) {
             {q.mode === "flash" ? (
               <>
                 <FlipCard
+                  partOfSpeech={q.card.part_of_speech}
                   front={q.target}
                   back={q.card.vietnamese_meaning}
                   example={q.card.example_german}
@@ -424,6 +426,7 @@ function SessionContent({ initial, lang, token, sound }) {
                     : tr("WRITE THE MATCHING WORD")}
                 </span>
                 <h2 className="question-text">{q.prompt}</h2>
+                  {q.part_of_speech && <small>{q.part_of_speech}</small>}
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();

@@ -50,7 +50,7 @@ import {
 const deckFields = [
   { name: "title", label: "Deck name", isRequired: true },
   { name: "description", label: "Description", multiline: true },
-  { name: "topic", label: "Topic", advanced: true },
+  { name: "topic", label: "Additional details" },
 ];
 
 function DeckOptions({ values, set, folders }) {
@@ -598,6 +598,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
             {card ? (
               <>
                 <FlipCard
+                  partOfSpeech={card.part_of_speech}
                   front={reverse ? card.vietnamese_meaning : card.german_text}
                   back={reverse ? card.german_text : card.vietnamese_meaning}
                   example={card.example_german}
@@ -817,7 +818,7 @@ function DeckContent({ lang, id, data, reload, sound }) {
                         )
                       }
                     />
-                    <strong>{c.german_text}</strong>
+                    <strong>{c.german_text}</strong>{c.part_of_speech && <small className="block">{c.part_of_speech}</small>}
                   </label>
                   <p>{c.example_german}</p>
                 </div>

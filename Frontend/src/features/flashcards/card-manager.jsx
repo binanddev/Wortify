@@ -47,7 +47,7 @@ export default function CardManager({lang,deckId,cards,onClose,onUpdated,onCards
     <Field label={tr("Search cards")} value={query} onChange={setQuery}/>
     <Status error={remote?.error}>{remote?.pending ? tr("Loading deck…") : ""}</Status>
     <div className="grid gap-3" aria-busy={remote?.pending || undefined}>{pageCards.map(card=><div key={card.id} className="flex items-center gap-3 border-b pb-3">
-      <CardImage card={card} compact/><div className="min-w-0 flex-1 break-words"><strong>{card.german_text}</strong><p>{card.vietnamese_meaning}</p></div>
+      <CardImage card={card} compact/><div className="min-w-0 flex-1 break-words"><strong>{card.german_text}</strong>{card.part_of_speech && <small className="block">{card.part_of_speech}</small>}<p>{card.vietnamese_meaning}</p></div>
       <Btn icon="edit" isDisabled={pending} aria-label={`${tr("Edit card")}: ${card.german_text}`} onClick={()=>setEditing(card)}>{tr("Edit")}</Btn>
       <Btn icon="trash" isDisabled={pending} aria-label={`${tr("Delete")}: ${card.german_text}`} onClick={()=>setRemoving(card)}>{tr("Delete")}</Btn>
     </div>)}{!visible.length&&<p>{tr("No matching cards.")}</p>}</div>

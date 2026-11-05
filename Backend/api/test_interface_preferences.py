@@ -14,6 +14,11 @@ class InterfacePreferenceValidationTests(SimpleTestCase):
         with self.assertRaises(ValueError):
             validate_preferences({'interface':'unknown'})
 
+    def test_retired_aurora_preferences_can_sync(self):
+        profiles = {'default:aurora:mist': {'font': 36}}
+        self.assertEqual(validate_preferences({'appearanceProfiles': profiles})['appearanceProfiles'], profiles)
+        self.assertEqual(validate_preferences({'interface': 'aurora'}), {'interface': 'studio'})
+
     def test_scale_bounds_and_all_builtin_tracks(self):
         for scale in (50, 100, 150):
             self.assertEqual(validate_preferences({'navScale':scale}), {'navScale':scale})

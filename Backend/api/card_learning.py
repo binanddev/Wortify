@@ -57,7 +57,7 @@ def card_data(card):
 
 def question_payload(attempt, total=None):
     payload = {'token': str(attempt.token), 'mode': attempt.mode, 'total': total,
-               'options': attempt.question['options'], 'target_type': attempt.question['target_type'], 'language': attempt.card.deck.language,
+               'options': attempt.question['options'], 'part_of_speech': attempt.card.part_of_speech, 'target_type': attempt.question['target_type'], 'language': attempt.card.deck.language,
                'audio_url': f'/api/{attempt.card.deck.language}/audio/{attempt.token}/', 'completed': bool(attempt.completed_at)}
     if attempt.mode not in ('spell', 'write', 'order'):
         payload['card'] = attempt.question.get('card', card_data(attempt.card))

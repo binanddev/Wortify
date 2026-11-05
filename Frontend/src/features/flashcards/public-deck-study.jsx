@@ -39,7 +39,7 @@ export default function PublicDeckStudy({
                   >
                     <strong className="block text-2xl">
                       {flipped ? card.vietnamese_meaning : card.german_text}
-                    </strong>
+                    </strong>{card.part_of_speech && <small className="block">{card.part_of_speech}</small>}
                     {flipped&&<CardImage card={card} credit={false}/>}
                     <span className="block mt-4">
                       {flipped ? card.example_vietnamese : card.example_german}

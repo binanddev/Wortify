@@ -198,3 +198,22 @@ test("a changed server account retains the original account queue for later retr
   assert.equal(pendingLearning(811, "en")[0].error, undefined);
   assert.deepEqual(pendingLearning(812, "en"), []);
 });
+
+test("a previously rejected legacy theme snapshot retries with its original token", async () => {
+  const token = crypto.randomUUID();
+  const payload = { appearanceProfiles: { "default:aurora:mist": { font: 36 } } };
+  const key = "wortify:sync:4081:de";
+  const stored = new Map([[key, JSON.stringify([{ token, kind: "preferences", payload, error: "Invalid theme." }])]]);
+  globalThis.localStorage = { getItem: k => stored.get(k) ?? null, setItem: (k, v) => stored.set(k, v) };
+  globalThis.window = new EventTarget();
+  globalThis.document = { cookie: "" };
+  let sent;
+  globalThis.fetch = async (_, options) => {
+    sent = JSON.parse(options.body).events;
+    return { ok: true, json: async () => ({ accepted: [{ token }], errors: [] }) };
+  };
+  await flushLearning(4081, "de");
+  assert.equal(sent[0].token, token);
+  assert.deepEqual(sent[0].payload, payload);
+  assert.deepEqual(pendingLearning(4081, "de"), []);
+});

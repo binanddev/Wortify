@@ -815,6 +815,7 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
               {stars.includes(sourceCardId(active)) ? "★" : "☆"}
             </Btn>
             <FlipCard
+              partOfSpeech={active.part_of_speech}
               front={active.german_text}
               back={active.vietnamese_meaning}
               example={null}

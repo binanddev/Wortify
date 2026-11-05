@@ -442,7 +442,7 @@ export function useSound(enabled, language) {
     },
   };
 }
-export function FlipCard({ front, back, example, image, flipped, setFlipped }) {
+export function FlipCard({ front, back, partOfSpeech, example, image, flipped, setFlipped }) {
   useLocale();
   const [failedImage,setFailedImage]=useState("");
   const illustration=image?.image_url!==failedImage?image:null;
@@ -458,10 +458,12 @@ export function FlipCard({ front, back, example, image, flipped, setFlipped }) {
         <span className="flip-face" aria-hidden={flipped}>
           <span className="eyebrow">{tr("VOCABULARY")}</span>
           <strong>{front}</strong>
+          {partOfSpeech && <small>{partOfSpeech}</small>}
         </span>
         <span className="flip-face flip-back" aria-hidden={!flipped}>
           <span className="eyebrow">{tr("MEANING")}</span>
           <strong>{back}</strong>
+          {partOfSpeech && <small>{partOfSpeech}</small>}
           <CardImage card={illustration} credit={false} onError={()=>setFailedImage(image.image_url)}/>
           {example && <span className="example">{example}</span>}
         </span>

@@ -112,6 +112,17 @@ export async function flushLearning(user, lang) {
   if (flights.has(key)) return flights.get(key);
   await queueStore.restore(key);
   if (flights.has(key)) return flights.get(key);
+  // Older clients permanently marked legacy theme snapshots as rejected.
+  // Replay each affected receipt once now that the API accepts Aurora profiles.
+  const needsThemeRetry = event => event.kind === "preferences" &&
+    event.error === "Invalid theme." && !event.retriedLegacyTheme;
+  if (queueStore.read(key).some(needsThemeRetry)) {
+    queueStore.update(key, queue => queue.map(event => {
+      if (!needsThemeRetry(event)) return event;
+      const { error, errorCode, ...receipt } = event;
+      return { ...receipt, retriedLegacyTheme: true };
+    }));
+  }
   const events = pendingLearning(user, lang)
     .filter((e) => !e.error)
     .slice(0, 100);

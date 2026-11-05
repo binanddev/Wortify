@@ -41,7 +41,7 @@ function Preview({ lang, deck, onClose, onSave, pending, error }) {
               {data.cards.map((card, index) => (
                 <div key={index} className="grid gap-2 py-4 sm:grid-cols-2">
                   <div>
-                    <dt className="font-semibold">{card.german_text}</dt>
+                    <dt className="font-semibold">{card.german_text}{card.part_of_speech && <small className="block">{card.part_of_speech}</small>}</dt>
                     {card.example_german && (
                       <p className="text-sm text-(--muted) mt-1">
                         {card.example_german}

@@ -23,11 +23,11 @@ def validate_preferences(data):
             allowed = {'navScale','font','transparency','textSize','textWeight','textContrast','textColor','curvature','glassLens','studioPageColor','studioNavColor','studioAccentColor'}
             if not isinstance(value,dict) or len(value)>300:raise ValueError('Invalid appearance settings.')
             for name, settings in value.items():
-                if not isinstance(name,str) or not re.fullmatch(r'(default|[0-9]+):(studio|glass|xp|retro|space|notebook|rpg):(mist|paper|night)',name):raise ValueError('Invalid theme.')
+                if not isinstance(name,str) or not re.fullmatch(r'(default|[0-9]+):(studio|glass|xp|retro|space|aurora|notebook|rpg):(mist|paper|night)',name):raise ValueError('Invalid theme.')
                 if not isinstance(settings,dict) or set(settings)-allowed:raise ValueError('Invalid appearance parameters.')
                 validate_preferences(settings)
         elif key=='interface':
-            if value == 'space': value = 'studio'
+            if value in ('space','aurora'): value = 'studio'
             if value not in ('studio','glass','xp','retro','space','notebook','rpg'):raise ValueError('Invalid appearance.')
         elif key=='backgroundByInterface':
             if not isinstance(value,dict) or set(value)-{'studio','glass','xp','retro','notebook','rpg'}: raise ValueError('Invalid background settings.')
