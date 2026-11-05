@@ -528,35 +528,6 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
       {options.mode !== "learn" && <Heading title={data.deck.title} />}
       {defenseOpen && <Suspense fallback={<Status>{tr("Loading game…")}</Status>}><FlashcardDefense lang={lang} userId={userId} initialDeck={{...data,learning:{...data.learning,progress}}} onClose={()=>setDefenseOpen(false)}/></Suspense>}
       <SidebarTools>
-        {options.mode === "learn" && (
-          <div className="learn-sidebar-info">
-            <details>
-              <summary>{data.deck.title}</summary>
-          <p>{tr("Practiced today")}{" "}
-            {
-              pool.filter(
-                (c) =>
-                  progress[c.id]?.lastStudied ===
-                  new Date().toLocaleDateString("en-CA"),
-              ).length
-            }
-            /{pool.length}{tr(" cards · ")}{options.minutes}{tr(" target minutes")}</p>
-          <div className="learn-sidebar-stages">
-            {[
-              ["new", "Not studied"],
-              ["familiar", "Familiar"],
-              ["mastered", "Mastered"],
-            ].map(([k, t]) => (
-              <div key={k}>
-                <strong>{stages[k]}</strong>
-                <span>{t}</span>
-              </div>
-            ))}
-          </div>
-            </details>
-{question && <Btn onClick={() => setEditingCard(data.cards.find(c=>c.id===sourceCardId(question.card)))}>{tr("Edit card")}</Btn>}
-          </div>
-        )}
         <div className="flash-icon-row">
           <ContentSwitcher lang={lang} kind="decks" currentId={id}/>
           <Btn icon="manage" onClick={()=>setManagingCards(true)}>{tr("Manage cards")}</Btn>
@@ -803,6 +774,22 @@ function Studio({ lang, id, userId, sound, data: initialData }) {
         onClose={() => setEditingCard(null)} onSaved={cardUpdated} />}
       {options.mode === "flash" && active && !flashEnded && <Btn onClick={() => setEditingCard(data.cards.find(c=>c.id===sourceCardId(active)))}>{tr("Edit card")}</Btn>}
 
+      {options.mode === "learn" && (
+        <header className="learn-summary">
+          <h1 title={data.deck.title}>{data.deck.title}</h1>
+          <span>{tr("Practiced today")} {pool.filter(c => progress[c.id]?.lastStudied === new Date().toLocaleDateString("en-CA")).length}/{pool.length}{tr(" cards · ")}{options.minutes}{tr(" target minutes")}</span>
+          <div className="learn-summary-stages">
+            {[["new", "Not studied"], ["familiar", "Familiar"], ["mastered", "Mastered"]].map(([key, label]) => (
+              <span key={key}><b>{stages[key]}</b> {tr(label)}</span>
+            ))}
+          </div>
+          {question && (
+            <Btn onClick={() => setEditingCard(data.cards.find(c => c.id === sourceCardId(question.card)))}>
+              {tr("Edit card")}
+            </Btn>
+          )}
+        </header>
+      )}
       {options.mode === "flash" ? (
         flashEnded ? (
           <section className="work-paper">
