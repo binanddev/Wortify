@@ -180,10 +180,21 @@ export function launchDefense(
           letterSpacing: 1,
         })
         .setOrigin(0.5);
+      const category = rock.card.partOfSpeech
+        ? this.add
+            .text(0, -26, rock.card.partOfSpeech, {
+              fontFamily: font,
+              fontSize: 12,
+              color: "#ffd793",
+              align: "center",
+              wordWrap: { width: p.width - 24 },
+            })
+            .setOrigin(0.5, 0)
+        : null;
       const clue = this.add
         .text(
           0,
-          -20,
+          category ? category.y + category.height + 3 : -20,
           engine.state.options.direction === "audio"
             ? labels.listen
             : rock.card.prompt,
@@ -202,7 +213,7 @@ export function launchDefense(
           .text(0, 0, "", { fontFamily: font, fontSize: 17, fontStyle: "bold" })
           .setOrigin(0.5, 0),
       );
-      container.add([badge, clue, ...slots]);
+      container.add([badge, ...(category ? [category] : []), clue, ...slots]);
       container.setSize(p.width, 124).setInteractive();
       container.on("pointerdown", () => {
         if (engine.state.paused || engine.state.ended) return;
@@ -243,12 +254,15 @@ export function launchDefense(
             .setColor(colors[state])
             .setPosition(
               ((i % columns) - (count - 1) / 2) * 20,
-              -13 + v.clue.height + row * 22,
+              v.clue.y + 7 + v.clue.height + row * 22,
             );
         });
         v.height = Math.max(
           104,
-          40 + v.clue.height + Math.ceil(v.slots.length / columns) * 22,
+          60 +
+            v.clue.y +
+            v.clue.height +
+            Math.ceil(v.slots.length / columns) * 22,
         );
       }
       const height = v.height;

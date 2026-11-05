@@ -1,5 +1,12 @@
 # Change Log
 
+### [v1.17.0] - 2026-11-05 | Flashcard arcade and game selection
+
+- Add Fallen Bird with a trailing vocabulary sign, keyboard-driven flight and forgiving obstacles. Show available parts of speech on the sign and Defense cards.
+- Return to the game picker from pause, exit confirmation or results while keeping deck selection.
+
+---
+
 ### [v1.16.0] - 2026-11-02 | Personal Studio colors and cleaner workspace navigation
 
 - Add Studio default-background, navigation and accent color controls in Appearance with immediate preview and one-step reset. Persist colors through the existing account preferences and per-interface/background profiles; validate six-digit colors or auto on the server. Keep personal background images independent. Automatically choose contrasting text for navigation and primary buttons, including light and dark custom palettes.

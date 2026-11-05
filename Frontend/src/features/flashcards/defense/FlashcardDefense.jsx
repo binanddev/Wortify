@@ -12,14 +12,14 @@ import {
   prepareCards,
   DEFAULT_OPTIONS,
 } from "./defense-engine.js";
-import { createBalloon } from "./balloon-engine.js";
+import { createFallenBird } from "./bird-engine.js";
 import { bindGameInput, gameTypingKey } from "./game-input.js";
 import { defenseAudio } from "./defense-audio.js";
 import css from "./defense.css?inline";
 
 const labelMap = {
   defense: "Flashcard Defense",
-  balloon: "Word Balloon",
+  balloon: "Fallen Bird",
   guided: "Guided target",
   free: "Free targeting",
   classic: "Classic",
@@ -34,8 +34,7 @@ const labelMap = {
 };
 const settingTips = {
   defense: "Complete words to shoot falling cards and protect your shields.",
-  balloon:
-    "Practise one word at a time. Each correct letter lifts the balloon.",
+  balloon: "Read the trailing sign and type to keep the bird flying.",
   classic: "Start with three shields. Falling cards speed up over time.",
   time: "Score as many points as possible in 60 seconds.",
   zen: "Practise at a steady speed without losing shields.",
@@ -224,7 +223,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
     let cancelled = false,
       dispose;
     (options.game === "balloon"
-      ? import("./balloon-scene.js")
+      ? import("./bird-scene.js")
       : import("./defense-scene.js")
     )
       .then(({ launchDefense }) => {
@@ -393,7 +392,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
       if (!cards.length) throw new Error(tr("No playable cards."));
       engine.current =
         options.game === "balloon"
-          ? createBalloon(cards, options)
+          ? createFallenBird(cards, options)
           : createDefense(cards, options);
       setHud(snapshot(engine.current.state));
       setReady(false);
@@ -406,13 +405,24 @@ function Defense({ lang, userId, initialDeck, onClose }) {
       if (mounted.current) setBusy(false);
     }
   }
+  function chooseGame() {
+    audio.current.stop();
+    engine.current = null;
+    setHelp(false);
+    setReady(false);
+    setHud(null);
+    setDraft("");
+    setError("");
+    setPhase("setup");
+  }
   function exit() {
     if (phase === "play") {
       engine.current.pause(true);
       setHud(snapshot(engine.current.state));
       setPhase("confirm");
       audio.current.stop();
-    } else onClose();
+    } else if (phase === "setup") onClose();
+    else chooseGame();
   }
   function keyboard(event) {
     event.stopPropagation();
@@ -426,7 +436,8 @@ function Defense({ lang, userId, initialDeck, onClose }) {
       else if (phase === "confirm") {
         engine.current.pause(false);
         setPhase("play");
-      } else onClose();
+      } else if (phase === "result") chooseGame();
+      else onClose();
     }
     if (event.key === "Tab") {
       const buttons = [
@@ -496,7 +507,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
           <div>
             <b>
               {options.game === "balloon"
-                ? tr("Word Balloon")
+                ? tr("Fallen Bird")
                 : "FLASHCARD DEFENSE"}
             </b>
             <small>WORTIFY · {tr("Vocabulary defense")}</small>
@@ -528,7 +539,12 @@ function Defense({ lang, userId, initialDeck, onClose }) {
             <h2>{tr("How to play")}</h2>
             {options.game === "balloon" ? (
               <ol>
-                <li>{tr("Each correct letter lifts the balloon.")}</li>
+                <li>{tr("Each correct letter lifts the bird.")}</li>
+                <li>
+                  {tr(
+                    "Fly through wide gaps. Brushing a pillar resets only your combo.",
+                  )}
+                </li>
                 <li>{tr("Touch the ground and the game ends.")}</li>{" "}
               </ol>
             ) : (
@@ -601,7 +617,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
             <p>
               {tr(
                 options.game === "balloon"
-                  ? "Each correct letter lifts the balloon."
+                  ? "Each correct letter lifts the bird."
                   : "Type to lock. Finish to destroy.",
               )}
             </p>
@@ -620,7 +636,9 @@ function Defense({ lang, userId, initialDeck, onClose }) {
                 <span>＿ ＿ ＿ ＿ ＿ ＿ ＿ ＿ ＿</span>
               </div>
               <div className="fd-beam" />
-              <div className="fd-turret">✦</div>
+              <div className="fd-turret">
+                {options.game === "balloon" ? "🐦" : "✦"}
+              </div>
             </div>
             {options.game === "defense" && (
               <div className="fd-power-legend">
@@ -778,9 +796,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               </p>
             )}
             {button(
-              options.game === "balloon"
-                ? "Start balloon game"
-                : "Launch defense",
+              options.game === "balloon" ? "Start bird game" : "Launch defense",
               start,
               true,
               {
@@ -845,6 +861,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               <div className="fd-cover">
                 <h2>{tr(ready ? "Paused" : "Loading…")}</h2>
                 {ready && button("Resume", pause, true)}
+                {ready && button("Choose another game", chooseGame)}
               </div>
             )}
             {hud?.frozen > 0 && (
@@ -854,12 +871,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
             )}
           </div>
           <div className="fd-console">
-            <div
-              className={
-                options.game === "defense" ? "fd-sr-only" : "fd-target"
-              }
-              aria-live="polite"
-            >
+            <div className="fd-sr-only" aria-live="polite">
               <span className={hud?.target ? "fd-locked" : ""}>
                 ●{" "}
                 {tr(
@@ -883,14 +895,14 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               </span>
             </div>
             {hud?.rock && options.direction !== "audio" && (
-              <p
-                className={`fd-target-copy ${options.game === "defense" ? "fd-sr-only" : ""}`}
-              >
-                {hud.rock.card.prompt}
+              <p className="fd-target-copy fd-sr-only">
+                {[hud.rock.card.prompt, hud.rock.card.partOfSpeech]
+                  .filter(Boolean)
+                  .join(" · ")}
               </p>
             )}
             <output
-              className={`fd-live-answer ${options.game === "defense" ? "fd-sr-only" : ""}`}
+              className="fd-live-answer fd-sr-only"
               aria-label={tr("Your typing")}
             >
               {draft || (hud?.target ? "＿" : "")}
@@ -957,6 +969,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               },
               true,
             )}
+            {button("Choose another game", chooseGame)}
             {button("Finish", () => {
               engine.current.finish();
               setHud(snapshot(engine.current.state));
@@ -996,7 +1009,7 @@ function Defense({ lang, userId, initialDeck, onClose }) {
               isLoading: busy,
               isDisabled: busy,
             })}
-            {button("Settings", () => setPhase("setup"))}
+            {button("Choose another game", chooseGame)}
             {button("Back to deck", onClose)}
           </div>
           {error && (

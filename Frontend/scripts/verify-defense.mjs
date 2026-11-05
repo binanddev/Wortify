@@ -31,10 +31,10 @@ const assert=(v,m)=>{if(!v)throw new Error(m);};
 (async()=>{
  await wait(1000);const shadow=document.querySelector('[data-game-root]');assert(shadow,'Game root not mounted');window.tapEvents=[];for(const name of ['pointerdown','pointerup','touchstart','touchend','click'])shadow.addEventListener(name,e=>window.tapEvents.push(name+':'+e.target.tagName+':'+e.target.textContent.slice(0,30)),true);
  ${balloon ? "const picker=shadow.querySelector('select');picker.value='balloon';picker.dispatchEvent(new Event('change',{bubbles:true}));await wait(100);" : ""}
- assert(shadow.textContent.includes('${balloon ? "Bắt đầu bóng từ" : "Bắt đầu phòng thủ"}'),'Vietnamese labels missing');
+ assert(shadow.textContent.includes('${balloon ? "Bắt đầu Chim sa đọa" : "Bắt đầu phòng thủ"}'),'Vietnamese labels missing');
  assert(shadow.querySelectorAll('select').length===${balloon ? 3 : 5},'Game settings missing');
  const click=async text=>{const el=[...shadow.querySelectorAll('button')].find(el=>el.textContent.includes(text));assert(el,'Button missing '+text);el.scrollIntoView({block:'center'});const r=el.getBoundingClientRect();window.pendingClick={x:r.x+r.width/2,y:r.y+r.height/2};while(window.pendingClick)await wait(30);};
- ${setup ? "document.getElementById('result').textContent='PASS: isolated setup, deck selection, game options and Vietnamese UI';" : `await click('${balloon ? "Bắt đầu bóng từ" : "Bắt đầu phòng thủ"}');await wait(4500);assert(shadow.querySelector('canvas'),'Phaser canvas not mounted');assert(!shadow.querySelector('.fd-error'),'Game initialization failed');assert(shadow.querySelector('input[autocomplete=off]'),'Keyboard input missing');await click('Tạm dừng');await wait(100);assert(shadow.querySelector('.fd-cover'),'Pause failed');await click('Tiếp tục');await wait(100);assert(!shadow.querySelector('.fd-cover'),'Resume failed');assert(document.activeElement===shadow.querySelector('input[autocomplete=off]'),'Direct typing is not focused');assert(getComputedStyle(document.activeElement).opacity==='0','Typing form should not be visible');const prompt=shadow.querySelector('.fd-target-copy')?.textContent;const word=cards.find(c=>c.vietnamese_meaning===prompt)?.german_text;assert(word,'Current target missing');${!mobile ? "shadow.querySelector('.fd-input-row button:last-child').focus();" : ""}if (prepareCheck) {
+ ${setup ? "document.getElementById('result').textContent='PASS: isolated setup, deck selection, game options and Vietnamese UI';" : `await click('${balloon ? "Bắt đầu Chim sa đọa" : "Bắt đầu phòng thủ"}');await wait(4500);assert(shadow.querySelector('canvas'),'Phaser canvas not mounted');assert(!shadow.querySelector('.fd-error'),'Game initialization failed');assert(shadow.querySelector('input[autocomplete=off]'),'Keyboard input missing');await click('Tạm dừng');await wait(100);assert(shadow.querySelector('.fd-cover'),'Pause failed');await click('Tiếp tục');await wait(100);assert(!shadow.querySelector('.fd-cover'),'Resume failed');assert(document.activeElement===shadow.querySelector('input[autocomplete=off]'),'Direct typing is not focused');assert(getComputedStyle(document.activeElement).opacity==='0','Typing form should not be visible');const prompt=shadow.querySelector('.fd-target-copy')?.textContent;const word=cards.find(c=>c.vietnamese_meaning===prompt)?.german_text;assert(word,'Current target missing');${!mobile ? "shadow.querySelector('.fd-input-row button:last-child').focus();" : ""}if (prepareCheck) {
   assert(!document.fullscreenEnabled || document.fullscreenElement,'Game did not enter fullscreen');
   const field=shadow.querySelector('input[autocomplete=off]');
   for(let i=0;i<word.length;i++){
@@ -42,7 +42,18 @@ const assert=(v,m)=>{if(!v)throw new Error(m);};
     assert(field.value === (i===word.length-1?'':word.slice(0,i+1)), 'Failed after key '+word[i]+' at '+i);
   }
   assert(Number(shadow.querySelector('.fd-hud b').textContent)>0,'prepare earned no points');
-  document.getElementById('result').textContent='PASS: prepare accepted key by key and scored'; return;
+  await click('Đóng'); await wait(150);
+  await click('Hoàn tất'); await wait(150);
+  await click('Chọn trò chơi khác'); await wait(150);
+  assert(shadow.querySelector('select'),'Results did not return to game picker');
+  const picker=shadow.querySelector('select');
+  picker.value=picker.value==='balloon'?'defense':'balloon';
+  picker.dispatchEvent(new Event('change',{bubbles:true})); await wait(100);
+  await click(picker.value==='defense'?'Bắt đầu phòng thủ':'Bắt đầu Chim sa đọa'); await wait(1500);
+  await click('Tạm dừng'); await wait(120);
+  await click('Chọn trò chơi khác'); await wait(150);
+  assert(shadow.querySelector('select'),'Pause did not return to game picker');
+  document.getElementById('result').textContent='PASS: prepare scored; finished game, switched games and returned from pause'; return;
 }
 window.pendingText=word.slice(0,2);while(window.pendingText)await wait(30);await wait(150);assert(shadow.querySelector('.fd-live-answer').textContent===word.slice(0,2),'Typed letters are not displayed');${balloon ? "window.pendingText=word.slice(2);while(window.pendingText)await wait(30);await wait(150);assert(shadow.querySelector('.fd-live-answer').textContent==='＿','Completed word did not reset');" : "for(let i=0;i<24 && shadow.querySelector('.fd-target-copy').textContent===prompt;i++){window.pendingText='Tab';while(window.pendingText)await wait(30);await wait(300);}assert(shadow.querySelector('.fd-target-copy').textContent!==prompt,'Tab did not switch target');assert(shadow.querySelector('.fd-live-answer').textContent==='＿','Changing target kept stale input');"}assert(writes===0,'Unexpected learning writes');document.getElementById('result').textContent='PASS: ${balloon ? "balloon" : "defense"} starts, pauses, resumes and displays native typing without progress writes';`}
 })().catch(e=>document.getElementById('result').textContent='FAIL: '+e.message);

@@ -23,8 +23,8 @@ export function composingPrefix(answer, typed) {
     value
       .normalize("NFD")
       .replace(/\p{M}/gu, "")
-      .replaceAll("đ", "d")
-      .replaceAll("Đ", "D");
+      .replace(/đ/gu, "d")
+      .replace(/Đ/gu, "D");
   return (
     fold(answer).startsWith(fold(typed)) &&
     answer.slice(0, typed.length) !== typed
@@ -50,6 +50,10 @@ export function prepareCards(decks, options) {
           id: `${deck.deck.id}:${card.id}`,
           term,
           meaning,
+          partOfSpeech:
+            typeof card.part_of_speech === "string"
+              ? card.part_of_speech.trim()
+              : "",
           answer,
           prompt: options.direction === "meaning" ? term : meaning,
           hard:

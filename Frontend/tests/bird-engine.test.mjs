@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createBalloon } from "../src/features/flashcards/defense/balloon-engine.js";
+import { createFallenBird } from "../src/features/flashcards/defense/bird-engine.js";
 test("accent composition, lift, backspace, pause and ground contact", () => {
-  const game = createBalloon([{ answer: "mèo" }]);
+  const game = createFallenBird([{ answer: "mèo" }]);
   const s = game.state;
   game.input("m");
   const height = s.height;
@@ -23,4 +23,19 @@ test("accent composition, lift, backspace, pause and ground contact", () => {
   for (let i = 0; i < 500; i++) game.tick(0.1);
   assert.equal(s.ended, true);
   assert.equal(s.height, 0);
+});
+
+test("wide gates forgive collisions and keep the current word", () => {
+  const g = createFallenBird([{ answer: "prepare" }]);
+  g.input("p");
+  const s = g.state;
+  s.height = 0.92;
+  s.gate.x = 0.53;
+  s.combo = 3;
+  g.tick(0.01);
+  assert.equal(s.gate.brushed, true);
+  assert.equal(s.ended, false);
+  assert.equal(s.combo, 0);
+  assert.equal(s.rocks[0].typed, "p");
+  assert.ok(s.velocity > 0);
 });

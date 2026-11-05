@@ -7696,28 +7696,30 @@
     "vi": "Màu nhấn",
     "de": "Akzentfarbe"
   },
-  "Word Balloon": {
-    "vi": "Bóng từ",
-    "de": "Wortballon"
+  "Fly through wide gaps. Brushing a pillar resets only your combo.": {"vi":"Bay qua khe rộng. Chạm cột chỉ làm mất chuỗi điểm, bạn vẫn gõ tiếp từ đang học.", "de":"Fliege durch breite Lücken. Bei einer Berührung verlierst du nur die Kombo."},
+  "Choose another game": {"vi":"Chọn trò chơi khác", "de":"Anderes Spiel wählen"},
+  "Fallen Bird": {
+    "vi": "Chim sa đọa",
+    "de": "Gefallener Vogel"
   },
   "Auto listen": {
     "vi": "Tự động đọc từ",
     "de": "Automatisch vorlesen"
   },
-  "Each correct letter lifts the balloon.": {
-    "vi": "Gõ đúng từng chữ để nâng bóng lên.",
-    "de": "Jedes richtige Zeichen hebt den Ballon."
+  "Each correct letter lifts the bird.": {
+    "vi": "Gõ đúng từng chữ để nâng chim lên.",
+    "de": "Jedes richtige Zeichen hebt den Vogel."
   },
   "Touch the ground and the game ends.": {
-    "vi": "Bóng chạm đất là thua.",
+    "vi": "Chim chạm đất là thua.",
     "de": "Bei Bodenkontakt endet das Spiel."
   },
-  "Start balloon game": {
-    "vi": "Bắt đầu bóng từ",
-    "de": "Ballonspiel starten"
+  "Start bird game": {
+    "vi": "Bắt đầu Chim sa đọa",
+    "de": "Vogelspiel starten"
   },
   "Stay aloft": {
-    "vi": "Giữ bóng trên cao",
+    "vi": "Giữ chim trên cao",
     "de": "Bleib in der Luft"
   },
   "Altitude": {
@@ -7728,9 +7730,9 @@
     "vi": "Gõ hết từ để bắn hạ thẻ đang rơi và bảo vệ khiên.",
     "de": "Tippe Wörter, um fallende Karten abzuschießen und deine Schilde zu schützen."
   },
-  "Practise one word at a time. Each correct letter lifts the balloon.": {
-    "vi": "Luyện từng từ một. Mỗi chữ đúng nâng bóng lên, bóng chạm đất thì kết thúc.",
-    "de": "Übe ein Wort nach dem anderen. Richtige Buchstaben heben den Ballon, bei Bodenkontakt endet das Spiel."
+  "Read the trailing sign and type to keep the bird flying.": {
+    "vi": "Luyện từng từ một. Mỗi chữ đúng nâng chim lên, chim chạm đất thì kết thúc.",
+    "de": "Übe ein Wort nach dem anderen. Richtige Buchstaben heben den Vogel, bei Bodenkontakt endet das Spiel."
   },
   "Start with three shields. Falling cards speed up over time.": {
     "vi": "Bắt đầu với ba khiên. Mỗi thẻ chạm đáy làm mất một khiên, tốc độ tăng dần theo thời gian.",
@@ -7765,16 +7767,16 @@
     "de": "Bis zu vier Karten gleichzeitig, höchstes Tempo. Für vertraute Wörter."
   },
   "Slow descent gives you more time to recall each word.": {
-    "vi": "Bóng hạ chậm, có nhiều thời gian nhớ từ.",
-    "de": "Der Ballon sinkt langsam und lässt Zeit zum Nachdenken."
+    "vi": "Chim hạ chậm, có nhiều thời gian nhớ từ.",
+    "de": "Der Vogel sinkt langsam und lässt Zeit zum Nachdenken."
   },
   "Moderate descent rewards a steady typing rhythm.": {
-    "vi": "Bóng hạ vừa phải, phù hợp để luyện nhịp gõ đều.",
-    "de": "Der Ballon sinkt mit mittlerem Tempo."
+    "vi": "Chim hạ vừa phải, phù hợp để luyện nhịp gõ đều.",
+    "de": "Der Vogel sinkt mit mittlerem Tempo."
   },
   "Fast descent calls for quick recall.": {
-    "vi": "Bóng hạ nhanh nhất, dành cho bộ từ bạn đã thuộc.",
-    "de": "Der Ballon sinkt am schnellsten. Für vertrauten Wortschatz."
+    "vi": "Chim hạ nhanh nhất, dành cho bộ từ bạn đã thuộc.",
+    "de": "Der Vogel sinkt am schnellsten. Für vertrauten Wortschatz."
   },
   "Read the Vietnamese meaning and type the foreign word.": {
     "vi": "Nhìn nghĩa tiếng Việt, tự nhớ và gõ từ tiếng Anh hoặc tiếng Đức của thẻ.",

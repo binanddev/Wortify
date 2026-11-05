@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { getLanguage, t } from "../../../i18n/index.js";
 export default function GameFrame({ initialDeck, lang, userId, onClose }) {
+  const [connected, setConnected] = useState(false);
   const frame = useRef(null),
     latest = useRef(null);
   latest.current = { initialDeck, lang, userId, onClose };
@@ -16,6 +17,7 @@ export default function GameFrame({ initialDeck, lang, userId, onClose }) {
       )
         return;
       if (event.data?.type === "wortify-game-ready") {
+        setConnected(true);
         const { initialDeck, lang, userId } = latest.current;
         frame.current.contentWindow.postMessage(
           {
@@ -56,25 +58,27 @@ export default function GameFrame({ initialDeck, lang, userId, onClose }) {
         allow="autoplay; fullscreen"
         style={{ display: "block", width: "100%", height: "100%", border: 0 }}
       />
-      <button
-        type="button"
-        aria-label={t("Close")}
-        onClick={onClose}
-        style={{
-          position: "absolute",
-          right: 0,
-          top: 0,
-          width: 24,
-          height: 24,
-          border: 0,
-          borderRadius: 4,
-          background: "#17253b",
-          color: "white",
-          cursor: "pointer",
-        }}
-      >
-        ×
-      </button>
+      {!connected && (
+        <button
+          type="button"
+          aria-label={t("Close")}
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            width: 24,
+            height: 24,
+            border: 0,
+            borderRadius: 4,
+            background: "#17253b",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          ×
+        </button>
+      )}
     </div>,
     document.body,
   );

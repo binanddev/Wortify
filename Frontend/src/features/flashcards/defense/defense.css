@@ -857,3 +857,5 @@ body,
 .fd-setting-guide dt { font-weight: 600; margin-top: 8px; }
 .fd-setting-guide dd { margin: 2px 0 0; }
 .fd-setting-guide:last-of-type { margin-bottom: 12px; }
+
+.fd-balloon-preview .fd-turret {background: none; box-shadow: none; border: 0; color: #ffe3a7; font-size: 44px;}
